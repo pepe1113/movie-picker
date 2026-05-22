@@ -55,7 +55,12 @@ describe('AiMoviePicker', () => {
       name: '🍷 電影杯倒滿，今晚片單開演 🎬',
     })
 
-    expect(heading).toHaveClass('w-full', 'text-center')
+    expect(heading).toHaveClass(
+      'hero-title-gradient',
+      'w-full',
+      'text-center',
+      'font-mono',
+    )
     expect(heading).toHaveTextContent('')
 
     act(() => {

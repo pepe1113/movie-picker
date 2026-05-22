@@ -106,9 +106,25 @@ describe('MovieDetailPage', () => {
     expect(
       screen.getByTestId('regional-poster-active-label'),
     ).toHaveTextContent('movieDetail.regionalPosters.taiwan')
+    expect(screen.getByTestId('regional-poster-KR')).toHaveAttribute(
+      'data-carousel-offset',
+      '1',
+    )
+    expect(screen.getByTestId('regional-poster-US')).toHaveAttribute(
+      'data-carousel-offset',
+      '-1',
+    )
 
     act(() => {
-      vi.advanceTimersByTime(2000)
+      vi.advanceTimersByTime(4999)
+    })
+
+    expect(
+      screen.getByTestId('regional-poster-active-label'),
+    ).toHaveTextContent('movieDetail.regionalPosters.taiwan')
+
+    act(() => {
+      vi.advanceTimersByTime(1)
     })
 
     expect(screen.getByTestId('regional-posters-carousel')).toHaveAttribute(
@@ -118,6 +134,14 @@ describe('MovieDetailPage', () => {
     expect(
       screen.getByTestId('regional-poster-active-label'),
     ).toHaveTextContent('movieDetail.regionalPosters.korea')
+    expect(screen.getByTestId('regional-poster-TW')).toHaveAttribute(
+      'data-carousel-offset',
+      '-1',
+    )
+    expect(screen.getByTestId('regional-poster-US')).toHaveAttribute(
+      'data-carousel-offset',
+      '-2',
+    )
     expect(carousel).toBeInTheDocument()
   })
 })

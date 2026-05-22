@@ -1,14 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'motion/react'
-import {
-  ArrowDown,
-  Brain,
-  Check,
-  Loader2,
-  RotateCcw,
-  Sparkles,
-} from 'lucide-react'
+import { Brain, Check, Loader2, RotateCcw, Sparkles } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -163,216 +156,183 @@ export function AiMoviePicker() {
       <div className="via-primary/70 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent" />
 
       <div className="relative container mx-auto px-6 py-12 md:px-12 md:py-18 lg:px-16">
-        <div className="space-y-10 md:space-y-12">
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45 }}
-            className="flex min-h-[360px] flex-col items-center justify-end gap-8 text-center"
-          >
-            <div className="flex w-full flex-col items-center space-y-7">
-              <Badge
-                className="gap-2 rounded-full px-3 py-1.5"
-                variant="outline"
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
+          className="mb-12 text-center lg:mb-20"
+        >
+          <div className="flex w-full flex-col items-center space-y-7">
+            <Badge className="gap-2 rounded-full px-3 py-1.5" variant="outline">
+              <Sparkles className="text-primary size-3.5" />
+              {t('aiPicker.badge')}
+            </Badge>
+            <div className="w-full space-y-4">
+              <h1
+                aria-label={heroTitle}
+                className="hero-title-gradient mx-auto mb-12 w-full max-w-6xl text-center font-mono text-3xl leading-tight font-bold md:text-3xl lg:text-6xl"
               >
-                <Sparkles className="text-primary size-3.5" />
-                {t('aiPicker.badge')}
-              </Badge>
-              <div className="w-full space-y-5">
-                <h1
-                  aria-label={heroTitle}
-                  className="mx-auto min-h-24 w-full max-w-6xl text-center text-3xl leading-tight font-bold md:min-h-32"
-                >
-                  {typedHeroTitle}
-                  <span
-                    aria-hidden="true"
-                    className="hero-title-cursor bg-primary ml-1 inline-block h-[0.86em] w-3 translate-y-1"
-                    data-testid="hero-title-cursor"
+                {typedHeroTitle}
+                <span
+                  aria-hidden="true"
+                  className="hero-title-cursor bg-primary ml-1 inline-block h-[0.86em] w-[0.3em] translate-y-1"
+                  data-testid="hero-title-cursor"
+                />
+              </h1>
+              <p className="text-muted-foreground mx-auto text-sm leading-relaxed md:text-base">
+                {t('aiPicker.subtitle')}
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
+        <div className="bg-card/85 border-border rounded-lg border p-4 shadow-[rgba(0,0,0,0.45)_0px_18px_48px] backdrop-blur md:p-6">
+          {!hasSubmitted ? (
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <div className="text-muted-foreground flex items-center justify-between text-xs font-bold tracking-[1.4px] uppercase">
+                  <span>{t('aiPicker.progressLabel')}</span>
+                  <span>
+                    {step + 1} / {AI_PICKER_QUESTIONS.length}
+                  </span>
+                </div>
+                <div className="bg-muted h-2 overflow-hidden rounded-full">
+                  <div
+                    className="bg-primary h-full rounded-full transition-all duration-300"
+                    style={{ width: `${progress}%` }}
                   />
-                </h1>
-                <p className="text-muted-foreground mx-auto max-w-2xl text-base leading-relaxed md:text-xl">
-                  {t('aiPicker.subtitle')}
+                </div>
+              </div>
+
+              <motion.div
+                key={currentQuestion.id}
+                initial={false}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-5"
+              >
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold md:text-3xl">
+                    {t(currentQuestion.titleKey)}
+                  </h2>
+                  <p className="text-muted-foreground text-sm">
+                    {t(currentQuestion.subtitleKey)}
+                  </p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {currentQuestion.options.map((option) => {
+                    const isSelected =
+                      answers[currentQuestion.id] === option.value
+
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        disabled={isAdvancing}
+                        onClick={() =>
+                          selectAnswer(currentQuestion.id, option.value)
+                        }
+                        className={cn(
+                          'border-border bg-secondary/60 hover:border-primary/70 hover:bg-muted flex min-h-28 flex-col items-start justify-between rounded-lg border p-4 text-left transition-all',
+                          isSelected &&
+                            'border-primary bg-primary/10 shadow-[rgba(30,215,96,0.22)_0px_0px_0px_1px]',
+                        )}
+                      >
+                        <span className="flex w-full items-center justify-between gap-3">
+                          <span className="text-base font-bold">
+                            {t(option.labelKey)}
+                          </span>
+                          {isSelected && (
+                            <span className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-full">
+                              <Check className="size-4" />
+                            </span>
+                          )}
+                        </span>
+                        <span className="text-muted-foreground text-sm leading-relaxed">
+                          {t(option.descriptionKey)}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </motion.div>
+
+              <div className="flex items-center justify-between gap-3">
+                <Button
+                  variant="ghost"
+                  onClick={() => setStep((current) => Math.max(0, current - 1))}
+                  disabled={step === 0}
+                >
+                  {t('aiPicker.back')}
+                </Button>
+                <p className="text-muted-foreground text-sm">
+                  {t('aiPicker.autoAdvance')}
                 </p>
               </div>
             </div>
-
-            <div className="border-border bg-card/55 w-full max-w-3xl rounded-lg border p-5 backdrop-blur">
-              <div className="grid grid-cols-2 gap-3">
-                {keywordKeys.length > 0
-                  ? keywordKeys.map((keywordKey) => (
-                      <Badge key={keywordKey} variant="secondary">
-                        {t(keywordKey)}
-                      </Badge>
-                    ))
-                  : ['4 questions', '3 picks', 'TMDB data', 'AI-ready'].map(
-                      (label) => (
-                        <Badge key={label} variant="secondary">
-                          {label}
-                        </Badge>
-                      ),
-                    )}
-              </div>
-              <div className="text-muted-foreground mt-6 flex items-center justify-center gap-2 text-sm">
-                <ArrowDown className="text-primary size-4" />
-                {t('aiPicker.heroHint')}
-              </div>
-            </div>
-          </motion.div>
-
-          <div className="bg-card/85 border-border rounded-lg border p-4 shadow-[rgba(0,0,0,0.45)_0px_18px_48px] backdrop-blur md:p-6">
-            {!hasSubmitted ? (
-              <div className="space-y-6">
-                <div className="space-y-3">
-                  <div className="text-muted-foreground flex items-center justify-between text-xs font-bold tracking-[1.4px] uppercase">
-                    <span>{t('aiPicker.progressLabel')}</span>
-                    <span>
-                      {step + 1} / {AI_PICKER_QUESTIONS.length}
+          ) : (
+            <div className="space-y-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-full">
+                      <Brain className="size-5" />
                     </span>
-                  </div>
-                  <div className="bg-muted h-2 overflow-hidden rounded-full">
-                    <div
-                      className="bg-primary h-full rounded-full transition-all duration-300"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                </div>
-
-                <motion.div
-                  key={currentQuestion.id}
-                  initial={false}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="space-y-5"
-                >
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-bold md:text-3xl">
-                      {t(currentQuestion.titleKey)}
+                    <h2 className="text-2xl font-bold">
+                      {t('aiPicker.resultsTitle')}
                     </h2>
-                    <p className="text-muted-foreground text-sm">
-                      {t(currentQuestion.subtitleKey)}
-                    </p>
                   </div>
-
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {currentQuestion.options.map((option) => {
-                      const isSelected =
-                        answers[currentQuestion.id] === option.value
-
-                      return (
-                        <button
-                          key={option.value}
-                          type="button"
-                          disabled={isAdvancing}
-                          onClick={() =>
-                            selectAnswer(currentQuestion.id, option.value)
-                          }
-                          className={cn(
-                            'border-border bg-secondary/60 hover:border-primary/70 hover:bg-muted flex min-h-28 flex-col items-start justify-between rounded-lg border p-4 text-left transition-all',
-                            isSelected &&
-                              'border-primary bg-primary/10 shadow-[rgba(30,215,96,0.22)_0px_0px_0px_1px]',
-                          )}
-                        >
-                          <span className="flex w-full items-center justify-between gap-3">
-                            <span className="text-base font-bold">
-                              {t(option.labelKey)}
-                            </span>
-                            {isSelected && (
-                              <span className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-full">
-                                <Check className="size-4" />
-                              </span>
-                            )}
-                          </span>
-                          <span className="text-muted-foreground text-sm leading-relaxed">
-                            {t(option.descriptionKey)}
-                          </span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                </motion.div>
-
-                <div className="flex items-center justify-between gap-3">
-                  <Button
-                    variant="ghost"
-                    onClick={() =>
-                      setStep((current) => Math.max(0, current - 1))
-                    }
-                    disabled={step === 0}
-                  >
-                    {t('aiPicker.back')}
-                  </Button>
-                  <p className="text-muted-foreground text-sm">
-                    {t('aiPicker.autoAdvance')}
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <span className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-full">
-                        <Brain className="size-5" />
-                      </span>
-                      <h2 className="text-2xl font-bold">
-                        {t('aiPicker.resultsTitle')}
-                      </h2>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {keywordKeys.map((keywordKey) => (
-                        <Badge key={keywordKey}>{t(keywordKey)}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                  <Button variant="ghost" onClick={reset}>
-                    <RotateCcw className="size-4" />
-                    {t('aiPicker.restart')}
-                  </Button>
-                </div>
-
-                {recommendationQuery.isLoading && (
-                  <div className="text-muted-foreground flex min-h-72 items-center justify-center gap-3">
-                    <Loader2 className="size-5 animate-spin" />
-                    {t('aiPicker.loading')}
-                  </div>
-                )}
-
-                {recommendationQuery.isError && (
-                  <div className="border-border bg-secondary rounded-lg border p-6 text-center">
-                    <p className="text-muted-foreground">
-                      {t('aiPicker.error')}
-                    </p>
-                  </div>
-                )}
-
-                {recommendations.length > 0 && (
-                  <div className="grid gap-5 md:grid-cols-3">
-                    {recommendations.map((recommendation, index) => (
-                      <div key={recommendation.movie.id} className="space-y-3">
-                        <MovieCard movie={recommendation.movie} />
-                        <p className="text-muted-foreground text-sm leading-relaxed">
-                          {t('aiPicker.reasonPrefix')}{' '}
-                          {recommendation.matchedKeywordKeys.map(
-                            (keywordKey) => (
-                              <Badge
-                                key={`${recommendation.movie.id}-${keywordKey}`}
-                                className="mx-0.5 align-middle"
-                              >
-                                {t(keywordKey)}
-                              </Badge>
-                            ),
-                          )}{' '}
-                          {index === 0
-                            ? t('aiPicker.reasonTop')
-                            : t('aiPicker.reasonFit')}
-                        </p>
-                      </div>
+                  <div className="flex flex-wrap gap-2">
+                    {keywordKeys.map((keywordKey) => (
+                      <Badge key={keywordKey}>{t(keywordKey)}</Badge>
                     ))}
                   </div>
-                )}
+                </div>
+                <Button variant="ghost" onClick={reset}>
+                  <RotateCcw className="size-4" />
+                  {t('aiPicker.restart')}
+                </Button>
               </div>
-            )}
-          </div>
+
+              {recommendationQuery.isLoading && (
+                <div className="text-muted-foreground flex min-h-72 items-center justify-center gap-3">
+                  <Loader2 className="size-5 animate-spin" />
+                  {t('aiPicker.loading')}
+                </div>
+              )}
+
+              {recommendationQuery.isError && (
+                <div className="border-border bg-secondary rounded-lg border p-6 text-center">
+                  <p className="text-muted-foreground">{t('aiPicker.error')}</p>
+                </div>
+              )}
+
+              {recommendations.length > 0 && (
+                <div className="grid gap-5 md:grid-cols-3">
+                  {recommendations.map((recommendation, index) => (
+                    <div key={recommendation.movie.id} className="space-y-3">
+                      <MovieCard movie={recommendation.movie} />
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        {t('aiPicker.reasonPrefix')}{' '}
+                        {recommendation.matchedKeywordKeys.map((keywordKey) => (
+                          <Badge
+                            key={`${recommendation.movie.id}-${keywordKey}`}
+                            className="mx-0.5 align-middle"
+                          >
+                            {t(keywordKey)}
+                          </Badge>
+                        ))}{' '}
+                        {index === 0
+                          ? t('aiPicker.reasonTop')
+                          : t('aiPicker.reasonFit')}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </section>

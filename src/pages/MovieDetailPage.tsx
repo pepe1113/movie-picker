@@ -1,15 +1,6 @@
-import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'motion/react'
-import {
-  ArrowLeft,
-  Calendar,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  Play,
-  Star,
-} from 'lucide-react'
+import { ArrowLeft, Calendar, Clock, Play, Star } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { clsx, type ClassValue } from 'clsx'
 import { Button } from '@/components/ui/button'
@@ -24,7 +15,7 @@ import {
 } from '@/components/ui/dialog'
 import { WishlistButton } from '@/components/features/wishlist/WishlistButton'
 import { useMovieDetail } from '@/hooks/useMovieDetail'
-import { getExternalRatings, getRegionalPosters } from '@/utils/movieDetail'
+import { getExternalRatings } from '@/utils/movieDetail'
 import {
   getPosterUrl,
   getBackdropUrl,
@@ -35,13 +26,12 @@ import {
 } from '@/utils/helpers'
 import { ROUTES } from '@/utils/constants'
 import type { Movie } from '@/services/tmdb/types'
-import type { RegionalPoster } from '@/utils/movieDetail'
 
 export function Component() {
   const { t } = useTranslation()
   const { id } = useParams()
   const movieId = Number(id)
-  const { detail, credits, videos, images, omdb, isLoading, isError } =
+  const { detail, credits, videos, omdb, isLoading, isError } =
     useMovieDetail(movieId)
 
   if (isError) {
@@ -68,7 +58,7 @@ export function Component() {
     (v) => v.type === 'Trailer' && v.site === 'YouTube',
   )
   const cast = credits?.cast.slice(0, 12) ?? []
-  const regionalPosters = getRegionalPosters(images)
+
   const externalRatings = getExternalRatings(omdb)
 
   // Convert to Movie type for WishlistButton
@@ -250,25 +240,6 @@ export function Component() {
 
       {/* Content Sections */}
       <div className="container mx-auto space-y-20 px-6 py-20 md:px-12 lg:px-16">
-        {/* Regional Posters */}
-        {regionalPosters.length > 0 && (
-          <section
-            className="space-y-6"
-            aria-labelledby="regional-posters-title"
-          >
-            <div className="space-y-2">
-              <h2
-                id="regional-posters-title"
-                className="text-2xl font-bold md:text-3xl"
-              >
-                {t('movieDetail.sections.regionalPosters')}
-              </h2>
-            </div>
-
-            <RegionalPostersCarousel posters={regionalPosters} />
-          </section>
-        )}
-
         {/* Cast */}
         {cast.length > 0 && (
           <section className="space-y-6">
@@ -349,168 +320,6 @@ export function Component() {
       </div>
     </div>
   )
-}
-
-function RegionalPostersCarousel({ posters }: { posters: RegionalPoster[] }) {
-  const { t } = useTranslation()
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>(
-    'left',
-  )
-  const hasMultiplePosters = posters.length > 1
-  const activePoster = posters[activeIndex]
-  const visibleOffsets = posters.length === 1 ? [0] : [-1, 0, 1]
-
-  useEffect(() => {
-    if (!hasMultiplePosters) return
-
-    const timer = window.setInterval(() => {
-      setSlideDirection('left')
-      setActiveIndex((currentIndex) =>
-        getWrappedPosterIndex(currentIndex + 1, posters.length),
-      )
-    }, 2000)
-
-    return () => window.clearInterval(timer)
-  }, [hasMultiplePosters, posters.length])
-
-  const showPreviousPoster = () => {
-    setSlideDirection('right')
-    setActiveIndex((currentIndex) =>
-      getWrappedPosterIndex(currentIndex - 1, posters.length),
-    )
-  }
-
-  const showNextPoster = () => {
-    setSlideDirection('left')
-    setActiveIndex((currentIndex) =>
-      getWrappedPosterIndex(currentIndex + 1, posters.length),
-    )
-  }
-
-  return (
-    <div
-      data-testid="regional-posters-carousel"
-      data-slide-direction={slideDirection}
-      className="space-y-5"
-    >
-      <div className="relative mx-auto h-[25rem] max-w-4xl overflow-hidden sm:h-[32rem] lg:h-[36rem]">
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-30 w-16 bg-linear-to-r from-background to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-30 w-16 bg-linear-to-l from-background to-transparent" />
-
-        {visibleOffsets.map((offset) => {
-          const posterIndex = getWrappedPosterIndex(
-            activeIndex + offset,
-            posters.length,
-          )
-          const poster = posters[posterIndex]
-          const isActive = offset === 0
-          const positionClass =
-            offset < 0
-              ? '-translate-x-[120%]'
-              : offset > 0
-                ? 'translate-x-[20%]'
-                : '-translate-x-1/2'
-
-          return (
-            <motion.div
-              key={poster.region}
-              initial={{ opacity: 0, y: '-46%' }}
-              animate={{ opacity: isActive ? 1 : 0.38, y: '-50%' }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-              className={clsx([
-                'absolute top-1/2 left-1/2 aspect-[2/3] overflow-hidden rounded-lg bg-card shadow-[rgba(0,0,0,0.45)_0px_16px_32px]',
-                'transition-[filter,transform,opacity] duration-500',
-                positionClass,
-                isActive
-                  ? 'z-20 w-56 sm:w-72 lg:w-80'
-                  : 'z-10 w-44 scale-75 opacity-35 blur-[4px] sm:w-60 lg:w-64',
-              ] as ClassValue[])}
-              aria-hidden={!isActive}
-            >
-              <img
-                src={getPosterUrl(poster.file_path, 'large')}
-                alt={isActive ? t(poster.labelKey) : ''}
-                loading={isActive ? 'eager' : 'lazy'}
-                className="size-full object-cover"
-              />
-
-              {isActive && (
-                <Badge
-                  data-testid="regional-poster-active-label"
-                  className="absolute top-4 left-4 rounded-full border border-primary/50 bg-background/85 px-4 py-2 text-base font-black tracking-[1.4px] text-primary uppercase shadow-[rgba(0,0,0,0.5)_0px_8px_24px] backdrop-blur-md md:text-lg"
-                >
-                  {t(activePoster.labelKey)}
-                </Badge>
-              )}
-            </motion.div>
-          )
-        })}
-
-        {hasMultiplePosters && (
-          <>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="absolute top-1/2 left-2 z-40 -translate-y-1/2 bg-background/70 text-foreground shadow-[rgba(0,0,0,0.5)_0px_8px_24px] backdrop-blur-md hover:bg-secondary/90 md:left-6"
-              aria-label={t('movieDetail.regionalPosters.controls.previous')}
-              onClick={showPreviousPoster}
-            >
-              <ChevronLeft className="size-5" />
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="absolute top-1/2 right-2 z-40 -translate-y-1/2 bg-background/70 text-foreground shadow-[rgba(0,0,0,0.5)_0px_8px_24px] backdrop-blur-md hover:bg-secondary/90 md:right-6"
-              aria-label={t('movieDetail.regionalPosters.controls.next')}
-              onClick={showNextPoster}
-            >
-              <ChevronRight className="size-5" />
-            </Button>
-          </>
-        )}
-      </div>
-
-      {hasMultiplePosters && (
-        <div className="flex justify-center gap-2">
-          {posters.map((poster, index) => {
-            const label = t(poster.labelKey)
-            const isActive = index === activeIndex
-
-            return (
-              <button
-                key={poster.region}
-                type="button"
-                className={clsx([
-                  'h-2.5 rounded-full transition-all duration-300',
-                  isActive
-                    ? 'w-8 bg-primary'
-                    : 'w-2.5 bg-muted-foreground/45 hover:bg-muted-foreground',
-                ] as ClassValue[])}
-                aria-label={t(
-                  'movieDetail.regionalPosters.controls.showPoster',
-                  {
-                    region: label,
-                  },
-                )}
-                aria-current={isActive ? 'true' : undefined}
-                onClick={() => {
-                  setSlideDirection(index > activeIndex ? 'left' : 'right')
-                  setActiveIndex(index)
-                }}
-              />
-            )
-          })}
-        </div>
-      )}
-    </div>
-  )
-}
-
-function getWrappedPosterIndex(index: number, length: number) {
-  return ((index % length) + length) % length
 }
 
 function DetailSkeleton() {

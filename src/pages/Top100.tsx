@@ -17,10 +17,10 @@ export function Component() {
   const movies = data?.movies ?? []
 
   return (
-    <div className="container mx-auto space-y-6 px-4 py-8">
-      <div>
-        <h1 className="text-3xl font-bold">{t('top100.title')}</h1>
-        <p className="text-muted-foreground mt-1">{t('top100.subtitle')}</p>
+    <div className="container mx-auto space-y-8 px-6 py-10 md:px-12 lg:px-16">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold md:text-4xl">{t('top100.title')}</h1>
+        <p className="text-muted-foreground">{t('top100.subtitle')}</p>
       </div>
 
       {isLoading ? (
@@ -40,7 +40,7 @@ export function Component() {
             >
               <Link
                 to={ROUTES.MOVIE_DETAIL(movie.id)}
-                className="bg-card hover:bg-accent/50 flex items-center gap-4 rounded-lg border p-3 transition-colors"
+                className="bg-card hover:bg-muted flex items-center gap-4 rounded-lg p-3 shadow-[rgba(0,0,0,0.25)_0px_4px_12px] transition-[background-color,transform]"
               >
                 {/* 排名 */}
                 <span className="text-muted-foreground w-8 text-center text-lg font-bold">
@@ -52,7 +52,7 @@ export function Component() {
                   src={getPosterUrl(movie.poster_path, 'small')}
                   alt={movie.title}
                   loading="lazy"
-                  className="h-20 w-14 rounded object-cover"
+                  className="h-20 w-14 rounded-md object-cover"
                 />
 
                 {/* 資訊 */}

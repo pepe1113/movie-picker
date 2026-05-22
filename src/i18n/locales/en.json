@@ -24,14 +24,132 @@
     },
     "sections": {
       "trending": "Trending This Week",
+      "trendingLabel": "Heating Up",
       "popular": "Popular Movies",
+      "popularLabel": "Audience Heat",
       "topRated": "Top Rated Movies",
+      "topRatedLabel": "Fan Favorites",
       "viewAll": "View Full TOP 100"
     }
   },
   "footer": {
     "tmdbDisclaimer": "This product uses the TMDB API but is not endorsed or certified by TMDB.",
-    "copyright": "Movie Picker"
+    "copyright": "Movie Picker",
+    "ticker": "AI picker online / Weekly trends synced / Popular watchlists scanning / Low-latency trailer preview / No more choice paralysis tonight"
+  },
+  "aiPicker": {
+    "badge": "AI Movie Guide",
+    "title": "Answer 4 questions. Get tonight's watchlist.",
+    "subtitle": "Use your mood, occasion, pace, and era preference to filter 3 movies that fit tonight.",
+    "heroHint": "Answer below. Each choice advances automatically.",
+    "progressLabel": "Picker Progress",
+    "back": "Back",
+    "next": "Next",
+    "autoAdvance": "Choosing an option moves to the next question",
+    "getPicks": "Generate Picks",
+    "restart": "Start Over",
+    "resultsTitle": "Your AI Picks",
+    "loading": "Analyzing your movie preferences...",
+    "error": "Recommendations failed to load. Please try again later.",
+    "reasonPrefix": "Matched",
+    "reasonTop": ", making this the closest fit for your full preference set.",
+    "reasonFit": ", making this a strong candidate for tonight.",
+    "questions": {
+      "mood": {
+        "title": "What mood do you want tonight?",
+        "subtitle": "Start with the feeling you want the movie to create.",
+        "options": {
+          "relaxed": {
+            "label": "Relaxed",
+            "description": "Light, funny, and easy to watch",
+            "keyword": "Relaxed"
+          },
+          "exciting": {
+            "label": "Exciting",
+            "description": "Action, adventure, and enough tension",
+            "keyword": "Exciting"
+          },
+          "moving": {
+            "label": "Moving",
+            "description": "Emotion-forward and memorable",
+            "keyword": "Moving"
+          },
+          "mindBending": {
+            "label": "Mind-bending",
+            "description": "Mystery, sci-fi, twists, or strong worldbuilding",
+            "keyword": "Mind-bending"
+          }
+        }
+      },
+      "occasion": {
+        "title": "Who is watching?",
+        "subtitle": "Different situations need different safe bets.",
+        "options": {
+          "solo": {
+            "label": "Solo",
+            "description": "More immersive and willing to go heavier",
+            "keyword": "Solo"
+          },
+          "date": {
+            "label": "Date night",
+            "description": "Good atmosphere and easy to talk about",
+            "keyword": "Date night"
+          },
+          "friends": {
+            "label": "Friends",
+            "description": "Fast enough for everyone to get into it",
+            "keyword": "Friends"
+          },
+          "family": {
+            "label": "Family",
+            "description": "Accessible, broad, and group-friendly",
+            "keyword": "Family"
+          }
+        }
+      },
+      "pace": {
+        "title": "What pace works best?",
+        "subtitle": "This changes sorting and popularity thresholds.",
+        "options": {
+          "fast": {
+            "label": "Fast-paced",
+            "description": "Gets moving quickly without dragging",
+            "keyword": "Fast-paced"
+          },
+          "immersive": {
+            "label": "Slow burn",
+            "description": "You are willing to let it build",
+            "keyword": "Slow burn"
+          },
+          "any": {
+            "label": "Any pace",
+            "description": "Any rhythm works if the movie is strong",
+            "keyword": "Any pace"
+          }
+        }
+      },
+      "era": {
+        "title": "How old can the movie be?",
+        "subtitle": "Avoid recommendations you are not in the mood for.",
+        "options": {
+          "recent": {
+            "label": "Recent only",
+            "description": "Prioritize movies from the last five years",
+            "keyword": "Recent"
+          },
+          "classic": {
+            "label": "Classics are fine",
+            "description": "High-rated older titles are welcome",
+            "keyword": "Classic"
+          },
+          "any": {
+            "label": "No limit",
+            "description": "New or old both work",
+            "keyword": "Any era"
+          }
+        }
+      }
+    }
   },
   "random": {
     "title": "Random Pick",
@@ -129,7 +247,8 @@
     "loadFailed": "Failed to load, please try again later"
   },
   "movieCard": {
-    "noOverview": "No overview available"
+    "noOverview": "No overview available",
+    "loadingTrailer": "Loading trailer"
   },
   "searchBar": {
     "placeholder": "Search movies...",

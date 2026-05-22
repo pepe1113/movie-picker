@@ -148,6 +148,7 @@ export interface VideosResponse {
 // --- Discover 篩選參數 ---
 export interface DiscoverMovieParams {
   page?: number
+  language?: string
   sort_by?: string
   with_genres?: string
   'primary_release_date.gte'?: string

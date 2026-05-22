@@ -1,5 +1,5 @@
-/* Bold Typography Design System - Inter Tight Font */
-@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+/* Spotify-inspired movie app design system */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 @import 'tailwindcss';
 @import 'tw-animate-css';
@@ -8,14 +8,13 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* Bold Typography: No rounded corners - sharp edges only */
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-  --radius-xl: 0px;
-  --radius-2xl: 0px;
-  --radius-3xl: 0px;
-  --radius-4xl: 0px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+  --radius-4xl: 32px;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -50,57 +49,63 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* Bold Typography Design System - Color Tokens */
 :root {
-  /* No border radius - sharp edges only */
-  --radius: 0px;
+  --radius: 8px;
 
-  /* Bold Typography Dark Mode Colors */
-  --background: rgb(10 10 10);
-  --foreground: rgb(250 250 250);
-  --card: rgb(15 15 15);
-  --card-foreground: rgb(250 250 250);
-  --popover: rgb(15 15 15);
-  --popover-foreground: rgb(250 250 250);
-  --primary: rgb(250 250 250);
-  --primary-foreground: rgb(10 10 10);
-  --secondary: rgb(26 26 26);
-  --secondary-foreground: rgb(250 250 250);
-  --muted: rgb(26 26 26);
-  --muted-foreground: rgb(115 115 115);
-  --accent: rgb(255 61 0);
-  --accent-foreground: rgb(10 10 10);
-  --destructive: rgb(255 61 0);
-  --destructive-foreground: rgb(250 250 250);
-  --border: rgb(38 38 38);
-  --input: rgb(26 26 26);
-  --ring: rgb(255 61 0);
-  --chart-1: rgb(255 61 0);
-  --chart-2: rgb(255 120 60);
-  --chart-3: rgb(200 80 40);
-  --chart-4: rgb(255 90 30);
-  --chart-5: rgb(255 150 100);
+  --background: rgb(18 18 18);
+  --foreground: rgb(255 255 255);
+  --card: rgb(24 24 24);
+  --card-foreground: rgb(255 255 255);
+  --popover: rgb(31 31 31);
+  --popover-foreground: rgb(255 255 255);
+  --primary: rgb(30 215 96);
+  --primary-foreground: rgb(0 0 0);
+  --secondary: rgb(31 31 31);
+  --secondary-foreground: rgb(255 255 255);
+  --muted: rgb(37 37 37);
+  --muted-foreground: rgb(179 179 179);
+  --accent: rgb(30 215 96);
+  --accent-foreground: rgb(0 0 0);
+  --destructive: rgb(243 114 127);
+  --destructive-foreground: rgb(255 255 255);
+  --border: rgb(77 77 77);
+  --input: rgb(31 31 31);
+  --ring: rgb(30 215 96);
+  --chart-1: rgb(30 215 96);
+  --chart-2: rgb(83 157 245);
+  --chart-3: rgb(255 164 43);
+  --chart-4: rgb(243 114 127);
+  --chart-5: rgb(203 203 203);
+  --sidebar: rgb(18 18 18);
+  --sidebar-foreground: rgb(255 255 255);
+  --sidebar-primary: rgb(30 215 96);
+  --sidebar-primary-foreground: rgb(0 0 0);
+  --sidebar-accent: rgb(31 31 31);
+  --sidebar-accent-foreground: rgb(255 255 255);
+  --sidebar-border: rgb(77 77 77);
+  --sidebar-ring: rgb(30 215 96);
 }
 
 @layer base {
-  * {
-    border-radius: 0; /* Force sharp edges everywhere */
-  }
-
   html {
     color-scheme: dark;
   }
 
   body {
     font-family:
-      'Inter Tight',
       'Inter',
+      'Helvetica Neue',
+      helvetica,
+      arial,
+      'Hiragino Sans',
+      'Hiragino Kaku Gothic ProN',
+      'Meiryo',
+      'MS Gothic',
       system-ui,
       -apple-system,
       sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    letter-spacing: -0.01em;
     background-color: var(--background);
     color: var(--foreground);
     white-space: pre-line;
@@ -120,7 +125,6 @@
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   }
 
-  /* Heading styles - Bold Typography hierarchy */
   h1,
   h2,
   h3,
@@ -128,24 +132,8 @@
   h5,
   h6 {
     font-weight: 700;
-    letter-spacing: -0.04em; /* Tight tracking for headlines */
-    line-height: 1.1;
-  }
-
-  /* Monospace for labels and technical details */
-  code,
-  kbd,
-  samp,
-  pre {
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-  }
-
-  /* Remove all default border radius from inputs and buttons */
-  input,
-  button,
-  select,
-  textarea {
-    border-radius: 0;
+    letter-spacing: 0;
+    line-height: 1.18;
   }
 }
 
@@ -153,13 +141,28 @@ button[role='tab'] {
   padding: 5px 20px;
   border: none;
   cursor: pointer;
-  border-radius: 20px;
-  background-color: rgba(255, 255, 255, 0);
+  border-radius: 9999px;
+  background-color: transparent;
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
 
   &[data-state='active'] {
     background-color: var(--accent);
+    color: var(--accent-foreground);
   }
+}
+
+@keyframes footer-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.footer-marquee {
+  animation: footer-marquee 28s linear infinite;
 }

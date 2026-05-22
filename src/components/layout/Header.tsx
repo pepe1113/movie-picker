@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import {
   Film,
   Heart,
@@ -55,23 +55,35 @@ export function Header() {
   }
 
   return (
-    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
-      <div className="container mx-auto flex h-14 items-center gap-4 px-4">
+    <header className="border-border bg-background/90 sticky top-0 z-50 w-full border-b shadow-[rgba(0,0,0,0.5)_0px_8px_24px] backdrop-blur">
+      <div className="container mx-auto flex h-16 items-center gap-4 px-4">
         {/* Logo */}
-        <Link to={ROUTES.HOME} className="flex items-center gap-2 font-bold">
-          <Film className="size-5" />
+        <Link
+          to={ROUTES.HOME}
+          className="text-foreground flex items-center gap-2 text-sm font-bold"
+        >
+          <span className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-full">
+            <Film className="size-5" />
+          </span>
           <span className="hidden sm:inline">Movie Picker</span>
         </Link>
 
         {/* 桌面版導航 */}
         <nav className="hidden items-center gap-1 md:flex">
           {NAV_ITEMS.map((item) => (
-            <Button key={item.href} variant="ghost" size="sm" asChild>
-              <Link to={item.href}>
-                <item.icon className="size-4" />
-                {item.label}
-              </Link>
-            </Button>
+            <NavLink
+              key={item.href}
+              to={item.href}
+              className={({ isActive }) =>
+                [
+                  'text-muted-foreground hover:bg-secondary hover:text-foreground inline-flex h-9 items-center justify-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition-colors',
+                  isActive ? 'bg-secondary text-foreground' : '',
+                ].join(' ')
+              }
+            >
+              <item.icon className="size-4" />
+              {item.label}
+            </NavLink>
           ))}
         </nav>
 
@@ -81,13 +93,13 @@ export function Header() {
           className="ml-auto hidden max-w-sm flex-1 md:flex"
         >
           <div className="relative w-full">
-            <Search className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
+            <Search className="text-muted-foreground absolute top-1/2 left-4 size-4 -translate-y-1/2" />
             <Input
               type="search"
               placeholder={t('common.search')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
+              className="h-11 pl-11"
             />
           </div>
         </form>
@@ -140,7 +152,9 @@ export function Header() {
             <SheetContent side="left">
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2">
-                  <Film className="size-5" />
+                  <span className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-full">
+                    <Film className="size-5" />
+                  </span>
                   Movie Picker
                 </SheetTitle>
               </SheetHeader>
@@ -148,13 +162,13 @@ export function Header() {
               {/* 手機搜尋列 */}
               <form onSubmit={handleSearch} className="px-4">
                 <div className="relative">
-                  <Search className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
+                  <Search className="text-muted-foreground absolute top-1/2 left-4 size-4 -translate-y-1/2" />
                   <Input
                     type="search"
                     placeholder={t('common.search')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9"
+                    className="pl-11"
                   />
                 </div>
               </form>

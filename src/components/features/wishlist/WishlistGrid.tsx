@@ -10,8 +10,10 @@ export function WishlistGrid() {
 
   if (wishlist.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-20">
-        <Heart className="text-muted-foreground size-16 stroke-1" />
+      <div className="bg-card flex flex-col items-center justify-center gap-4 rounded-lg px-6 py-20 text-center shadow-[rgba(0,0,0,0.3)_0px_8px_8px]">
+        <span className="bg-secondary text-muted-foreground flex size-16 items-center justify-center rounded-full">
+          <Heart className="size-8 stroke-1" />
+        </span>
         <div className="text-center">
           <p className="text-muted-foreground text-lg">
             {t('wishlist.empty.title')}

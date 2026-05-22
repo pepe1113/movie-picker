@@ -31,10 +31,12 @@ export function Component() {
   }
 
   return (
-    <div className="container mx-auto space-y-6 px-4 py-8">
+    <div className="container mx-auto space-y-8 px-6 py-10 md:px-12 lg:px-16">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t('wishlist.title')}</h1>
+          <h1 className="text-3xl font-bold md:text-4xl">
+            {t('wishlist.title')}
+          </h1>
           {wishlist.length > 0 && (
             <div className="text-muted-foreground mt-2 flex items-center gap-4 text-sm">
               <span className="flex items-center gap-1">

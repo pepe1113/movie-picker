@@ -38,7 +38,9 @@ export function WishlistButton({
         variant={isWishlisted ? 'default' : 'secondary'}
         size={size === 'lg' ? 'default' : 'icon-sm'}
         onClick={handleClick}
-        className={size === 'lg' ? 'gap-2' : ''}
+        className={
+          size === 'lg' ? 'gap-2' : 'shadow-[rgba(0,0,0,0.5)_0px_8px_24px]'
+        }
       >
         <Heart className={`size-4 ${isWishlisted ? 'fill-current' : ''}`} />
         {size === 'lg' &&

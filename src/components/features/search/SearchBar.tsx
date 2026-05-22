@@ -33,14 +33,14 @@ export function SearchBar({
 
   return (
     <form onSubmit={handleSubmit} className="relative w-full">
-      <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+      <Search className="text-muted-foreground absolute top-1/2 left-4 size-4 -translate-y-1/2" />
       <Input
         type="search"
         placeholder={t('searchBar.placeholder')}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         autoFocus={autoFocus}
-        className="pr-9 pl-9"
+        className="pr-11 pl-11"
       />
       {query && (
         <Button

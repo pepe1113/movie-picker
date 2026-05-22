@@ -1,12 +1,20 @@
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'motion/react'
-import { ArrowLeft, Calendar, Clock, Play } from 'lucide-react'
+import { ArrowLeft, Calendar, Clock, Play, Star } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import { WishlistButton } from '@/components/features/wishlist/WishlistButton'
 import { useMovieDetail } from '@/hooks/useMovieDetail'
+import { getExternalRatings, getRegionalPosters } from '@/utils/movieDetail'
 import {
   getPosterUrl,
   getBackdropUrl,
@@ -22,7 +30,7 @@ export function Component() {
   const { t } = useTranslation()
   const { id } = useParams()
   const movieId = Number(id)
-  const { detail, credits, videos, isLoading, isError } =
+  const { detail, credits, videos, images, omdb, isLoading, isError } =
     useMovieDetail(movieId)
 
   if (isError) {
@@ -49,6 +57,8 @@ export function Component() {
     (v) => v.type === 'Trailer' && v.site === 'YouTube',
   )
   const cast = credits?.cast.slice(0, 12) ?? []
+  const regionalPosters = getRegionalPosters(images)
+  const externalRatings = getExternalRatings(omdb)
 
   // Convert to Movie type for WishlistButton
   const movieForWishlist: Movie = {
@@ -70,21 +80,22 @@ export function Component() {
 
   return (
     <div className="min-h-screen pb-20">
-      <section className="border-border relative overflow-hidden border-b">
-        {detail.backdrop_path && (
-          <div className="absolute inset-0 opacity-20">
+      <section className="relative min-h-[720px] overflow-hidden">
+        {detail.backdrop_path ? (
+          <div className="absolute inset-0">
             <img
               src={getBackdropUrl(detail.backdrop_path)}
               alt=""
               className="size-full object-cover"
             />
-            <div className="from-background via-background/90 to-background/70 absolute inset-0 bg-gradient-to-r" />
-            <div className="from-background to-background/40 absolute inset-0 bg-gradient-to-t via-transparent" />
+            <div className="from-background/95 via-background/45 absolute inset-0 bg-gradient-to-r to-transparent" />
+            <div className="from-background via-background/85 absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t to-transparent" />
           </div>
+        ) : (
+          <div className="from-background via-card to-background absolute inset-0 bg-gradient-to-br" />
         )}
 
-        <div className="relative container mx-auto px-6 py-12 md:px-12 lg:px-16">
-          {/* Back Button */}
+        <div className="relative container mx-auto flex min-h-[720px] flex-col px-6 py-8 md:px-12 lg:px-16">
           <Button variant="ghost" size="sm" className="mb-8" asChild>
             <Link to={ROUTES.HOME}>
               <ArrowLeft className="size-4" />
@@ -92,7 +103,7 @@ export function Component() {
             </Link>
           </Button>
 
-          <div className="flex flex-col gap-12 lg:flex-row">
+          <div className="mt-auto flex flex-col gap-8 pb-12 lg:flex-row lg:items-end">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -102,16 +113,15 @@ export function Component() {
               <img
                 src={getPosterUrl(detail.poster_path, 'large')}
                 alt={detail.title}
-                className="w-full rounded-lg shadow-[rgba(0,0,0,0.5)_0px_8px_24px] md:w-64 lg:w-80"
+                className="w-40 rounded-lg shadow-[rgba(0,0,0,0.5)_0px_8px_24px] md:w-56 lg:w-72"
               />
             </motion.div>
 
-            {/* Info */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.3 }}
-              className="flex-1 space-y-8"
+              className="max-w-4xl flex-1 space-y-6"
             >
               <div className="space-y-4">
                 <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl">
@@ -125,16 +135,26 @@ export function Component() {
                 )}
               </div>
 
-              <div className="text-muted-foreground flex flex-wrap items-center gap-4 text-sm">
-                <span className="flex items-center gap-2">
-                  <span className="bg-primary text-primary-foreground rounded-full px-3 py-1 text-sm font-bold">
-                    {formatRating(detail.vote_average)}
-                  </span>
-                  <span className="text-xs">
+              <div className="flex flex-wrap gap-3">
+                <Badge className="gap-2 px-3 py-1.5" variant="secondary">
+                  <Star className="size-4 fill-yellow-400 text-yellow-400" />
+                  TMDB {formatRating(detail.vote_average)}
+                  <span className="text-muted-foreground text-xs">
                     ({detail.vote_count.toLocaleString()})
                   </span>
-                </span>
-                <span className="text-border">|</span>
+                </Badge>
+                {externalRatings.map((rating) => (
+                  <Badge
+                    key={rating.label}
+                    className="gap-2 px-3 py-1.5"
+                    variant="secondary"
+                  >
+                    {rating.label} {rating.value}
+                  </Badge>
+                ))}
+              </div>
+
+              <div className="text-muted-foreground flex flex-wrap items-center gap-4 text-sm">
                 <span className="flex items-center gap-2">
                   <Calendar className="size-4" />
                   {formatYear(detail.release_date)}
@@ -162,16 +182,35 @@ export function Component() {
               <div className="flex flex-wrap gap-4">
                 <WishlistButton movie={movieForWishlist} size="lg" />
                 {trailer && (
-                  <Button variant="ghost" size="lg" asChild>
-                    <a
-                      href={`https://www.youtube.com/watch?v=${trailer.key}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="lg"
+                        title={t('movieDetail.trailerTooltip')}
+                      >
+                        <Play className="size-5" />
+                        {t('movieDetail.watchTrailer')}
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent
+                      className="max-w-5xl gap-5 p-4 sm:max-w-5xl"
+                      showCloseButton
                     >
-                      <Play className="size-5" />
-                      {t('movieDetail.watchTrailer')}
-                    </a>
-                  </Button>
+                      <DialogHeader className="pr-10">
+                        <DialogTitle>{trailer.name}</DialogTitle>
+                      </DialogHeader>
+                      <div className="bg-background aspect-video overflow-hidden rounded-lg">
+                        <iframe
+                          src={`https://www.youtube.com/embed/${trailer.key}?autoplay=1&rel=0`}
+                          title={trailer.name}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          className="size-full"
+                        />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 )}
               </div>
 
@@ -195,6 +234,35 @@ export function Component() {
 
       {/* Content Sections */}
       <div className="container mx-auto space-y-20 px-6 py-20 md:px-12 lg:px-16">
+        {/* Regional Posters */}
+        {regionalPosters.length > 0 && (
+          <section className="space-y-6">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold md:text-3xl">
+                {t('movieDetail.sections.regionalPosters')}
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4">
+              {regionalPosters.map((poster) => (
+                <div key={poster.region} className="space-y-3">
+                  <div className="bg-card aspect-[2/3] overflow-hidden rounded-lg shadow-[rgba(0,0,0,0.3)_0px_8px_8px]">
+                    <img
+                      src={getPosterUrl(poster.file_path, 'large')}
+                      alt={t(poster.labelKey)}
+                      loading="lazy"
+                      className="size-full object-cover"
+                    />
+                  </div>
+                  <p className="text-muted-foreground text-center text-sm font-bold tracking-[1.4px] uppercase">
+                    {t(poster.labelKey)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Cast */}
         {cast.length > 0 && (
           <section className="space-y-6">
@@ -225,27 +293,6 @@ export function Component() {
                   </div>
                 </div>
               ))}
-            </div>
-          </section>
-        )}
-
-        {/* Trailer */}
-        {trailer && (
-          <section className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-2xl font-bold md:text-3xl">
-                {t('movieDetail.sections.trailer')}
-              </h2>
-            </div>
-
-            <div className="bg-card aspect-video overflow-hidden rounded-lg shadow-[rgba(0,0,0,0.3)_0px_8px_8px]">
-              <iframe
-                src={`https://www.youtube.com/embed/${trailer.key}`}
-                title={trailer.name}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="size-full"
-              />
             </div>
           </section>
         )}

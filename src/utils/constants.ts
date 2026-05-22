@@ -23,9 +23,15 @@ export const QUERY_KEYS = {
     popular: () => [...QUERY_KEYS.movies.all, 'popular'] as const,
     topRated: () => [...QUERY_KEYS.movies.all, 'top-rated'] as const,
     nowPlaying: () => [...QUERY_KEYS.movies.all, 'now-playing'] as const,
-    detail: (id: number) => [...QUERY_KEYS.movies.all, 'detail', id] as const,
-    credits: (id: number) => [...QUERY_KEYS.movies.all, 'credits', id] as const,
-    videos: (id: number) => [...QUERY_KEYS.movies.all, 'videos', id] as const,
+    detail: (id: number, language?: string) =>
+      [...QUERY_KEYS.movies.all, 'detail', id, language] as const,
+    credits: (id: number, language?: string) =>
+      [...QUERY_KEYS.movies.all, 'credits', id, language] as const,
+    videos: (id: number, language?: string) =>
+      [...QUERY_KEYS.movies.all, 'videos', id, language] as const,
+    images: (id: number) => [...QUERY_KEYS.movies.all, 'images', id] as const,
+    omdb: (imdbId: string | null | undefined) =>
+      [...QUERY_KEYS.movies.all, 'omdb', imdbId] as const,
     search: (query: string) =>
       [...QUERY_KEYS.movies.all, 'search', query] as const,
     discover: (params?: Record<string, unknown>) =>

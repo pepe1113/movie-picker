@@ -7,9 +7,10 @@ import { useQuery } from '@tanstack/react-query'
 import { Badge } from '@/components/ui/badge'
 import { WishlistButton } from '@/components/features/wishlist/WishlistButton'
 import { getMovieVideos } from '@/services/tmdb/api'
+import { useLanguageStore } from '@/stores/languageStore'
 import { cn } from '@/lib/utils'
 import { getPosterUrl, formatRating, formatYear } from '@/utils/helpers'
-import { ROUTES } from '@/utils/constants'
+import { ROUTES, TMDB_LANGUAGE_MAP } from '@/utils/constants'
 import type { Movie } from '@/services/tmdb/types'
 
 interface MovieCardProps {
@@ -18,6 +19,8 @@ interface MovieCardProps {
 
 export function MovieCard({ movie }: MovieCardProps) {
   const { t } = useTranslation()
+  const language = useLanguageStore((state) => state.language)
+  const tmdbLanguage = TMDB_LANGUAGE_MAP[language]
   const [isHovering, setIsHovering] = useState(false)
   const [shouldLoadPreview, setShouldLoadPreview] = useState(false)
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -34,8 +37,8 @@ export function MovieCard({ movie }: MovieCardProps) {
   }, [])
 
   const videosQuery = useQuery({
-    queryKey: ['movie-card-trailer', movie.id],
-    queryFn: () => getMovieVideos(movie.id),
+    queryKey: ['movie-card-trailer', movie.id, tmdbLanguage],
+    queryFn: () => getMovieVideos(movie.id, tmdbLanguage),
     enabled: shouldLoadPreview,
     staleTime: 1000 * 60 * 30,
   })

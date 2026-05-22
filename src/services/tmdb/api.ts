@@ -5,6 +5,7 @@ import type {
   CreditsResponse,
   DiscoverMovieParams,
   GenreListResponse,
+  MovieImagesResponse,
   MovieDetail,
   MovieListResponse,
   VideosResponse,
@@ -51,21 +52,37 @@ export async function getNowPlayingMovies(page = 1, language = 'zh-TW') {
 
 // --- 電影詳情 ---
 
-export async function getMovieDetail(id: number) {
-  const { data } = await tmdbClient.get<MovieDetail>(ENDPOINTS.MOVIE_DETAIL(id))
+export async function getMovieDetail(id: number, language = 'zh-TW') {
+  const { data } = await tmdbClient.get<MovieDetail>(ENDPOINTS.MOVIE_DETAIL(id), {
+    params: { language },
+  })
   return data
 }
 
-export async function getMovieCredits(id: number) {
+export async function getMovieCredits(id: number, language = 'zh-TW') {
   const { data } = await tmdbClient.get<CreditsResponse>(
     ENDPOINTS.MOVIE_CREDITS(id),
+    { params: { language } },
   )
   return data
 }
 
-export async function getMovieVideos(id: number) {
+export async function getMovieVideos(id: number, language = 'zh-TW') {
   const { data } = await tmdbClient.get<VideosResponse>(
     ENDPOINTS.MOVIE_VIDEOS(id),
+    { params: { language } },
+  )
+  return data
+}
+
+export async function getMovieImages(id: number) {
+  const { data } = await tmdbClient.get<MovieImagesResponse>(
+    ENDPOINTS.MOVIE_IMAGES(id),
+    {
+      params: {
+        include_image_language: 'ko,ja,en,zh',
+      },
+    },
   )
   return data
 }

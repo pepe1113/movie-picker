@@ -31,3 +31,4 @@ dist-ssr
 coverage/
 
 .claude/*
+.superpowers/

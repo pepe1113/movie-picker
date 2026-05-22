@@ -36,7 +36,7 @@ export function WishlistButton({
     <motion.div whileTap={{ scale: 0.85 }}>
       <Button
         variant={isWishlisted ? 'default' : 'secondary'}
-        size={size === 'lg' ? 'default' : 'icon-sm'}
+        size={size === 'lg' ? 'lg' : 'icon-sm'}
         onClick={handleClick}
         className={
           size === 'lg' ? 'gap-2' : 'shadow-[rgba(0,0,0,0.5)_0px_8px_24px]'

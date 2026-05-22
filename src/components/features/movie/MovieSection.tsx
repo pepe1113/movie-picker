@@ -14,6 +14,10 @@ interface MovieSectionProps {
   limit?: number
   moreLink?: string
   moreLinkText?: string
+  hasMore?: boolean
+  isLoadingMore?: boolean
+  onLoadMore?: () => void
+  loadMoreText?: string
   sectionLabel?: string
 }
 
@@ -25,11 +29,16 @@ export function MovieSection({
   limit,
   moreLink,
   moreLinkText,
+  hasMore = false,
+  isLoadingMore = false,
+  onLoadMore,
+  loadMoreText,
   sectionLabel,
 }: MovieSectionProps) {
   const { t } = useTranslation()
   const displayMovies = limit ? movies.slice(0, limit) : movies
   const linkText = moreLinkText || t('movieSection.viewMore')
+  const buttonText = loadMoreText || t('movieSection.viewMore')
 
   return (
     <section className="relative">
@@ -74,6 +83,19 @@ export function MovieSection({
             {displayMovies.map((movie) => (
               <MovieCard key={movie.id} movie={movie} />
             ))}
+          </div>
+        )}
+
+        {hasMore && onLoadMore && (
+          <div className="flex justify-center pt-2">
+            <Button
+              variant="ghost"
+              onClick={onLoadMore}
+              disabled={isLoadingMore}
+            >
+              {isLoadingMore ? t('common.loading') : buttonText}
+              <ArrowRight className="size-4" />
+            </Button>
           </div>
         )}
 

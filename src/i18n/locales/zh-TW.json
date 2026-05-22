@@ -25,6 +25,8 @@
     "sections": {
       "trending": "本週趨勢",
       "trendingLabel": "正在升溫",
+      "nowPlaying": "最新上映",
+      "nowPlayingLabel": "院線新片",
       "popular": "熱門電影",
       "popularLabel": "大眾熱度",
       "topRated": "高評分電影",
@@ -204,11 +206,18 @@
     "backToHome": "回到首頁",
     "backButton": "返回",
     "watchTrailer": "觀看預告片",
+    "trailerTooltip": "在彈窗播放 YouTube 預告片",
     "sections": {
       "overview": "劇情簡介",
       "cast": "演員陣容",
-      "trailer": "預告片",
+      "regionalPosters": "地區海報",
       "info": "電影資訊"
+    },
+    "regionalPosters": {
+      "korea": "韓國",
+      "japan": "日本",
+      "us": "美國",
+      "taiwan": "台灣"
     },
     "info": {
       "originalTitle": "原始片名",

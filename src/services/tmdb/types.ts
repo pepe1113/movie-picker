@@ -90,6 +90,23 @@ export interface MovieDetail {
   vote_count: number
 }
 
+// --- Images ---
+export interface MovieImage {
+  aspect_ratio: number
+  height: number
+  iso_639_1: string | null
+  file_path: string
+  vote_average: number
+  vote_count: number
+  width: number
+}
+
+export interface MovieImagesResponse {
+  id: number
+  posters: MovieImage[]
+  backdrops: MovieImage[]
+}
+
 // --- Credits ---
 export interface CastMember {
   adult: boolean

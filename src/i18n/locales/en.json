@@ -25,6 +25,8 @@
     "sections": {
       "trending": "Trending This Week",
       "trendingLabel": "Heating Up",
+      "nowPlaying": "Now Playing",
+      "nowPlayingLabel": "Fresh Releases",
       "popular": "Popular Movies",
       "popularLabel": "Audience Heat",
       "topRated": "Top Rated Movies",
@@ -204,11 +206,18 @@
     "backToHome": "Back to Home",
     "backButton": "Back",
     "watchTrailer": "Watch Trailer",
+    "trailerTooltip": "Play the YouTube trailer in a popup",
     "sections": {
       "overview": "Overview",
       "cast": "Cast",
-      "trailer": "Trailer",
+      "regionalPosters": "Regional Posters",
       "info": "Movie Info"
+    },
+    "regionalPosters": {
+      "korea": "Korea",
+      "japan": "Japan",
+      "us": "United States",
+      "taiwan": "Taiwan"
     },
     "info": {
       "originalTitle": "Original Title",

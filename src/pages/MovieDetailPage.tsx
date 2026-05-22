@@ -1,7 +1,17 @@
+import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'motion/react'
-import { ArrowLeft, Calendar, Clock, Play, Star } from 'lucide-react'
+import {
+  ArrowLeft,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Play,
+  Star,
+} from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { clsx, type ClassValue } from 'clsx'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -25,6 +35,7 @@ import {
 } from '@/utils/helpers'
 import { ROUTES } from '@/utils/constants'
 import type { Movie } from '@/services/tmdb/types'
+import type { RegionalPoster } from '@/utils/movieDetail'
 
 export function Component() {
   const { t } = useTranslation()
@@ -80,30 +91,35 @@ export function Component() {
 
   return (
     <div className="min-h-screen pb-20">
-      <section className="relative min-h-[720px] overflow-hidden">
+      <section className="relative min-h-180 overflow-hidden">
         {detail.backdrop_path ? (
-          <div className="absolute inset-0">
+          <div className="absolute top-0 right-0 left-0">
             <img
               src={getBackdropUrl(detail.backdrop_path)}
               alt=""
               className="size-full object-cover"
             />
-            <div className="from-background/95 via-background/45 absolute inset-0 bg-gradient-to-r to-transparent" />
-            <div className="from-background via-background/85 absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t to-transparent" />
+            <div className="from-background/95 via-background/45 absolute inset-0 bg-linear-to-r to-transparent" />
+            <div className="from-background via-background/85 absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t to-transparent" />
           </div>
         ) : (
-          <div className="from-background via-card to-background absolute inset-0 bg-gradient-to-br" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgb(30_215_96/0.22),transparent_32%),linear-gradient(135deg,var(--background)_0%,var(--muted)_48%,var(--background)_100%)]" />
         )}
 
-        <div className="relative container mx-auto flex min-h-[720px] flex-col px-6 py-8 md:px-12 lg:px-16">
-          <Button variant="ghost" size="sm" className="mb-8" asChild>
+        <div className="lg:px-16] relative container mx-auto flex min-h-180 flex-col px-6 py-8 md:px-12">
+          <Button variant="ghost" size="sm" className="mb-8 self-start" asChild>
             <Link to={ROUTES.HOME}>
               <ArrowLeft className="size-4" />
               {t('movieDetail.backButton')}
             </Link>
           </Button>
 
-          <div className="mt-auto flex flex-col gap-8 pb-12 lg:flex-row lg:items-end">
+          <div
+            className={clsx([
+              'mt-auto flex flex-col gap-8 pb-12 lg:flex-row',
+              detail.backdrop_path && 'pt-64',
+            ] as ClassValue[])}
+          >
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -236,30 +252,20 @@ export function Component() {
       <div className="container mx-auto space-y-20 px-6 py-20 md:px-12 lg:px-16">
         {/* Regional Posters */}
         {regionalPosters.length > 0 && (
-          <section className="space-y-6">
+          <section
+            className="space-y-6"
+            aria-labelledby="regional-posters-title"
+          >
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold md:text-3xl">
+              <h2
+                id="regional-posters-title"
+                className="text-2xl font-bold md:text-3xl"
+              >
                 {t('movieDetail.sections.regionalPosters')}
               </h2>
             </div>
 
-            <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4">
-              {regionalPosters.map((poster) => (
-                <div key={poster.region} className="space-y-3">
-                  <div className="bg-card aspect-[2/3] overflow-hidden rounded-lg shadow-[rgba(0,0,0,0.3)_0px_8px_8px]">
-                    <img
-                      src={getPosterUrl(poster.file_path, 'large')}
-                      alt={t(poster.labelKey)}
-                      loading="lazy"
-                      className="size-full object-cover"
-                    />
-                  </div>
-                  <p className="text-muted-foreground text-center text-sm font-bold tracking-[1.4px] uppercase">
-                    {t(poster.labelKey)}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <RegionalPostersCarousel posters={regionalPosters} />
           </section>
         )}
 
@@ -343,6 +349,168 @@ export function Component() {
       </div>
     </div>
   )
+}
+
+function RegionalPostersCarousel({ posters }: { posters: RegionalPoster[] }) {
+  const { t } = useTranslation()
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>(
+    'left',
+  )
+  const hasMultiplePosters = posters.length > 1
+  const activePoster = posters[activeIndex]
+  const visibleOffsets = posters.length === 1 ? [0] : [-1, 0, 1]
+
+  useEffect(() => {
+    if (!hasMultiplePosters) return
+
+    const timer = window.setInterval(() => {
+      setSlideDirection('left')
+      setActiveIndex((currentIndex) =>
+        getWrappedPosterIndex(currentIndex + 1, posters.length),
+      )
+    }, 2000)
+
+    return () => window.clearInterval(timer)
+  }, [hasMultiplePosters, posters.length])
+
+  const showPreviousPoster = () => {
+    setSlideDirection('right')
+    setActiveIndex((currentIndex) =>
+      getWrappedPosterIndex(currentIndex - 1, posters.length),
+    )
+  }
+
+  const showNextPoster = () => {
+    setSlideDirection('left')
+    setActiveIndex((currentIndex) =>
+      getWrappedPosterIndex(currentIndex + 1, posters.length),
+    )
+  }
+
+  return (
+    <div
+      data-testid="regional-posters-carousel"
+      data-slide-direction={slideDirection}
+      className="space-y-5"
+    >
+      <div className="relative mx-auto h-[25rem] max-w-4xl overflow-hidden sm:h-[32rem] lg:h-[36rem]">
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-30 w-16 bg-linear-to-r from-background to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-30 w-16 bg-linear-to-l from-background to-transparent" />
+
+        {visibleOffsets.map((offset) => {
+          const posterIndex = getWrappedPosterIndex(
+            activeIndex + offset,
+            posters.length,
+          )
+          const poster = posters[posterIndex]
+          const isActive = offset === 0
+          const positionClass =
+            offset < 0
+              ? '-translate-x-[120%]'
+              : offset > 0
+                ? 'translate-x-[20%]'
+                : '-translate-x-1/2'
+
+          return (
+            <motion.div
+              key={poster.region}
+              initial={{ opacity: 0, y: '-46%' }}
+              animate={{ opacity: isActive ? 1 : 0.38, y: '-50%' }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              className={clsx([
+                'absolute top-1/2 left-1/2 aspect-[2/3] overflow-hidden rounded-lg bg-card shadow-[rgba(0,0,0,0.45)_0px_16px_32px]',
+                'transition-[filter,transform,opacity] duration-500',
+                positionClass,
+                isActive
+                  ? 'z-20 w-56 sm:w-72 lg:w-80'
+                  : 'z-10 w-44 scale-75 opacity-35 blur-[4px] sm:w-60 lg:w-64',
+              ] as ClassValue[])}
+              aria-hidden={!isActive}
+            >
+              <img
+                src={getPosterUrl(poster.file_path, 'large')}
+                alt={isActive ? t(poster.labelKey) : ''}
+                loading={isActive ? 'eager' : 'lazy'}
+                className="size-full object-cover"
+              />
+
+              {isActive && (
+                <Badge
+                  data-testid="regional-poster-active-label"
+                  className="absolute top-4 left-4 rounded-full border border-primary/50 bg-background/85 px-4 py-2 text-base font-black tracking-[1.4px] text-primary uppercase shadow-[rgba(0,0,0,0.5)_0px_8px_24px] backdrop-blur-md md:text-lg"
+                >
+                  {t(activePoster.labelKey)}
+                </Badge>
+              )}
+            </motion.div>
+          )
+        })}
+
+        {hasMultiplePosters && (
+          <>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute top-1/2 left-2 z-40 -translate-y-1/2 bg-background/70 text-foreground shadow-[rgba(0,0,0,0.5)_0px_8px_24px] backdrop-blur-md hover:bg-secondary/90 md:left-6"
+              aria-label={t('movieDetail.regionalPosters.controls.previous')}
+              onClick={showPreviousPoster}
+            >
+              <ChevronLeft className="size-5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute top-1/2 right-2 z-40 -translate-y-1/2 bg-background/70 text-foreground shadow-[rgba(0,0,0,0.5)_0px_8px_24px] backdrop-blur-md hover:bg-secondary/90 md:right-6"
+              aria-label={t('movieDetail.regionalPosters.controls.next')}
+              onClick={showNextPoster}
+            >
+              <ChevronRight className="size-5" />
+            </Button>
+          </>
+        )}
+      </div>
+
+      {hasMultiplePosters && (
+        <div className="flex justify-center gap-2">
+          {posters.map((poster, index) => {
+            const label = t(poster.labelKey)
+            const isActive = index === activeIndex
+
+            return (
+              <button
+                key={poster.region}
+                type="button"
+                className={clsx([
+                  'h-2.5 rounded-full transition-all duration-300',
+                  isActive
+                    ? 'w-8 bg-primary'
+                    : 'w-2.5 bg-muted-foreground/45 hover:bg-muted-foreground',
+                ] as ClassValue[])}
+                aria-label={t(
+                  'movieDetail.regionalPosters.controls.showPoster',
+                  {
+                    region: label,
+                  },
+                )}
+                aria-current={isActive ? 'true' : undefined}
+                onClick={() => {
+                  setSlideDirection(index > activeIndex ? 'left' : 'right')
+                  setActiveIndex(index)
+                }}
+              />
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function getWrappedPosterIndex(index: number, length: number) {
+  return ((index % length) + length) % length
 }
 
 function DetailSkeleton() {

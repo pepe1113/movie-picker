@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { motion, AnimatePresence } from 'motion/react'
+import { motion } from 'motion/react'
 import {
   ArrowDown,
   Brain,
@@ -26,9 +26,36 @@ import {
   type AiPickerQuestionId,
 } from '@/utils/aiMoviePicker'
 
+const HERO_TITLE_TYPE_INTERVAL_MS = 100
+
+function getHeroTitleOptions(value: unknown, fallback: string) {
+  if (!Array.isArray(value)) return [fallback]
+
+  const options = value.filter(
+    (item): item is string =>
+      typeof item === 'string' && item.trim().length > 0,
+  )
+
+  return options.length > 0 ? options : [fallback]
+}
+
+function pickRandomHeroTitle(value: unknown, fallback: string) {
+  const options = getHeroTitleOptions(value, fallback)
+  const index = Math.floor(Math.random() * options.length)
+
+  return options[index] ?? fallback
+}
+
 export function AiMoviePicker() {
   const { t } = useTranslation()
   const language = useLanguageStore((state) => state.language)
+  const [heroTitle] = useState(() =>
+    pickRandomHeroTitle(
+      t('aiPicker.heroTitles', { returnObjects: true }),
+      t('aiPicker.title'),
+    ),
+  )
+  const [typedHeroTitleLength, setTypedHeroTitleLength] = useState(0)
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<Partial<AiPickerAnswers>>({})
   const [hasSubmitted, setHasSubmitted] = useState(false)
@@ -42,14 +69,34 @@ export function AiMoviePicker() {
     (question) => answers[question.id],
   )
   const completedAnswers = isComplete ? (answers as AiPickerAnswers) : null
-  const progress = ((step + 1) / AI_PICKER_QUESTIONS.length) * 100
+  const progress = (step / AI_PICKER_QUESTIONS.length) * 100
   const keywordKeys = getAiPickerKeywordKeys(answers)
+  const heroTitleCharacters = useMemo(() => Array.from(heroTitle), [heroTitle])
+  const typedHeroTitle = heroTitleCharacters
+    .slice(0, typedHeroTitleLength)
+    .join('')
 
   useEffect(() => {
     if (hasSubmitted) {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }, [hasSubmitted])
+
+  useEffect(() => {
+    const titleTimer = window.setInterval(() => {
+      setTypedHeroTitleLength((current) => {
+        const next = Math.min(current + 1, heroTitleCharacters.length)
+
+        if (next >= heroTitleCharacters.length) {
+          window.clearInterval(titleTimer)
+        }
+
+        return next
+      })
+    }, HERO_TITLE_TYPE_INTERVAL_MS)
+
+    return () => window.clearInterval(titleTimer)
+  }, [heroTitleCharacters])
 
   useEffect(() => {
     return () => {
@@ -113,7 +160,7 @@ export function AiMoviePicker() {
   return (
     <section className="border-border relative overflow-hidden border-b">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(30,215,96,0.18),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(83,157,245,0.14),transparent_24%)]" />
-      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/70 to-transparent" />
+      <div className="via-primary/70 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent" />
 
       <div className="relative container mx-auto px-6 py-12 md:px-12 md:py-18 lg:px-16">
         <div className="space-y-10 md:space-y-12">
@@ -121,27 +168,35 @@ export function AiMoviePicker() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="grid min-h-[360px] gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end"
+            className="flex min-h-[360px] flex-col items-center justify-end gap-8 text-center"
           >
-            <div className="space-y-7">
+            <div className="flex w-full flex-col items-center space-y-7">
               <Badge
                 className="gap-2 rounded-full px-3 py-1.5"
                 variant="outline"
               >
-                <Sparkles className="size-3.5 text-primary" />
+                <Sparkles className="text-primary size-3.5" />
                 {t('aiPicker.badge')}
               </Badge>
-              <div className="space-y-5">
-                <h1 className="max-w-4xl text-5xl leading-[0.98] font-bold md:text-7xl lg:text-8xl">
-                  {t('aiPicker.title')}
+              <div className="w-full space-y-5">
+                <h1
+                  aria-label={heroTitle}
+                  className="mx-auto min-h-24 w-full max-w-6xl text-center text-3xl leading-tight font-bold md:min-h-32"
+                >
+                  {typedHeroTitle}
+                  <span
+                    aria-hidden="true"
+                    className="hero-title-cursor bg-primary ml-1 inline-block h-[0.86em] w-3 translate-y-1"
+                    data-testid="hero-title-cursor"
+                  />
                 </h1>
-                <p className="text-muted-foreground max-w-2xl text-base leading-relaxed md:text-xl">
+                <p className="text-muted-foreground mx-auto max-w-2xl text-base leading-relaxed md:text-xl">
                   {t('aiPicker.subtitle')}
                 </p>
               </div>
             </div>
 
-            <div className="border-border bg-card/55 rounded-lg border p-5 backdrop-blur">
+            <div className="border-border bg-card/55 w-full max-w-3xl rounded-lg border p-5 backdrop-blur">
               <div className="grid grid-cols-2 gap-3">
                 {keywordKeys.length > 0
                   ? keywordKeys.map((keywordKey) => (
@@ -157,8 +212,8 @@ export function AiMoviePicker() {
                       ),
                     )}
               </div>
-              <div className="text-muted-foreground mt-6 flex items-center gap-2 text-sm">
-                <ArrowDown className="size-4 text-primary" />
+              <div className="text-muted-foreground mt-6 flex items-center justify-center gap-2 text-sm">
+                <ArrowDown className="text-primary size-4" />
                 {t('aiPicker.heroHint')}
               </div>
             </div>
@@ -182,67 +237,66 @@ export function AiMoviePicker() {
                   </div>
                 </div>
 
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentQuestion.id}
-                    initial={{ opacity: 0, x: 16 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -16 }}
-                    transition={{ duration: 0.2 }}
-                    className="space-y-5"
-                  >
-                    <div className="space-y-2">
-                      <h2 className="text-2xl font-bold md:text-3xl">
-                        {t(currentQuestion.titleKey)}
-                      </h2>
-                      <p className="text-muted-foreground text-sm">
-                        {t(currentQuestion.subtitleKey)}
-                      </p>
-                    </div>
+                <motion.div
+                  key={currentQuestion.id}
+                  initial={false}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="space-y-5"
+                >
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-bold md:text-3xl">
+                      {t(currentQuestion.titleKey)}
+                    </h2>
+                    <p className="text-muted-foreground text-sm">
+                      {t(currentQuestion.subtitleKey)}
+                    </p>
+                  </div>
 
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      {currentQuestion.options.map((option) => {
-                        const isSelected =
-                          answers[currentQuestion.id] === option.value
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {currentQuestion.options.map((option) => {
+                      const isSelected =
+                        answers[currentQuestion.id] === option.value
 
-                        return (
-                          <button
-                            key={option.value}
-                            type="button"
-                            disabled={isAdvancing}
-                            onClick={() =>
-                              selectAnswer(currentQuestion.id, option.value)
-                            }
-                            className={cn(
-                              'border-border bg-secondary/60 hover:border-primary/70 hover:bg-muted flex min-h-28 flex-col items-start justify-between rounded-lg border p-4 text-left transition-all',
-                              isSelected &&
-                                'border-primary bg-primary/10 shadow-[rgba(30,215,96,0.22)_0px_0px_0px_1px]',
-                            )}
-                          >
-                            <span className="flex w-full items-center justify-between gap-3">
-                              <span className="text-base font-bold">
-                                {t(option.labelKey)}
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          disabled={isAdvancing}
+                          onClick={() =>
+                            selectAnswer(currentQuestion.id, option.value)
+                          }
+                          className={cn(
+                            'border-border bg-secondary/60 hover:border-primary/70 hover:bg-muted flex min-h-28 flex-col items-start justify-between rounded-lg border p-4 text-left transition-all',
+                            isSelected &&
+                              'border-primary bg-primary/10 shadow-[rgba(30,215,96,0.22)_0px_0px_0px_1px]',
+                          )}
+                        >
+                          <span className="flex w-full items-center justify-between gap-3">
+                            <span className="text-base font-bold">
+                              {t(option.labelKey)}
+                            </span>
+                            {isSelected && (
+                              <span className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-full">
+                                <Check className="size-4" />
                               </span>
-                              {isSelected && (
-                                <span className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-full">
-                                  <Check className="size-4" />
-                                </span>
-                              )}
-                            </span>
-                            <span className="text-muted-foreground text-sm leading-relaxed">
-                              {t(option.descriptionKey)}
-                            </span>
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
+                            )}
+                          </span>
+                          <span className="text-muted-foreground text-sm leading-relaxed">
+                            {t(option.descriptionKey)}
+                          </span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </motion.div>
 
                 <div className="flex items-center justify-between gap-3">
                   <Button
                     variant="ghost"
-                    onClick={() => setStep((current) => Math.max(0, current - 1))}
+                    onClick={() =>
+                      setStep((current) => Math.max(0, current - 1))
+                    }
                     disabled={step === 0}
                   >
                     {t('aiPicker.back')}
@@ -298,14 +352,16 @@ export function AiMoviePicker() {
                         <MovieCard movie={recommendation.movie} />
                         <p className="text-muted-foreground text-sm leading-relaxed">
                           {t('aiPicker.reasonPrefix')}{' '}
-                          {recommendation.matchedKeywordKeys.map((keywordKey) => (
-                            <Badge
-                              key={`${recommendation.movie.id}-${keywordKey}`}
-                              className="mx-0.5 align-middle"
-                            >
-                              {t(keywordKey)}
-                            </Badge>
-                          ))}{' '}
+                          {recommendation.matchedKeywordKeys.map(
+                            (keywordKey) => (
+                              <Badge
+                                key={`${recommendation.movie.id}-${keywordKey}`}
+                                className="mx-0.5 align-middle"
+                              >
+                                {t(keywordKey)}
+                              </Badge>
+                            ),
+                          )}{' '}
                           {index === 0
                             ? t('aiPicker.reasonTop')
                             : t('aiPicker.reasonFit')}

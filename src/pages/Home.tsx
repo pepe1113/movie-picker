@@ -126,8 +126,6 @@ export function Component() {
               topRated.hasNextPage,
             )
           }
-          moreLink="/top100"
-          moreLinkText={t('home.sections.viewAll')}
           sectionLabel={t('home.sections.topRatedLabel')}
         />
       </div>

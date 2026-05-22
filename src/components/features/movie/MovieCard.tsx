@@ -88,12 +88,12 @@ export function MovieCard({ movie }: MovieCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.3 }}
-      className="group bg-card hover:bg-muted relative rounded-lg p-3 transition-[background-color,transform,box-shadow] hover:shadow-[rgba(0,0,0,0.3)_0px_8px_8px]"
+      className="group bg-card hover:bg-muted relative overflow-hidden rounded-lg transition-[background-color,transform,box-shadow] hover:shadow-[rgba(0,0,0,0.3)_0px_8px_8px]"
       onMouseEnter={handlePreviewEnter}
       onMouseLeave={handlePreviewLeave}
     >
       <Link to={ROUTES.MOVIE_DETAIL(movie.id)} className="block">
-        <div className="bg-muted relative aspect-[2/3] overflow-hidden rounded-md">
+        <div className="bg-muted relative aspect-[2/3] overflow-hidden">
           <img
             src={getPosterUrl(movie.poster_path)}
             alt={movie.title}
@@ -130,7 +130,7 @@ export function MovieCard({ movie }: MovieCardProps) {
         </div>
 
         {/* Info - Increased spacing */}
-        <div className="mt-3 space-y-1">
+        <div className="p-3">
           <h3 className="truncate text-sm leading-tight font-bold">
             {movie.title}
           </h3>

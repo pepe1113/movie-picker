@@ -153,7 +153,7 @@ button[role='tab'] {
   }
 }
 
-@keyframes footer-marquee {
+@keyframes marquee {
   from {
     transform: translateX(0);
   }
@@ -163,6 +163,21 @@ button[role='tab'] {
   }
 }
 
-.footer-marquee {
-  animation: footer-marquee 28s linear infinite;
+.marquee {
+  animation: marquee 29s linear infinite;
+}
+
+@keyframes hero-title-cursor-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.hero-title-cursor {
+  animation: hero-title-cursor-blink 1s step-end infinite;
 }

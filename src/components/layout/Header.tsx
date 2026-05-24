@@ -1,6 +1,15 @@
 import { useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { Film, Heart, Menu, Search, User, Languages } from 'lucide-react'
+import {
+  Film,
+  Heart,
+  History,
+  Languages,
+  LogOut,
+  Menu,
+  Search,
+  User,
+} from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -36,6 +45,7 @@ export function Header() {
     // { label: t('nav.top100'), href: '/top100', icon: TrendingUp },
     // { label: t('nav.random'), href: '/random', icon: Dice5 },
     { label: t('nav.wishlist'), href: ROUTES.WISHLIST, icon: Heart },
+    { label: t('nav.history'), href: ROUTES.HISTORY, icon: History },
   ]
 
   const handleSearch = (e: React.FormEvent) => {
@@ -123,19 +133,24 @@ export function Header() {
 
             {/* 登入/使用者 */}
             {isAuthenticated ? (
-              <Button variant="ghost" size="sm" onClick={() => signOut()}>
-                <User className="size-4" />
-                <span className="hidden sm:inline">
-                  {user?.displayName ?? t('common.user')}
-                </span>
-              </Button>
+              <>
+                <div className="text-muted-foreground inline-flex h-9 items-center gap-2 px-2 text-sm font-medium">
+                  <User className="size-4" />
+                  <span className="hidden max-w-32 truncate sm:inline">
+                    {user?.displayName ?? t('common.user')}
+                  </span>
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => signOut()}>
+                  <LogOut className="size-4" />
+                  <span className="hidden sm:inline">{t('common.logout')}</span>
+                </Button>
+              </>
             ) : (
               <Button variant="ghost" size="sm" onClick={() => signIn()}>
                 <User className="size-4" />
                 <span className="hidden sm:inline">{t('common.login')}</span>
               </Button>
             )}
-
             {/* 手機版選單 */}
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>

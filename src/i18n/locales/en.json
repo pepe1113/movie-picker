@@ -13,7 +13,8 @@
     "home": "Home",
     "top100": "Top 100",
     "random": "Random Pick",
-    "wishlist": "Wishlist"
+    "wishlist": "Wishlist",
+    "history": "History"
   },
   "home": {
     "hero": {
@@ -65,6 +66,7 @@
     "resultsTitle": "Your AI Picks",
     "loading": "Analyzing your movie preferences...",
     "error": "Recommendations failed to load. Please try again later.",
+    "fastRecommendationPrompt": "Using quick recommendations for now",
     "reasonPrefix": "Matched",
     "reasonTop": ", making this the closest fit for your full preference set.",
     "reasonFit": ", making this a strong candidate for tonight.",
@@ -222,19 +224,7 @@
     "sections": {
       "overview": "Overview",
       "cast": "Cast",
-      "regionalPosters": "Regional Posters",
       "info": "Movie Info"
-    },
-    "regionalPosters": {
-      "korea": "Korea",
-      "japan": "Japan",
-      "us": "United States",
-      "taiwan": "Taiwan",
-      "controls": {
-        "previous": "Previous regional poster",
-        "next": "Next regional poster",
-        "showPoster": "Show {{region}} regional poster"
-      }
     },
     "info": {
       "originalTitle": "Original Title",
@@ -257,16 +247,41 @@
       "confirm": "Clear All"
     },
     "cleared": "Wishlist cleared",
+    "syncFailed": "Wishlist sync failed. Please try again later.",
+    "authPrompt": {
+      "title": "Sign in to sync your wishlist",
+      "description": "Your current wishlist is saved in this browser. After sign-in, it will merge with your cloud wishlist automatically.",
+      "action": "Sign in to sync"
+    },
     "button": {
       "add": "Add to Wishlist",
       "added": "In Wishlist",
       "addedToast": "Added \"{{title}}\" to wishlist",
-      "removedToast": "Removed \"{{title}}\" from wishlist"
+      "removedToast": "Removed \"{{title}}\" from wishlist",
+      "syncFailed": "Wishlist update failed. Please try again later."
     },
     "empty": {
       "title": "Your wishlist is empty",
       "description": "Start exploring movies and add your favorites!",
       "explore": "Explore Movies"
+    }
+  },
+  "history": {
+    "title": "Recommendation History",
+    "subtitle": "Review the latest 20 AI recommendation runs and their picker answers.",
+    "loading": "Loading recommendation history...",
+    "deleteAction": "Delete run",
+    "confirmDelete": "Delete this recommendation run?",
+    "deleteSuccess": "Recommendation run deleted",
+    "deleteFailed": "Delete failed. Please try again later.",
+    "auth": {
+      "title": "Sign in to view recommendation history",
+      "description": "AI recommendation history is saved only for signed-in users.",
+      "action": "Sign in"
+    },
+    "empty": {
+      "title": "No recommendation history yet",
+      "description": "Complete a signed-in AI picker run to see it here."
     }
   },
   "errors": {

@@ -29,7 +29,6 @@ export const QUERY_KEYS = {
       [...QUERY_KEYS.movies.all, 'credits', id, language] as const,
     videos: (id: number, language?: string) =>
       [...QUERY_KEYS.movies.all, 'videos', id, language] as const,
-    images: (id: number) => [...QUERY_KEYS.movies.all, 'images', id] as const,
     omdb: (imdbId: string | null | undefined) =>
       [...QUERY_KEYS.movies.all, 'omdb', imdbId] as const,
     search: (query: string) =>
@@ -50,4 +49,5 @@ export const ROUTES = {
   MOVIE_DETAIL: (id: number | string) => `/movie/${id}`,
   SEARCH: '/search',
   WISHLIST: '/wishlist',
+  HISTORY: '/history',
 } as const

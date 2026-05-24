@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'motion/react'
-import { Brain, Check, Loader2, RotateCcw, Sparkles } from 'lucide-react'
+import { Brain, Check, RotateCcw, Sparkles } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
 import { MovieCard } from '@/components/features/movie/MovieCard'
 import { discoverMovies } from '@/services/tmdb/api'
+import { useAuthStore } from '@/stores/authStore'
 import { useLanguageStore } from '@/stores/languageStore'
 import { cn } from '@/lib/utils'
 import { TMDB_LANGUAGE_MAP } from '@/utils/constants'
@@ -14,10 +16,10 @@ import {
   AI_PICKER_QUESTIONS,
   buildAiMovieQuery,
   getAiPickerKeywordKeys,
-  recommendMovies,
   type AiPickerAnswers,
   type AiPickerQuestionId,
 } from '@/utils/aiMoviePicker'
+import { resolveAiPickerRecommendations } from '@/utils/aiRecommendationFlow'
 
 const HERO_TITLE_TYPE_INTERVAL_MS = 100
 
@@ -42,6 +44,7 @@ function pickRandomHeroTitle(value: unknown, fallback: string) {
 export function AiMoviePicker() {
   const { t } = useTranslation()
   const language = useLanguageStore((state) => state.language)
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
   const [heroTitle] = useState(() =>
     pickRandomHeroTitle(
       t('aiPicker.heroTitles', { returnObjects: true }),
@@ -53,9 +56,7 @@ export function AiMoviePicker() {
   const [answers, setAnswers] = useState<Partial<AiPickerAnswers>>({})
   const [hasSubmitted, setHasSubmitted] = useState(false)
   const [isAdvancing, setIsAdvancing] = useState(false)
-  const advanceTimerRef = useRef<ReturnType<typeof window.setTimeout> | null>(
-    null,
-  )
+  const advanceTimerRef = useRef<number | null>(null)
 
   const currentQuestion = AI_PICKER_QUESTIONS[step]
   const isComplete = AI_PICKER_QUESTIONS.every(
@@ -100,24 +101,29 @@ export function AiMoviePicker() {
   }, [])
 
   const recommendationQuery = useQuery({
-    queryKey: ['ai-picker', completedAnswers, language],
-    queryFn: () => {
+    queryKey: ['ai-picker', completedAnswers, language, isAuthenticated],
+    queryFn: async () => {
       if (!completedAnswers) {
         throw new Error('AI picker answers are incomplete')
       }
 
-      return discoverMovies({
+      const candidateResponse = await discoverMovies({
         ...buildAiMovieQuery(completedAnswers),
         language: TMDB_LANGUAGE_MAP[language],
+      })
+
+      return resolveAiPickerRecommendations({
+        answers: completedAnswers,
+        candidates: candidateResponse.results,
+        isAuthenticated,
+        locale: language,
       })
     },
     enabled: hasSubmitted && Boolean(completedAnswers),
   })
 
-  const recommendations =
-    completedAnswers && recommendationQuery.data?.results
-      ? recommendMovies(recommendationQuery.data.results, completedAnswers)
-      : []
+  const recommendations = recommendationQuery.data?.recommendations ?? []
+  const usedFallback = recommendationQuery.data?.usedFallback ?? false
 
   const selectAnswer = (questionId: AiPickerQuestionId, value: string) => {
     if (isAdvancing || advanceTimerRef.current) return
@@ -296,9 +302,23 @@ export function AiMoviePicker() {
               </div>
 
               {recommendationQuery.isLoading && (
-                <div className="text-muted-foreground flex min-h-72 items-center justify-center gap-3">
-                  <Loader2 className="size-5 animate-spin" />
-                  {t('aiPicker.loading')}
+                <div
+                  className="grid gap-5 md:grid-cols-3"
+                  aria-label={t('aiPicker.loading')}
+                >
+                  {Array.from({ length: 3 }, (_, index) => (
+                    <div key={index} className="space-y-3">
+                      <Skeleton className="aspect-[2/3] w-full rounded-lg" />
+                      <div className="space-y-2 p-1">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-3 w-1/3" />
+                      </div>
+                      <div className="space-y-2">
+                        <Skeleton className="h-3 w-full" />
+                        <Skeleton className="h-3 w-5/6" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
 
@@ -308,24 +328,38 @@ export function AiMoviePicker() {
                 </div>
               )}
 
+              {usedFallback && recommendations.length > 0 && (
+                <p className="border-border bg-secondary text-muted-foreground rounded-lg border px-4 py-3 text-sm">
+                  {t('aiPicker.fastRecommendationPrompt')}
+                </p>
+              )}
+
               {recommendations.length > 0 && (
                 <div className="grid gap-5 md:grid-cols-3">
                   {recommendations.map((recommendation, index) => (
                     <div key={recommendation.movie.id} className="space-y-3">
                       <MovieCard movie={recommendation.movie} />
                       <p className="text-muted-foreground text-sm leading-relaxed">
-                        {t('aiPicker.reasonPrefix')}{' '}
-                        {recommendation.matchedKeywordKeys.map((keywordKey) => (
-                          <Badge
-                            key={`${recommendation.movie.id}-${keywordKey}`}
-                            className="mx-0.5 align-middle"
-                          >
-                            {t(keywordKey)}
-                          </Badge>
-                        ))}{' '}
-                        {index === 0
-                          ? t('aiPicker.reasonTop')
-                          : t('aiPicker.reasonFit')}
+                        {recommendation.reason ? (
+                          recommendation.reason
+                        ) : (
+                          <>
+                            {t('aiPicker.reasonPrefix')}{' '}
+                            {recommendation.matchedKeywordKeys.map(
+                              (keywordKey) => (
+                                <Badge
+                                  key={`${recommendation.movie.id}-${keywordKey}`}
+                                  className="mx-0.5 align-middle"
+                                >
+                                  {t(keywordKey)}
+                                </Badge>
+                              ),
+                            )}{' '}
+                            {index === 0
+                              ? t('aiPicker.reasonTop')
+                              : t('aiPicker.reasonFit')}
+                          </>
+                        )}
                       </p>
                     </div>
                   ))}

@@ -13,11 +13,13 @@ import {
   DialogClose,
 } from '@/components/ui/dialog'
 import { WishlistGrid } from '@/components/features/wishlist/WishlistGrid'
+import { useAuthStore } from '@/stores/authStore'
 import { useWishlistStore } from '@/stores/wishlistStore'
 import { formatRating } from '@/utils/helpers'
 
 export function Component() {
   const { t } = useTranslation()
+  const { isAuthenticated, signIn } = useAuthStore()
   const { wishlist, clearWishlist } = useWishlistStore()
 
   const avgRating =
@@ -25,9 +27,13 @@ export function Component() {
       ? wishlist.reduce((sum, m) => sum + m.vote_average, 0) / wishlist.length
       : 0
 
-  const handleClear = () => {
-    clearWishlist()
-    toast.success(t('wishlist.cleared'))
+  const handleClear = async () => {
+    try {
+      await clearWishlist()
+      toast.success(t('wishlist.cleared'))
+    } catch {
+      toast.error(t('wishlist.syncFailed'))
+    }
   }
 
   return (
@@ -84,6 +90,20 @@ export function Component() {
           </Dialog>
         )}
       </div>
+
+      {!isAuthenticated && (
+        <div className="border-border bg-card text-card-foreground flex flex-col gap-3 rounded-lg border p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-semibold">{t('wishlist.authPrompt.title')}</p>
+            <p className="text-muted-foreground mt-1 text-sm">
+              {t('wishlist.authPrompt.description')}
+            </p>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => signIn()}>
+            {t('wishlist.authPrompt.action')}
+          </Button>
+        </div>
+      )}
 
       <WishlistGrid />
     </div>

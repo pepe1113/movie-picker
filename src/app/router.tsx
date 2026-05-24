@@ -35,6 +35,10 @@ export const router = createBrowserRouter(
           lazy: () => import('@/pages/Wishlist'),
         },
         {
+          path: '/history',
+          lazy: () => import('@/pages/History'),
+        },
+        {
           path: '*',
           lazy: () => import('@/pages/NotFound'),
         },

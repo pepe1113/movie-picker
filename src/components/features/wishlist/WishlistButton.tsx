@@ -19,16 +19,20 @@ export function WishlistButton({
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlistStore()
   const isWishlisted = isInWishlist(movie.id)
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
-    if (isWishlisted) {
-      removeFromWishlist(movie.id)
-      toast.success(t('wishlist.button.removedToast', { title: movie.title }))
-    } else {
-      addToWishlist(movie)
-      toast.success(t('wishlist.button.addedToast', { title: movie.title }))
+    try {
+      if (isWishlisted) {
+        await removeFromWishlist(movie.id)
+        toast.success(t('wishlist.button.removedToast', { title: movie.title }))
+      } else {
+        await addToWishlist(movie)
+        toast.success(t('wishlist.button.addedToast', { title: movie.title }))
+      }
+    } catch {
+      toast.error(t('wishlist.button.syncFailed'))
     }
   }
 

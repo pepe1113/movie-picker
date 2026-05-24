@@ -13,7 +13,8 @@
     "home": "首頁",
     "top100": "Top 100",
     "random": "隨機挑片",
-    "wishlist": "收藏清單"
+    "wishlist": "收藏清單",
+    "history": "推薦紀錄"
   },
   "home": {
     "hero": {
@@ -65,6 +66,7 @@
     "resultsTitle": "你的 AI 推薦片單",
     "loading": "正在分析你的觀影偏好...",
     "error": "推薦片單載入失敗，請稍後再試。",
+    "fastRecommendationPrompt": "目前使用快速推薦",
     "reasonPrefix": "命中",
     "reasonTop": "，這部最接近你的完整偏好。",
     "reasonFit": "，適合作為今晚的候選片。",
@@ -222,19 +224,7 @@
     "sections": {
       "overview": "劇情簡介",
       "cast": "演員陣容",
-      "regionalPosters": "地區海報",
       "info": "電影資訊"
-    },
-    "regionalPosters": {
-      "korea": "韓國",
-      "japan": "日本",
-      "us": "美國",
-      "taiwan": "台灣",
-      "controls": {
-        "previous": "上一張地區海報",
-        "next": "下一張地區海報",
-        "showPoster": "顯示{{region}}地區海報"
-      }
     },
     "info": {
       "originalTitle": "原始片名",
@@ -257,16 +247,41 @@
       "confirm": "確定清空"
     },
     "cleared": "已清空收藏清單",
+    "syncFailed": "收藏同步失敗，請稍後再試",
+    "authPrompt": {
+      "title": "登入後可同步收藏清單",
+      "description": "目前收藏會保存在此瀏覽器。登入後會自動與雲端收藏合併。",
+      "action": "登入同步"
+    },
     "button": {
       "add": "加入收藏",
       "added": "已收藏",
       "addedToast": "已加入收藏「{{title}}」",
-      "removedToast": "已從收藏移除「{{title}}」"
+      "removedToast": "已從收藏移除「{{title}}」",
+      "syncFailed": "收藏更新失敗，請稍後再試"
     },
     "empty": {
       "title": "收藏清單是空的",
       "description": "開始探索電影，將喜歡的電影加入收藏吧！",
       "explore": "探索電影"
+    }
+  },
+  "history": {
+    "title": "推薦紀錄",
+    "subtitle": "查看最近 20 次 AI 推薦結果與當時的選片條件。",
+    "loading": "載入推薦紀錄中...",
+    "deleteAction": "刪除紀錄",
+    "confirmDelete": "確定要刪除這筆推薦紀錄？",
+    "deleteSuccess": "已刪除推薦紀錄",
+    "deleteFailed": "刪除失敗，請稍後再試",
+    "auth": {
+      "title": "登入查看推薦紀錄",
+      "description": "AI 推薦紀錄只會保存給登入使用者。",
+      "action": "登入"
+    },
+    "empty": {
+      "title": "還沒有推薦紀錄",
+      "description": "完成一次登入後的 AI 選片，就會在這裡看到紀錄。"
     }
   },
   "errors": {

@@ -119,6 +119,7 @@ describe('History page', () => {
     setRecommendationHistoryRemoteForTesting({
       listLatest: vi.fn().mockResolvedValue([]),
       deleteRun: vi.fn(),
+      createRun: vi.fn(),
     })
 
     await renderHistoryPage()
@@ -136,6 +137,7 @@ describe('History page', () => {
     setRecommendationHistoryRemoteForTesting({
       listLatest: vi.fn().mockResolvedValue([run()]),
       deleteRun: vi.fn(),
+      createRun: vi.fn(),
     })
 
     await renderHistoryPage()
@@ -158,6 +160,7 @@ describe('History page', () => {
     setRecommendationHistoryRemoteForTesting({
       listLatest: vi.fn().mockResolvedValue([run()]),
       deleteRun,
+      createRun: vi.fn(),
     })
 
     await renderHistoryPage()
@@ -181,6 +184,7 @@ describe('History page', () => {
     setRecommendationHistoryRemoteForTesting({
       listLatest: vi.fn().mockResolvedValue([run()]),
       deleteRun: vi.fn().mockRejectedValue(new Error('delete failed')),
+      createRun: vi.fn(),
     })
 
     await renderHistoryPage()

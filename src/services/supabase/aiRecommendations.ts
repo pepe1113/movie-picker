@@ -6,6 +6,7 @@ export interface AiRecommendationRequest {
   answers: AiPickerAnswers
   candidates: Movie[]
   locale: string
+  timeoutMs?: number
 }
 
 export interface AiRecommendationResponseItem {
@@ -49,6 +50,7 @@ export async function requestAiRecommendations({
   answers,
   candidates,
   locale,
+  timeoutMs = 8000,
 }: AiRecommendationRequest): Promise<AiRecommendationResponse> {
   const { data, error } = await getSupabaseClient().functions.invoke<FunctionResponse>(
     'recommend-movies',
@@ -58,6 +60,7 @@ export async function requestAiRecommendations({
         movies: candidates.slice(0, 10).map(simplifyCandidate),
         locale,
       },
+      timeout: timeoutMs,
     },
   )
 

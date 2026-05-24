@@ -19,6 +19,14 @@ export interface RecommendationRun {
 export interface RecommendationHistoryRemote {
   listLatest: (userId: string) => Promise<RecommendationRun[]>
   deleteRun: (userId: string, runId: string) => Promise<void>
+  createRun: (input: {
+    userId: string
+    answers: Record<string, string>
+    candidateMovieIds: number[]
+    recommendations: RecommendationRunItem[]
+    provider: string
+    model: string
+  }) => Promise<void>
 }
 
 function throwIfSupabaseError(error: { message: string } | null) {
@@ -48,6 +56,28 @@ export const supabaseRecommendationHistoryRemote: RecommendationHistoryRemote =
         .delete()
         .eq('user_id', userId)
         .eq('id', runId)
+
+      throwIfSupabaseError(error)
+    },
+
+    async createRun({
+      userId,
+      answers,
+      candidateMovieIds,
+      recommendations,
+      provider,
+      model,
+    }) {
+      const { error } = await getSupabaseClient()
+        .from('ai_recommendation_runs')
+        .insert({
+          user_id: userId,
+          answers,
+          candidate_movie_ids: candidateMovieIds,
+          recommendations,
+          provider,
+          model,
+        })
 
       throwIfSupabaseError(error)
     },

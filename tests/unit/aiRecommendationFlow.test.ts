@@ -122,8 +122,9 @@ describe('AI recommendation flow', () => {
     expect(result.recommendations.map((item) => item.movie.id)).toEqual([1, 2])
   })
 
-  it('falls back to rule-based recommendations when remote AI fails', async () => {
-    const result = await resolveAiPickerRecommendations({
+  it('surfaces remote AI failures to the caller', async () => {
+    await expect(
+      resolveAiPickerRecommendations({
       answers,
       candidates: [movie(1), movie(2)],
       isAuthenticated: true,
@@ -131,10 +132,8 @@ describe('AI recommendation flow', () => {
       requestRemoteRecommendations: vi
         .fn()
         .mockRejectedValue(new Error('provider unavailable')),
-    })
-
-    expect(result.usedFallback).toBe(true)
-    expect(result.recommendations.map((item) => item.movie.id)).toEqual([1, 2])
+      }),
+    ).rejects.toThrow('provider unavailable')
   })
 
   it('keeps every submitted movie when a remote reason is missing', async () => {

@@ -67,6 +67,7 @@
     "loading": "Analyzing your movie preferences...",
     "error": "Recommendations failed to load. Please try again later.",
     "fastRecommendationPrompt": "Using quick recommendations for now",
+    "reasonFallbackNotice": "AI recommendation reasons are unavailable, so movie overviews are shown instead.",
     "reasonPrefix": "Matched",
     "reasonTop": ", making this the closest fit for your full preference set.",
     "reasonFit": ", making this a strong candidate for tonight.",

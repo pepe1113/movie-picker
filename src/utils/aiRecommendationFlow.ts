@@ -96,31 +96,24 @@ export async function resolveAiPickerRecommendations({
     }
   }
 
-  try {
-    const remoteResult = await requestRemoteRecommendations({
-      answers,
-      candidates,
-      locale,
-    })
-    const recommendations = toRemoteDisplayRecommendations(
-      remoteResult.recommendations,
-      candidates,
-    )
+  const remoteResult = await requestRemoteRecommendations({
+    answers,
+    candidates,
+    locale,
+  })
+  const recommendations = toRemoteDisplayRecommendations(
+    remoteResult.recommendations,
+    candidates,
+  )
 
-    if (recommendations.length === 0) {
-      throw new Error('AI recommendations were empty')
-    }
+  if (recommendations.length === 0) {
+    throw new Error('AI recommendations were empty')
+  }
 
-    return {
-      recommendations,
-      usedFallback: false,
-      provider: remoteResult.provider,
-      model: remoteResult.model,
-    }
-  } catch {
-    return {
-      recommendations: getFallbackRecommendations(candidates, answers),
-      usedFallback: true,
-    }
+  return {
+    recommendations,
+    usedFallback: false,
+    provider: remoteResult.provider,
+    model: remoteResult.model,
   }
 }

@@ -67,6 +67,7 @@
     "loading": "正在分析你的觀影偏好...",
     "error": "推薦片單載入失敗，請稍後再試。",
     "fastRecommendationPrompt": "目前使用快速推薦",
+    "reasonFallbackNotice": "AI 推薦理由暫時無法產生，已改顯示電影介紹。",
     "reasonPrefix": "命中",
     "reasonTop": "，這部最接近你的完整偏好。",
     "reasonFit": "，適合作為今晚的候選片。",

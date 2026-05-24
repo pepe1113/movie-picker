@@ -62,6 +62,7 @@ describe('AI recommendation Supabase service', () => {
         ]),
         locale: 'zh-TW',
       },
+      timeout: 8000,
     })
     expect(invoke.mock.calls[0][1].body.movies).toHaveLength(10)
     expect(result).toEqual({
@@ -69,5 +70,24 @@ describe('AI recommendation Supabase service', () => {
       provider: 'deepseek',
       model: 'deepseek-v4-flash',
     })
+  })
+
+  it('passes a caller-provided timeout to the Supabase function client', async () => {
+    const invoke = vi.fn().mockResolvedValue({
+      data: { recommendations: [] },
+      error: null,
+    })
+    vi.mocked(getSupabaseClient).mockReturnValue({
+      functions: { invoke },
+    } as ReturnType<typeof getSupabaseClient>)
+
+    await requestAiRecommendations({
+      answers,
+      candidates: [movie(1)],
+      locale: 'zh-TW',
+      timeoutMs: 3000,
+    })
+
+    expect(invoke.mock.calls[0][1].timeout).toBe(3000)
   })
 })

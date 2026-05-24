@@ -6,6 +6,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { discoverMovies } from '@/services/tmdb/api'
 import { requestAiRecommendations } from '@/services/supabase/aiRecommendations'
+import { setRecommendationHistoryRemoteForTesting } from '@/services/supabase/recommendationHistory'
 import type { Movie } from '@/services/tmdb/types'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -27,6 +28,7 @@ beforeAll(() => {
 })
 
 afterEach(() => {
+  vi.clearAllMocks()
   vi.restoreAllMocks()
   vi.useRealTimers()
   useAuthStore.setState({
@@ -35,6 +37,7 @@ afterEach(() => {
     isLoading: false,
     error: null,
   })
+  setRecommendationHistoryRemoteForTesting(null)
 })
 
 function movie(id: number, title = `Movie ${id}`): Movie {
@@ -180,6 +183,98 @@ describe('AiMoviePicker', () => {
       expect(screen.getByText('Picked Movie 5')).toBeInTheDocument()
       expect(screen.queryByText('Picked Movie 6')).not.toBeInTheDocument()
       expect(requestAiRecommendations).toHaveBeenCalled()
+    },
+    15000,
+  )
+
+  it(
+    'shows movie overviews without calling AI when unauthenticated',
+    async () => {
+      const user = userEvent.setup()
+      vi.mocked(discoverMovies).mockResolvedValue({
+        page: 1,
+        results: Array.from({ length: 5 }, (_, index) =>
+          movie(index + 1, `Guest Movie ${index + 1}`),
+        ),
+        total_pages: 1,
+        total_results: 5,
+      })
+
+      await renderPicker()
+
+      await user.click(screen.getByRole('button', { name: /刺激/ }))
+      await user.click(await screen.findByRole('button', { name: /朋友/ }))
+      await user.click(await screen.findByRole('button', { name: /快節奏/ }))
+      await user.click(await screen.findByRole('button', { name: /近年/ }))
+
+      expect(await screen.findByText('Guest Movie 1')).toBeInTheDocument()
+      expect(screen.getAllByText('Overview 1').length).toBeGreaterThan(1)
+      expect(requestAiRecommendations).not.toHaveBeenCalled()
+    },
+    15000,
+  )
+
+  it(
+    'falls back to overviews and stores fallback history when AI reasons fail',
+    async () => {
+      const user = userEvent.setup()
+      const consoleError = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined)
+      const createRun = vi.fn().mockResolvedValue(undefined)
+      setRecommendationHistoryRemoteForTesting({
+        listLatest: vi.fn(),
+        deleteRun: vi.fn(),
+        createRun,
+      })
+      vi.mocked(discoverMovies).mockResolvedValue({
+        page: 1,
+        results: Array.from({ length: 5 }, (_, index) =>
+          movie(index + 1, `Fallback Movie ${index + 1}`),
+        ),
+        total_pages: 1,
+        total_results: 5,
+      })
+      vi.mocked(requestAiRecommendations).mockRejectedValue(
+        new Error('provider unavailable'),
+      )
+      useAuthStore.setState({
+        user: {
+          uid: 'user-id',
+          email: 'user@example.com',
+          displayName: 'User',
+          photoURL: null,
+        },
+        isAuthenticated: true,
+        isLoading: false,
+        error: null,
+      })
+
+      await renderPicker()
+
+      await user.click(screen.getByRole('button', { name: /刺激/ }))
+      await user.click(await screen.findByRole('button', { name: /朋友/ }))
+      await user.click(await screen.findByRole('button', { name: /快節奏/ }))
+      await user.click(await screen.findByRole('button', { name: /近年/ }))
+
+      expect(await screen.findByText('Fallback Movie 1')).toBeInTheDocument()
+      expect(
+        await screen.findByText('AI 推薦理由暫時無法產生，已改顯示電影介紹。'),
+      ).toBeInTheDocument()
+      expect(screen.getAllByText('Overview 1').length).toBeGreaterThan(1)
+      await waitFor(() => {
+        expect(createRun).toHaveBeenCalledWith(
+          expect.objectContaining({
+            userId: 'user-id',
+            provider: 'fallback',
+            model: 'local-overview',
+          }),
+        )
+      })
+      expect(consoleError).toHaveBeenCalledWith(
+        'AI recommendation reasons failed',
+        expect.any(Error),
+      )
     },
     15000,
   )

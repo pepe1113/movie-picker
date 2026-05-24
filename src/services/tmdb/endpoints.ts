@@ -9,7 +9,6 @@ export const ENDPOINTS = {
   MOVIE_DETAIL: (id: number) => `/movie/${id}`,
   MOVIE_CREDITS: (id: number) => `/movie/${id}/credits`,
   MOVIE_VIDEOS: (id: number) => `/movie/${id}/videos`,
-  MOVIE_IMAGES: (id: number) => `/movie/${id}/images`,
 
   // 搜尋與探索
   SEARCH_MOVIE: '/search/movie',

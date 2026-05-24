@@ -2,7 +2,7 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { discoverMovies } from '@/services/tmdb/api'
 import { useFilterStore } from '@/stores/filterStore'
 import { QUERY_KEYS } from '@/utils/constants'
-import type { DiscoverMovieParams } from '@/services/tmdb/types'
+import { buildFilterDiscoverQuery } from '@/utils/pickerCriteria'
 
 interface UseDiscoverMoviesOptions {
   enabled?: boolean
@@ -10,35 +10,8 @@ interface UseDiscoverMoviesOptions {
 
 export function useDiscoverMovies(options: UseDiscoverMoviesOptions = {}) {
   const { enabled = true } = options
-  const { genres, year, rating, sortBy } = useFilterStore()
-
-  // Build discover params from filter state
-  const params: DiscoverMovieParams = {
-    sort_by: sortBy,
-  }
-
-  if (genres.length > 0) {
-    params.with_genres = genres.join('|')
-  }
-
-  if (year.from) {
-    params['primary_release_date.gte'] = `${year.from}-01-01`
-  }
-
-  if (year.to) {
-    params['primary_release_date.lte'] = `${year.to}-12-31`
-  }
-
-  if (rating.min > 0) {
-    params['vote_average.gte'] = rating.min
-  }
-
-  if (rating.max < 10) {
-    params['vote_average.lte'] = rating.max
-  }
-
-  // Add minimum vote count to ensure quality results
-  params['vote_count.gte'] = 100
+  const filter = useFilterStore()
+  const params = buildFilterDiscoverQuery(filter)
 
   return useInfiniteQuery({
     queryKey: QUERY_KEYS.movies.discover(params as Record<string, unknown>),

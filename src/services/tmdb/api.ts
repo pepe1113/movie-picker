@@ -5,7 +5,6 @@ import type {
   CreditsResponse,
   DiscoverMovieParams,
   GenreListResponse,
-  MovieImagesResponse,
   MovieDetail,
   MovieListResponse,
   VideosResponse,
@@ -71,18 +70,6 @@ export async function getMovieVideos(id: number, language = 'zh-TW') {
   const { data } = await tmdbClient.get<VideosResponse>(
     ENDPOINTS.MOVIE_VIDEOS(id),
     { params: { language } },
-  )
-  return data
-}
-
-export async function getMovieImages(id: number) {
-  const { data } = await tmdbClient.get<MovieImagesResponse>(
-    ENDPOINTS.MOVIE_IMAGES(id),
-    {
-      params: {
-        include_image_language: 'ko,ja,en,zh',
-      },
-    },
   )
   return data
 }

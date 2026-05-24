@@ -11,6 +11,10 @@ import { useLanguageStore } from '@/stores/languageStore'
 import { cn } from '@/lib/utils'
 import { getPosterUrl, formatRating, formatYear } from '@/utils/helpers'
 import { ROUTES, TMDB_LANGUAGE_MAP } from '@/utils/constants'
+import {
+  buildTrailerPreviewEmbedUrl,
+  findYouTubeTrailer,
+} from '@/utils/trailerMedia'
 import type { Movie } from '@/services/tmdb/types'
 
 interface MovieCardProps {
@@ -43,27 +47,8 @@ export function MovieCard({ movie }: MovieCardProps) {
     staleTime: 1000 * 60 * 30,
   })
 
-  const trailer = videosQuery.data?.results.find(
-    (video) => video.site === 'YouTube' && video.type === 'Trailer',
-  )
+  const trailer = findYouTubeTrailer(videosQuery.data?.results)
   const isPlayingPreview = isHovering && Boolean(trailer)
-  const previewParams = new URLSearchParams({
-    autoplay: '1',
-    mute: '1',
-    controls: '0',
-    disablekb: '1',
-    fs: '0',
-    iv_load_policy: '3',
-    loop: '1',
-    modestbranding: '1',
-    playsinline: '1',
-    rel: '0',
-    showinfo: '0',
-  })
-
-  if (trailer) {
-    previewParams.set('playlist', trailer.key)
-  }
 
   const handlePreviewEnter = () => {
     if (!canPreviewRef.current) return
@@ -104,7 +89,7 @@ export function MovieCard({ movie }: MovieCardProps) {
           {isHovering && trailer && (
             <div className="absolute inset-0 hidden overflow-hidden bg-black md:block">
               <iframe
-                src={`https://www.youtube-nocookie.com/embed/${trailer.key}?${previewParams.toString()}`}
+                src={buildTrailerPreviewEmbedUrl(trailer.key)}
                 title=""
                 aria-hidden="true"
                 allow="autoplay; encrypted-media"

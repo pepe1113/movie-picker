@@ -3,7 +3,6 @@ import {
   getMovieDetail,
   getMovieCredits,
   getMovieVideos,
-  getMovieImages,
 } from '@/services/tmdb/api'
 import { getOmdbMovie } from '@/services/omdb/api'
 import { QUERY_KEYS, TMDB_LANGUAGE_MAP } from '@/utils/constants'
@@ -31,12 +30,6 @@ export function useMovieDetail(movieId: number) {
     enabled: movieId > 0,
   })
 
-  const imagesQuery = useQuery({
-    queryKey: QUERY_KEYS.movies.images(movieId),
-    queryFn: () => getMovieImages(movieId),
-    enabled: movieId > 0,
-  })
-
   const omdbQuery = useQuery({
     queryKey: QUERY_KEYS.movies.omdb(detailQuery.data?.imdb_id),
     queryFn: () => getOmdbMovie(detailQuery.data?.imdb_id),
@@ -48,13 +41,11 @@ export function useMovieDetail(movieId: number) {
     detail: detailQuery.data,
     credits: creditsQuery.data,
     videos: videosQuery.data,
-    images: imagesQuery.data,
     omdb: omdbQuery.data,
     isLoading:
       detailQuery.isLoading ||
       creditsQuery.isLoading ||
-      videosQuery.isLoading ||
-      imagesQuery.isLoading,
+      videosQuery.isLoading,
     isError: detailQuery.isError || creditsQuery.isError || videosQuery.isError,
     error: detailQuery.error ?? creditsQuery.error ?? videosQuery.error,
   }

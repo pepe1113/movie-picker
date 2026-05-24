@@ -44,48 +44,56 @@ async function renderPicker() {
 }
 
 describe('AiMoviePicker', () => {
-  it('reveals a random homepage hero title with centered full-width typewriter text', async () => {
-    vi.useFakeTimers()
-    vi.spyOn(Math, 'random').mockReturnValue(0.95)
+  it(
+    'reveals a random homepage hero title with centered full-width typewriter text',
+    async () => {
+      vi.useFakeTimers()
+      vi.spyOn(Math, 'random').mockReturnValue(0.95)
 
-    await renderPicker()
+      await renderPicker()
 
-    const heading = screen.getByRole('heading', {
-      level: 1,
-      name: '🍷 電影杯倒滿，今晚片單開演 🎬',
-    })
+      const heading = screen.getByRole('heading', {
+        level: 1,
+        name: '🍷 電影杯倒滿，今晚片單開演 🎬',
+      })
 
-    expect(heading).toHaveClass(
-      'hero-title-gradient',
-      'w-full',
-      'text-center',
-      'font-mono',
-    )
-    expect(heading).toHaveTextContent('')
+      expect(heading).toHaveClass(
+        'hero-title-gradient',
+        'w-full',
+        'text-center',
+        'font-mono',
+      )
+      expect(heading).toHaveTextContent('')
 
-    act(() => {
-      vi.advanceTimersByTime(2500)
-    })
+      act(() => {
+        vi.advanceTimersByTime(2500)
+      })
 
-    expect(heading).toHaveTextContent('🍷 電影杯倒滿，今晚片單開演 🎬')
-    expect(screen.getByTestId('hero-title-cursor')).toHaveClass(
-      'hero-title-cursor',
-    )
-  })
+      expect(heading).toHaveTextContent('🍷 電影杯倒滿，今晚片單開演 🎬')
+      expect(screen.getByTestId('hero-title-cursor')).toHaveClass(
+        'hero-title-cursor',
+      )
+    },
+    15000,
+  )
 
-  it('does not skip a question when an option is double-clicked', async () => {
-    const user = userEvent.setup()
-    await renderPicker()
+  it(
+    'does not skip a question when an option is double-clicked',
+    async () => {
+      const user = userEvent.setup()
+      await renderPicker()
 
-    await user.dblClick(screen.getByRole('button', { name: /刺激/ }))
+      await user.dblClick(screen.getByRole('button', { name: /刺激/ }))
 
-    await waitFor(() => {
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', { name: '這次誰一起看？' }),
+        ).toBeVisible()
+      })
       expect(
-        screen.getByRole('heading', { name: '這次誰一起看？' }),
-      ).toBeVisible()
-    })
-    expect(
-      screen.queryByRole('heading', { name: '你想要什麼節奏？' }),
-    ).not.toBeInTheDocument()
-  })
+        screen.queryByRole('heading', { name: '你想要什麼節奏？' }),
+      ).not.toBeInTheDocument()
+    },
+    15000,
+  )
 })

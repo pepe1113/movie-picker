@@ -8,6 +8,7 @@ import { WishlistButton } from '@/components/features/wishlist/WishlistButton'
 import { useMovies } from '@/hooks/useMovies'
 import { getPosterUrl, formatRating, formatYear } from '@/utils/helpers'
 import { ROUTES } from '@/utils/constants'
+import { toTop100Movies } from '@/utils/movieListBrowsing'
 
 export function Component() {
   const { t } = useTranslation()
@@ -15,6 +16,7 @@ export function Component() {
     useMovies('top_rated')
 
   const movies = data?.movies ?? []
+  const top100Movies = toTop100Movies(movies)
 
   return (
     <div className="container mx-auto space-y-8 px-6 py-10 md:px-12 lg:px-16">
@@ -31,7 +33,7 @@ export function Component() {
         </div>
       ) : (
         <div className="space-y-3">
-          {movies.slice(0, 100).map((movie, index) => (
+          {top100Movies.map((movie, index) => (
             <motion.div
               key={movie.id}
               initial={{ opacity: 0, x: -10 }}

@@ -3,6 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { AiMoviePicker } from '@/components/features/ai-picker/AiMoviePicker'
 import { MovieSection } from '@/components/features/movie/MovieSection'
 import { useMovies } from '@/hooks/useMovies'
+import {
+  getNextVisibleCount,
+  shouldFetchNextMoviePage,
+} from '@/utils/movieListBrowsing'
 
 const SECTION_INCREMENT = 8
 
@@ -27,10 +31,17 @@ export function Component() {
   ) => {
     setVisibleCounts((current) => ({
       ...current,
-      [key]: current[key] + SECTION_INCREMENT,
+      [key]: getNextVisibleCount(current[key], SECTION_INCREMENT),
     }))
 
-    if (visibleCounts[key] + SECTION_INCREMENT >= moviesLength && hasNextPage) {
+    if (
+      shouldFetchNextMoviePage({
+        visibleCount: visibleCounts[key],
+        increment: SECTION_INCREMENT,
+        loadedCount: moviesLength,
+        hasNextPage,
+      })
+    ) {
       fetchNextPage()
     }
   }

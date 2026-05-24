@@ -1,11 +1,10 @@
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { Component as MovieDetailPage } from '@/pages/MovieDetailPage'
 import type {
   CreditsResponse,
   MovieDetail,
-  MovieImagesResponse,
   VideosResponse,
 } from '@/services/tmdb/types'
 
@@ -25,7 +24,6 @@ vi.mock('@/hooks/useMovieDetail', () => ({
     detail: movieDetail,
     credits,
     videos,
-    images,
     omdb: undefined,
     isLoading: false,
     isError: false,
@@ -33,10 +31,6 @@ vi.mock('@/hooks/useMovieDetail', () => ({
 }))
 
 describe('MovieDetailPage', () => {
-  afterEach(() => {
-    vi.useRealTimers()
-  })
-
   it('uses a visible gradient when no backdrop image is shown', () => {
     const { container } = render(
       <MemoryRouter initialEntries={['/movie/1']}>
@@ -53,9 +47,7 @@ describe('MovieDetailPage', () => {
     )
   })
 
-  it('renders regional posters as an infinite carousel with controls and dots', () => {
-    vi.useFakeTimers()
-
+  it('does not render the removed regional poster carousel', () => {
     render(
       <MemoryRouter initialEntries={['/movie/1']}>
         <Routes>
@@ -64,85 +56,14 @@ describe('MovieDetailPage', () => {
       </MemoryRouter>,
     )
 
-    const carousel = screen.getByRole('region', {
-      name: 'movieDetail.sections.regionalPosters',
-    })
-
+    expect(screen.queryByTestId('regional-posters-carousel')).not.toBeInTheDocument()
     expect(
-      screen.getByTestId('regional-poster-active-label'),
-    ).toHaveTextContent('movieDetail.regionalPosters.korea')
-
-    fireEvent.click(
-      screen.getByRole('button', {
-        name: 'movieDetail.regionalPosters.controls.next',
-      }),
-    )
-    expect(screen.getByTestId('regional-posters-carousel')).toHaveAttribute(
-      'data-slide-direction',
-      'left',
-    )
+      screen.getByRole('heading', { name: 'Gradient Movie' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Wishlist')).toBeInTheDocument()
     expect(
-      screen.getByTestId('regional-poster-active-label'),
-    ).toHaveTextContent('movieDetail.regionalPosters.japan')
-
-    fireEvent.click(
-      screen.getByRole('button', {
-        name: 'movieDetail.regionalPosters.controls.previous',
-      }),
-    )
-    expect(screen.getByTestId('regional-posters-carousel')).toHaveAttribute(
-      'data-slide-direction',
-      'right',
-    )
-    expect(
-      screen.getByTestId('regional-poster-active-label'),
-    ).toHaveTextContent('movieDetail.regionalPosters.korea')
-
-    fireEvent.click(
-      screen.getByRole('button', {
-        name: 'movieDetail.regionalPosters.controls.showPoster:movieDetail.regionalPosters.taiwan',
-      }),
-    )
-    expect(
-      screen.getByTestId('regional-poster-active-label'),
-    ).toHaveTextContent('movieDetail.regionalPosters.taiwan')
-    expect(screen.getByTestId('regional-poster-KR')).toHaveAttribute(
-      'data-carousel-offset',
-      '1',
-    )
-    expect(screen.getByTestId('regional-poster-US')).toHaveAttribute(
-      'data-carousel-offset',
-      '-1',
-    )
-
-    act(() => {
-      vi.advanceTimersByTime(4999)
-    })
-
-    expect(
-      screen.getByTestId('regional-poster-active-label'),
-    ).toHaveTextContent('movieDetail.regionalPosters.taiwan')
-
-    act(() => {
-      vi.advanceTimersByTime(1)
-    })
-
-    expect(screen.getByTestId('regional-posters-carousel')).toHaveAttribute(
-      'data-slide-direction',
-      'left',
-    )
-    expect(
-      screen.getByTestId('regional-poster-active-label'),
-    ).toHaveTextContent('movieDetail.regionalPosters.korea')
-    expect(screen.getByTestId('regional-poster-TW')).toHaveAttribute(
-      'data-carousel-offset',
-      '-1',
-    )
-    expect(screen.getByTestId('regional-poster-US')).toHaveAttribute(
-      'data-carousel-offset',
-      '-2',
-    )
-    expect(carousel).toBeInTheDocument()
+      screen.getByRole('heading', { name: 'movieDetail.sections.info' }),
+    ).toBeInTheDocument()
   })
 })
 
@@ -183,32 +104,4 @@ const credits: CreditsResponse = {
 const videos: VideosResponse = {
   id: 1,
   results: [],
-}
-
-const images: MovieImagesResponse = {
-  id: 1,
-  posters: [
-    createPoster('/korea.jpg', 'ko', 8.4, 100),
-    createPoster('/japan.jpg', 'ja', 8.3, 95),
-    createPoster('/us.jpg', 'en', 8.2, 90),
-    createPoster('/taiwan.jpg', 'zh', 8.1, 85),
-  ],
-  backdrops: [],
-}
-
-function createPoster(
-  filePath: string,
-  language: string,
-  voteAverage: number,
-  voteCount: number,
-) {
-  return {
-    aspect_ratio: 0.667,
-    file_path: filePath,
-    height: 3000,
-    iso_639_1: language,
-    vote_average: voteAverage,
-    vote_count: voteCount,
-    width: 2000,
-  }
 }

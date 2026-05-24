@@ -15,7 +15,8 @@ import {
 } from '@/components/ui/dialog'
 import { WishlistButton } from '@/components/features/wishlist/WishlistButton'
 import { useMovieDetail } from '@/hooks/useMovieDetail'
-import { getExternalRatings } from '@/utils/movieDetail'
+import { buildMovieDetailPresentation } from '@/utils/movieDetail'
+import { buildTrailerEmbedUrl } from '@/utils/trailerMedia'
 import {
   getPosterUrl,
   getBackdropUrl,
@@ -25,7 +26,6 @@ import {
   formatRuntime,
 } from '@/utils/helpers'
 import { ROUTES } from '@/utils/constants'
-import type { Movie } from '@/services/tmdb/types'
 
 export function Component() {
   const { t } = useTranslation()
@@ -54,30 +54,8 @@ export function Component() {
     return <DetailSkeleton />
   }
 
-  const trailer = videos?.results.find(
-    (v) => v.type === 'Trailer' && v.site === 'YouTube',
-  )
-  const cast = credits?.cast.slice(0, 12) ?? []
-
-  const externalRatings = getExternalRatings(omdb)
-
-  // Convert to Movie type for WishlistButton
-  const movieForWishlist: Movie = {
-    adult: detail.adult,
-    backdrop_path: detail.backdrop_path,
-    genre_ids: detail.genres.map((g) => g.id),
-    id: detail.id,
-    original_language: detail.original_language,
-    original_title: detail.original_title,
-    overview: detail.overview,
-    popularity: detail.popularity,
-    poster_path: detail.poster_path,
-    release_date: detail.release_date,
-    title: detail.title,
-    video: detail.video,
-    vote_average: detail.vote_average,
-    vote_count: detail.vote_count,
-  }
+  const { trailer, cast, externalRatings, movieForWishlist } =
+    buildMovieDetailPresentation({ detail, credits, videos, omdb })
 
   return (
     <div className="min-h-screen pb-20">
@@ -208,7 +186,7 @@ export function Component() {
                       </DialogHeader>
                       <div className="bg-background aspect-video overflow-hidden rounded-lg">
                         <iframe
-                          src={`https://www.youtube.com/embed/${trailer.key}?autoplay=1&rel=0`}
+                          src={buildTrailerEmbedUrl(trailer.key)}
                           title={trailer.name}
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                           allowFullScreen

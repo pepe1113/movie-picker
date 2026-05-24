@@ -16,6 +16,14 @@ export interface AiRecommendationResponseItem {
 
 interface FunctionResponse {
   recommendations?: AiRecommendationResponseItem[]
+  provider?: string
+  model?: string
+}
+
+export interface AiRecommendationResponse {
+  recommendations: AiRecommendationResponseItem[]
+  provider?: string
+  model?: string
 }
 
 function simplifyCandidate(movie: Movie) {
@@ -41,13 +49,13 @@ export async function requestAiRecommendations({
   answers,
   candidates,
   locale,
-}: AiRecommendationRequest) {
+}: AiRecommendationRequest): Promise<AiRecommendationResponse> {
   const { data, error } = await getSupabaseClient().functions.invoke<FunctionResponse>(
     'recommend-movies',
     {
       body: {
         answers,
-        candidates: candidates.slice(0, 20).map(simplifyCandidate),
+        movies: candidates.slice(0, 10).map(simplifyCandidate),
         locale,
       },
     },
@@ -57,5 +65,9 @@ export async function requestAiRecommendations({
     throw new Error(error.message)
   }
 
-  return data?.recommendations ?? []
+  return {
+    recommendations: data?.recommendations ?? [],
+    provider: data?.provider,
+    model: data?.model,
+  }
 }

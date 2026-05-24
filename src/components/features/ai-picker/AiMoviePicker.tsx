@@ -100,8 +100,8 @@ export function AiMoviePicker() {
     }
   }, [])
 
-  const recommendationQuery = useQuery({
-    queryKey: ['ai-picker', completedAnswers, language, isAuthenticated],
+  const movieQuery = useQuery({
+    queryKey: ['ai-picker-movies', completedAnswers, language],
     queryFn: async () => {
       if (!completedAnswers) {
         throw new Error('AI picker answers are incomplete')
@@ -112,18 +112,45 @@ export function AiMoviePicker() {
         language: TMDB_LANGUAGE_MAP[language],
       })
 
-      return resolveAiPickerRecommendations({
-        answers: completedAnswers,
-        candidates: candidateResponse.results,
-        isAuthenticated,
-        locale: language,
-      })
+      return candidateResponse.results.slice(0, 5)
     },
     enabled: hasSubmitted && Boolean(completedAnswers),
   })
 
-  const recommendations = recommendationQuery.data?.recommendations ?? []
-  const usedFallback = recommendationQuery.data?.usedFallback ?? false
+  const displayedMovies = movieQuery.data ?? []
+
+  const reasonQuery = useQuery({
+    queryKey: [
+      'ai-picker-reasons',
+      completedAnswers,
+      language,
+      isAuthenticated,
+      displayedMovies.map((movie) => movie.id),
+    ],
+    queryFn: async () => {
+      if (!completedAnswers) {
+        throw new Error('AI picker answers are incomplete')
+      }
+
+      return resolveAiPickerRecommendations({
+        answers: completedAnswers,
+        candidates: displayedMovies,
+        isAuthenticated,
+        locale: language,
+      })
+    },
+    enabled:
+      hasSubmitted && Boolean(completedAnswers) && displayedMovies.length > 0,
+  })
+
+  const recommendations =
+    reasonQuery.data?.recommendations ??
+    displayedMovies.map((movie) => ({
+      movie,
+      matchedKeywordKeys: keywordKeys,
+      reason: undefined,
+    }))
+  const usedFallback = reasonQuery.data?.usedFallback ?? false
 
   const selectAnswer = (questionId: AiPickerQuestionId, value: string) => {
     if (isAdvancing || advanceTimerRef.current) return
@@ -301,12 +328,12 @@ export function AiMoviePicker() {
                 </Button>
               </div>
 
-              {recommendationQuery.isLoading && (
+              {movieQuery.isLoading && (
                 <div
                   className="grid gap-5 md:grid-cols-3"
                   aria-label={t('aiPicker.loading')}
                 >
-                  {Array.from({ length: 3 }, (_, index) => (
+                  {Array.from({ length: 5 }, (_, index) => (
                     <div key={index} className="space-y-3">
                       <Skeleton className="aspect-[2/3] w-full rounded-lg" />
                       <div className="space-y-2 p-1">
@@ -322,7 +349,7 @@ export function AiMoviePicker() {
                 </div>
               )}
 
-              {recommendationQuery.isError && (
+              {movieQuery.isError && (
                 <div className="border-border bg-secondary rounded-lg border p-6 text-center">
                   <p className="text-muted-foreground">{t('aiPicker.error')}</p>
                 </div>
@@ -335,13 +362,18 @@ export function AiMoviePicker() {
               )}
 
               {recommendations.length > 0 && (
-                <div className="grid gap-5 md:grid-cols-3">
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
                   {recommendations.map((recommendation, index) => (
                     <div key={recommendation.movie.id} className="space-y-3">
                       <MovieCard movie={recommendation.movie} />
-                      <p className="text-muted-foreground text-sm leading-relaxed">
+                      <div className="text-muted-foreground text-sm leading-relaxed">
                         {recommendation.reason ? (
                           recommendation.reason
+                        ) : reasonQuery.isLoading ? (
+                          <span className="block space-y-2">
+                            <Skeleton className="h-3 w-full" />
+                            <Skeleton className="h-3 w-5/6" />
+                          </span>
                         ) : (
                           <>
                             {t('aiPicker.reasonPrefix')}{' '}
@@ -360,7 +392,7 @@ export function AiMoviePicker() {
                               : t('aiPicker.reasonFit')}
                           </>
                         )}
-                      </p>
+                      </div>
                     </div>
                   ))}
                 </div>

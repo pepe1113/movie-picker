@@ -107,15 +107,15 @@ Deno.serve(async (req) => {
     }
 
     const request = validateRecommendationRequest(await req.json())
-    const candidateIds = new Set(request.candidates.map((movie) => movie.id))
     const providerResult = await callDeepSeek(request)
     const recommendations = normalizeRecommendations(
       providerResult.recommendations,
-      candidateIds,
+      request.movies,
+      request.locale,
     )
 
     const movieSnapshots = new Map(
-      request.candidates.map((movie) => [movie.id, movie]),
+      request.movies.map((movie) => [movie.id, movie]),
     )
     const normalizedRecommendations = recommendations.map((item) => ({
       ...item,
@@ -127,7 +127,7 @@ Deno.serve(async (req) => {
       .insert({
         user_id: userData.user.id,
         answers: request.answers,
-        candidate_movie_ids: request.candidates.map((movie) => movie.id),
+        candidate_movie_ids: request.movies.map((movie) => movie.id),
         recommendations: normalizedRecommendations,
         provider: 'deepseek',
         model: providerResult.model,

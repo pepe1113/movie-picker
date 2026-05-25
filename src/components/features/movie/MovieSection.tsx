@@ -19,6 +19,7 @@ interface MovieSectionProps {
   onLoadMore?: () => void
   loadMoreText?: string
   sectionLabel?: string
+  enableTrailerPreview?: boolean
 }
 
 export function MovieSection({
@@ -34,6 +35,7 @@ export function MovieSection({
   onLoadMore,
   loadMoreText,
   sectionLabel,
+  enableTrailerPreview = false,
 }: MovieSectionProps) {
   const { t } = useTranslation()
   const displayMovies = limit ? movies.slice(0, limit) : movies
@@ -81,7 +83,11 @@ export function MovieSection({
         ) : (
           <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
             {displayMovies.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
+              <MovieCard
+                key={movie.id}
+                movie={movie}
+                enableTrailerPreview={enableTrailerPreview}
+              />
             ))}
           </div>
         )}

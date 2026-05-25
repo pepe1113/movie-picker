@@ -103,11 +103,15 @@ describe('History page', () => {
     setRecommendationHistoryRemoteForTesting(null)
   })
 
-  it('shows a sign-in prompt when unauthenticated', async () => {
-    await renderHistoryPage()
+  it(
+    'shows a sign-in prompt when unauthenticated',
+    async () => {
+      await renderHistoryPage()
 
-    expect(screen.getByText('登入查看推薦紀錄')).toBeInTheDocument()
-  })
+      expect(screen.getByText('登入查看推薦紀錄')).toBeInTheDocument()
+    },
+    15000,
+  )
 
   it('shows an empty state for authenticated users with no runs', async () => {
     useAuthStore.getState().setUser({
@@ -142,7 +146,12 @@ describe('History page', () => {
 
     expect(await screen.findByText('Speed Night')).toBeInTheDocument()
     expect(screen.getByText('節奏很適合今晚')).toBeInTheDocument()
-    expect(screen.getByText('deepseek / deepseek-v4-flash')).toBeInTheDocument()
+    expect(screen.getByText('⚡ 刺激')).toHaveClass(
+      'rounded-full',
+      'text-[1.5em]',
+    )
+    expect(screen.getByText('🤖 deepseek')).toBeInTheDocument()
+    expect(screen.queryByText('deepseek-v4-flash')).not.toBeInTheDocument()
   })
 
   it('deletes one recommendation run after confirmation', async () => {

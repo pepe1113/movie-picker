@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'motion/react'
-import { ArrowLeft, Calendar, Clock, Play, Star } from 'lucide-react'
+import { ArrowLeft, Calendar, Clock, Play } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { clsx, type ClassValue } from 'clsx'
 import { Button } from '@/components/ui/button'
@@ -120,21 +120,19 @@ export function Component() {
               </div>
 
               <div className="flex flex-wrap gap-3">
-                <Badge className="gap-2 px-3 py-1.5" variant="secondary">
-                  <Star className="size-4 fill-yellow-400 text-yellow-400" />
-                  TMDB {formatRating(detail.vote_average)}
-                  <span className="text-muted-foreground text-xs">
-                    ({detail.vote_count.toLocaleString()})
-                  </span>
-                </Badge>
+                <RatingPill
+                  brand="tmdb"
+                  label="TMDB"
+                  value={formatRating(detail.vote_average)}
+                  meta={`(${detail.vote_count.toLocaleString()})`}
+                />
                 {externalRatings.map((rating) => (
-                  <Badge
+                  <RatingPill
                     key={rating.label}
-                    className="gap-2 px-3 py-1.5"
-                    variant="secondary"
-                  >
-                    {rating.label} {rating.value}
-                  </Badge>
+                    brand={getRatingBrand(rating.label)}
+                    label={rating.label}
+                    value={rating.value}
+                  />
                 ))}
               </div>
 
@@ -318,4 +316,93 @@ function DetailSkeleton() {
       </div>
     </div>
   )
+}
+
+type RatingBrand = 'tmdb' | 'imdb' | 'rotten-tomatoes'
+
+interface RatingPillProps {
+  brand: RatingBrand
+  label: string
+  value: string
+  meta?: string
+}
+
+function RatingPill({ brand, label, value, meta }: RatingPillProps) {
+  return (
+    <div className="bg-card/90 flex min-h-16 items-center gap-3 rounded-full px-4 py-3 shadow-[rgba(0,0,0,0.3)_0px_8px_8px] ring-1 ring-white/10 backdrop-blur-sm">
+      <RatingLogo brand={brand} label={label} />
+      <div className="space-y-0.5 leading-none">
+        <p className="text-muted-foreground text-[0.68rem] font-bold tracking-[1.4px] uppercase">
+          {label}
+        </p>
+        <p className="text-2xl font-bold text-white md:text-3xl">
+          {value}
+          {meta && (
+            <span className="text-muted-foreground ml-2 align-middle text-xs font-semibold">
+              {meta}
+            </span>
+          )}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function RatingLogo({
+  brand,
+  label,
+}: {
+  brand: RatingBrand
+  label: string
+}) {
+  if (brand === 'imdb') {
+    return (
+      <span
+        aria-label={`${label} logo`}
+        className="flex size-10 shrink-0 items-center justify-center rounded-md bg-[#f5c518] text-[0.72rem] font-black tracking-tight text-black shadow-[rgba(0,0,0,0.35)_0px_4px_8px]"
+      >
+        IMDb
+      </span>
+    )
+  }
+
+  if (brand === 'rotten-tomatoes') {
+    return (
+      <span
+        aria-label={`${label} logo`}
+        className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#fa320a] shadow-[rgba(0,0,0,0.35)_0px_4px_8px]"
+      >
+        <svg
+          viewBox="0 0 40 40"
+          role="img"
+          aria-hidden="true"
+          className="size-8"
+        >
+          <path
+            d="M20 12c5.8 0 10.5 4.3 10.5 10 0 6.4-4.6 11-10.5 11S9.5 28.4 9.5 22c0-5.7 4.7-10 10.5-10Z"
+            fill="#e51b23"
+          />
+          <path
+            d="M19.8 10.8c1.8-3.1 4.5-4 7.8-3.2-1 3-3.1 4.7-6.4 5.1 2.3.6 4.4 1.6 6.1 3.1-2.7.6-5 .1-7.1-1.7-1.8 1.6-4.2 2.2-7.1 1.7 1.8-1.6 3.9-2.7 6.7-3.2Z"
+            fill="#2ebd59"
+          />
+          <circle cx="16" cy="21" r="1.4" fill="#ff7063" />
+          <circle cx="23.5" cy="24.5" r="1.2" fill="#ff7063" />
+        </svg>
+      </span>
+    )
+  }
+
+  return (
+    <span
+      aria-label={`${label} logo`}
+      className="flex size-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-[#01b4e4] to-[#90cea1] text-[0.58rem] font-black tracking-tight text-[#052541] shadow-[rgba(0,0,0,0.35)_0px_4px_8px]"
+    >
+      TMDB
+    </span>
+  )
+}
+
+function getRatingBrand(label: string): RatingBrand {
+  return label === 'Rotten Tomatoes' ? 'rotten-tomatoes' : 'imdb'
 }

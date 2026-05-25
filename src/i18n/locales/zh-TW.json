@@ -23,6 +23,13 @@
       "ctaRandom": "開始隨機挑片",
       "ctaTop100": "瀏覽 TOP 100"
     },
+    "aiHero": {
+      "badge": "今晚交給 AI 挑片",
+      "title": "別再滑片單，讓 AI 直接開演",
+      "subtitle": "回答 4 題，Movie Picker 會從最新電影池裡挑出 3 部適合今晚的候選片。",
+      "cta": "開始 AI 挑片",
+      "scrollHint": "往下開始"
+    },
     "sections": {
       "trending": "本週趨勢",
       "trendingLabel": "正在升溫",
@@ -67,6 +74,7 @@
     "loading": "正在分析你的觀影偏好...",
     "error": "推薦片單載入失敗，請稍後再試。",
     "fastRecommendationPrompt": "目前使用快速推薦",
+    "browseMoviesHint": "繼續看最新電影",
     "reasonPrefix": "命中",
     "reasonTop": "，這部最接近你的完整偏好。",
     "reasonFit": "，適合作為今晚的候選片。",

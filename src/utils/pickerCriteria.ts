@@ -20,6 +20,11 @@ export interface AiPickerQuestion {
   options: AiPickerOption[]
 }
 
+export interface AiPickerPreferenceMeta {
+  emoji: string
+  labelKey: string
+}
+
 interface QueryOptions {
   currentYear?: number
   language?: string
@@ -42,6 +47,34 @@ const GENRES = {
   sciFi: 878,
   thriller: 53,
 } as const
+
+const AI_PICKER_OPTION_EMOJI: Record<
+  AiPickerQuestionId,
+  Record<string, string>
+> = {
+  mood: {
+    relaxed: '😌',
+    exciting: '⚡',
+    moving: '🥹',
+    mindBending: '🧠',
+  },
+  occasion: {
+    solo: '🛋️',
+    date: '🍷',
+    friends: '🍿',
+    family: '🏠',
+  },
+  pace: {
+    fast: '🚀',
+    immersive: '🌌',
+    any: '🎲',
+  },
+  era: {
+    recent: '🆕',
+    classic: '🎞️',
+    any: '♾️',
+  },
+}
 
 export const AI_PICKER_QUESTIONS: AiPickerQuestion[] = [
   {
@@ -185,6 +218,36 @@ export function getAiPickerOption(
 ) {
   return AI_PICKER_QUESTIONS.find((question) => question.id === questionId)
     ?.options.find((option) => option.value === value)
+}
+
+export function getAiPickerPreferenceMeta(
+  questionId: AiPickerQuestionId,
+  value: string,
+): AiPickerPreferenceMeta | null {
+  const option = getAiPickerOption(questionId, value)
+
+  if (!option) return null
+
+  return {
+    emoji: AI_PICKER_OPTION_EMOJI[questionId][value] ?? '✨',
+    labelKey: option.labelKey,
+  }
+}
+
+export function getAiPickerKeywordPreferenceMeta(
+  keywordKey: string,
+): AiPickerPreferenceMeta | null {
+  for (const question of AI_PICKER_QUESTIONS) {
+    const option = question.options.find(
+      (candidate) => candidate.keywordKey === keywordKey,
+    )
+
+    if (option) {
+      return getAiPickerPreferenceMeta(question.id, option.value)
+    }
+  }
+
+  return null
 }
 
 export function getAiPickerKeywordKeys(answers: Partial<AiPickerAnswers>) {

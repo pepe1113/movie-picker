@@ -18,6 +18,8 @@
 - Lint：`bun run lint`
 - 代碼格式化：`bun run format`
 - 偏好 bun 安裝依賴像和執行指令
+- 若 `bun run test:run` 已 PASS，即視為測試完成；不要再額外跑 `npm test`
+- 每次功能完成並通過測試後，提醒使用者進行 git commit
 
 ## 專案架構
 - `src/components/`：React 組件，分為 `features/`、`layout/`、`ui/`

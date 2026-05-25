@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'motion/react'
-import { Brain, Check, RotateCcw, Sparkles } from 'lucide-react'
+import { Check, ChevronDown, RotateCcw } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
+import { AiPickerPreferenceBadge } from '@/components/features/ai-picker/AiPickerPreferenceBadge'
 import { MovieCard } from '@/components/features/movie/MovieCard'
 import { discoverMovies } from '@/services/tmdb/api'
 import { useAuthStore } from '@/stores/authStore'
@@ -21,37 +21,15 @@ import {
 } from '@/utils/aiMoviePicker'
 import { resolveAiPickerRecommendations } from '@/utils/aiRecommendationFlow'
 
-const HERO_TITLE_TYPE_INTERVAL_MS = 100
-
-function getHeroTitleOptions(value: unknown, fallback: string) {
-  if (!Array.isArray(value)) return [fallback]
-
-  const options = value.filter(
-    (item): item is string =>
-      typeof item === 'string' && item.trim().length > 0,
-  )
-
-  return options.length > 0 ? options : [fallback]
+interface AiMoviePickerProps {
+  onBrowseMovies?: () => void
 }
 
-function pickRandomHeroTitle(value: unknown, fallback: string) {
-  const options = getHeroTitleOptions(value, fallback)
-  const index = Math.floor(Math.random() * options.length)
-
-  return options[index] ?? fallback
-}
-
-export function AiMoviePicker() {
+export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const { t } = useTranslation()
   const language = useLanguageStore((state) => state.language)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
-  const [heroTitle] = useState(() =>
-    pickRandomHeroTitle(
-      t('aiPicker.heroTitles', { returnObjects: true }),
-      t('aiPicker.title'),
-    ),
-  )
-  const [typedHeroTitleLength, setTypedHeroTitleLength] = useState(0)
+
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<Partial<AiPickerAnswers>>({})
   const [hasSubmitted, setHasSubmitted] = useState(false)
@@ -65,32 +43,6 @@ export function AiMoviePicker() {
   const completedAnswers = isComplete ? (answers as AiPickerAnswers) : null
   const progress = (step / AI_PICKER_QUESTIONS.length) * 100
   const keywordKeys = getAiPickerKeywordKeys(answers)
-  const heroTitleCharacters = useMemo(() => Array.from(heroTitle), [heroTitle])
-  const typedHeroTitle = heroTitleCharacters
-    .slice(0, typedHeroTitleLength)
-    .join('')
-
-  useEffect(() => {
-    if (hasSubmitted) {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-  }, [hasSubmitted])
-
-  useEffect(() => {
-    const titleTimer = window.setInterval(() => {
-      setTypedHeroTitleLength((current) => {
-        const next = Math.min(current + 1, heroTitleCharacters.length)
-
-        if (next >= heroTitleCharacters.length) {
-          window.clearInterval(titleTimer)
-        }
-
-        return next
-      })
-    }, HERO_TITLE_TYPE_INTERVAL_MS)
-
-    return () => window.clearInterval(titleTimer)
-  }, [heroTitleCharacters])
 
   useEffect(() => {
     return () => {
@@ -161,37 +113,7 @@ export function AiMoviePicker() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(30,215,96,0.18),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(83,157,245,0.14),transparent_24%)]" />
       <div className="via-primary/70 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent" />
 
-      <div className="relative container mx-auto px-6 py-12 md:px-12 md:py-18 lg:px-16">
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-          className="mb-12 text-center lg:mb-20"
-        >
-          <div className="flex w-full flex-col items-center space-y-7">
-            <Badge className="gap-2 rounded-full px-3 py-1.5" variant="outline">
-              <Sparkles className="text-primary size-3.5" />
-              {t('aiPicker.badge')}
-            </Badge>
-            <div className="w-full space-y-4">
-              <h1
-                aria-label={heroTitle}
-                className="hero-title-gradient mx-auto mb-12 w-full max-w-6xl text-center font-mono text-3xl leading-tight font-bold md:text-3xl lg:text-6xl"
-              >
-                {typedHeroTitle}
-                <span
-                  aria-hidden="true"
-                  className="hero-title-cursor bg-primary ml-1 inline-block h-[0.86em] w-[0.3em] translate-y-1"
-                  data-testid="hero-title-cursor"
-                />
-              </h1>
-              <p className="text-muted-foreground mx-auto text-sm leading-relaxed md:text-base">
-                {t('aiPicker.subtitle')}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
+      <div className="relative container mx-auto flex min-h-[calc(100svh-64px)] flex-1 flex-col justify-center px-6 py-10 md:px-12 md:py-12 lg:px-16">
         <div className="bg-card/85 border-border rounded-lg border p-4 shadow-[rgba(0,0,0,0.45)_0px_18px_48px] backdrop-blur md:p-6">
           {!hasSubmitted ? (
             <div className="space-y-6">
@@ -217,7 +139,7 @@ export function AiMoviePicker() {
                 transition={{ duration: 0.2 }}
                 className="space-y-5"
               >
-                <div className="space-y-2">
+                <div className="mb-10 space-y-2 text-center">
                   <h2 className="text-2xl font-bold md:text-3xl">
                     {t(currentQuestion.titleKey)}
                   </h2>
@@ -240,15 +162,16 @@ export function AiMoviePicker() {
                           selectAnswer(currentQuestion.id, option.value)
                         }
                         className={cn(
-                          'border-border bg-secondary/60 hover:border-primary/70 hover:bg-muted flex min-h-28 flex-col items-start justify-between rounded-lg border p-4 text-left transition-all',
+                          'border-border bg-secondary/60 hover:border-primary/70 hover:bg-muted flex min-h-28 flex-col items-start justify-between rounded-lg border p-4 text-left transition-all hover:border-3',
                           isSelected &&
                             'border-primary bg-primary/10 shadow-[rgba(30,215,96,0.22)_0px_0px_0px_1px]',
                         )}
                       >
-                        <span className="flex w-full items-center justify-between gap-3">
-                          <span className="text-base font-bold">
-                            {t(option.labelKey)}
-                          </span>
+                        <span className="flex w-full items-start justify-between gap-3">
+                          <AiPickerPreferenceBadge
+                            questionId={currentQuestion.id}
+                            value={option.value}
+                          />
                           {isSelected && (
                             <span className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-full">
                               <Check className="size-4" />
@@ -279,23 +202,25 @@ export function AiMoviePicker() {
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-full">
-                      <Brain className="size-5" />
-                    </span>
-                    <h2 className="text-2xl font-bold">
-                      {t('aiPicker.resultsTitle')}
-                    </h2>
-                  </div>
+              <div className="relative">
+                <div className="flex flex-col items-center space-y-2">
+                  <h2 className="text-2xl font-bold">
+                    {t('aiPicker.resultsTitle')}
+                  </h2>
                   <div className="flex flex-wrap gap-2">
                     {keywordKeys.map((keywordKey) => (
-                      <Badge key={keywordKey}>{t(keywordKey)}</Badge>
+                      <AiPickerPreferenceBadge
+                        key={keywordKey}
+                        keywordKey={keywordKey}
+                      />
                     ))}
                   </div>
                 </div>
-                <Button variant="ghost" onClick={reset}>
+                <Button
+                  variant="ghost"
+                  onClick={reset}
+                  className="absolute top-0 right-0"
+                >
                   <RotateCcw className="size-4" />
                   {t('aiPicker.restart')}
                 </Button>
@@ -338,7 +263,10 @@ export function AiMoviePicker() {
                 <div className="grid gap-5 md:grid-cols-3">
                   {recommendations.map((recommendation, index) => (
                     <div key={recommendation.movie.id} className="space-y-3">
-                      <MovieCard movie={recommendation.movie} />
+                      <MovieCard
+                        movie={recommendation.movie}
+                        enableTrailerPreview
+                      />
                       <p className="text-muted-foreground text-sm leading-relaxed">
                         {recommendation.reason ? (
                           recommendation.reason
@@ -347,12 +275,11 @@ export function AiMoviePicker() {
                             {t('aiPicker.reasonPrefix')}{' '}
                             {recommendation.matchedKeywordKeys.map(
                               (keywordKey) => (
-                                <Badge
+                                <AiPickerPreferenceBadge
                                   key={`${recommendation.movie.id}-${keywordKey}`}
+                                  keywordKey={keywordKey}
                                   className="mx-0.5 align-middle"
-                                >
-                                  {t(keywordKey)}
-                                </Badge>
+                                />
                               ),
                             )}{' '}
                             {index === 0
@@ -368,6 +295,17 @@ export function AiMoviePicker() {
             </div>
           )}
         </div>
+
+        {onBrowseMovies && (
+          <button
+            type="button"
+            onClick={onBrowseMovies}
+            className="text-muted-foreground hover:text-foreground mx-auto mt-7 flex flex-col items-center gap-2 text-xs font-bold tracking-[1.4px] uppercase transition-colors"
+          >
+            <span>{t('aiPicker.browseMoviesHint')}</span>
+            <ChevronDown className="text-primary size-6 animate-bounce" />
+          </button>
+        )}
       </div>
     </section>
   )

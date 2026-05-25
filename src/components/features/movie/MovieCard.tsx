@@ -19,9 +19,15 @@ import type { Movie } from '@/services/tmdb/types'
 
 interface MovieCardProps {
   movie: Movie
+  enableTrailerPreview?: boolean
+  className?: string
 }
 
-export function MovieCard({ movie }: MovieCardProps) {
+export function MovieCard({
+  movie,
+  enableTrailerPreview = false,
+  className,
+}: MovieCardProps) {
   const { t } = useTranslation()
   const language = useLanguageStore((state) => state.language)
   const tmdbLanguage = TMDB_LANGUAGE_MAP[language]
@@ -31,19 +37,20 @@ export function MovieCard({ movie }: MovieCardProps) {
   const canPreviewRef = useRef(false)
 
   useEffect(() => {
-    canPreviewRef.current = window.matchMedia('(min-width: 768px)').matches
+    canPreviewRef.current =
+      enableTrailerPreview && window.matchMedia('(min-width: 768px)').matches
 
     return () => {
       if (hoverTimerRef.current) {
         clearTimeout(hoverTimerRef.current)
       }
     }
-  }, [])
+  }, [enableTrailerPreview])
 
   const videosQuery = useQuery({
     queryKey: ['movie-card-trailer', movie.id, tmdbLanguage],
     queryFn: () => getMovieVideos(movie.id, tmdbLanguage),
-    enabled: shouldLoadPreview,
+    enabled: enableTrailerPreview && shouldLoadPreview,
     staleTime: 1000 * 60 * 30,
   })
 
@@ -73,7 +80,10 @@ export function MovieCard({ movie }: MovieCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.3 }}
-      className="group bg-card hover:bg-muted relative overflow-hidden rounded-lg transition-[background-color,transform,box-shadow] hover:shadow-[rgba(0,0,0,0.3)_0px_8px_8px]"
+      className={cn(
+        'group bg-card hover:bg-muted relative overflow-hidden rounded-lg transition-[background-color,transform,box-shadow] hover:shadow-[rgba(0,0,0,0.3)_0px_8px_8px]',
+        className,
+      )}
       onMouseEnter={handlePreviewEnter}
       onMouseLeave={handlePreviewLeave}
     >

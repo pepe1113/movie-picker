@@ -4,17 +4,17 @@ import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { AiPickerPreferenceBadge } from '@/components/features/ai-picker/AiPickerPreferenceBadge'
 import { MovieCard } from '@/components/features/movie/MovieCard'
 import {
   getRecommendationHistoryRemote,
   type RecommendationRun,
 } from '@/services/supabase/recommendationHistory'
 import { useAuthStore } from '@/stores/authStore'
+import type { AiPickerQuestionId } from '@/utils/aiMoviePicker'
 
-function formatAnswerSummary(answers: Record<string, string>) {
-  return Object.entries(answers)
-    .map(([key, value]) => `${key}: ${value}`)
-    .join(' / ')
+function isAiPickerQuestionId(key: string): key is AiPickerQuestionId {
+  return ['mood', 'occasion', 'pace', 'era'].includes(key)
 }
 
 export function Component() {
@@ -106,11 +106,22 @@ export function Component() {
                   <Clock className="size-4" />
                   {new Date(run.created_at).toLocaleString()}
                 </div>
-                <p className="text-sm font-semibold">
-                  {formatAnswerSummary(run.answers)}
-                </p>
-                <Badge variant="secondary">
-                  {run.provider} / {run.model}
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(run.answers).map(([key, value]) =>
+                    isAiPickerQuestionId(key) ? (
+                      <AiPickerPreferenceBadge
+                        key={key}
+                        questionId={key}
+                        value={value}
+                      />
+                    ) : null,
+                  )}
+                </div>
+                <Badge
+                  variant="ghost"
+                  className="rounded-full px-3 py-1.5 text-sm normal-case"
+                >
+                  🤖 {run.provider}
                 </Badge>
               </div>
               <Button
@@ -127,7 +138,10 @@ export function Component() {
 
             <div className="grid gap-5 md:grid-cols-3">
               {run.recommendations.map((recommendation) => (
-                <div key={recommendation.movie_id} className="space-y-3">
+                <div
+                  key={recommendation.movie_id}
+                  className="mx-auto w-full max-w-[220px] space-y-3"
+                >
                   <MovieCard movie={recommendation.movie_snapshot} />
                   <p className="text-muted-foreground text-sm leading-relaxed">
                     {recommendation.reason}

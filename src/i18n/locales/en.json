@@ -23,6 +23,13 @@
       "ctaRandom": "Start Random Pick",
       "ctaTop100": "Browse TOP 100"
     },
+    "aiHero": {
+      "badge": "Let AI pick tonight",
+      "title": "Stop scrolling. Let AI start the movie.",
+      "subtitle": "Answer 4 questions and Movie Picker will choose 3 candidates from the latest movie pool.",
+      "cta": "Start AI Picker",
+      "scrollHint": "Scroll to start"
+    },
     "sections": {
       "trending": "Trending This Week",
       "trendingLabel": "Heating Up",
@@ -67,6 +74,7 @@
     "loading": "Analyzing your movie preferences...",
     "error": "Recommendations failed to load. Please try again later.",
     "fastRecommendationPrompt": "Using quick recommendations for now",
+    "browseMoviesHint": "Continue to fresh releases",
     "reasonPrefix": "Matched",
     "reasonTop": ", making this the closest fit for your full preference set.",
     "reasonFit": ", making this a strong candidate for tonight.",

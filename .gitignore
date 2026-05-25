@@ -30,5 +30,8 @@ dist-ssr
 # Test coverage
 coverage/
 
+# Supabase local CLI state
+supabase/.temp/
+
 .claude/*
 .superpowers/

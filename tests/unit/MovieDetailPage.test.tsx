@@ -24,7 +24,7 @@ vi.mock('@/hooks/useMovieDetail', () => ({
     detail: movieDetail,
     credits,
     videos,
-    omdb: undefined,
+    omdb,
     isLoading: false,
     isError: false,
   }),
@@ -65,6 +65,24 @@ describe('MovieDetailPage', () => {
       screen.getByRole('heading', { name: 'movieDetail.sections.info' }),
     ).toBeInTheDocument()
   })
+
+  it('renders prominent branded rating pills', () => {
+    render(
+      <MemoryRouter initialEntries={['/movie/1']}>
+        <Routes>
+          <Route path="/movie/:id" element={<MovieDetailPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByLabelText('TMDB logo')).toBeInTheDocument()
+    expect(screen.getByText('8.0')).toBeInTheDocument()
+    expect(screen.getByText('(100)')).toBeInTheDocument()
+    expect(screen.getByLabelText('IMDb logo')).toBeInTheDocument()
+    expect(screen.getByText('7.8/10')).toBeInTheDocument()
+    expect(screen.getByLabelText('Rotten Tomatoes logo')).toBeInTheDocument()
+    expect(screen.getByText('91%')).toBeInTheDocument()
+  })
 })
 
 const movieDetail: MovieDetail = {
@@ -104,4 +122,12 @@ const credits: CreditsResponse = {
 const videos: VideosResponse = {
   id: 1,
   results: [],
+}
+
+const omdb = {
+  Response: 'True' as const,
+  Ratings: [
+    { Source: 'Internet Movie Database', Value: '7.8/10' },
+    { Source: 'Rotten Tomatoes', Value: '91%' },
+  ],
 }

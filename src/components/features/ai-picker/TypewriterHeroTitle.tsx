@@ -46,7 +46,7 @@ export function TypewriterHeroTitle({
     <Heading
       aria-label={title}
       className={cn(
-        'hero-title-gradient mx-auto w-full max-w-6xl text-center font-mono text-3xl leading-tight font-bold md:text-4xl lg:text-5xl',
+        'hero-title-gradient mx-auto w-full max-w-5xl text-center font-mono text-3xl leading-snug font-bold md:text-4xl lg:text-6xl',
         className,
       )}
     >

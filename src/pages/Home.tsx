@@ -106,11 +106,7 @@ export function Component() {
               {t('home.aiHero.badge')}
             </div>
 
-            <TypewriterHeroTitle
-              as="h1"
-              title={heroTitle}
-              className="max-w-5xl text-4xl md:text-6xl lg:text-7xl"
-            />
+            <TypewriterHeroTitle as="h1" title={heroTitle} />
             <p className="text-muted-foreground mt-6 max-w-2xl text-base leading-relaxed md:text-lg">
               {t('home.aiHero.subtitle')}
             </p>

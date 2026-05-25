@@ -42,8 +42,6 @@ export function Header() {
 
   const NAV_ITEMS = [
     { label: t('nav.home'), href: ROUTES.HOME, icon: Film },
-    // { label: t('nav.top100'), href: '/top100', icon: TrendingUp },
-    // { label: t('nav.random'), href: '/random', icon: Dice5 },
     { label: t('nav.wishlist'), href: ROUTES.WISHLIST, icon: Heart },
     { label: t('nav.history'), href: ROUTES.HISTORY, icon: History },
   ]
@@ -67,8 +65,8 @@ export function Header() {
             to={ROUTES.HOME}
             className="text-foreground flex items-center gap-2 text-sm font-bold"
           >
-            <span className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-full">
-              <Film className="size-5" />
+            <span className="flex items-center justify-center">
+              <img src="/popcorn.gif" alt="Popcorn" className="size-7" />
             </span>
             <span className="hidden sm:inline">Movie Picker</span>
           </Link>

@@ -43,7 +43,7 @@
     }
   },
   "footer": {
-    "tmdbDisclaimer": "本產品使用 TMDB API，但未經 TMDB 認可或認證。",
+    "tmdbDisclaimer": "資料來源為 TMDB/OMDb API，個人專案使用，可能出現API限制導致錯誤，請小心愛護❤️",
     "copyright": "Movie Picker",
     "ticker": "AI 選片上線中 / 本週趨勢同步 / 熱門片單掃描 / 低延遲預告片預覽 / 今晚別再選擇困難"
   },

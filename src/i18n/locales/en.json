@@ -43,7 +43,7 @@
     }
   },
   "footer": {
-    "tmdbDisclaimer": "This product uses the TMDB API but is not endorsed or certified by TMDB.",
+    "tmdbDisclaimer": "movie data refers to TMDB/OMDb API. made for personal use ❤️",
     "copyright": "Movie Picker",
     "ticker": "AI picker online / Weekly trends synced / Popular watchlists scanning / Low-latency trailer preview / No more choice paralysis tonight"
   },

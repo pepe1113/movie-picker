@@ -9,91 +9,29 @@
 [![Vite](https://img.shields.io/badge/Vite-7-646cff?logo=vite)](https://vite.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
 
-現代化電影推薦網站，解決你的選擇障礙。探索熱門電影、隨機挑片、建立個人收藏清單。
+現代化電影推薦網站，解決你的選擇障礙。探索熱門電影、根據心情建立屬於你的選片指南、收藏清單和推薦歷史。
 
 ## 📌 重要說明
 
-**作品集專案**：此專案僅作為個人作品集展示用途。
-
-**API 限制**：使用 TMDB API，有流量限制 - 不適合公開部署或分發使用。
-
-## ✨ 主要功能
-
-- 🎲 **隨機挑片** - 完全隨機或條件篩選（類型、年份、評分），讓命運幫你決定
-- 🔥 **熱門排行** - Top 100 熱門與高分電影
-- ❤️ **個人收藏** - 建立並管理專屬的觀影清單
-- 🔍 **智能搜尋** - 快速找到想看的電影
-- 📱 **響應式設計** - 完美支援桌面與行動裝置
+- **作品集專案**：此專案僅作為個人作品集展示用途
+- **API 限制**：使用 TMDB API，有流量限制 - 不適合公開部署或分發使用
 
 ## 🛠️ 技術棧
 
-### 前端框架
 - **React 19** with TypeScript
 - **Vite** - 下一代建構工具
 - **React Router** - 客戶端路由
-
-### 樣式設計
 - **Tailwind CSS 4** - Utility-first CSS 框架
 - **Shadcn UI** - 精美的元件庫
 - **Framer Motion** - 生產級動畫庫
-
-### 狀態管理
 - **Zustand** - 輕量級狀態管理
 - **React Query** (TanStack Query) - 伺服器狀態管理
-
-### API 與資料
 - **TMDB API** - The Movie Database API 電影資料來源
-
-### 規劃中功能
-- **Firebase Authentication** - 使用者驗證
-- **Firestore Database** - 雲端資料儲存
-
-## 📁 專案結構
-
-```
-src/
-├── components/           # React 元件
-│   ├── features/        # 功能特定元件
-│   │   ├── filter/      # 篩選面板與標籤
-│   │   ├── movie/       # 電影卡片、網格、區塊
-│   │   ├── search/      # 搜尋列與搜尋結果
-│   │   └── wishlist/    # 收藏按鈕與收藏網格
-│   ├── layout/          # 版面配置元件（Header、Footer）
-│   └── ui/              # 可重用 UI 元件（Shadcn）
-├── pages/               # 頁面元件
-│   ├── Home.tsx         # 首頁
-│   ├── MovieDetailPage.tsx  # 電影詳情頁
-│   ├── RandomPick.tsx   # 隨機挑片
-│   ├── Search.tsx       # 搜尋頁面
-│   ├── Top100.tsx       # 熱門排行
-│   └── Wishlist.tsx     # 收藏清單
-├── stores/              # Zustand 狀態管理
-│   ├── authStore.ts     # 驗證狀態
-│   ├── filterStore.ts   # 篩選狀態
-│   ├── themeStore.ts    # 主題狀態
-│   └── wishlistStore.ts # 收藏狀態
-├── services/            # API 服務層
-│   ├── api.ts           # TMDB API 客戶端
-│   └── firebase/        # Firebase 服務（規劃中）
-├── utils/               # 工具函式
-│   ├── constants.ts     # 常數定義
-│   ├── formatters.ts    # 格式化函式
-│   └── imageHelpers.ts  # 圖片處理
-└── types/               # TypeScript 型別定義
-    └── movie.ts         # 電影相關型別
-```
-
-## 🎨 設計理念
-
-- **Bold Typography** - 簡潔現代的字體優先設計
-- **Dark Mode** - 舒適的深色介面
-- **Zero Border Radius** - 銳利且獨特的幾何美學
-- **極簡專注** - 沒有不必要的功能，只專注於核心價值
 
 ## 📄 致謝
 
 - 電影資料由 [TMDB (The Movie Database)](https://www.themoviedb.org/) 提供
-- 本產品使用 TMDB API，但未經 TMDB 認證或背書
+- IMDB/爛番茄評分使用 [OMDb API](https://www.omdbapi.com/)
 
 ---
 

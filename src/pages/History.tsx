@@ -17,6 +17,12 @@ function formatAnswerSummary(answers: Record<string, string>) {
     .join(' / ')
 }
 
+function getRunSourceLabelKey(provider: string) {
+  return provider === 'fallback'
+    ? 'history.source.movieOverview'
+    : 'history.source.aiReason'
+}
+
 export function Component() {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
@@ -110,7 +116,7 @@ export function Component() {
                   {formatAnswerSummary(run.answers)}
                 </p>
                 <Badge variant="secondary">
-                  {run.provider} / {run.model}
+                  {t(getRunSourceLabelKey(run.provider))}
                 </Badge>
               </div>
               <Button
@@ -125,12 +131,12 @@ export function Component() {
               </Button>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-3">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
               {run.recommendations.map((recommendation) => (
                 <div key={recommendation.movie_id} className="space-y-3">
                   <MovieCard movie={recommendation.movie_snapshot} />
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    {recommendation.reason}
+                    {recommendation.reason || t('movieCard.noOverview')}
                   </p>
                 </div>
               ))}

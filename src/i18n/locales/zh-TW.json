@@ -269,7 +269,7 @@
   },
   "history": {
     "title": "推薦紀錄",
-    "subtitle": "查看最近 20 次 AI 推薦結果與當時的選片條件。",
+    "subtitle": "查看最近 20 次選片結果、顯示理由與當時的選片條件。",
     "loading": "載入推薦紀錄中...",
     "deleteAction": "刪除紀錄",
     "confirmDelete": "確定要刪除這筆推薦紀錄？",
@@ -283,6 +283,10 @@
     "empty": {
       "title": "還沒有推薦紀錄",
       "description": "完成一次登入後的 AI 選片，就會在這裡看到紀錄。"
+    },
+    "source": {
+      "aiReason": "AI 理由",
+      "movieOverview": "電影介紹"
     }
   },
   "errors": {

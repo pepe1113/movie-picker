@@ -49,6 +49,19 @@ function run(overrides: Partial<RecommendationRun> = {}): RecommendationRun {
   }
 }
 
+function runWithFiveItems(
+  overrides: Partial<RecommendationRun> = {},
+): RecommendationRun {
+  return run({
+    recommendations: Array.from({ length: 5 }, (_, index) => ({
+      movie_id: index + 1,
+      reason: `理由 ${index + 1}`,
+      movie_snapshot: movie(index + 1, `History Movie ${index + 1}`),
+    })),
+    ...overrides,
+  })
+}
+
 async function renderHistoryPage() {
   const [{ Component }] = await Promise.all([import('@/pages/History')])
   const queryClient = new QueryClient({
@@ -123,14 +136,18 @@ describe('History page', () => {
     setRecommendationHistoryRemoteForTesting({
       listLatest: vi.fn().mockResolvedValue([]),
       deleteRun: vi.fn(),
+      createRun: vi.fn(),
     })
 
     await renderHistoryPage()
 
+    expect(
+      screen.getByText('查看最近 20 次選片結果、顯示理由與當時的選片條件。'),
+    ).toBeInTheDocument()
     expect(await screen.findByText('還沒有推薦紀錄')).toBeInTheDocument()
   })
 
-  it('renders saved recommendation runs without fetching TMDB', async () => {
+  it('renders AI reason runs with source-aware labels and five movies', async () => {
     useAuthStore.getState().setUser({
       uid: 'user-id',
       email: 'user@example.com',
@@ -138,20 +155,56 @@ describe('History page', () => {
       photoURL: null,
     })
     setRecommendationHistoryRemoteForTesting({
-      listLatest: vi.fn().mockResolvedValue([run()]),
+      listLatest: vi.fn().mockResolvedValue([runWithFiveItems()]),
       deleteRun: vi.fn(),
+      createRun: vi.fn(),
     })
 
     await renderHistoryPage()
 
-    expect(await screen.findByText('Speed Night')).toBeInTheDocument()
-    expect(screen.getByText('節奏很適合今晚')).toBeInTheDocument()
+    expect(await screen.findByText('History Movie 1')).toBeInTheDocument()
     expect(screen.getByText('⚡ 刺激')).toHaveClass(
       'rounded-full',
-      'text-[1.5em]',
+      'text-lg',
     )
-    expect(screen.getByText('🤖 deepseek')).toBeInTheDocument()
-    expect(screen.queryByText('deepseek-v4-flash')).not.toBeInTheDocument()
+    expect(screen.getByText('History Movie 5')).toBeInTheDocument()
+    expect(screen.getByText('理由 5')).toBeInTheDocument()
+    expect(screen.getByText('AI 理由')).toBeInTheDocument()
+    expect(
+      screen.queryByText('deepseek / deepseek-v4-flash'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('labels fallback records as movie overviews', async () => {
+    useAuthStore.getState().setUser({
+      uid: 'user-id',
+      email: 'user@example.com',
+      displayName: 'User',
+      photoURL: null,
+    })
+    setRecommendationHistoryRemoteForTesting({
+      listLatest: vi.fn().mockResolvedValue([
+        run({
+          provider: 'fallback',
+          model: 'local-overview',
+          recommendations: [
+            {
+              movie_id: 1,
+              reason: '',
+              movie_snapshot: movie(1, 'Overview Saved'),
+            },
+          ],
+        }),
+      ]),
+      deleteRun: vi.fn(),
+      createRun: vi.fn(),
+    })
+
+    await renderHistoryPage()
+
+    expect(await screen.findByText('Overview Saved')).toBeInTheDocument()
+    expect(screen.getByText('電影介紹')).toBeInTheDocument()
+    expect(screen.getAllByText('暫無簡介').length).toBeGreaterThan(1)
   })
 
   it('deletes one recommendation run after confirmation', async () => {
@@ -167,6 +220,7 @@ describe('History page', () => {
     setRecommendationHistoryRemoteForTesting({
       listLatest: vi.fn().mockResolvedValue([run()]),
       deleteRun,
+      createRun: vi.fn(),
     })
 
     await renderHistoryPage()
@@ -190,6 +244,7 @@ describe('History page', () => {
     setRecommendationHistoryRemoteForTesting({
       listLatest: vi.fn().mockResolvedValue([run()]),
       deleteRun: vi.fn().mockRejectedValue(new Error('delete failed')),
+      createRun: vi.fn(),
     })
 
     await renderHistoryPage()

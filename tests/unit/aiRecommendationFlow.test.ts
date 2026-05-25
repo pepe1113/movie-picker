@@ -36,10 +36,15 @@ describe('AI recommendation flow', () => {
   it('uses remote AI recommendations for authenticated users', async () => {
     const remoteRecommendations: RemoteAiRecommendation[] = [
       { movie_id: 2, reason: '很適合今晚和朋友一起看' },
+      { movie_id: 1, reason: '開場節奏明快' },
     ]
     const requestRemoteRecommendations = vi
       .fn()
-      .mockResolvedValue(remoteRecommendations)
+      .mockResolvedValue({
+        recommendations: remoteRecommendations,
+        provider: 'deepseek',
+        model: 'deepseek-v4-flash',
+      })
 
     const result = await resolveAiPickerRecommendations({
       answers,
@@ -51,7 +56,14 @@ describe('AI recommendation flow', () => {
 
     expect(requestRemoteRecommendations).toHaveBeenCalled()
     expect(result.usedFallback).toBe(false)
+    expect(result.provider).toBe('deepseek')
+    expect(result.model).toBe('deepseek-v4-flash')
     expect(result.recommendations).toEqual([
+      {
+        movie: movie(1),
+        reason: '開場節奏明快',
+        matchedKeywordKeys: [],
+      },
       {
         movie: movie(2),
         reason: '很適合今晚和朋友一起看',
@@ -85,10 +97,13 @@ describe('AI recommendation flow', () => {
       locale: 'zh-TW',
       requestRemoteRecommendations: vi
         .fn()
-        .mockResolvedValue(remoteRecommendations),
+        .mockResolvedValue({ recommendations: remoteRecommendations }),
     })
 
-    expect(result.recommendations[0]?.movie.poster_path).toBe('/poster.jpg')
+    expect(
+      result.recommendations.find((item) => item.movie.id === 2)?.movie
+        .poster_path,
+    ).toBe('/poster.jpg')
   })
 
   it('does not call remote AI recommendations for unauthenticated users', async () => {
@@ -104,11 +119,12 @@ describe('AI recommendation flow', () => {
 
     expect(requestRemoteRecommendations).not.toHaveBeenCalled()
     expect(result.usedFallback).toBe(true)
-    expect(result.recommendations.length).toBeGreaterThan(0)
+    expect(result.recommendations.map((item) => item.movie.id)).toEqual([1, 2])
   })
 
-  it('falls back to rule-based recommendations when remote AI fails', async () => {
-    const result = await resolveAiPickerRecommendations({
+  it('surfaces remote AI failures to the caller', async () => {
+    await expect(
+      resolveAiPickerRecommendations({
       answers,
       candidates: [movie(1), movie(2)],
       isAuthenticated: true,
@@ -116,9 +132,29 @@ describe('AI recommendation flow', () => {
       requestRemoteRecommendations: vi
         .fn()
         .mockRejectedValue(new Error('provider unavailable')),
+      }),
+    ).rejects.toThrow('provider unavailable')
+  })
+
+  it('keeps every submitted movie when a remote reason is missing', async () => {
+    const result = await resolveAiPickerRecommendations({
+      answers,
+      candidates: [movie(1), movie(2), movie(3)],
+      isAuthenticated: true,
+      locale: 'zh-TW',
+      requestRemoteRecommendations: vi.fn().mockResolvedValue({
+        recommendations: [{ movie_id: 2, reason: '很適合今晚' }],
+      }),
     })
 
-    expect(result.usedFallback).toBe(true)
-    expect(result.recommendations.length).toBeGreaterThan(0)
+    expect(result.usedFallback).toBe(false)
+    expect(result.recommendations.map((item) => item.movie.id)).toEqual([
+      1, 2, 3,
+    ])
+    expect(result.recommendations.map((item) => item.reason)).toEqual([
+      undefined,
+      '很適合今晚',
+      undefined,
+    ])
   })
 })

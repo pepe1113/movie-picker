@@ -1,6 +1,7 @@
 import type { Movie } from '@/services/tmdb/types'
 import {
   requestAiRecommendations,
+  type AiRecommendationResponse,
   type AiRecommendationResponseItem,
 } from '@/services/supabase/aiRecommendations'
 import {
@@ -18,6 +19,8 @@ export interface AiPickerDisplayRecommendation extends AiMovieRecommendation {
 export interface AiPickerRecommendationResult {
   recommendations: AiPickerDisplayRecommendation[]
   usedFallback: boolean
+  provider?: string
+  model?: string
 }
 
 interface ResolveAiPickerRecommendationsInput {
@@ -31,27 +34,31 @@ interface ResolveAiPickerRecommendationsInput {
       candidates: Movie[]
       locale: string
     },
-  ) => Promise<RemoteAiRecommendation[]>
+  ) => Promise<AiRecommendationResponse>
 }
 
 function toRemoteDisplayRecommendations(
   remoteRecommendations: RemoteAiRecommendation[],
   candidates: Movie[],
 ) {
-  const movieById = new Map(candidates.map((movie) => [movie.id, movie]))
+  const recommendationByMovieId = new Map(
+    remoteRecommendations.map((recommendation) => [
+      recommendation.movie_id,
+      recommendation,
+    ]),
+  )
 
-  return remoteRecommendations.reduce<AiPickerDisplayRecommendation[]>(
-    (displayRecommendations, recommendation) => {
-      const candidate = movieById.get(recommendation.movie_id)
-      const movie = recommendation.movie_snapshot
+  return candidates.reduce<AiPickerDisplayRecommendation[]>(
+    (displayRecommendations, candidate) => {
+      const recommendation = recommendationByMovieId.get(candidate.id)
+
+      const movie = recommendation?.movie_snapshot
         ? ({ ...candidate, ...recommendation.movie_snapshot } as Movie)
         : candidate
 
-      if (!movie) return displayRecommendations
-
       displayRecommendations.push({
         movie,
-        reason: recommendation.reason,
+        reason: recommendation?.reason,
         matchedKeywordKeys: [],
       })
 
@@ -65,8 +72,12 @@ function getFallbackRecommendations(
   candidates: Movie[],
   answers: AiPickerAnswers,
 ) {
-  return recommendMovies(candidates, answers).map((recommendation) => ({
-    ...recommendation,
+  const fallbackKeywordKeys =
+    recommendMovies(candidates, answers)[0]?.matchedKeywordKeys ?? []
+
+  return candidates.map((movie) => ({
+    movie,
+    matchedKeywordKeys: fallbackKeywordKeys,
     reason: undefined,
   }))
 }
@@ -85,29 +96,24 @@ export async function resolveAiPickerRecommendations({
     }
   }
 
-  try {
-    const remoteRecommendations = await requestRemoteRecommendations({
-      answers,
-      candidates,
-      locale,
-    })
-    const recommendations = toRemoteDisplayRecommendations(
-      remoteRecommendations,
-      candidates,
-    )
+  const remoteResult = await requestRemoteRecommendations({
+    answers,
+    candidates,
+    locale,
+  })
+  const recommendations = toRemoteDisplayRecommendations(
+    remoteResult.recommendations,
+    candidates,
+  )
 
-    if (recommendations.length === 0) {
-      throw new Error('AI recommendations were empty')
-    }
+  if (recommendations.length === 0) {
+    throw new Error('AI recommendations were empty')
+  }
 
-    return {
-      recommendations,
-      usedFallback: false,
-    }
-  } catch {
-    return {
-      recommendations: getFallbackRecommendations(candidates, answers),
-      usedFallback: true,
-    }
+  return {
+    recommendations,
+    usedFallback: false,
+    provider: remoteResult.provider,
+    model: remoteResult.model,
   }
 }

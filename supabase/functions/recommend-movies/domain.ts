@@ -1,7 +1,6 @@
 export const DEFAULT_DEEPSEEK_BASE_URL = 'https://api.deepseek.com'
 export const DEFAULT_DEEPSEEK_MODEL = 'deepseek-v4-flash'
-export const MAX_CANDIDATES = 20
-export const MAX_RECOMMENDATIONS = 3
+export const MAX_MOVIES = 10
 
 export interface CandidateMovie {
   adult?: boolean
@@ -22,7 +21,7 @@ export interface CandidateMovie {
 
 export interface RecommendationRequest {
   answers: Record<string, string>
-  candidates: CandidateMovie[]
+  movies: CandidateMovie[]
   locale: string
 }
 
@@ -34,6 +33,11 @@ export interface ProviderRecommendation {
 export interface NormalizedRecommendation {
   movie_id: number
   reason: string
+}
+
+const DEFAULT_REASON = {
+  'zh-TW': '這部片符合你的選片條件。',
+  en: 'This movie fits your picker answers.',
 }
 
 export function validateRecommendationRequest(
@@ -50,11 +54,11 @@ export function validateRecommendationRequest(
   }
 
   if (
-    !Array.isArray(request.candidates) ||
-    request.candidates.length === 0 ||
-    request.candidates.length > MAX_CANDIDATES
+    !Array.isArray(request.movies) ||
+    request.movies.length === 0 ||
+    request.movies.length > MAX_MOVIES
   ) {
-    throw new Error(`candidates must include 1-${MAX_CANDIDATES} movies`)
+    throw new Error(`movies must include 1-${MAX_MOVIES} movies`)
   }
 
   if (typeof request.locale !== 'string' || request.locale.length === 0) {
@@ -63,36 +67,43 @@ export function validateRecommendationRequest(
 
   return {
     answers: request.answers,
-    candidates: request.candidates,
+    movies: request.movies,
     locale: request.locale,
   }
 }
 
+function limitReason(reason: string, locale: string) {
+  const trimmed = reason.trim()
+  const maxLength = locale === 'zh-TW' ? 50 : 120
+
+  return Array.from(trimmed).slice(0, maxLength).join('')
+}
+
 export function normalizeRecommendations(
   recommendations: ProviderRecommendation[],
-  candidateIds: Set<number>,
+  movies: CandidateMovie[],
+  locale: string,
 ) {
-  const normalized: NormalizedRecommendation[] = []
+  const recommendationByMovieId = new Map<number, string>()
 
   for (const recommendation of recommendations) {
-    if (
-      !candidateIds.has(recommendation.movie_id) ||
-      normalized.some((item) => item.movie_id === recommendation.movie_id)
-    ) {
+    if (recommendationByMovieId.has(recommendation.movie_id)) {
       continue
     }
 
-    normalized.push({
-      movie_id: recommendation.movie_id,
-      reason:
-        recommendation.reason.trim() ||
-        'Recommended from your selected candidates.',
-    })
-
-    if (normalized.length >= MAX_RECOMMENDATIONS) break
+    recommendationByMovieId.set(recommendation.movie_id, recommendation.reason)
   }
 
-  return normalized
+  return movies.map((movie) => {
+    const reason =
+      recommendationByMovieId.get(movie.id) ||
+      DEFAULT_REASON[locale === 'zh-TW' ? 'zh-TW' : 'en']
+
+    return {
+      movie_id: movie.id,
+      reason: limitReason(reason, locale),
+    }
+  })
 }
 
 export function createRecommendationPrompt(request: RecommendationRequest) {
@@ -103,7 +114,7 @@ export function createRecommendationPrompt(request: RecommendationRequest) {
     {
       role: 'system',
       content:
-        `You rerank submitted movie candidates only. Return strict JSON with a recommendations array of objects containing movie_id and reason. Do not invent movie ids. Write every reason in ${outputLanguage}. If output_language is Traditional Chinese, use Traditional Chinese wording, not Simplified Chinese.`,
+        `You write short recommendation reasons for submitted movies only. Return strict JSON with a recommendations array of objects containing movie_id and reason. Return one object for every submitted movie, preserve the submitted order, and do not invent movie ids. Reasons must be 50 Unicode characters or fewer for Traditional Chinese, and 120 characters or fewer for English. Write every reason in ${outputLanguage}. If output_language is Traditional Chinese, use Traditional Chinese wording, not Simplified Chinese. If a movie overview is empty, do not invent plot details.`,
     },
     {
       role: 'user',
@@ -111,7 +122,7 @@ export function createRecommendationPrompt(request: RecommendationRequest) {
         locale: request.locale,
         output_language: outputLanguage,
         answers: request.answers,
-        candidates: request.candidates.map((movie) => ({
+        movies: request.movies.map((movie) => ({
           id: movie.id,
           title: movie.title,
           overview: movie.overview,

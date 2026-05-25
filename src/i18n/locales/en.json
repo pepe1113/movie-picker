@@ -75,6 +75,7 @@
     "error": "Recommendations failed to load. Please try again later.",
     "fastRecommendationPrompt": "Using quick recommendations for now",
     "browseMoviesHint": "Continue to fresh releases",
+    "reasonFallbackNotice": "AI recommendation reasons are unavailable, so movie overviews are shown instead.",
     "reasonPrefix": "Matched",
     "reasonTop": ", making this the closest fit for your full preference set.",
     "reasonFit": ", making this a strong candidate for tonight.",
@@ -276,7 +277,7 @@
   },
   "history": {
     "title": "Recommendation History",
-    "subtitle": "Review the latest 20 AI recommendation runs and their picker answers.",
+    "subtitle": "Review the latest 20 picker results, display reasons, and picker answers.",
     "loading": "Loading recommendation history...",
     "deleteAction": "Delete run",
     "confirmDelete": "Delete this recommendation run?",
@@ -290,6 +291,10 @@
     "empty": {
       "title": "No recommendation history yet",
       "description": "Complete a signed-in AI picker run to see it here."
+    },
+    "source": {
+      "aiReason": "AI Reason",
+      "movieOverview": "Movie Overview"
     }
   },
   "errors": {

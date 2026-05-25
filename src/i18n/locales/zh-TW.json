@@ -75,6 +75,7 @@
     "error": "推薦片單載入失敗，請稍後再試。",
     "fastRecommendationPrompt": "目前使用快速推薦",
     "browseMoviesHint": "繼續看最新電影",
+    "reasonFallbackNotice": "AI 推薦理由暫時無法產生，已改顯示電影介紹。",
     "reasonPrefix": "命中",
     "reasonTop": "，這部最接近你的完整偏好。",
     "reasonFit": "，適合作為今晚的候選片。",
@@ -276,7 +277,7 @@
   },
   "history": {
     "title": "推薦紀錄",
-    "subtitle": "查看最近 20 次 AI 推薦結果與當時的選片條件。",
+    "subtitle": "查看最近 20 次選片結果、顯示理由與當時的選片條件。",
     "loading": "載入推薦紀錄中...",
     "deleteAction": "刪除紀錄",
     "confirmDelete": "確定要刪除這筆推薦紀錄？",
@@ -290,6 +291,10 @@
     "empty": {
       "title": "還沒有推薦紀錄",
       "description": "完成一次登入後的 AI 選片，就會在這裡看到紀錄。"
+    },
+    "source": {
+      "aiReason": "AI 理由",
+      "movieOverview": "電影介紹"
     }
   },
   "errors": {

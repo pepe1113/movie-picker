@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'motion/react'
 import { Check, ChevronDown, RotateCcw } from 'lucide-react'
@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { AiPickerPreferenceBadge } from '@/components/features/ai-picker/AiPickerPreferenceBadge'
 import { MovieCard } from '@/components/features/movie/MovieCard'
 import { discoverMovies } from '@/services/tmdb/api'
+import { getRecommendationHistoryRemote } from '@/services/supabase/recommendationHistory'
 import { useAuthStore } from '@/stores/authStore'
 import { useLanguageStore } from '@/stores/languageStore'
 import { cn } from '@/lib/utils'
@@ -29,12 +30,13 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const { t } = useTranslation()
   const language = useLanguageStore((state) => state.language)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
-
+  const user = useAuthStore((state) => state.user)
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<Partial<AiPickerAnswers>>({})
   const [hasSubmitted, setHasSubmitted] = useState(false)
   const [isAdvancing, setIsAdvancing] = useState(false)
   const advanceTimerRef = useRef<number | null>(null)
+  const fallbackHistoryKeyRef = useRef<string | null>(null)
 
   const currentQuestion = AI_PICKER_QUESTIONS[step]
   const isComplete = AI_PICKER_QUESTIONS.every(
@@ -52,8 +54,8 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
     }
   }, [])
 
-  const recommendationQuery = useQuery({
-    queryKey: ['ai-picker', completedAnswers, language, isAuthenticated],
+  const movieQuery = useQuery({
+    queryKey: ['ai-picker-movies', completedAnswers, language],
     queryFn: async () => {
       if (!completedAnswers) {
         throw new Error('AI picker answers are incomplete')
@@ -64,18 +66,94 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
         language: TMDB_LANGUAGE_MAP[language],
       })
 
-      return resolveAiPickerRecommendations({
-        answers: completedAnswers,
-        candidates: candidateResponse.results,
-        isAuthenticated,
-        locale: language,
-      })
+      return candidateResponse.results.slice(0, 5)
     },
     enabled: hasSubmitted && Boolean(completedAnswers),
   })
 
-  const recommendations = recommendationQuery.data?.recommendations ?? []
-  const usedFallback = recommendationQuery.data?.usedFallback ?? false
+  const displayedMovies = useMemo(() => movieQuery.data ?? [], [movieQuery.data])
+
+  const reasonQuery = useQuery({
+    queryKey: [
+      'ai-picker-reasons',
+      completedAnswers,
+      language,
+      isAuthenticated,
+      displayedMovies.map((movie) => movie.id),
+    ],
+    queryFn: async () => {
+      if (!completedAnswers) {
+        throw new Error('AI picker answers are incomplete')
+      }
+
+      return resolveAiPickerRecommendations({
+        answers: completedAnswers,
+        candidates: displayedMovies,
+        isAuthenticated,
+        locale: language,
+      })
+    },
+    enabled:
+      hasSubmitted &&
+      Boolean(completedAnswers) &&
+      isAuthenticated &&
+      displayedMovies.length > 0,
+    retry: false,
+  })
+
+  const recommendations =
+    reasonQuery.data?.recommendations ??
+    displayedMovies.map((movie) => ({
+      movie,
+      matchedKeywordKeys: keywordKeys,
+      reason: undefined,
+    }))
+  const usedFallback = reasonQuery.data?.usedFallback ?? false
+  const shouldShowOverviewReasons = !isAuthenticated || reasonQuery.isError
+
+  useEffect(() => {
+    if (
+      !reasonQuery.isError ||
+      !reasonQuery.error ||
+      !completedAnswers ||
+      !user ||
+      displayedMovies.length === 0
+    ) {
+      return
+    }
+
+    const fallbackHistoryKey = `${user.uid}:${displayedMovies
+      .map((movie) => movie.id)
+      .join(',')}`
+    if (fallbackHistoryKeyRef.current === fallbackHistoryKey) return
+
+    fallbackHistoryKeyRef.current = fallbackHistoryKey
+    console.error('AI recommendation reasons failed', reasonQuery.error)
+
+    getRecommendationHistoryRemote()
+      .createRun({
+        userId: user.uid,
+        answers: completedAnswers,
+        candidateMovieIds: displayedMovies.map((movie) => movie.id),
+        recommendations: displayedMovies.map((movie) => ({
+          movie_id: movie.id,
+          reason: movie.overview || t('movieCard.noOverview'),
+          movie_snapshot: movie,
+        })),
+        provider: 'fallback',
+        model: 'local-overview',
+      })
+      .catch((error: unknown) => {
+        console.error('Fallback recommendation history write failed', error)
+      })
+  }, [
+    completedAnswers,
+    displayedMovies,
+    reasonQuery.error,
+    reasonQuery.isError,
+    t,
+    user,
+  ])
 
   const selectAnswer = (questionId: AiPickerQuestionId, value: string) => {
     if (isAdvancing || advanceTimerRef.current) return
@@ -106,6 +184,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
     setAnswers({})
     setHasSubmitted(false)
     setIsAdvancing(false)
+    fallbackHistoryKeyRef.current = null
   }
 
   return (
@@ -226,12 +305,12 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 </Button>
               </div>
 
-              {recommendationQuery.isLoading && (
+              {movieQuery.isLoading && (
                 <div
                   className="grid gap-5 md:grid-cols-3"
                   aria-label={t('aiPicker.loading')}
                 >
-                  {Array.from({ length: 3 }, (_, index) => (
+                  {Array.from({ length: 5 }, (_, index) => (
                     <div key={index} className="space-y-3">
                       <Skeleton className="aspect-[2/3] w-full rounded-lg" />
                       <div className="space-y-2 p-1">
@@ -247,7 +326,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 </div>
               )}
 
-              {recommendationQuery.isError && (
+              {movieQuery.isError && (
                 <div className="border-border bg-secondary rounded-lg border p-6 text-center">
                   <p className="text-muted-foreground">{t('aiPicker.error')}</p>
                 </div>
@@ -259,17 +338,31 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 </p>
               )}
 
+              {reasonQuery.isError && recommendations.length > 0 && (
+                <p className="border-border bg-secondary text-muted-foreground rounded-lg border px-4 py-3 text-sm">
+                  {t('aiPicker.reasonFallbackNotice')}
+                </p>
+              )}
+
               {recommendations.length > 0 && (
-                <div className="grid gap-5 md:grid-cols-3">
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
                   {recommendations.map((recommendation, index) => (
                     <div key={recommendation.movie.id} className="space-y-3">
                       <MovieCard
                         movie={recommendation.movie}
                         enableTrailerPreview
                       />
-                      <p className="text-muted-foreground text-sm leading-relaxed">
+                      <div className="text-muted-foreground text-sm leading-relaxed">
                         {recommendation.reason ? (
                           recommendation.reason
+                        ) : reasonQuery.isLoading ? (
+                          <span className="block space-y-2">
+                            <Skeleton className="h-3 w-full" />
+                            <Skeleton className="h-3 w-5/6" />
+                          </span>
+                        ) : shouldShowOverviewReasons ? (
+                          recommendation.movie.overview ||
+                          t('movieCard.noOverview')
                         ) : (
                           <>
                             {t('aiPicker.reasonPrefix')}{' '}
@@ -287,7 +380,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                               : t('aiPicker.reasonFit')}
                           </>
                         )}
-                      </p>
+                      </div>
                     </div>
                   ))}
                 </div>

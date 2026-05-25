@@ -1,9 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { MainLayout } from '@/components/layout/MainLayout'
 
-// Set base path for GitHub Pages deployment
-const basename =
-  import.meta.env.MODE === 'production' ? '/movie-picker-demo' : '/'
+const basename = '/'
 
 export const router = createBrowserRouter(
   [

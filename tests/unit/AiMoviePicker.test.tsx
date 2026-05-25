@@ -83,6 +83,10 @@ async function renderPicker() {
   )
 }
 
+function findPickerButton(name: RegExp) {
+  return screen.findByRole('button', { name }, { timeout: 5000 })
+}
+
 describe('AiMoviePicker', () => {
   it(
     'does not skip a question when an option is double-clicked',
@@ -154,16 +158,46 @@ describe('AiMoviePicker', () => {
       const user = userEvent.setup()
 
       await user.click(screen.getByRole('button', { name: /刺激/ }))
-      await user.click(await screen.findByRole('button', { name: /朋友/ }))
-      await user.click(await screen.findByRole('button', { name: /快節奏/ }))
-      await user.click(await screen.findByRole('button', { name: /近年/ }))
+      await user.click(await findPickerButton(/朋友/))
+      await user.click(await findPickerButton(/快節奏/))
+      await user.click(await findPickerButton(/近年/))
 
       await waitFor(() => {
         expect(screen.getByText('Picked Movie 1')).toBeInTheDocument()
       })
+      expect(
+        await screen.findByRole('region', {
+          name: /AI 推薦片單輪播/,
+        }),
+      ).toBeInTheDocument()
       expect(screen.getByText('Picked Movie 5')).toBeInTheDocument()
       expect(screen.queryByText('Picked Movie 6')).not.toBeInTheDocument()
       expect(requestAiRecommendations).toHaveBeenCalled()
+    },
+    15000,
+  )
+
+  it(
+    'uses carousel-shaped skeletons while recommendations are loading',
+    async () => {
+      const user = userEvent.setup()
+      vi.mocked(discoverMovies).mockImplementation(
+        () => new Promise(() => undefined),
+      )
+
+      await renderPicker()
+
+      await user.click(screen.getByRole('button', { name: /刺激/ }))
+      await user.click(await findPickerButton(/朋友/))
+      await user.click(await findPickerButton(/快節奏/))
+      await user.click(await findPickerButton(/近年/))
+
+      const loadingRegion = await screen.findByLabelText(
+        '正在分析你的觀影偏好...',
+      )
+
+      expect(loadingRegion).not.toHaveClass('grid')
+      expect(loadingRegion).toHaveClass('space-y-5')
     },
     15000,
   )
@@ -184,9 +218,9 @@ describe('AiMoviePicker', () => {
       await renderPicker()
 
       await user.click(screen.getByRole('button', { name: /刺激/ }))
-      await user.click(await screen.findByRole('button', { name: /朋友/ }))
-      await user.click(await screen.findByRole('button', { name: /快節奏/ }))
-      await user.click(await screen.findByRole('button', { name: /近年/ }))
+      await user.click(await findPickerButton(/朋友/))
+      await user.click(await findPickerButton(/快節奏/))
+      await user.click(await findPickerButton(/近年/))
 
       expect(await screen.findByText('Guest Movie 1')).toBeInTheDocument()
       expect(screen.getAllByText('Overview 1').length).toBeGreaterThan(1)
@@ -234,9 +268,9 @@ describe('AiMoviePicker', () => {
       await renderPicker()
 
       await user.click(screen.getByRole('button', { name: /刺激/ }))
-      await user.click(await screen.findByRole('button', { name: /朋友/ }))
-      await user.click(await screen.findByRole('button', { name: /快節奏/ }))
-      await user.click(await screen.findByRole('button', { name: /近年/ }))
+      await user.click(await findPickerButton(/朋友/))
+      await user.click(await findPickerButton(/快節奏/))
+      await user.click(await findPickerButton(/近年/))
 
       expect(await screen.findByText('Fallback Movie 1')).toBeInTheDocument()
       expect(

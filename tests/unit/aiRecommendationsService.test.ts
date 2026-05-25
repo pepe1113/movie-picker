@@ -46,7 +46,7 @@ describe('AI recommendation Supabase service', () => {
     })
     vi.mocked(getSupabaseClient).mockReturnValue({
       functions: { invoke },
-    } as ReturnType<typeof getSupabaseClient>)
+    } as unknown as ReturnType<typeof getSupabaseClient>)
 
     const result = await requestAiRecommendations({
       answers,
@@ -79,7 +79,7 @@ describe('AI recommendation Supabase service', () => {
     })
     vi.mocked(getSupabaseClient).mockReturnValue({
       functions: { invoke },
-    } as ReturnType<typeof getSupabaseClient>)
+    } as unknown as ReturnType<typeof getSupabaseClient>)
 
     await requestAiRecommendations({
       answers,

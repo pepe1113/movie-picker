@@ -79,6 +79,13 @@
     "reasonPrefix": "命中",
     "reasonTop": "，這部最接近你的完整偏好。",
     "reasonFit": "，適合作為今晚的候選片。",
+    "carousel": {
+      "label": "AI 推薦片單輪播",
+      "previous": "上一部推薦",
+      "next": "下一部推薦",
+      "goTo": "顯示《{{title}}》",
+      "reasonLabel": "推薦原因"
+    },
     "questions": {
       "mood": {
         "title": "今晚想要哪種情緒？",

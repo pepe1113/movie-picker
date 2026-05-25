@@ -79,6 +79,13 @@
     "reasonPrefix": "Matched",
     "reasonTop": ", making this the closest fit for your full preference set.",
     "reasonFit": ", making this a strong candidate for tonight.",
+    "carousel": {
+      "label": "AI recommendation carousel",
+      "previous": "Previous recommendation",
+      "next": "Next recommendation",
+      "goTo": "Show {{title}}",
+      "reasonLabel": "Why this movie"
+    },
     "questions": {
       "mood": {
         "title": "What mood do you want tonight?",

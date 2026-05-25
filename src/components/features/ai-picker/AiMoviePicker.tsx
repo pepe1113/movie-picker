@@ -4,9 +4,11 @@ import { motion } from 'motion/react'
 import { Check, ChevronDown, RotateCcw } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
+import {
+  AiRecommendationCarousel,
+  AiRecommendationCarouselSkeleton,
+} from '@/components/features/ai-picker/AiRecommendationCarousel'
 import { AiPickerPreferenceBadge } from '@/components/features/ai-picker/AiPickerPreferenceBadge'
-import { MovieCard } from '@/components/features/movie/MovieCard'
 import { discoverMovies } from '@/services/tmdb/api'
 import { getRecommendationHistoryRemote } from '@/services/supabase/recommendationHistory'
 import { useAuthStore } from '@/stores/authStore'
@@ -298,7 +300,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 <Button
                   variant="ghost"
                   onClick={reset}
-                  className="absolute top-0 right-0"
+                  className="mx-auto mt-3 sm:absolute sm:top-0 sm:right-0 sm:mt-0"
                 >
                   <RotateCcw className="size-4" />
                   {t('aiPicker.restart')}
@@ -306,24 +308,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
               </div>
 
               {movieQuery.isLoading && (
-                <div
-                  className="grid gap-5 md:grid-cols-3"
-                  aria-label={t('aiPicker.loading')}
-                >
-                  {Array.from({ length: 5 }, (_, index) => (
-                    <div key={index} className="space-y-3">
-                      <Skeleton className="aspect-[2/3] w-full rounded-lg" />
-                      <div className="space-y-2 p-1">
-                        <Skeleton className="h-4 w-3/4" />
-                        <Skeleton className="h-3 w-1/3" />
-                      </div>
-                      <div className="space-y-2">
-                        <Skeleton className="h-3 w-full" />
-                        <Skeleton className="h-3 w-5/6" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <AiRecommendationCarouselSkeleton />
               )}
 
               {movieQuery.isError && (
@@ -345,45 +330,11 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
               )}
 
               {recommendations.length > 0 && (
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-                  {recommendations.map((recommendation, index) => (
-                    <div key={recommendation.movie.id} className="space-y-3">
-                      <MovieCard
-                        movie={recommendation.movie}
-                        enableTrailerPreview
-                      />
-                      <div className="text-muted-foreground text-sm leading-relaxed">
-                        {recommendation.reason ? (
-                          recommendation.reason
-                        ) : reasonQuery.isLoading ? (
-                          <span className="block space-y-2">
-                            <Skeleton className="h-3 w-full" />
-                            <Skeleton className="h-3 w-5/6" />
-                          </span>
-                        ) : shouldShowOverviewReasons ? (
-                          recommendation.movie.overview ||
-                          t('movieCard.noOverview')
-                        ) : (
-                          <>
-                            {t('aiPicker.reasonPrefix')}{' '}
-                            {recommendation.matchedKeywordKeys.map(
-                              (keywordKey) => (
-                                <AiPickerPreferenceBadge
-                                  key={`${recommendation.movie.id}-${keywordKey}`}
-                                  keywordKey={keywordKey}
-                                  className="mx-0.5 align-middle"
-                                />
-                              ),
-                            )}{' '}
-                            {index === 0
-                              ? t('aiPicker.reasonTop')
-                              : t('aiPicker.reasonFit')}
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <AiRecommendationCarousel
+                  recommendations={recommendations}
+                  isReasonLoading={reasonQuery.isLoading}
+                  shouldShowOverviewReasons={shouldShowOverviewReasons}
+                />
               )}
             </div>
           )}

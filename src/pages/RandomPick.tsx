@@ -84,33 +84,22 @@ export function Component() {
 
   return (
     <div className="min-h-screen pb-20">
-      {/* Hero Section - Bold Typography */}
       <section className="border-border relative overflow-hidden border-b">
-        {/* Decorative dice background */}
-        <div
-          className="text-border pointer-events-none absolute top-0 -right-10 text-[16rem] leading-none font-bold tracking-tighter opacity-10 select-none md:text-[20rem] lg:text-[24rem]"
-          aria-hidden="true"
-        >
-          🎲
-        </div>
-
-        <div className="relative container mx-auto px-6 py-20 md:px-12 md:py-28 lg:px-16 lg:py-40">
+        <div className="relative container mx-auto px-6 py-16 md:px-12 md:py-24 lg:px-16 lg:py-28">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="max-w-4xl space-y-8"
+            className="max-w-3xl space-y-6"
           >
-            {/* Accent bar */}
-            <div className="bg-accent h-1 w-24" aria-hidden="true" />
-
-            {/* Main headline */}
-            <h1 className="text-5xl leading-none font-bold tracking-tighter md:text-6xl lg:text-7xl xl:text-8xl">
+            <span className="bg-primary text-primary-foreground inline-flex size-12 items-center justify-center rounded-full shadow-[rgba(0,0,0,0.5)_0px_8px_24px]">
+              <Dice5 className="size-6" />
+            </span>
+            <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl">
               {t('random.title')}
             </h1>
 
-            {/* Subtitle */}
-            <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed md:text-xl">
+            <p className="text-muted-foreground max-w-2xl text-base leading-relaxed md:text-lg">
               {t('random.subtitle')}
             </p>
           </motion.div>
@@ -118,24 +107,23 @@ export function Component() {
       </section>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-16 md:px-12 md:py-20 lg:px-16">
+      <div className="container mx-auto px-6 py-12 md:px-12 md:py-16 lg:px-16">
         <div className="mx-auto max-w-6xl space-y-12">
-          {/* Mode Selection - Bold Typography Tabs */}
           <Tabs
             value={mode}
             onValueChange={(v) => handleModeChange(v as typeof mode)}
           >
             <div className="flex justify-center">
-              <TabsList className="gap-8 bg-transparent p-0">
+              <TabsList className="bg-secondary rounded-full p-1 shadow-[rgba(0,0,0,0.3)_0px_8px_8px]">
                 <TabsTrigger
                   value="random"
-                  className="text-sm tracking-widest uppercase"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full px-5 text-xs font-bold tracking-[1.4px] uppercase"
                 >
                   {t('random.modes.random')}
                 </TabsTrigger>
                 <TabsTrigger
                   value="filtered"
-                  className="text-sm tracking-widest uppercase"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full px-5 text-xs font-bold tracking-[1.4px] uppercase"
                 >
                   {t('random.modes.filtered')}
                 </TabsTrigger>
@@ -146,11 +134,7 @@ export function Component() {
             <TabsContent value="random" className="mt-12">
               <div className="space-y-8 text-center">
                 <div className="space-y-2">
-                  <div
-                    className="bg-accent mx-auto h-0.5 w-16"
-                    aria-hidden="true"
-                  />
-                  <p className="text-muted-foreground font-mono text-sm tracking-wide uppercase">
+                  <p className="text-muted-foreground text-sm">
                     {t('random.descriptions.random')}
                   </p>
                 </div>
@@ -161,15 +145,11 @@ export function Component() {
             <TabsContent value="filtered" className="mt-12">
               <div className="space-y-8">
                 <div className="space-y-2 text-center">
-                  <div
-                    className="bg-accent mx-auto h-0.5 w-16"
-                    aria-hidden="true"
-                  />
-                  <p className="text-muted-foreground font-mono text-sm tracking-wide uppercase">
+                  <p className="text-muted-foreground text-sm">
                     {t('random.descriptions.filtered')}
                   </p>
                 </div>
-                <div className="mx-auto max-w-md">
+                <div className="bg-card mx-auto max-w-md rounded-lg p-5 shadow-[rgba(0,0,0,0.3)_0px_8px_8px]">
                   <FilterPanel />
                 </div>
               </div>
@@ -182,7 +162,7 @@ export function Component() {
               size="lg"
               onClick={roll}
               disabled={isLoading}
-              className="h-20 gap-4 px-12 text-xl"
+              className="h-16 gap-4 px-9 text-sm"
             >
               <motion.div
                 animate={
@@ -224,11 +204,7 @@ export function Component() {
               >
                 <div className="space-y-8">
                   <div className="space-y-2 text-center">
-                    <div
-                      className="bg-accent mx-auto h-0.5 w-16"
-                      aria-hidden="true"
-                    />
-                    <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+                    <h2 className="text-2xl font-bold md:text-3xl">
                       {t('random.results.title')}
                     </h2>
                   </div>
@@ -243,7 +219,7 @@ export function Component() {
                         className="group relative"
                       >
                         <Link to={ROUTES.MOVIE_DETAIL(movie.id)}>
-                          <div className="border-border bg-muted hover:border-accent relative aspect-[2/3] overflow-hidden border-2 transition-colors">
+                          <div className="bg-muted relative aspect-[2/3] overflow-hidden rounded-lg shadow-[rgba(0,0,0,0.3)_0px_8px_8px]">
                             <img
                               src={getPosterUrl(movie.poster_path, 'large')}
                               alt={movie.title}
@@ -251,11 +227,11 @@ export function Component() {
                             />
 
                             {/* Info overlay */}
-                            <div className="border-border bg-background/95 absolute inset-x-0 bottom-0 space-y-3 border-t p-6 backdrop-blur-sm">
-                              <h3 className="text-lg leading-tight font-bold">
+                            <div className="bg-background/95 absolute inset-x-0 bottom-0 space-y-3 p-5 backdrop-blur-sm">
+                              <h3 className="text-base leading-tight font-bold">
                                 {movie.title}
                               </h3>
-                              <div className="text-muted-foreground flex items-center gap-3 font-mono text-xs tracking-wide uppercase">
+                              <div className="text-muted-foreground flex items-center gap-3 text-xs">
                                 <span className="flex items-center gap-1">
                                   <Star className="size-3 fill-yellow-400 text-yellow-400" />
                                   {formatRating(movie.vote_average)}
@@ -277,8 +253,7 @@ export function Component() {
                           <WishlistButton movie={movie} />
                         </div>
 
-                        {/* Result number badge */}
-                        <div className="border-accent bg-background text-accent absolute top-4 left-4 flex size-10 items-center justify-center border font-mono text-lg font-bold">
+                        <div className="bg-primary text-primary-foreground absolute top-4 left-4 flex size-10 items-center justify-center rounded-full text-sm font-bold shadow-[rgba(0,0,0,0.5)_0px_8px_24px]">
                           {index + 1}
                         </div>
                       </motion.div>
@@ -292,7 +267,9 @@ export function Component() {
           {/* No Results */}
           {noResults && !isLoading && (
             <div className="space-y-6 py-20 text-center">
-              <div className="text-8xl">🎬</div>
+              <span className="bg-secondary text-muted-foreground mx-auto flex size-20 items-center justify-center rounded-full">
+                <Dice5 className="size-10 stroke-1" />
+              </span>
               <div className="space-y-2">
                 <h3 className="text-2xl font-bold tracking-tight">
                   {t('random.noResults.title')}

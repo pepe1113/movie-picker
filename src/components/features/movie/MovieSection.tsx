@@ -14,7 +14,12 @@ interface MovieSectionProps {
   limit?: number
   moreLink?: string
   moreLinkText?: string
-  sectionNumber?: string
+  hasMore?: boolean
+  isLoadingMore?: boolean
+  onLoadMore?: () => void
+  loadMoreText?: string
+  sectionLabel?: string
+  enableTrailerPreview?: boolean
 }
 
 export function MovieSection({
@@ -25,37 +30,34 @@ export function MovieSection({
   limit,
   moreLink,
   moreLinkText,
-  sectionNumber,
+  hasMore = false,
+  isLoadingMore = false,
+  onLoadMore,
+  loadMoreText,
+  sectionLabel,
+  enableTrailerPreview = false,
 }: MovieSectionProps) {
   const { t } = useTranslation()
   const displayMovies = limit ? movies.slice(0, limit) : movies
   const linkText = moreLinkText || t('movieSection.viewMore')
+  const buttonText = loadMoreText || t('movieSection.viewMore')
 
   return (
     <section className="relative">
-      {/* Decorative section number */}
-      {sectionNumber && (
-        <div
-          className="pointer-events-none absolute -left-4 -top-8 select-none text-[8rem] font-bold leading-none tracking-tighter text-border opacity-30 md:-left-8 md:text-[12rem] lg:text-[14rem]"
-          aria-hidden="true"
-        >
-          {sectionNumber}
-        </div>
-      )}
-
       <div className="relative space-y-8">
         {/* Section Header */}
-        <div className="flex items-end justify-between">
+        <div className="flex items-end justify-between gap-4">
           <div className="space-y-2">
-            {/* Accent bar */}
-            <div className="h-0.5 w-12 bg-accent" aria-hidden="true" />
+            {sectionLabel && (
+              <p className="text-primary text-xs font-bold tracking-[1.6px] uppercase">
+                {sectionLabel}
+              </p>
+            )}
 
-            <h2 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-              {title}
-            </h2>
+            <h2 className="text-2xl font-bold md:text-3xl">{title}</h2>
 
             {subtitle && (
-              <p className="text-base text-muted-foreground md:text-lg">
+              <p className="text-muted-foreground text-base md:text-lg">
                 {subtitle}
               </p>
             )}
@@ -73,16 +75,33 @@ export function MovieSection({
 
         {/* Movie Grid */}
         {isLoading ? (
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
             {Array.from({ length: limit ?? 12 }).map((_, i) => (
               <MovieSkeleton key={i} />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
             {displayMovies.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
+              <MovieCard
+                key={movie.id}
+                movie={movie}
+                enableTrailerPreview={enableTrailerPreview}
+              />
             ))}
+          </div>
+        )}
+
+        {hasMore && onLoadMore && (
+          <div className="flex justify-center pt-2">
+            <Button
+              variant="ghost"
+              onClick={onLoadMore}
+              disabled={isLoadingMore}
+            >
+              {isLoadingMore ? t('common.loading') : buttonText}
+              <ArrowRight className="size-4" />
+            </Button>
           </div>
         )}
 

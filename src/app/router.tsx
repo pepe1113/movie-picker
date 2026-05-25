@@ -1,9 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { MainLayout } from '@/components/layout/MainLayout'
 
-// Set base path for GitHub Pages deployment
-const basename =
-  import.meta.env.MODE === 'production' ? '/movie-picker-demo' : '/'
+const basename = '/'
 
 export const router = createBrowserRouter(
   [
@@ -33,6 +31,10 @@ export const router = createBrowserRouter(
         {
           path: '/wishlist',
           lazy: () => import('@/pages/Wishlist'),
+        },
+        {
+          path: '/history',
+          lazy: () => import('@/pages/History'),
         },
         {
           path: '*',

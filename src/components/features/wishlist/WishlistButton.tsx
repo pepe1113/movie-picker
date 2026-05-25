@@ -19,16 +19,20 @@ export function WishlistButton({
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlistStore()
   const isWishlisted = isInWishlist(movie.id)
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
-    if (isWishlisted) {
-      removeFromWishlist(movie.id)
-      toast.success(t('wishlist.button.removedToast', { title: movie.title }))
-    } else {
-      addToWishlist(movie)
-      toast.success(t('wishlist.button.addedToast', { title: movie.title }))
+    try {
+      if (isWishlisted) {
+        await removeFromWishlist(movie.id)
+        toast.success(t('wishlist.button.removedToast', { title: movie.title }))
+      } else {
+        await addToWishlist(movie)
+        toast.success(t('wishlist.button.addedToast', { title: movie.title }))
+      }
+    } catch {
+      toast.error(t('wishlist.button.syncFailed'))
     }
   }
 
@@ -36,9 +40,11 @@ export function WishlistButton({
     <motion.div whileTap={{ scale: 0.85 }}>
       <Button
         variant={isWishlisted ? 'default' : 'secondary'}
-        size={size === 'lg' ? 'default' : 'icon-sm'}
+        size={size === 'lg' ? 'lg' : 'icon-sm'}
         onClick={handleClick}
-        className={size === 'lg' ? 'gap-2' : ''}
+        className={
+          size === 'lg' ? 'gap-2' : 'shadow-[rgba(0,0,0,0.5)_0px_8px_24px]'
+        }
       >
         <Heart className={`size-4 ${isWishlisted ? 'fill-current' : ''}`} />
         {size === 'lg' &&

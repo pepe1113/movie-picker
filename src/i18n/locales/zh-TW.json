@@ -13,7 +13,8 @@
     "home": "首頁",
     "top100": "Top 100",
     "random": "隨機挑片",
-    "wishlist": "收藏清單"
+    "wishlist": "收藏清單",
+    "history": "推薦紀錄"
   },
   "home": {
     "hero": {
@@ -22,16 +23,165 @@
       "ctaRandom": "開始隨機挑片",
       "ctaTop100": "瀏覽 TOP 100"
     },
+    "aiHero": {
+      "badge": "今晚交給 AI 挑片",
+      "title": "別再滑片單，讓 AI 直接開演",
+      "subtitle": "回答 4 題，Movie Picker 會從最新電影池裡挑出 3 部適合今晚的候選片。",
+      "cta": "開始 AI 挑片",
+      "scrollHint": "往下開始"
+    },
     "sections": {
       "trending": "本週趨勢",
+      "trendingLabel": "正在升溫",
+      "nowPlaying": "最新上映",
+      "nowPlayingLabel": "院線新片",
       "popular": "熱門電影",
+      "popularLabel": "大眾熱度",
       "topRated": "高評分電影",
+      "topRatedLabel": "影迷口碑",
       "viewAll": "查看完整 TOP 100"
     }
   },
   "footer": {
     "tmdbDisclaimer": "本產品使用 TMDB API，但未經 TMDB 認可或認證。",
-    "copyright": "Movie Picker"
+    "copyright": "Movie Picker",
+    "ticker": "AI 選片上線中 / 本週趨勢同步 / 熱門片單掃描 / 低延遲預告片預覽 / 今晚別再選擇困難"
+  },
+  "aiPicker": {
+    "badge": "AI 選片指南",
+    "title": "回答 4 題，今晚片單直接出爐",
+    "heroTitles": [
+      "🍷 紅酒倒好了，電影也該上場 🎬",
+      "🎬 今晚不猜片，讓靈感自己開演 🍷",
+      "🍷 挑片別皺眉，今晚交給 Movie Picker 🎬",
+      "🎬 片荒退散，紅酒與好電影集合 🍷",
+      "🍷 你的沙發特映會，現在開始 🎬",
+      "🎬 一杯紅酒，一部剛剛好的電影 🍷",
+      "🍷 不再滑片單，今晚直接開播 🎬",
+      "🎬 讓選擇困難下片，讓電影登場 🍷",
+      "🍷 今晚的電影運氣，由你開瓶 🎬",
+      "🍷 電影杯倒滿，今晚片單開演 🎬"
+    ],
+    "subtitle": "用你的情緒、觀影場合、節奏與年代偏好，快速篩出 3 部最適合今晚的電影。",
+    "heroHint": "往下回答問題，選完會自動前進。",
+    "progressLabel": "選片進度",
+    "back": "上一步",
+    "next": "下一題",
+    "autoAdvance": "選擇後自動進入下一題",
+    "getPicks": "生成片單",
+    "restart": "重新選片",
+    "resultsTitle": "你的 AI 推薦片單",
+    "loading": "正在分析你的觀影偏好...",
+    "error": "推薦片單載入失敗，請稍後再試。",
+    "fastRecommendationPrompt": "目前使用快速推薦",
+    "browseMoviesHint": "繼續看最新電影",
+    "reasonFallbackNotice": "AI 推薦理由暫時無法產生，已改顯示電影介紹。",
+    "reasonPrefix": "命中",
+    "reasonTop": "，這部最接近你的完整偏好。",
+    "reasonFit": "，適合作為今晚的候選片。",
+    "carousel": {
+      "label": "AI 推薦片單輪播",
+      "previous": "上一部推薦",
+      "next": "下一部推薦",
+      "goTo": "顯示《{{title}}》",
+      "reasonLabel": "推薦原因"
+    },
+    "questions": {
+      "mood": {
+        "title": "今晚想要哪種情緒？",
+        "subtitle": "先決定電影要帶你進入的狀態。",
+        "options": {
+          "relaxed": {
+            "label": "放鬆",
+            "description": "輕鬆、幽默、不需要太多心理負擔",
+            "keyword": "放鬆"
+          },
+          "exciting": {
+            "label": "刺激",
+            "description": "動作、冒險、緊張感要夠",
+            "keyword": "刺激"
+          },
+          "moving": {
+            "label": "感動",
+            "description": "情感濃度高，看完能留在心裡",
+            "keyword": "感動"
+          },
+          "mindBending": {
+            "label": "燒腦",
+            "description": "懸疑、科幻、反轉或世界觀設定",
+            "keyword": "燒腦"
+          }
+        }
+      },
+      "occasion": {
+        "title": "這次誰一起看？",
+        "subtitle": "不同場合適合不同的安全牌。",
+        "options": {
+          "solo": {
+            "label": "自己看",
+            "description": "可以更沉浸，也能接受題材重一點",
+            "keyword": "自己看"
+          },
+          "date": {
+            "label": "約會",
+            "description": "氛圍要好，討論起來也不尷尬",
+            "keyword": "約會"
+          },
+          "friends": {
+            "label": "朋友聚會",
+            "description": "節奏明快，大家容易一起投入",
+            "keyword": "朋友聚會"
+          },
+          "family": {
+            "label": "家庭一起看",
+            "description": "門檻低、接受度高、適合多人",
+            "keyword": "家庭一起看"
+          }
+        }
+      },
+      "pace": {
+        "title": "你想要什麼節奏？",
+        "subtitle": "這會影響排序和人氣門檻。",
+        "options": {
+          "fast": {
+            "label": "快節奏",
+            "description": "直接進入狀況，不拖泥帶水",
+            "keyword": "快節奏"
+          },
+          "immersive": {
+            "label": "沉浸慢熱",
+            "description": "願意給電影時間鋪陳",
+            "keyword": "沉浸慢熱"
+          },
+          "any": {
+            "label": "不限",
+            "description": "只要片子夠好，節奏都可以",
+            "keyword": "不限節奏"
+          }
+        }
+      },
+      "era": {
+        "title": "年代接受度？",
+        "subtitle": "避免推薦到你現在不想碰的片單。",
+        "options": {
+          "recent": {
+            "label": "只看近年",
+            "description": "近五年作品優先",
+            "keyword": "近年"
+          },
+          "classic": {
+            "label": "經典也可以",
+            "description": "願意接受時間沉澱過的高分作品",
+            "keyword": "經典"
+          },
+          "any": {
+            "label": "不限",
+            "description": "新片老片都可以",
+            "keyword": "不限年代"
+          }
+        }
+      }
+    }
   },
   "random": {
     "title": "隨機挑片",
@@ -86,10 +236,10 @@
     "backToHome": "回到首頁",
     "backButton": "返回",
     "watchTrailer": "觀看預告片",
+    "trailerTooltip": "在彈窗播放 YouTube 預告片",
     "sections": {
       "overview": "劇情簡介",
       "cast": "演員陣容",
-      "trailer": "預告片",
       "info": "電影資訊"
     },
     "info": {
@@ -113,11 +263,18 @@
       "confirm": "確定清空"
     },
     "cleared": "已清空收藏清單",
+    "syncFailed": "收藏同步失敗，請稍後再試",
+    "authPrompt": {
+      "title": "登入後可同步收藏清單",
+      "description": "目前收藏會保存在此瀏覽器。登入後會自動與雲端收藏合併。",
+      "action": "登入同步"
+    },
     "button": {
       "add": "加入收藏",
       "added": "已收藏",
       "addedToast": "已加入收藏「{{title}}」",
-      "removedToast": "已從收藏移除「{{title}}」"
+      "removedToast": "已從收藏移除「{{title}}」",
+      "syncFailed": "收藏更新失敗，請稍後再試"
     },
     "empty": {
       "title": "收藏清單是空的",
@@ -125,11 +282,34 @@
       "explore": "探索電影"
     }
   },
+  "history": {
+    "title": "推薦紀錄",
+    "subtitle": "查看最近 20 次選片結果、顯示理由與當時的選片條件。",
+    "loading": "載入推薦紀錄中...",
+    "deleteAction": "刪除紀錄",
+    "confirmDelete": "確定要刪除這筆推薦紀錄？",
+    "deleteSuccess": "已刪除推薦紀錄",
+    "deleteFailed": "刪除失敗，請稍後再試",
+    "auth": {
+      "title": "登入查看推薦紀錄",
+      "description": "AI 推薦紀錄只會保存給登入使用者。",
+      "action": "登入"
+    },
+    "empty": {
+      "title": "還沒有推薦紀錄",
+      "description": "完成一次登入後的 AI 選片，就會在這裡看到紀錄。"
+    },
+    "source": {
+      "aiReason": "AI 理由",
+      "movieOverview": "電影介紹"
+    }
+  },
   "errors": {
     "loadFailed": "載入失敗，請稍後再試"
   },
   "movieCard": {
-    "noOverview": "暫無簡介"
+    "noOverview": "暫無簡介",
+    "loadingTrailer": "載入預告片"
   },
   "searchBar": {
     "placeholder": "搜尋電影名稱...",

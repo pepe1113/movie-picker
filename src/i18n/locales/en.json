@@ -13,7 +13,8 @@
     "home": "Home",
     "top100": "Top 100",
     "random": "Random Pick",
-    "wishlist": "Wishlist"
+    "wishlist": "Wishlist",
+    "history": "History"
   },
   "home": {
     "hero": {
@@ -22,16 +23,165 @@
       "ctaRandom": "Start Random Pick",
       "ctaTop100": "Browse TOP 100"
     },
+    "aiHero": {
+      "badge": "Let AI pick tonight",
+      "title": "Stop scrolling. Let AI start the movie.",
+      "subtitle": "Answer 4 questions and Movie Picker will choose 3 candidates from the latest movie pool.",
+      "cta": "Start AI Picker",
+      "scrollHint": "Scroll to start"
+    },
     "sections": {
       "trending": "Trending This Week",
+      "trendingLabel": "Heating Up",
+      "nowPlaying": "Now Playing",
+      "nowPlayingLabel": "Fresh Releases",
       "popular": "Popular Movies",
+      "popularLabel": "Audience Heat",
       "topRated": "Top Rated Movies",
+      "topRatedLabel": "Fan Favorites",
       "viewAll": "View Full TOP 100"
     }
   },
   "footer": {
     "tmdbDisclaimer": "This product uses the TMDB API but is not endorsed or certified by TMDB.",
-    "copyright": "Movie Picker"
+    "copyright": "Movie Picker",
+    "ticker": "AI picker online / Weekly trends synced / Popular watchlists scanning / Low-latency trailer preview / No more choice paralysis tonight"
+  },
+  "aiPicker": {
+    "badge": "AI Movie Guide",
+    "title": "Answer 4 questions. Get tonight's watchlist.",
+    "heroTitles": [
+      "🍷 Wine is poured. Let the movie begin 🎬",
+      "🎬 Skip the scroll. Tonight picks itself 🍷",
+      "🍷 Movie night, uncorked by Movie Picker 🎬",
+      "🎬 No more title hunting, just press play 🍷",
+      "🍷 Your sofa screening starts right now 🎬",
+      "🎬 One glass, one perfectly timed movie 🍷",
+      "🍷 Stop scrolling. Start watching 🎬",
+      "🎬 Let choice paralysis fade to black 🍷",
+      "🍷 Tonight's movie luck is ready to pour 🎬",
+      "🍷 Fill the glass. Roll tonight's credits 🎬"
+    ],
+    "subtitle": "Use your mood, occasion, pace, and era preference to filter 3 movies that fit tonight.",
+    "heroHint": "Answer below. Each choice advances automatically.",
+    "progressLabel": "Picker Progress",
+    "back": "Back",
+    "next": "Next",
+    "autoAdvance": "Choosing an option moves to the next question",
+    "getPicks": "Generate Picks",
+    "restart": "Start Over",
+    "resultsTitle": "Your AI Picks",
+    "loading": "Analyzing your movie preferences...",
+    "error": "Recommendations failed to load. Please try again later.",
+    "fastRecommendationPrompt": "Using quick recommendations for now",
+    "browseMoviesHint": "Continue to fresh releases",
+    "reasonFallbackNotice": "AI recommendation reasons are unavailable, so movie overviews are shown instead.",
+    "reasonPrefix": "Matched",
+    "reasonTop": ", making this the closest fit for your full preference set.",
+    "reasonFit": ", making this a strong candidate for tonight.",
+    "carousel": {
+      "label": "AI recommendation carousel",
+      "previous": "Previous recommendation",
+      "next": "Next recommendation",
+      "goTo": "Show {{title}}",
+      "reasonLabel": "Why this movie"
+    },
+    "questions": {
+      "mood": {
+        "title": "What mood do you want tonight?",
+        "subtitle": "Start with the feeling you want the movie to create.",
+        "options": {
+          "relaxed": {
+            "label": "Relaxed",
+            "description": "Light, funny, and easy to watch",
+            "keyword": "Relaxed"
+          },
+          "exciting": {
+            "label": "Exciting",
+            "description": "Action, adventure, and enough tension",
+            "keyword": "Exciting"
+          },
+          "moving": {
+            "label": "Moving",
+            "description": "Emotion-forward and memorable",
+            "keyword": "Moving"
+          },
+          "mindBending": {
+            "label": "Mind-bending",
+            "description": "Mystery, sci-fi, twists, or strong worldbuilding",
+            "keyword": "Mind-bending"
+          }
+        }
+      },
+      "occasion": {
+        "title": "Who is watching?",
+        "subtitle": "Different situations need different safe bets.",
+        "options": {
+          "solo": {
+            "label": "Solo",
+            "description": "More immersive and willing to go heavier",
+            "keyword": "Solo"
+          },
+          "date": {
+            "label": "Date night",
+            "description": "Good atmosphere and easy to talk about",
+            "keyword": "Date night"
+          },
+          "friends": {
+            "label": "Friends",
+            "description": "Fast enough for everyone to get into it",
+            "keyword": "Friends"
+          },
+          "family": {
+            "label": "Family",
+            "description": "Accessible, broad, and group-friendly",
+            "keyword": "Family"
+          }
+        }
+      },
+      "pace": {
+        "title": "What pace works best?",
+        "subtitle": "This changes sorting and popularity thresholds.",
+        "options": {
+          "fast": {
+            "label": "Fast-paced",
+            "description": "Gets moving quickly without dragging",
+            "keyword": "Fast-paced"
+          },
+          "immersive": {
+            "label": "Slow burn",
+            "description": "You are willing to let it build",
+            "keyword": "Slow burn"
+          },
+          "any": {
+            "label": "Any pace",
+            "description": "Any rhythm works if the movie is strong",
+            "keyword": "Any pace"
+          }
+        }
+      },
+      "era": {
+        "title": "How old can the movie be?",
+        "subtitle": "Avoid recommendations you are not in the mood for.",
+        "options": {
+          "recent": {
+            "label": "Recent only",
+            "description": "Prioritize movies from the last five years",
+            "keyword": "Recent"
+          },
+          "classic": {
+            "label": "Classics are fine",
+            "description": "High-rated older titles are welcome",
+            "keyword": "Classic"
+          },
+          "any": {
+            "label": "No limit",
+            "description": "New or old both work",
+            "keyword": "Any era"
+          }
+        }
+      }
+    }
   },
   "random": {
     "title": "Random Pick",
@@ -86,10 +236,10 @@
     "backToHome": "Back to Home",
     "backButton": "Back",
     "watchTrailer": "Watch Trailer",
+    "trailerTooltip": "Play the YouTube trailer in a popup",
     "sections": {
       "overview": "Overview",
       "cast": "Cast",
-      "trailer": "Trailer",
       "info": "Movie Info"
     },
     "info": {
@@ -113,11 +263,18 @@
       "confirm": "Clear All"
     },
     "cleared": "Wishlist cleared",
+    "syncFailed": "Wishlist sync failed. Please try again later.",
+    "authPrompt": {
+      "title": "Sign in to sync your wishlist",
+      "description": "Your current wishlist is saved in this browser. After sign-in, it will merge with your cloud wishlist automatically.",
+      "action": "Sign in to sync"
+    },
     "button": {
       "add": "Add to Wishlist",
       "added": "In Wishlist",
       "addedToast": "Added \"{{title}}\" to wishlist",
-      "removedToast": "Removed \"{{title}}\" from wishlist"
+      "removedToast": "Removed \"{{title}}\" from wishlist",
+      "syncFailed": "Wishlist update failed. Please try again later."
     },
     "empty": {
       "title": "Your wishlist is empty",
@@ -125,11 +282,34 @@
       "explore": "Explore Movies"
     }
   },
+  "history": {
+    "title": "Recommendation History",
+    "subtitle": "Review the latest 20 picker results, display reasons, and picker answers.",
+    "loading": "Loading recommendation history...",
+    "deleteAction": "Delete run",
+    "confirmDelete": "Delete this recommendation run?",
+    "deleteSuccess": "Recommendation run deleted",
+    "deleteFailed": "Delete failed. Please try again later.",
+    "auth": {
+      "title": "Sign in to view recommendation history",
+      "description": "AI recommendation history is saved only for signed-in users.",
+      "action": "Sign in"
+    },
+    "empty": {
+      "title": "No recommendation history yet",
+      "description": "Complete a signed-in AI picker run to see it here."
+    },
+    "source": {
+      "aiReason": "AI Reason",
+      "movieOverview": "Movie Overview"
+    }
+  },
   "errors": {
     "loadFailed": "Failed to load, please try again later"
   },
   "movieCard": {
-    "noOverview": "No overview available"
+    "noOverview": "No overview available",
+    "loadingTrailer": "Loading trailer"
   },
   "searchBar": {
     "placeholder": "Search movies...",

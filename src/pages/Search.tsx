@@ -7,9 +7,11 @@ export function Component() {
   const query = searchParams.get('q') ?? ''
 
   return (
-    <div className="container mx-auto space-y-6 px-4 py-8">
-      <h1 className="text-3xl font-bold">搜尋電影</h1>
-      <SearchBar defaultValue={query} autoFocus />
+    <div className="container mx-auto space-y-8 px-6 py-10 md:px-12 lg:px-16">
+      <div className="max-w-2xl space-y-4">
+        <h1 className="text-3xl font-bold md:text-4xl">搜尋電影</h1>
+        <SearchBar defaultValue={query} autoFocus />
+      </div>
       <SearchResults query={query} />
     </div>
   )

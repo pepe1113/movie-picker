@@ -51,7 +51,7 @@ export function MovieGrid({
   // 初始 Loading
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {Array.from({ length: skeletonCount }).map((_, i) => (
           <MovieSkeleton key={i} />
         ))}
@@ -70,7 +70,7 @@ export function MovieGrid({
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {movies.map((movie) => (
           <MovieCard key={movie.id} movie={movie} />
         ))}

@@ -8,6 +8,7 @@ import { WishlistButton } from '@/components/features/wishlist/WishlistButton'
 import { useMovies } from '@/hooks/useMovies'
 import { getPosterUrl, formatRating, formatYear } from '@/utils/helpers'
 import { ROUTES } from '@/utils/constants'
+import { toTop100Movies } from '@/utils/movieListBrowsing'
 
 export function Component() {
   const { t } = useTranslation()
@@ -15,12 +16,13 @@ export function Component() {
     useMovies('top_rated')
 
   const movies = data?.movies ?? []
+  const top100Movies = toTop100Movies(movies)
 
   return (
-    <div className="container mx-auto space-y-6 px-4 py-8">
-      <div>
-        <h1 className="text-3xl font-bold">{t('top100.title')}</h1>
-        <p className="text-muted-foreground mt-1">{t('top100.subtitle')}</p>
+    <div className="container mx-auto space-y-8 px-6 py-10 md:px-12 lg:px-16">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold md:text-4xl">{t('top100.title')}</h1>
+        <p className="text-muted-foreground">{t('top100.subtitle')}</p>
       </div>
 
       {isLoading ? (
@@ -31,7 +33,7 @@ export function Component() {
         </div>
       ) : (
         <div className="space-y-3">
-          {movies.slice(0, 100).map((movie, index) => (
+          {top100Movies.map((movie, index) => (
             <motion.div
               key={movie.id}
               initial={{ opacity: 0, x: -10 }}
@@ -40,7 +42,7 @@ export function Component() {
             >
               <Link
                 to={ROUTES.MOVIE_DETAIL(movie.id)}
-                className="bg-card hover:bg-accent/50 flex items-center gap-4 rounded-lg border p-3 transition-colors"
+                className="bg-card hover:bg-muted flex items-center gap-4 rounded-lg p-3 shadow-[rgba(0,0,0,0.25)_0px_4px_12px] transition-[background-color,transform]"
               >
                 {/* 排名 */}
                 <span className="text-muted-foreground w-8 text-center text-lg font-bold">
@@ -52,7 +54,7 @@ export function Component() {
                   src={getPosterUrl(movie.poster_path, 'small')}
                   alt={movie.title}
                   loading="lazy"
-                  className="h-20 w-14 rounded object-cover"
+                  className="h-20 w-14 rounded-md object-cover"
                 />
 
                 {/* 資訊 */}

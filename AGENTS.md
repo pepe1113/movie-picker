@@ -54,6 +54,6 @@
 - 若新增 API 呼叫，請優先放在 `src/services/tmdb/`，並保持 data fetching hook 的可測試性
 
 ## 可參考文件
-- `README.zh-TW.md`：專案功能與技術概述
+- `README.md`：繁體中文專案功能與技術概述
 - `DESIGN.md`：UI/UX 設計規範
 - `package.json`：執行腳本與依賴

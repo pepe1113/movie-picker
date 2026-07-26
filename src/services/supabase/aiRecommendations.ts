@@ -85,12 +85,13 @@ export async function requestAiRecommendations({
   locale,
   timeoutMs = 8000,
 }: AiRecommendationRequest): Promise<AiRecommendationResponse> {
+  const submittedCandidates = candidates.slice(0, 10)
   const { data, error } = await getSupabaseClient().functions.invoke<unknown>(
     'recommend-movies',
     {
       body: {
         answers,
-        movies: candidates.slice(0, 10).map(simplifyCandidate),
+        movies: submittedCandidates.map(simplifyCandidate),
         locale,
       },
       timeout: timeoutMs,
@@ -101,7 +102,28 @@ export async function requestAiRecommendations({
     throw new Error(error.message)
   }
 
-  const result = functionResponseSchema.safeParse(data)
+  const expectedMovieIds = submittedCandidates.map((movie) => movie.id)
+  const result = functionResponseSchema
+    .superRefine((response, context) => {
+      const responseMovieIds = response.recommendations.map(
+        (recommendation) => recommendation.movie_id,
+      )
+      const matchesSubmittedOrder =
+        responseMovieIds.length === expectedMovieIds.length &&
+        responseMovieIds.every(
+          (movieId, index) => movieId === expectedMovieIds[index],
+        )
+
+      if (!matchesSubmittedOrder) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            'recommendations must match every submitted movie in submitted order',
+          path: ['recommendations'],
+        })
+      }
+    })
+    .safeParse(data)
   if (!result.success) {
     throw new Error('AI recommendation response has an invalid structure')
   }

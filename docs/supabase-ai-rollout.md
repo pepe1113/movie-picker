@@ -32,7 +32,7 @@ instead of creating a partially configured client.
 
 ## Edge Function secrets
 
-The `recommend-movies` Edge Function reads:
+The `analyze-movie-request` and legacy `recommend-movies` Edge Functions read:
 
 ```text
 DEEPSEEK_API_KEY=
@@ -67,14 +67,18 @@ DeepSeek's current low-cost Flash model, `deepseek-v4-flash`, and
 
 ## AI fallback behavior
 
-- Signed-in AI Picker requests TMDB candidates first, then calls
-  `recommend-movies` to rerank the submitted candidates and return localized
-  reasons.
-- Signed-out users use the existing rule-based recommendation flow.
-- Edge Function or provider failures fall back to rule-based recommendations and
-  show `目前使用快速推薦`.
-- Only normalized recommendation runs are stored. Raw prompts and raw provider
-  responses are not stored.
+- Signed-in users submit a free-text movie request to
+  `analyze-movie-request` before any TMDB query runs.
+- DeepSeek returns only `mood`, `occasion`, `pace`, and `era`; the Edge Function
+  and frontend both validate this structure with Zod.
+- TMDB discover runs only after the structured criteria pass validation.
+- Signed-out users see a sign-in prompt and do not call DeepSeek or TMDB from
+  the AI Picker.
+- DeepSeek analysis failures stop the flow before TMDB and show a retry action.
+  TMDB failures keep the validated criteria and show a separate retry action.
+- Successful results store validated criteria and TMDB movie snapshots in the
+  existing recommendation history. Raw prompts and raw provider responses are
+  not stored.
 
 ## Verification commands
 
@@ -82,7 +86,6 @@ Run after implementation changes:
 
 ```bash
 bun run test:run
-npm test -- --run
 bun run lint
 bun run build
 rg -n "DEEPSEEK_API_KEY|SUPABASE_SERVICE_ROLE_KEY" src

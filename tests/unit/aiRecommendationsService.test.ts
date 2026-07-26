@@ -38,7 +38,10 @@ describe('AI recommendation Supabase service', () => {
   it('sends submitted movies with the reason-only function contract', async () => {
     const invoke = vi.fn().mockResolvedValue({
       data: {
-        recommendations: [{ movie_id: 1, reason: '很適合今晚' }],
+        recommendations: Array.from({ length: 10 }, (_, index) => ({
+          movie_id: index + 1,
+          reason: `推薦理由 ${index + 1}`,
+        })),
         provider: 'deepseek',
         model: 'deepseek-v4-flash',
       },
@@ -65,11 +68,13 @@ describe('AI recommendation Supabase service', () => {
       timeout: 8000,
     })
     expect(invoke.mock.calls[0][1].body.movies).toHaveLength(10)
-    expect(result).toEqual({
-      recommendations: [{ movie_id: 1, reason: '很適合今晚' }],
-      provider: 'deepseek',
-      model: 'deepseek-v4-flash',
+    expect(result.recommendations).toHaveLength(10)
+    expect(result.recommendations[0]).toEqual({
+      movie_id: 1,
+      reason: '推薦理由 1',
     })
+    expect(result.provider).toBe('deepseek')
+    expect(result.model).toBe('deepseek-v4-flash')
   })
 
   it('passes a caller-provided timeout to the Supabase function client', async () => {
@@ -110,6 +115,29 @@ describe('AI recommendation Supabase service', () => {
       requestAiRecommendations({
         answers,
         candidates: [movie(1)],
+        locale: 'zh-TW',
+      }),
+    ).rejects.toThrow('AI recommendation response has an invalid structure')
+  })
+
+  it('rejects responses that do not match every submitted candidate in order', async () => {
+    const invoke = vi.fn().mockResolvedValue({
+      data: {
+        recommendations: [
+          { movie_id: 2, reason: '順序錯誤' },
+          { movie_id: 1, reason: '順序錯誤' },
+        ],
+      },
+      error: null,
+    })
+    vi.mocked(getSupabaseClient).mockReturnValue({
+      functions: { invoke },
+    } as unknown as ReturnType<typeof getSupabaseClient>)
+
+    await expect(
+      requestAiRecommendations({
+        answers,
+        candidates: [movie(1), movie(2)],
         locale: 'zh-TW',
       }),
     ).rejects.toThrow('AI recommendation response has an invalid structure')

@@ -22,9 +22,14 @@ export interface CandidateMovie {
 }
 
 export interface RecommendationRequest {
-  answers: Record<string, string>
+  answers: {
+    mood: 'relaxed' | 'exciting' | 'moving' | 'mindBending'
+    occasion: 'solo' | 'date' | 'friends' | 'family'
+    pace: 'fast' | 'immersive' | 'any'
+    era: 'recent' | 'classic' | 'any'
+  }
   movies: CandidateMovie[]
-  locale: string
+  locale: 'zh-TW' | 'en'
 }
 
 export interface ProviderRecommendation {
@@ -60,7 +65,14 @@ const candidateMovieSchema = z
 
 const recommendationRequestSchema = z
   .object({
-    answers: z.record(z.string().trim().min(1)),
+    answers: z
+      .object({
+        mood: z.enum(['relaxed', 'exciting', 'moving', 'mindBending']),
+        occasion: z.enum(['solo', 'date', 'friends', 'family']),
+        pace: z.enum(['fast', 'immersive', 'any']),
+        era: z.enum(['recent', 'classic', 'any']),
+      })
+      .strict(),
     movies: z
       .array(candidateMovieSchema)
       .min(1, MOVIE_COUNT_ERROR)
@@ -105,10 +117,34 @@ export function validateRecommendationRequest(
   return result.data
 }
 
-export function parseProviderRecommendationResponse(value: unknown): {
+export function parseProviderRecommendationResponse(
+  value: unknown,
+  movies: CandidateMovie[],
+): {
   recommendations: ProviderRecommendation[]
 } {
-  const result = providerRecommendationResponseSchema.safeParse(value)
+  const expectedMovieIds = movies.map((movie) => movie.id)
+  const result = providerRecommendationResponseSchema
+    .superRefine((response, context) => {
+      const responseMovieIds = response.recommendations.map(
+        (recommendation) => recommendation.movie_id,
+      )
+      const matchesSubmittedOrder =
+        responseMovieIds.length === expectedMovieIds.length &&
+        responseMovieIds.every(
+          (movieId, index) => movieId === expectedMovieIds[index],
+        )
+
+      if (!matchesSubmittedOrder) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            'recommendations must match every submitted movie in submitted order',
+          path: ['recommendations'],
+        })
+      }
+    })
+    .safeParse(value)
 
   if (!result.success) {
     throw new Error('DeepSeek response has an invalid structure')

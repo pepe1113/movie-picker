@@ -1,25 +1,27 @@
-# 2026-07-26 DeepSeek 結構化推薦驗證
+# 2026-07-26 DeepSeek 結構化需求分析
 
 ## 本次變更
 
-- 保留現有四題選片需求輸入，先透過 TMDB 取得可信候選電影。
-- Supabase Edge Function 將需求與候選電影送至 DeepSeek，要求回傳固定的 `recommendations` JSON 結構。
-- Edge Function 使用 Zod 驗證請求內容與 DeepSeek 回應，拒絕欄位缺漏、型別錯誤、空推薦及超過上限的資料。
-- 前端收到 Edge Function 回應後再次使用 Zod 驗證，只有合法資料能進入推薦畫面。
-- DeepSeek 或結構驗證失敗時，畫面保留電影介紹作為 fallback，顯示可存取的錯誤狀態，並提供重新取得 AI 推薦的操作。
-- TMDB 片單載入失敗時也提供重新載入操作。
+- AI 挑片入口改為自由文字，讓使用者直接描述心情或觀影需求。
+- 新增 `analyze-movie-request` Supabase Edge Function；DeepSeek 只負責把文字分析成 `mood`、`occasion`、`pace`、`era` 四個結構化條件。
+- Edge Function 使用 Zod 驗證請求與 DeepSeek JSON；前端收到結果後再驗證一次。
+- 只有通過 Zod 的條件會被轉成 TMDB discover 查詢，DeepSeek 不生成電影名稱或電影資料。
+- DeepSeek 分析與 TMDB 查詢各自提供 loading、錯誤與重試狀態。
+- 成功查到電影後，沿用既有推薦紀錄服務保存驗證條件與 TMDB 電影快照，不保存原始輸入或 DeepSeek 原始回應。
+- 未登入使用者會看到登入提示，不會呼叫 DeepSeek 或 TMDB。
 
 ## 資料流程
 
-1. 使用者完成情緒、觀影場合、節奏與年代偏好。
-2. 前端依偏好向 TMDB 取得候選電影。
-3. 已登入使用者透過 Supabase Edge Function 呼叫 DeepSeek。
-4. Edge Function 以 Zod 驗證 DeepSeek 的結構化 JSON，再正規化推薦順序與理由長度。
-5. 前端再次驗證回應，顯示推薦理由；失敗時顯示 fallback 與重試狀態。
+1. 使用者輸入心情或觀影需求。
+2. 前端透過 Supabase Edge Function 將文字送至 DeepSeek。
+3. DeepSeek 回傳固定的四項結構化條件。
+4. Edge Function 與前端分別用 Zod 驗證條件。
+5. 前端依驗證後的條件查詢 TMDB。
+6. 畫面顯示 TMDB 電影、條件標籤，或對應階段的錯誤與重試操作。
 
 ## 驗證
 
-- 新增 Edge Function 請求與 DeepSeek 回應結構測試。
-- 新增前端 Supabase 回應結構測試。
-- 新增 AI 推薦錯誤狀態與重試流程測試。
+- Edge Function 測試涵蓋輸入限制、合法條件與不合法 DeepSeek 結構。
+- 前端服務測試涵蓋函式呼叫契約與第二層 Zod 驗證。
+- UI 測試確認 DeepSeek 一定早於 TMDB、分析期間不查 TMDB，並覆蓋兩階段錯誤與重試。
 - 執行完整測試、Lint、TypeScript 編譯與 Vite build。

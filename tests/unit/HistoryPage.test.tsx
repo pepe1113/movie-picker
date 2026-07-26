@@ -116,15 +116,11 @@ describe('History page', () => {
     setRecommendationHistoryRemoteForTesting(null)
   })
 
-  it(
-    'shows a sign-in prompt when unauthenticated',
-    async () => {
-      await renderHistoryPage()
+  it('shows a sign-in prompt when unauthenticated', async () => {
+    await renderHistoryPage()
 
-      expect(screen.getByText('登入查看推薦紀錄')).toBeInTheDocument()
-    },
-    15000,
-  )
+    expect(screen.getByText('登入查看推薦紀錄')).toBeInTheDocument()
+  }, 15000)
 
   it('shows an empty state for authenticated users with no runs', async () => {
     useAuthStore.getState().setUser({
@@ -163,10 +159,7 @@ describe('History page', () => {
     await renderHistoryPage()
 
     expect(await screen.findByText('History Movie 1')).toBeInTheDocument()
-    expect(screen.getByText('⚡ 刺激')).toHaveClass(
-      'rounded-full',
-      'text-lg',
-    )
+    expect(screen.getByText('⚡ 刺激')).toHaveClass('rounded-full', 'text-lg')
     expect(screen.getByText('History Movie 5')).toBeInTheDocument()
     expect(screen.getByText('理由 5')).toBeInTheDocument()
     expect(screen.getByText('AI 理由')).toBeInTheDocument()
@@ -205,6 +198,36 @@ describe('History page', () => {
     expect(await screen.findByText('Overview Saved')).toBeInTheDocument()
     expect(screen.getByText('電影介紹')).toBeInTheDocument()
     expect(screen.getAllByText('暫無簡介').length).toBeGreaterThan(1)
+  })
+
+  it('labels AI-first records as criteria with movie overviews', async () => {
+    useAuthStore.getState().setUser({
+      uid: 'user-id',
+      email: 'user@example.com',
+      displayName: 'User',
+      photoURL: null,
+    })
+    setRecommendationHistoryRemoteForTesting({
+      listLatest: vi.fn().mockResolvedValue([
+        run({
+          provider: 'deepseek-criteria',
+          recommendations: [
+            {
+              movie_id: 1,
+              reason: 'TMDB 電影介紹',
+              movie_snapshot: movie(1, 'AI First Saved'),
+            },
+          ],
+        }),
+      ]),
+      deleteRun: vi.fn(),
+      createRun: vi.fn(),
+    })
+
+    await renderHistoryPage()
+
+    expect(await screen.findByText('AI First Saved')).toBeInTheDocument()
+    expect(screen.getByText('AI 條件・電影介紹')).toBeInTheDocument()
   })
 
   it('deletes one recommendation run after confirmation', async () => {

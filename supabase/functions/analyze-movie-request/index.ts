@@ -1,11 +1,12 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import {
-  createRecommendationPrompt,
   DEFAULT_DEEPSEEK_BASE_URL,
   DEFAULT_DEEPSEEK_MODEL,
-  normalizeRecommendations,
-  parseProviderRecommendationResponse,
-  validateRecommendationRequest,
+} from '../recommend-movies/domain.ts'
+import {
+  createMovieCriteriaPrompt,
+  parseMovieCriteriaResponse,
+  validateMovieRequest,
 } from './domain.ts'
 
 const corsHeaders = {
@@ -32,9 +33,7 @@ function getRequiredEnv(name: string) {
   return value
 }
 
-async function callDeepSeek(
-  request: ReturnType<typeof validateRecommendationRequest>,
-) {
+async function callDeepSeek(request: ReturnType<typeof validateMovieRequest>) {
   const apiKey = getRequiredEnv('DEEPSEEK_API_KEY')
   const baseUrl = Deno.env.get('DEEPSEEK_BASE_URL') ?? DEFAULT_DEEPSEEK_BASE_URL
   const model = Deno.env.get('DEEPSEEK_MODEL') ?? DEFAULT_DEEPSEEK_MODEL
@@ -47,14 +46,15 @@ async function callDeepSeek(
     },
     body: JSON.stringify({
       model,
-      messages: createRecommendationPrompt(request),
+      messages: createMovieCriteriaPrompt(request),
+      thinking: { type: 'disabled' },
       response_format: { type: 'json_object' },
-      temperature: 0.4,
+      temperature: 0.2,
     }),
   })
 
   if (!response.ok) {
-    throw new Error('DeepSeek recommendation request failed')
+    throw new Error('DeepSeek movie request analysis failed')
   }
 
   const data = await response.json()
@@ -64,14 +64,9 @@ async function callDeepSeek(
     throw new Error('DeepSeek response did not include JSON content')
   }
 
-  const parsed = parseProviderRecommendationResponse(
-    JSON.parse(content),
-    request.movies,
-  )
-
   return {
     model,
-    recommendations: parsed.recommendations,
+    ...parseMovieCriteriaResponse(JSON.parse(content)),
   }
 }
 
@@ -107,49 +102,22 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: 'Authentication required' }, 401)
     }
 
-    const request = validateRecommendationRequest(await req.json())
-    const providerResult = await callDeepSeek(request)
-    const recommendations = normalizeRecommendations(
-      providerResult.recommendations,
-      request.movies,
-      request.locale,
-    )
-
-    const movieSnapshots = new Map(
-      request.movies.map((movie) => [movie.id, movie]),
-    )
-    const normalizedRecommendations = recommendations.map((item) => ({
-      ...item,
-      movie_snapshot: movieSnapshots.get(item.movie_id),
-    }))
-
-    const { error: insertError } = await supabase
-      .from('ai_recommendation_runs')
-      .insert({
-        user_id: userData.user.id,
-        answers: request.answers,
-        candidate_movie_ids: request.movies.map((movie) => movie.id),
-        recommendations: normalizedRecommendations,
-        provider: 'deepseek',
-        model: providerResult.model,
-      })
-
-    if (insertError) {
-      throw new Error(insertError.message)
-    }
+    const request = validateMovieRequest(await req.json())
+    const result = await callDeepSeek(request)
 
     return jsonResponse({
-      recommendations: normalizedRecommendations,
+      criteria: result.criteria,
       provider: 'deepseek',
-      model: providerResult.model,
+      model: result.model,
     })
   } catch (error) {
+    console.error('analyze-movie-request failed', error)
     return jsonResponse(
       {
         error:
           error instanceof Error
             ? error.message
-            : 'Recommendation request failed',
+            : 'Movie request analysis failed',
       },
       400,
     )

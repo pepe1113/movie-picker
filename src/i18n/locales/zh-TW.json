@@ -49,7 +49,7 @@
   },
   "aiPicker": {
     "badge": "AI 選片指南",
-    "title": "回答 4 題，今晚片單直接出爐",
+    "title": "說出今晚想看的感覺，AI 幫你轉成片單",
     "heroTitles": [
       "🍷 紅酒倒好了，電影也該上場 🎬",
       "🎬 今晚不猜片，讓靈感自己開演 🍷",
@@ -62,8 +62,22 @@
       "🍷 今晚的電影運氣，由你開瓶 🎬",
       "🍷 電影杯倒滿，今晚片單開演 🎬"
     ],
-    "subtitle": "用你的情緒、觀影場合、節奏與年代偏好，快速篩出 3 部最適合今晚的電影。",
-    "heroHint": "往下回答問題，選完會自動前進。",
+    "subtitle": "輸入心情或觀影需求，AI 會先分析條件，再從 TMDB 找出適合的電影。",
+    "heroHint": "往下描述今晚想看的電影。",
+    "requestTitle": "今晚想看什麼樣的電影？",
+    "requestSubtitle": "先由 DeepSeek 理解你的心情與需求，通過格式驗證後才會查詢 TMDB 電影資料。",
+    "requestLabel": "觀影需求",
+    "requestPlaceholder": "例如：今天很累，想和另一半看一部步調輕鬆、近幾年的溫暖電影。",
+    "requestHint": "可以描述心情、一起看的人、節奏或偏好的年代。",
+    "requestRequired": "請至少輸入兩個字的觀影需求。",
+    "signInRequired": "請先登入，才能使用 DeepSeek 分析觀影需求。",
+    "analyzeRequest": "分析需求並找電影",
+    "analyzing": "AI 正在分析需求...",
+    "analysisError": "AI 無法分析這次需求，請稍後再試。",
+    "retryAnalysis": "重新分析",
+    "criteriaReady": "AI 條件驗證完成",
+    "noResults": "找不到符合這組條件的電影，試著換一種描述。",
+    "refineRequest": "調整觀影需求",
     "progressLabel": "選片進度",
     "back": "上一步",
     "next": "下一題",
@@ -73,6 +87,8 @@
     "resultsTitle": "你的 AI 推薦片單",
     "loading": "正在分析你的觀影偏好...",
     "error": "推薦片單載入失敗，請稍後再試。",
+    "retryMovies": "重新載入片單",
+    "retryRecommendations": "重新取得 AI 推薦",
     "fastRecommendationPrompt": "目前使用快速推薦",
     "browseMoviesHint": "繼續看最新電影",
     "reasonFallbackNotice": "AI 推薦理由暫時無法產生，已改顯示電影介紹。",
@@ -301,6 +317,7 @@
     },
     "source": {
       "aiReason": "AI 理由",
+      "aiCriteria": "AI 條件・電影介紹",
       "movieOverview": "電影介紹"
     }
   },

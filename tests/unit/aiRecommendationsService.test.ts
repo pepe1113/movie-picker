@@ -74,7 +74,9 @@ describe('AI recommendation Supabase service', () => {
 
   it('passes a caller-provided timeout to the Supabase function client', async () => {
     const invoke = vi.fn().mockResolvedValue({
-      data: { recommendations: [] },
+      data: {
+        recommendations: [{ movie_id: 1, reason: '很適合今晚' }],
+      },
       error: null,
     })
     vi.mocked(getSupabaseClient).mockReturnValue({
@@ -89,5 +91,27 @@ describe('AI recommendation Supabase service', () => {
     })
 
     expect(invoke.mock.calls[0][1].timeout).toBe(3000)
+  })
+
+  it('rejects malformed function responses instead of treating them as recommendations', async () => {
+    const invoke = vi.fn().mockResolvedValue({
+      data: {
+        recommendations: [{ movie_id: 1, reason: 123 }],
+        provider: 'deepseek',
+        model: 'deepseek-v4-flash',
+      },
+      error: null,
+    })
+    vi.mocked(getSupabaseClient).mockReturnValue({
+      functions: { invoke },
+    } as unknown as ReturnType<typeof getSupabaseClient>)
+
+    await expect(
+      requestAiRecommendations({
+        answers,
+        candidates: [movie(1)],
+        locale: 'zh-TW',
+      }),
+    ).rejects.toThrow('AI recommendation response has an invalid structure')
   })
 })

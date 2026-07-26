@@ -73,7 +73,10 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
     enabled: hasSubmitted && Boolean(completedAnswers),
   })
 
-  const displayedMovies = useMemo(() => movieQuery.data ?? [], [movieQuery.data])
+  const displayedMovies = useMemo(
+    () => movieQuery.data ?? [],
+    [movieQuery.data],
+  )
 
   const reasonQuery = useQuery({
     queryKey: [
@@ -307,13 +310,29 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 </Button>
               </div>
 
-              {movieQuery.isLoading && (
-                <AiRecommendationCarouselSkeleton />
-              )}
+              {movieQuery.isLoading && <AiRecommendationCarouselSkeleton />}
 
               {movieQuery.isError && (
-                <div className="border-border bg-secondary rounded-lg border p-6 text-center">
+                <div
+                  role="alert"
+                  className="border-border bg-secondary rounded-lg border p-6 text-center"
+                >
                   <p className="text-muted-foreground">{t('aiPicker.error')}</p>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => void movieQuery.refetch()}
+                    disabled={movieQuery.isFetching}
+                    className="mt-4"
+                  >
+                    <RotateCcw
+                      className={cn(
+                        'size-4',
+                        movieQuery.isFetching && 'animate-spin',
+                      )}
+                    />
+                    {t('aiPicker.retryMovies')}
+                  </Button>
                 </div>
               )}
 
@@ -324,15 +343,35 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
               )}
 
               {reasonQuery.isError && recommendations.length > 0 && (
-                <p className="border-border bg-secondary text-muted-foreground rounded-lg border px-4 py-3 text-sm">
-                  {t('aiPicker.reasonFallbackNotice')}
-                </p>
+                <div
+                  role="alert"
+                  className="border-border bg-secondary flex flex-col items-center justify-between gap-3 rounded-lg border px-4 py-3 text-sm sm:flex-row"
+                >
+                  <p className="text-muted-foreground">
+                    {t('aiPicker.reasonFallbackNotice')}
+                  </p>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => void reasonQuery.refetch()}
+                    disabled={reasonQuery.isFetching}
+                  >
+                    <RotateCcw
+                      className={cn(
+                        'size-4',
+                        reasonQuery.isFetching && 'animate-spin',
+                      )}
+                    />
+                    {t('aiPicker.retryRecommendations')}
+                  </Button>
+                </div>
               )}
 
               {recommendations.length > 0 && (
                 <AiRecommendationCarousel
                   recommendations={recommendations}
-                  isReasonLoading={reasonQuery.isLoading}
+                  isReasonLoading={reasonQuery.isFetching}
                   shouldShowOverviewReasons={shouldShowOverviewReasons}
                 />
               )}

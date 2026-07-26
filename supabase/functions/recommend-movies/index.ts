@@ -4,13 +4,14 @@ import {
   DEFAULT_DEEPSEEK_BASE_URL,
   DEFAULT_DEEPSEEK_MODEL,
   normalizeRecommendations,
+  parseProviderRecommendationResponse,
   validateRecommendationRequest,
-  type ProviderRecommendation,
 } from './domain.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers':
+    'authorization, x-client-info, apikey, content-type',
 }
 
 function jsonResponse(body: unknown, status = 200) {
@@ -31,10 +32,11 @@ function getRequiredEnv(name: string) {
   return value
 }
 
-async function callDeepSeek(request: ReturnType<typeof validateRecommendationRequest>) {
+async function callDeepSeek(
+  request: ReturnType<typeof validateRecommendationRequest>,
+) {
   const apiKey = getRequiredEnv('DEEPSEEK_API_KEY')
-  const baseUrl =
-    Deno.env.get('DEEPSEEK_BASE_URL') ?? DEFAULT_DEEPSEEK_BASE_URL
+  const baseUrl = Deno.env.get('DEEPSEEK_BASE_URL') ?? DEFAULT_DEEPSEEK_BASE_URL
   const model = Deno.env.get('DEEPSEEK_MODEL') ?? DEFAULT_DEEPSEEK_MODEL
 
   const response = await fetch(`${baseUrl}/chat/completions`, {
@@ -62,15 +64,11 @@ async function callDeepSeek(request: ReturnType<typeof validateRecommendationReq
     throw new Error('DeepSeek response did not include JSON content')
   }
 
-  const parsed = JSON.parse(content) as {
-    recommendations?: ProviderRecommendation[]
-  }
+  const parsed = parseProviderRecommendationResponse(JSON.parse(content))
 
   return {
     model,
-    recommendations: Array.isArray(parsed.recommendations)
-      ? parsed.recommendations
-      : [],
+    recommendations: parsed.recommendations,
   }
 }
 

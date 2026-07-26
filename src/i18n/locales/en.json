@@ -73,6 +73,8 @@
     "resultsTitle": "Your AI Picks",
     "loading": "Analyzing your movie preferences...",
     "error": "Recommendations failed to load. Please try again later.",
+    "retryMovies": "Reload Movies",
+    "retryRecommendations": "Retry AI Recommendations",
     "fastRecommendationPrompt": "Using quick recommendations for now",
     "browseMoviesHint": "Continue to fresh releases",
     "reasonFallbackNotice": "AI recommendation reasons are unavailable, so movie overviews are shown instead.",

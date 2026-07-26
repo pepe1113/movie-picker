@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import type { AiPickerAnswers } from '@/utils/aiMoviePicker'
 import type { Movie } from '@/services/tmdb/types'
 import { getSupabaseClient } from './client'
@@ -15,17 +16,49 @@ export interface AiRecommendationResponseItem {
   movie_snapshot?: Movie
 }
 
-interface FunctionResponse {
-  recommendations?: AiRecommendationResponseItem[]
-  provider?: string
-  model?: string
-}
-
 export interface AiRecommendationResponse {
   recommendations: AiRecommendationResponseItem[]
   provider?: string
   model?: string
 }
+
+const movieSnapshotSchema: z.ZodType<Movie> = z
+  .object({
+    adult: z.boolean(),
+    backdrop_path: z.string().nullable(),
+    genre_ids: z.array(z.number().int().nonnegative()),
+    id: z.number().int().positive(),
+    original_language: z.string(),
+    original_title: z.string(),
+    overview: z.string(),
+    popularity: z.number().finite(),
+    poster_path: z.string().nullable(),
+    release_date: z.string(),
+    title: z.string().min(1),
+    video: z.boolean(),
+    vote_average: z.number().finite(),
+    vote_count: z.number().int().nonnegative(),
+  })
+  .strict()
+
+const functionResponseSchema = z
+  .object({
+    recommendations: z
+      .array(
+        z
+          .object({
+            movie_id: z.number().int().positive(),
+            reason: z.string().trim().min(1).max(120),
+            movie_snapshot: movieSnapshotSchema.optional(),
+          })
+          .strict(),
+      )
+      .min(1)
+      .max(10),
+    provider: z.string().min(1).optional(),
+    model: z.string().min(1).optional(),
+  })
+  .strict()
 
 function simplifyCandidate(movie: Movie) {
   return {
@@ -52,7 +85,7 @@ export async function requestAiRecommendations({
   locale,
   timeoutMs = 8000,
 }: AiRecommendationRequest): Promise<AiRecommendationResponse> {
-  const { data, error } = await getSupabaseClient().functions.invoke<FunctionResponse>(
+  const { data, error } = await getSupabaseClient().functions.invoke<unknown>(
     'recommend-movies',
     {
       body: {
@@ -68,9 +101,10 @@ export async function requestAiRecommendations({
     throw new Error(error.message)
   }
 
-  return {
-    recommendations: data?.recommendations ?? [],
-    provider: data?.provider,
-    model: data?.model,
+  const result = functionResponseSchema.safeParse(data)
+  if (!result.success) {
+    throw new Error('AI recommendation response has an invalid structure')
   }
+
+  return result.data
 }

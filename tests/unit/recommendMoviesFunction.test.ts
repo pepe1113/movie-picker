@@ -4,6 +4,7 @@ import {
   DEFAULT_DEEPSEEK_BASE_URL,
   DEFAULT_DEEPSEEK_MODEL,
   normalizeRecommendations,
+  parseProviderRecommendationResponse,
   validateRecommendationRequest,
 } from '../../supabase/functions/recommend-movies/domain'
 
@@ -28,6 +29,45 @@ describe('recommend-movies edge function domain', () => {
         })),
       }),
     ).toThrow('movies must include 1-10 movies')
+  })
+
+  it('rejects malformed request fields with Zod validation', () => {
+    expect(() =>
+      validateRecommendationRequest({
+        answers: { mood: 'exciting' },
+        locale: 'zh-TW',
+        movies: [
+          {
+            id: 'not-a-number',
+            title: 'Movie 1',
+            overview: '',
+            release_date: '2026-01-01',
+            vote_average: 7,
+            genre_ids: [],
+          },
+        ],
+      }),
+    ).toThrow('request body is invalid')
+  })
+
+  it('accepts only a structured DeepSeek recommendations response', () => {
+    expect(
+      parseProviderRecommendationResponse({
+        recommendations: [{ movie_id: 1, reason: '很適合今晚' }],
+      }),
+    ).toEqual({
+      recommendations: [{ movie_id: 1, reason: '很適合今晚' }],
+    })
+
+    expect(() =>
+      parseProviderRecommendationResponse({
+        recommendations: [{ movie_id: 1, reason: 123 }],
+      }),
+    ).toThrow('DeepSeek response has an invalid structure')
+
+    expect(() =>
+      parseProviderRecommendationResponse({ recommendations: [] }),
+    ).toThrow('DeepSeek response has an invalid structure')
   })
 
   it('normalizes one reason per submitted movie in submitted order', () => {
@@ -135,7 +175,9 @@ describe('recommend-movies edge function domain', () => {
     })
 
     expect(zhPrompt[0].content).toContain('Traditional Chinese')
-    expect(zhPrompt[1].content).toContain('"output_language":"Traditional Chinese"')
+    expect(zhPrompt[1].content).toContain(
+      '"output_language":"Traditional Chinese"',
+    )
     expect(enPrompt[0].content).toContain('English')
     expect(enPrompt[1].content).toContain('"output_language":"English"')
   })

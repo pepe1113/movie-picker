@@ -73,6 +73,8 @@
     "resultsTitle": "你的 AI 推薦片單",
     "loading": "正在分析你的觀影偏好...",
     "error": "推薦片單載入失敗，請稍後再試。",
+    "retryMovies": "重新載入片單",
+    "retryRecommendations": "重新取得 AI 推薦",
     "fastRecommendationPrompt": "目前使用快速推薦",
     "browseMoviesHint": "繼續看最新電影",
     "reasonFallbackNotice": "AI 推薦理由暫時無法產生，已改顯示電影介紹。",

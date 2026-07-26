@@ -32,7 +32,7 @@ describe('movie request analysis service', () => {
         request: '想看溫暖的近年電影',
         locale: 'zh-TW',
       },
-      timeout: 8000,
+      timeout: 20000,
     })
     expect(result.criteria).toEqual({
       mood: 'relaxed',
@@ -43,6 +43,7 @@ describe('movie request analysis service', () => {
   })
 
   it('rejects malformed DeepSeek criteria before TMDB can use them', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined)
     const invoke = vi.fn().mockResolvedValue({
       data: {
         criteria: {
@@ -63,5 +64,27 @@ describe('movie request analysis service', () => {
     await expect(
       analyzeMovieRequest('想看溫暖的近年電影', 'zh-TW'),
     ).rejects.toThrow('Movie request analysis has an invalid structure')
+  })
+
+  it('logs request failures before rethrowing them', async () => {
+    const requestError = new Error('Failed to send a request')
+    const consoleError = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined)
+    const invoke = vi.fn().mockResolvedValue({
+      data: null,
+      error: requestError,
+    })
+    vi.mocked(getSupabaseClient).mockReturnValue({
+      functions: { invoke },
+    } as unknown as ReturnType<typeof getSupabaseClient>)
+
+    await expect(
+      analyzeMovieRequest('想看輕鬆的電影', 'zh-TW'),
+    ).rejects.toBe(requestError)
+    expect(consoleError).toHaveBeenCalledWith(
+      'AI movie request analysis failed',
+      requestError,
+    )
   })
 })

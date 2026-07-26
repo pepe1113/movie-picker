@@ -47,6 +47,7 @@ async function callDeepSeek(request: ReturnType<typeof validateMovieRequest>) {
     body: JSON.stringify({
       model,
       messages: createMovieCriteriaPrompt(request),
+      thinking: { type: 'disabled' },
       response_format: { type: 'json_object' },
       temperature: 0.2,
     }),
@@ -110,6 +111,7 @@ Deno.serve(async (req) => {
       model: result.model,
     })
   } catch (error) {
+    console.error('analyze-movie-request failed', error)
     return jsonResponse(
       {
         error:

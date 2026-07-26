@@ -31,25 +31,30 @@ export async function analyzeMovieRequest(
   request: string,
   locale: string,
 ): Promise<MovieRequestAnalysis> {
-  const { data, error } = await getSupabaseClient().functions.invoke<unknown>(
-    'analyze-movie-request',
-    {
-      body: {
-        request: request.trim(),
-        locale,
+  try {
+    const { data, error } = await getSupabaseClient().functions.invoke<unknown>(
+      'analyze-movie-request',
+      {
+        body: {
+          request: request.trim(),
+          locale,
+        },
+        timeout: 20000,
       },
-      timeout: 8000,
-    },
-  )
+    )
 
-  if (error) {
-    throw new Error(error.message)
+    if (error) {
+      throw error
+    }
+
+    const result = analysisResponseSchema.safeParse(data)
+    if (!result.success) {
+      throw new Error('Movie request analysis has an invalid structure')
+    }
+
+    return result.data
+  } catch (error) {
+    console.error('AI movie request analysis failed', error)
+    throw error
   }
-
-  const result = analysisResponseSchema.safeParse(data)
-  if (!result.success) {
-    throw new Error('Movie request analysis has an invalid structure')
-  }
-
-  return result.data
 }

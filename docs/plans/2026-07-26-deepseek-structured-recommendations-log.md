@@ -7,6 +7,7 @@
 - Edge Function 使用 Zod 驗證請求與 DeepSeek JSON；前端收到結果後再驗證一次。
 - 只有通過 Zod 的條件會被轉成 TMDB discover 查詢，DeepSeek 不生成電影名稱或電影資料。
 - DeepSeek 分析與 TMDB 查詢各自提供 loading、錯誤與重試狀態。
+- TMDB 找不到符合條件的電影時顯示可返回調整需求的空狀態。
 - 成功查到電影後，沿用既有推薦紀錄服務保存驗證條件與 TMDB 電影快照，不保存原始輸入或 DeepSeek 原始回應。
 - 未登入使用者會看到登入提示，不會呼叫 DeepSeek 或 TMDB。
 

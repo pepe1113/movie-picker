@@ -76,6 +76,8 @@
     "analysisError": "AI 無法分析這次需求，請稍後再試。",
     "retryAnalysis": "重新分析",
     "criteriaReady": "AI 條件驗證完成",
+    "noResults": "找不到符合這組條件的電影，試著換一種描述。",
+    "refineRequest": "調整觀影需求",
     "progressLabel": "選片進度",
     "back": "上一步",
     "next": "下一題",
@@ -315,6 +317,7 @@
     },
     "source": {
       "aiReason": "AI 理由",
+      "aiCriteria": "AI 條件・電影介紹",
       "movieOverview": "電影介紹"
     }
   },

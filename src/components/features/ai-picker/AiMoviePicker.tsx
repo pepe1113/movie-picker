@@ -10,7 +10,10 @@ import { AiPickerPreferenceBadge } from '@/components/features/ai-picker/AiPicke
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { discoverMovies } from '@/services/tmdb/api'
-import { analyzeMovieRequest } from '@/services/supabase/movieRequestAnalysis'
+import {
+  analyzeMovieRequest,
+  MAX_MOVIE_REQUEST_LENGTH,
+} from '@/services/supabase/movieRequestAnalysis'
 import { getRecommendationHistoryRemote } from '@/services/supabase/recommendationHistory'
 import { useAuthStore } from '@/stores/authStore'
 import { useLanguageStore } from '@/stores/languageStore'
@@ -24,8 +27,6 @@ import {
 interface AiMoviePickerProps {
   onBrowseMovies?: () => void
 }
-
-const MAX_REQUEST_LENGTH = 500
 
 export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const { t } = useTranslation()
@@ -87,7 +88,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
           reason: movie.overview || t('movieCard.noOverview'),
           movie_snapshot: movie,
         })),
-        provider: analysisMutation.data.provider,
+        provider: 'deepseek-criteria',
         model: analysisMutation.data.model,
       })
       .catch((error: unknown) => {
@@ -138,7 +139,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 <h2 className="text-2xl font-bold md:text-3xl">
                   {t('aiPicker.requestTitle')}
                 </h2>
-                <p className="text-muted-foreground text-sm leading-relaxed">
+                <p className="text-muted-foreground text-sm leading-normal">
                   {t('aiPicker.requestSubtitle')}
                 </p>
               </div>
@@ -158,7 +159,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     if (inputError) setInputError(false)
                   }}
                   placeholder={t('aiPicker.requestPlaceholder')}
-                  maxLength={MAX_REQUEST_LENGTH}
+                  maxLength={MAX_MOVIE_REQUEST_LENGTH}
                   aria-invalid={inputError}
                   aria-describedby={
                     inputError ? 'movie-request-error' : 'movie-request-hint'
@@ -179,7 +180,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                       : t('aiPicker.requestHint')}
                   </p>
                   <span className="text-muted-foreground shrink-0">
-                    {requestText.length} / {MAX_REQUEST_LENGTH}
+                    {requestText.length} / {MAX_MOVIE_REQUEST_LENGTH}
                   </span>
                 </div>
 
@@ -285,6 +286,25 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                       )}
                     />
                     {t('aiPicker.retryMovies')}
+                  </Button>
+                </div>
+              )}
+
+              {movieQuery.isSuccess && recommendations.length === 0 && (
+                <div
+                  role="status"
+                  className="bg-secondary/70 rounded-lg p-6 text-center shadow-[rgba(0,0,0,0.3)_0px_8px_24px]"
+                >
+                  <p className="text-muted-foreground">
+                    {t('aiPicker.noResults')}
+                  </p>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={reset}
+                    className="mt-4 tracking-[1.4px] uppercase"
+                  >
+                    {t('aiPicker.refineRequest')}
                   </Button>
                 </div>
               )}

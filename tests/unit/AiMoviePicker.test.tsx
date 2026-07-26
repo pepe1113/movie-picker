@@ -16,6 +16,7 @@ vi.mock('@/services/tmdb/api', () => ({
 
 vi.mock('@/services/supabase/movieRequestAnalysis', () => ({
   analyzeMovieRequest: vi.fn(),
+  MAX_MOVIE_REQUEST_LENGTH: 500,
 }))
 
 beforeAll(() => {
@@ -168,7 +169,7 @@ describe('AiMoviePicker', () => {
       expect(createRun).toHaveBeenCalledWith(
         expect.objectContaining({
           userId: 'user-id',
-          provider: 'deepseek',
+          provider: 'deepseek-criteria',
           model: 'deepseek-v4-flash',
           candidateMovieIds: [1, 2, 3, 4, 5],
         }),
@@ -247,6 +248,29 @@ describe('AiMoviePicker', () => {
     expect(await screen.findByText('TMDB Retry Result')).toBeInTheDocument()
     expect(analyzeMovieRequest).toHaveBeenCalledTimes(1)
     expect(discoverMovies).toHaveBeenCalledTimes(2)
+  }, 15000)
+
+  it('shows an empty state when TMDB finds no matching movies', async () => {
+    authenticate()
+    const user = userEvent.setup()
+    vi.mocked(analyzeMovieRequest).mockResolvedValue(analysis)
+    vi.mocked(discoverMovies).mockResolvedValue({
+      page: 1,
+      results: [],
+      total_pages: 0,
+      total_results: 0,
+    })
+
+    await renderPicker()
+    await user.type(screen.getByLabelText('觀影需求'), '想看非常特別的電影')
+    await user.click(screen.getByRole('button', { name: '分析需求並找電影' }))
+
+    expect(
+      await screen.findByText('找不到符合這組條件的電影，試著換一種描述。'),
+    ).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '調整觀影需求' }))
+
+    expect(screen.getByLabelText('觀影需求')).toBeInTheDocument()
   }, 15000)
 
   it('validates an empty request before calling DeepSeek', async () => {

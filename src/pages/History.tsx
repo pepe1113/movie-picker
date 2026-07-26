@@ -18,9 +18,10 @@ function isAiPickerQuestionId(key: string): key is AiPickerQuestionId {
 }
 
 function getRunSourceLabelKey(provider: string) {
-  return provider === 'fallback'
-    ? 'history.source.movieOverview'
-    : 'history.source.aiReason'
+  if (provider === 'fallback') return 'history.source.movieOverview'
+  if (provider === 'deepseek-criteria') return 'history.source.aiCriteria'
+
+  return 'history.source.aiReason'
 }
 
 export function Component() {
@@ -77,9 +78,7 @@ export function Component() {
   return (
     <div className="container mx-auto space-y-8 px-6 py-10 md:px-12 lg:px-16">
       <div>
-        <h1 className="text-3xl font-bold md:text-4xl">
-          {t('history.title')}
-        </h1>
+        <h1 className="text-3xl font-bold md:text-4xl">{t('history.title')}</h1>
         <p className="text-muted-foreground mt-2 text-sm">
           {t('history.subtitle')}
         </p>

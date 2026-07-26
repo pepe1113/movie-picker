@@ -2,6 +2,8 @@ import { z } from 'zod'
 import type { AiPickerAnswers } from '@/utils/aiMoviePicker'
 import { getSupabaseClient } from './client'
 
+export const MAX_MOVIE_REQUEST_LENGTH = 500
+
 const movieCriteriaSchema: z.ZodType<AiPickerAnswers> = z
   .object({
     mood: z.enum(['relaxed', 'exciting', 'moving', 'mindBending']),

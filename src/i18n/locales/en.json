@@ -76,6 +76,8 @@
     "analysisError": "AI could not analyze this request. Please try again.",
     "retryAnalysis": "Retry Analysis",
     "criteriaReady": "AI Criteria Validated",
+    "noResults": "No movies matched these criteria. Try describing your request differently.",
+    "refineRequest": "Refine Movie Request",
     "progressLabel": "Picker Progress",
     "back": "Back",
     "next": "Next",
@@ -315,6 +317,7 @@
     },
     "source": {
       "aiReason": "AI Reason",
+      "aiCriteria": "AI Criteria · Movie Overview",
       "movieOverview": "Movie Overview"
     }
   },

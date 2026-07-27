@@ -1,22 +1,39 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { I18nextProvider } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
-import { discoverMovies } from '@/services/tmdb/api'
-import { analyzeMovieRequest } from '@/services/supabase/movieRequestAnalysis'
-import { setRecommendationHistoryRemoteForTesting } from '@/services/supabase/recommendationHistory'
 import type { Movie } from '@/services/tmdb/types'
+import { requestContextRecommendations } from '@/services/supabase/aiRecommendations'
 import { useAuthStore } from '@/stores/authStore'
 
-vi.mock('@/services/tmdb/api', () => ({
-  discoverMovies: vi.fn(),
+vi.mock('@/services/supabase/aiRecommendations', () => ({
+  MAX_MOVIE_REQUEST_LENGTH: 500,
+  RECOMMENDATION_DEADLINE_MS: 10_000,
+  requestContextRecommendations: vi.fn(),
 }))
 
-vi.mock('@/services/supabase/movieRequestAnalysis', () => ({
-  analyzeMovieRequest: vi.fn(),
-  MAX_MOVIE_REQUEST_LENGTH: 500,
+vi.mock('@/components/features/ai-picker/AiRecommendationCarousel', () => ({
+  AiRecommendationCarousel: ({
+    recommendations,
+    shouldShowOverviewReasons,
+  }: {
+    recommendations: Array<{ movie: Movie; reason?: string }>
+    shouldShowOverviewReasons: boolean
+  }) => (
+    <div>
+      {recommendations.map((item) => (
+        <article key={item.movie.id}>
+          <h3>{item.movie.title}</h3>
+          <p>
+            {item.reason ??
+              (shouldShowOverviewReasons ? item.movie.overview : '')}
+          </p>
+        </article>
+      ))}
+    </div>
+  ),
 }))
 
 beforeAll(() => {
@@ -25,10 +42,10 @@ beforeAll(() => {
     setItem: vi.fn(),
     removeItem: vi.fn(),
   })
-  vi.stubGlobal('scrollTo', vi.fn())
 })
 
 afterEach(() => {
+  vi.useRealTimers()
   vi.clearAllMocks()
   useAuthStore.setState({
     user: null,
@@ -36,7 +53,6 @@ afterEach(() => {
     isLoading: false,
     error: null,
   })
-  setRecommendationHistoryRemoteForTesting(null)
 })
 
 function movie(id: number, title = `Movie ${id}`): Movie {
@@ -58,15 +74,38 @@ function movie(id: number, title = `Movie ${id}`): Movie {
   }
 }
 
-const analysis = {
-  criteria: {
-    mood: 'relaxed',
-    occasion: 'date',
-    pace: 'immersive',
-    era: 'recent',
-  },
-  provider: 'deepseek' as const,
-  model: 'deepseek-v4-flash',
+function result(
+  overrides: Partial<{
+    recommendations: Array<{
+      movie_id: number
+      reason?: string
+      kind: 'primary' | 'wildcard'
+      movie_snapshot: Movie
+    }>
+    used_fallback: boolean
+  }> = {},
+) {
+  return {
+    direction: {
+      summary: '今晚以輕鬆、好理解的作品轉換心情',
+      labels: [
+        { text: '不要恐怖片', kind: 'hard' as const },
+        { text: '輕鬆', kind: 'soft' as const },
+      ],
+    },
+    recommendations: [
+      {
+        movie_id: 1,
+        reason: '喜劇類型適合現在轉換心情。',
+        kind: 'primary' as const,
+        movie_snapshot: movie(1, 'Context Pick'),
+      },
+    ],
+    provider: 'openrouter' as const,
+    model: 'inclusionai/ling-3.0-flash:free',
+    used_fallback: false,
+    ...overrides,
+  }
 }
 
 function authenticate() {
@@ -81,11 +120,6 @@ function authenticate() {
     isLoading: false,
     error: null,
   })
-  setRecommendationHistoryRemoteForTesting({
-    listLatest: vi.fn(),
-    deleteRun: vi.fn(),
-    createRun: vi.fn().mockResolvedValue(undefined),
-  })
 }
 
 async function renderPicker() {
@@ -93,11 +127,9 @@ async function renderPicker() {
     import('@/components/features/ai-picker/AiMoviePicker'),
     import('@/i18n/config'),
   ])
+  await i18n.changeLanguage('zh-TW')
   const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false },
-      mutations: { retry: false },
-    },
+    defaultOptions: { mutations: { retry: false } },
   })
 
   return render(
@@ -112,176 +144,134 @@ async function renderPicker() {
 }
 
 describe('AiMoviePicker', () => {
-  it('asks signed-out users to sign in before DeepSeek analysis', async () => {
+  it('keeps the AI picker behind sign-in', async () => {
     await renderPicker()
 
-    expect(
-      screen.getByText('請先登入，才能使用 DeepSeek 分析觀影需求。'),
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('button', { name: '分析需求並找電影' }),
-    ).toBeDisabled()
-  }, 15000)
+    expect(screen.getByText('請先登入，才能使用 AI 選片。')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '幫我選片' })).toBeDisabled()
+  })
 
-  it('runs DeepSeek analysis before querying TMDB and displays the movies', async () => {
+  it('uses one coordinator request and reveals only the complete result', async () => {
     authenticate()
     const user = userEvent.setup()
-    const createRun = vi.fn().mockResolvedValue(undefined)
-    setRecommendationHistoryRemoteForTesting({
-      listLatest: vi.fn(),
-      deleteRun: vi.fn(),
-      createRun,
-    })
-    vi.mocked(analyzeMovieRequest).mockResolvedValue(analysis)
-    vi.mocked(discoverMovies).mockResolvedValue({
-      page: 1,
-      results: Array.from({ length: 6 }, (_, index) =>
-        movie(index + 1, `AI First Movie ${index + 1}`),
-      ),
-      total_pages: 1,
-      total_results: 6,
-    })
+    let resolveRequest: (value: ReturnType<typeof result>) => void = () =>
+      undefined
+    vi.mocked(requestContextRecommendations).mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveRequest = resolve
+        }),
+    )
 
     await renderPicker()
     await user.type(
       screen.getByLabelText('觀影需求'),
-      '今天很累，想和另一半看溫暖的新電影',
+      '很無聊，想刺激一點但不要恐怖片。',
     )
-    await user.click(screen.getByRole('button', { name: '分析需求並找電影' }))
+    await user.click(screen.getByRole('button', { name: '幫我選片' }))
 
-    expect(analyzeMovieRequest).toHaveBeenCalledWith(
-      '今天很累，想和另一半看溫暖的新電影',
+    expect(requestContextRecommendations).toHaveBeenCalledWith(
+      '很無聊，想刺激一點但不要恐怖片。',
       'zh-TW',
+      expect.any(AbortSignal),
     )
-    expect(await screen.findByText('AI First Movie 1')).toBeInTheDocument()
-    expect(screen.getByText('AI First Movie 5')).toBeInTheDocument()
-    expect(screen.queryByText('AI First Movie 6')).not.toBeInTheDocument()
-    expect(discoverMovies).toHaveBeenCalledWith(
-      expect.objectContaining({
-        language: 'zh-TW',
-        sort_by: 'vote_average.desc',
-      }),
-    )
-    expect(
-      vi.mocked(analyzeMovieRequest).mock.invocationCallOrder[0],
-    ).toBeLessThan(vi.mocked(discoverMovies).mock.invocationCallOrder[0])
-    await waitFor(() => {
-      expect(createRun).toHaveBeenCalledWith(
-        expect.objectContaining({
-          userId: 'user-id',
-          provider: 'deepseek-criteria',
-          model: 'deepseek-v4-flash',
-          candidateMovieIds: [1, 2, 3, 4, 5],
-        }),
-      )
-    })
-  }, 15000)
+    expect(screen.queryByText('Context Pick')).not.toBeInTheDocument()
 
-  it('does not query TMDB while DeepSeek analysis is still pending', async () => {
+    await act(async () => resolveRequest(result()))
+
+    expect(
+      await screen.findByText('今晚以輕鬆、好理解的作品轉換心情'),
+    ).toBeInTheDocument()
+    expect(screen.getByText('不要恐怖片')).toBeInTheDocument()
+    expect(screen.getByText('Context Pick')).toBeInTheDocument()
+    expect(screen.getByRole('progressbar')).toHaveAttribute(
+      'aria-valuenow',
+      '100',
+    )
+  })
+
+  it('keeps animated waiting progress at or below ninety percent', async () => {
+    vi.useFakeTimers()
     authenticate()
-    const user = userEvent.setup()
-    vi.mocked(analyzeMovieRequest).mockImplementation(
+    vi.mocked(requestContextRecommendations).mockImplementation(
       () => new Promise(() => undefined),
     )
 
     await renderPicker()
-    await user.type(screen.getByLabelText('觀影需求'), '想看刺激的電影')
-    await user.click(screen.getByRole('button', { name: '分析需求並找電影' }))
-
-    expect(
-      screen.getByRole('button', { name: 'AI 正在分析需求...' }),
-    ).toBeDisabled()
-    expect(discoverMovies).not.toHaveBeenCalled()
-  }, 15000)
-
-  it('shows a retryable error when DeepSeek analysis fails', async () => {
-    authenticate()
-    const user = userEvent.setup()
-    vi.mocked(analyzeMovieRequest)
-      .mockRejectedValueOnce(new Error('invalid structured response'))
-      .mockResolvedValueOnce(analysis)
-    vi.mocked(discoverMovies).mockResolvedValue({
-      page: 1,
-      results: [movie(1, 'Retry Result')],
-      total_pages: 1,
-      total_results: 1,
+    fireEvent.change(screen.getByLabelText('觀影需求'), {
+      target: { value: '想看輕鬆的電影' },
     })
+    fireEvent.click(screen.getByRole('button', { name: '幫我選片' }))
 
-    await renderPicker()
-    await user.type(screen.getByLabelText('觀影需求'), '想看溫暖的電影')
-    await user.click(screen.getByRole('button', { name: '分析需求並找電影' }))
-
+    await act(async () => vi.advanceTimersByTime(9_900))
     expect(
-      await screen.findByText('AI 無法分析這次需求，請稍後再試。'),
-    ).toBeInTheDocument()
-    expect(discoverMovies).not.toHaveBeenCalled()
+      Number(screen.getByRole('progressbar').getAttribute('aria-valuenow')),
+    ).toBeLessThanOrEqual(90)
+    expect(screen.queryByRole('article')).not.toBeInTheDocument()
+  })
 
-    await user.click(screen.getByRole('button', { name: '重新分析' }))
-
-    expect(await screen.findByText('Retry Result')).toBeInTheDocument()
-    expect(analyzeMovieRequest).toHaveBeenCalledTimes(2)
-    expect(discoverMovies).toHaveBeenCalledTimes(1)
-  }, 15000)
-
-  it('shows and retries the TMDB error after criteria validation', async () => {
+  it('shows a retryable error without automatically retrying', async () => {
     authenticate()
     const user = userEvent.setup()
-    vi.mocked(analyzeMovieRequest).mockResolvedValue(analysis)
-    vi.mocked(discoverMovies)
-      .mockRejectedValueOnce(new Error('TMDB unavailable'))
-      .mockResolvedValueOnce({
-        page: 1,
-        results: [movie(1, 'TMDB Retry Result')],
-        total_pages: 1,
-        total_results: 1,
-      })
+    vi.mocked(requestContextRecommendations)
+      .mockRejectedValueOnce(new Error('planning failed'))
+      .mockResolvedValueOnce(result())
 
     await renderPicker()
-    await user.type(screen.getByLabelText('觀影需求'), '想看近年的電影')
-    await user.click(screen.getByRole('button', { name: '分析需求並找電影' }))
+    await user.type(screen.getByLabelText('觀影需求'), '心情不好，想轉換心情。')
+    await user.click(screen.getByRole('button', { name: '幫我選片' }))
 
     expect(
-      await screen.findByText('推薦片單載入失敗，請稍後再試。'),
+      await screen.findByText('這次無法完成選片，請再試一次。'),
     ).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: '重新載入片單' }))
+    expect(requestContextRecommendations).toHaveBeenCalledTimes(1)
 
-    expect(await screen.findByText('TMDB Retry Result')).toBeInTheDocument()
-    expect(analyzeMovieRequest).toHaveBeenCalledTimes(1)
-    expect(discoverMovies).toHaveBeenCalledTimes(2)
-  }, 15000)
+    await user.click(screen.getByRole('button', { name: '重新選片' }))
+    expect(await screen.findByText('Context Pick')).toBeInTheDocument()
+    expect(requestContextRecommendations).toHaveBeenCalledTimes(2)
+  })
 
-  it('shows an empty state when TMDB finds no matching movies', async () => {
+  it('shows an adjustable empty state instead of filling the list', async () => {
     authenticate()
     const user = userEvent.setup()
-    vi.mocked(analyzeMovieRequest).mockResolvedValue(analysis)
-    vi.mocked(discoverMovies).mockResolvedValue({
-      page: 1,
-      results: [],
-      total_pages: 0,
-      total_results: 0,
-    })
+    vi.mocked(requestContextRecommendations).mockResolvedValue(
+      result({ recommendations: [] }),
+    )
 
     await renderPicker()
-    await user.type(screen.getByLabelText('觀影需求'), '想看非常特別的電影')
-    await user.click(screen.getByRole('button', { name: '分析需求並找電影' }))
+    await user.type(screen.getByLabelText('觀影需求'), '只想看非常特定的電影')
+    await user.click(screen.getByRole('button', { name: '幫我選片' }))
 
     expect(
-      await screen.findByText('找不到符合這組條件的電影，試著換一種描述。'),
+      await screen.findByText(
+        '找不到符合所有明確限制的電影，請調整描述後再試。',
+      ),
     ).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: '調整觀影需求' }))
-
     expect(screen.getByLabelText('觀影需求')).toBeInTheDocument()
-  }, 15000)
+  })
 
-  it('validates an empty request before calling DeepSeek', async () => {
+  it('uses movie overview for a fallback without a fake reason', async () => {
     authenticate()
     const user = userEvent.setup()
+    vi.mocked(requestContextRecommendations).mockResolvedValue(
+      result({
+        recommendations: [
+          {
+            movie_id: 2,
+            kind: 'primary',
+            movie_snapshot: movie(2, 'Fallback Pick'),
+          },
+        ],
+        used_fallback: true,
+      }),
+    )
 
     await renderPicker()
-    await user.click(screen.getByRole('button', { name: '分析需求並找電影' }))
+    await user.type(screen.getByLabelText('觀影需求'), '想看近年的日語療癒電影')
+    await user.click(screen.getByRole('button', { name: '幫我選片' }))
 
-    expect(screen.getByText('請至少輸入兩個字的觀影需求。')).toBeInTheDocument()
-    expect(analyzeMovieRequest).not.toHaveBeenCalled()
-    expect(discoverMovies).not.toHaveBeenCalled()
-  }, 15000)
+    expect(await screen.findByText('Fallback Pick')).toBeInTheDocument()
+    expect(screen.getByText('Overview 2')).toBeInTheDocument()
+  })
 })

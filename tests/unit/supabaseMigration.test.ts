@@ -6,6 +6,10 @@ const migrationPath = join(
   process.cwd(),
   'supabase/migrations/20260524014000_create_wishlist_and_ai_runs.sql',
 )
+const replacementMigrationPath = join(
+  process.cwd(),
+  'supabase/migrations/20260726171508_replace_ai_recommendation_history.sql',
+)
 
 describe('Supabase wishlist and AI runs migration', () => {
   it('creates the expected tables with user-owned columns', () => {
@@ -43,5 +47,16 @@ describe('Supabase wishlist and AI runs migration', () => {
     expect(sql).toContain('using ((select auth.uid()) = user_id)')
     expect(sql).not.toMatch(/to\s+service_role/i)
     expect(sql).not.toContain('profiles')
+  })
+
+  it('clears only legacy recommendation runs and adds the new intent shape', () => {
+    const sql = readFileSync(replacementMigrationPath, 'utf8')
+
+    expect(sql).toContain('delete from public.ai_recommendation_runs')
+    expect(sql).toContain('rename column answers to intent')
+    expect(sql).toContain('add column discover_plan jsonb not null')
+    expect(sql).not.toMatch(/delete\s+from\s+public\.wishlist_items/i)
+    expect(sql).not.toMatch(/delete\s+from\s+auth\./i)
+    expect(sql.match(/\bdelete\s+from\b/gi)).toHaveLength(1)
   })
 })

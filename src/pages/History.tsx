@@ -4,25 +4,12 @@ import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { AiPickerPreferenceBadge } from '@/components/features/ai-picker/AiPickerPreferenceBadge'
 import { MovieCard } from '@/components/features/movie/MovieCard'
 import {
   getRecommendationHistoryRemote,
   type RecommendationRun,
 } from '@/services/supabase/recommendationHistory'
 import { useAuthStore } from '@/stores/authStore'
-import type { AiPickerQuestionId } from '@/utils/aiMoviePicker'
-
-function isAiPickerQuestionId(key: string): key is AiPickerQuestionId {
-  return ['mood', 'occasion', 'pace', 'era'].includes(key)
-}
-
-function getRunSourceLabelKey(provider: string) {
-  if (provider === 'fallback') return 'history.source.movieOverview'
-  if (provider === 'deepseek-criteria') return 'history.source.aiCriteria'
-
-  return 'history.source.aiReason'
-}
 
 export function Component() {
   const { t } = useTranslation()
@@ -111,22 +98,24 @@ export function Component() {
                   <Clock className="size-4" />
                   {new Date(run.created_at).toLocaleString()}
                 </div>
+                <h2 className="text-xl font-bold">{run.intent.summary}</h2>
                 <div className="flex flex-wrap gap-2">
-                  {Object.entries(run.answers).map(([key, value]) =>
-                    isAiPickerQuestionId(key) ? (
-                      <AiPickerPreferenceBadge
-                        key={key}
-                        questionId={key}
-                        value={value}
-                      />
-                    ) : null,
-                  )}
+                  {run.intent.display_labels.hard.map((label) => (
+                    <Badge key={`hard-${label}`} variant="outline">
+                      {label}
+                    </Badge>
+                  ))}
+                  {run.intent.display_labels.soft.map((label) => (
+                    <Badge key={`soft-${label}`} variant="secondary">
+                      {label}
+                    </Badge>
+                  ))}
                 </div>
                 <Badge
                   variant="ghost"
                   className="rounded-full px-3 py-1.5 text-sm normal-case"
                 >
-                  {t(getRunSourceLabelKey(run.provider))}
+                  {t('history.model', { model: run.model })}
                 </Badge>
               </div>
               <Button
@@ -149,7 +138,9 @@ export function Component() {
                 >
                   <MovieCard movie={recommendation.movie_snapshot} />
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    {recommendation.reason || t('movieCard.noOverview')}
+                    {recommendation.reason ||
+                      recommendation.movie_snapshot.overview ||
+                      t('movieCard.noOverview')}
                   </p>
                 </div>
               ))}

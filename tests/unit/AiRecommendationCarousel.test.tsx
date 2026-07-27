@@ -2,9 +2,11 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { I18nextProvider } from 'react-i18next'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { AiRecommendationCarousel } from '@/components/features/ai-picker/AiRecommendationCarousel'
+import {
+  AiRecommendationCarousel,
+  type AiPickerDisplayRecommendation,
+} from '@/components/features/ai-picker/AiRecommendationCarousel'
 import i18n from '@/i18n/config'
-import type { AiPickerDisplayRecommendation } from '@/utils/aiRecommendationFlow'
 
 vi.mock('@/components/features/movie/MovieCard', () => ({
   MovieCard: ({ movie }: { movie: { title: string } }) => (
@@ -34,7 +36,6 @@ function makeRecommendation(
       vote_average: 8,
       vote_count: 100,
     },
-    matchedKeywordKeys: [],
     reason,
   }
 }
@@ -42,7 +43,6 @@ function makeRecommendation(
 function renderCarousel(
   recommendations: AiPickerDisplayRecommendation[],
   options: {
-    isReasonLoading?: boolean
     shouldShowOverviewReasons?: boolean
   } = {},
 ) {
@@ -50,7 +50,6 @@ function renderCarousel(
     <I18nextProvider i18n={i18n}>
       <AiRecommendationCarousel
         recommendations={recommendations}
-        isReasonLoading={options.isReasonLoading ?? false}
         shouldShowOverviewReasons={options.shouldShowOverviewReasons ?? false}
       />
     </I18nextProvider>,

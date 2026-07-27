@@ -1,8 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { Movie } from '@/services/tmdb/types'
 import { getSupabaseClient } from '@/services/supabase/client'
-import { requestAiRecommendations } from '@/services/supabase/aiRecommendations'
-import type { AiPickerAnswers } from '@/utils/aiMoviePicker'
+import {
+  RECOMMENDATION_DEADLINE_MS,
+  requestContextRecommendations,
+} from '@/services/supabase/aiRecommendations'
 
 vi.mock('@/services/supabase/client', () => ({
   getSupabaseClient: vi.fn(),
@@ -12,7 +14,7 @@ function movie(id: number): Movie {
   return {
     adult: false,
     backdrop_path: null,
-    genre_ids: [28],
+    genre_ids: [35],
     id,
     original_language: 'en',
     original_title: `Movie ${id}`,
@@ -27,106 +29,69 @@ function movie(id: number): Movie {
   }
 }
 
-const answers: AiPickerAnswers = {
-  mood: 'exciting',
-  occasion: 'friends',
-  pace: 'fast',
-  era: 'recent',
+function response() {
+  return {
+    direction: {
+      summary: '今晚以輕鬆且好理解的作品為主',
+      labels: [
+        { text: '不要恐怖片', kind: 'hard' as const },
+        { text: '輕鬆', kind: 'soft' as const },
+      ],
+    },
+    recommendations: [
+      {
+        movie_id: 2,
+        reason: '喜劇類型適合現在轉換心情。',
+        kind: 'primary' as const,
+        movie_snapshot: movie(2),
+      },
+      {
+        movie_id: 1,
+        reason: '高評分作品，保留一點新鮮感。',
+        kind: 'wildcard' as const,
+        movie_snapshot: movie(1),
+      },
+    ],
+    provider: 'openrouter' as const,
+    model: 'inclusionai/ling-3.0-flash:free',
+    used_fallback: false,
+  }
 }
 
-describe('AI recommendation Supabase service', () => {
-  it('sends submitted movies with the reason-only function contract', async () => {
-    const invoke = vi.fn().mockResolvedValue({
-      data: {
-        recommendations: Array.from({ length: 10 }, (_, index) => ({
-          movie_id: index + 1,
-          reason: `推薦理由 ${index + 1}`,
-        })),
-        provider: 'deepseek',
-        model: 'deepseek-v4-flash',
-      },
-      error: null,
-    })
+describe('context recommendation Supabase service', () => {
+  it('calls one coordinator endpoint with the raw request, locale, and deadline', async () => {
+    const invoke = vi.fn().mockResolvedValue({ data: response(), error: null })
     vi.mocked(getSupabaseClient).mockReturnValue({
       functions: { invoke },
     } as unknown as ReturnType<typeof getSupabaseClient>)
+    const controller = new AbortController()
 
-    const result = await requestAiRecommendations({
-      answers,
-      candidates: Array.from({ length: 11 }, (_, index) => movie(index + 1)),
-      locale: 'zh-TW',
-    })
+    const result = await requestContextRecommendations(
+      '  剛失戀，但不要愛情片。 ',
+      'zh-TW',
+      controller.signal,
+    )
 
     expect(invoke).toHaveBeenCalledWith('recommend-movies', {
-      body: {
-        answers,
-        movies: expect.arrayContaining([
-          expect.objectContaining({ id: 1, title: 'Movie 1' }),
-        ]),
-        locale: 'zh-TW',
-      },
-      timeout: 8000,
+      body: { request: '剛失戀，但不要愛情片。', locale: 'zh-TW' },
+      signal: controller.signal,
+      timeout: RECOMMENDATION_DEADLINE_MS,
     })
-    expect(invoke.mock.calls[0][1].body.movies).toHaveLength(10)
-    expect(result.recommendations).toHaveLength(10)
-    expect(result.recommendations[0]).toEqual({
-      movie_id: 1,
-      reason: '推薦理由 1',
-    })
-    expect(result.provider).toBe('deepseek')
-    expect(result.model).toBe('deepseek-v4-flash')
+    expect(result.recommendations.map((item) => item.movie_id)).toEqual([2, 1])
   })
 
-  it('passes a caller-provided timeout to the Supabase function client', async () => {
+  it('accepts an empty result and fallback items without fake reasons', async () => {
     const invoke = vi.fn().mockResolvedValue({
       data: {
-        recommendations: [{ movie_id: 1, reason: '很適合今晚' }],
-      },
-      error: null,
-    })
-    vi.mocked(getSupabaseClient).mockReturnValue({
-      functions: { invoke },
-    } as unknown as ReturnType<typeof getSupabaseClient>)
-
-    await requestAiRecommendations({
-      answers,
-      candidates: [movie(1)],
-      locale: 'zh-TW',
-      timeoutMs: 3000,
-    })
-
-    expect(invoke.mock.calls[0][1].timeout).toBe(3000)
-  })
-
-  it('rejects malformed function responses instead of treating them as recommendations', async () => {
-    const invoke = vi.fn().mockResolvedValue({
-      data: {
-        recommendations: [{ movie_id: 1, reason: 123 }],
-        provider: 'deepseek',
-        model: 'deepseek-v4-flash',
-      },
-      error: null,
-    })
-    vi.mocked(getSupabaseClient).mockReturnValue({
-      functions: { invoke },
-    } as unknown as ReturnType<typeof getSupabaseClient>)
-
-    await expect(
-      requestAiRecommendations({
-        answers,
-        candidates: [movie(1)],
-        locale: 'zh-TW',
-      }),
-    ).rejects.toThrow('AI recommendation response has an invalid structure')
-  })
-
-  it('rejects responses that do not match every submitted candidate in order', async () => {
-    const invoke = vi.fn().mockResolvedValue({
-      data: {
+        ...response(),
         recommendations: [
-          { movie_id: 2, reason: '順序錯誤' },
-          { movie_id: 1, reason: '順序錯誤' },
+          {
+            movie_id: 1,
+            kind: 'primary',
+            movie_snapshot: movie(1),
+          },
         ],
+        used_fallback: true,
       },
       error: null,
     })
@@ -134,12 +99,36 @@ describe('AI recommendation Supabase service', () => {
       functions: { invoke },
     } as unknown as ReturnType<typeof getSupabaseClient>)
 
+    const result = await requestContextRecommendations('想看輕鬆電影', 'zh-TW')
+    expect(result.used_fallback).toBe(true)
+    expect(result.recommendations[0]?.reason).toBeUndefined()
+  })
+
+  it('rejects malformed coordinator responses', async () => {
+    const invoke = vi.fn().mockResolvedValue({
+      data: { ...response(), provider: 'unexpected-provider' },
+      error: null,
+    })
+    vi.mocked(getSupabaseClient).mockReturnValue({
+      functions: { invoke },
+    } as unknown as ReturnType<typeof getSupabaseClient>)
+
     await expect(
-      requestAiRecommendations({
-        answers,
-        candidates: [movie(1), movie(2)],
-        locale: 'zh-TW',
-      }),
+      requestContextRecommendations('想看輕鬆電影', 'zh-TW'),
     ).rejects.toThrow('AI recommendation response has an invalid structure')
+  })
+
+  it('surfaces coordinator request errors', async () => {
+    const invoke = vi.fn().mockResolvedValue({
+      data: null,
+      error: { message: 'deadline exceeded' },
+    })
+    vi.mocked(getSupabaseClient).mockReturnValue({
+      functions: { invoke },
+    } as unknown as ReturnType<typeof getSupabaseClient>)
+
+    await expect(
+      requestContextRecommendations('想看輕鬆電影', 'zh-TW'),
+    ).rejects.toThrow('deadline exceeded')
   })
 })

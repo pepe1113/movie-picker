@@ -22,7 +22,8 @@ VITE_SUPABASE_ANON_KEY=
 Do not expose these in frontend code or Vite env:
 
 ```text
-DEEPSEEK_API_KEY=
+OPENROUTER_API_KEY=
+TMDB_ACCESS_TOKEN=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
 
@@ -30,21 +31,25 @@ The app reads Supabase config only from `VITE_SUPABASE_URL` and
 `VITE_SUPABASE_ANON_KEY`. Missing values surface as a `SupabaseConfigError`
 instead of creating a partially configured client.
 
-## Edge Function secrets
+## Context-aware AI Picker Edge Function secrets
 
-The `analyze-movie-request` and legacy `recommend-movies` Edge Functions read:
+The `recommend-movies` Edge Function reads:
 
 ```text
-DEEPSEEK_API_KEY=
-DEEPSEEK_MODEL=deepseek-v4-flash
-DEEPSEEK_BASE_URL=https://api.deepseek.com
+OPENROUTER_API_KEY=
+OPENROUTER_MODEL=inclusionai/ling-3.0-flash:free
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+TMDB_ACCESS_TOKEN=
 SUPABASE_URL=
 SUPABASE_ANON_KEY=
 ```
 
-`DEEPSEEK_MODEL` and `DEEPSEEK_BASE_URL` are optional; the function defaults to
-DeepSeek's current low-cost Flash model, `deepseek-v4-flash`, and
-`https://api.deepseek.com`.
+`OPENROUTER_MODEL` and `OPENROUTER_BASE_URL` are optional. The model defaults to
+`inclusionai/ling-3.0-flash:free`, while the base URL defaults to OpenRouter's
+OpenAI-compatible Chat Completions API.
+
+`TMDB_ACCESS_TOKEN` is a server-side TMDB v4 access token used for keyword
+search and Discover. Do not prefix any of these values with `VITE_`.
 
 ## RLS assumptions
 
@@ -67,18 +72,29 @@ DeepSeek's current low-cost Flash model, `deepseek-v4-flash`, and
 
 ## AI fallback behavior
 
-- Signed-in users submit a free-text movie request to
-  `analyze-movie-request` before any TMDB query runs.
-- DeepSeek returns only `mood`, `occasion`, `pace`, and `era`; the Edge Function
-  and frontend both validate this structure with Zod.
-- TMDB discover runs only after the structured criteria pass validation.
-- Signed-out users see a sign-in prompt and do not call DeepSeek or TMDB from
-  the AI Picker.
-- DeepSeek analysis failures stop the flow before TMDB and show a retry action.
-  TMDB failures keep the validated criteria and show a separate retry action.
-- Successful results store validated criteria and TMDB movie snapshots in the
-  existing recommendation history. Raw prompts and raw provider responses are
-  not stored.
+- Signed-in users send one free-text request and locale to `recommend-movies`.
+- OpenRouter is called twice with forced tool calling. Zod validates the query
+  plan before TMDB and validates selected movie IDs and reasons after TMDB.
+- At most two keyword names are resolved through TMDB keyword search. Popularity
+  and rating Discover requests run concurrently and build a twenty-movie pool.
+- Explicit exclusions, runtime, year, language, and adult filtering are never
+  removed. One fallback search may remove inferred include conditions only.
+- A failed first model call returns a retryable error. A failed second call
+  returns a deterministic merge of the candidates without personalized reasons.
+- One ten-second `AbortController` signal reaches every OpenRouter and TMDB
+  request. The frontend does not perform hidden retries.
+- Signed-out users see a sign-in prompt and do not invoke the Edge Function.
+
+## Recommendation history
+
+- Apply `20260726171508_replace_ai_recommendation_history.sql` before deploying
+  the new function. It deletes only legacy `ai_recommendation_runs` rows.
+- `EdgeRuntime.waitUntil` writes the validated intent, Discover plan, candidate
+  IDs, recommendation snapshots, provider, and model after the response is ready.
+- The background task catches its own errors. A failed insert does not change
+  the returned recommendations.
+- Raw user text, prompts, provider responses, and internal reasoning are never
+  persisted.
 
 ## Verification commands
 
@@ -88,5 +104,5 @@ Run after implementation changes:
 bun run test:run
 bun run lint
 bun run build
-rg -n "DEEPSEEK_API_KEY|SUPABASE_SERVICE_ROLE_KEY" src
+rg --pcre2 -n "OPENROUTER_API_KEY|(?<!VITE_)TMDB_ACCESS_TOKEN|SUPABASE_SERVICE_ROLE_KEY" src
 ```

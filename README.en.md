@@ -1,6 +1,6 @@
 # Movie Picker
 
-> A portfolio movie discovery and recommendation app built with React, TMDB, Supabase, and DeepSeek.
+> A portfolio movie discovery and recommendation app built with React, TMDB, Supabase, and an AI model.
 
 [繁體中文](./README.md) | [English](./README.en.md) | [日本語](./README.ja.md)
 
@@ -11,14 +11,14 @@
 - Browse now-playing, trending, popular, and top-rated movies
 - Search movies and view details, credits, trailers, and OMDb ratings
 - Pick three movies randomly or from genre/rating/year filters
-- Get preference-based picks; signed-in users receive DeepSeek-generated reasons
+- Signed-in users describe their context, goals, and constraints in natural language and receive up to five AI-selected movies
 - Save a wishlist locally, then merge and sync it after GitHub sign-in
 - Review and delete the latest 20 AI recommendation runs
 - Switch between English/Traditional Chinese and light/dark themes
 
 ## Tech Stack
 
-React 19, TypeScript, Vite, Tailwind CSS 4, React Router, TanStack Query, Zustand, Supabase, TMDB, OMDb, and DeepSeek.
+React 19, TypeScript, Vite, Tailwind CSS 4, React Router, TanStack Query, Zustand, Supabase, TMDB, OMDb, and an AI model.
 
 ## Data & Persistence
 
@@ -37,22 +37,21 @@ React pages/components
 ├─ TanStack Query hooks → TMDB / OMDb
 ├─ Zustand stores → UI state + local wishlist cache
 └─ Supabase client → GitHub Auth + Postgres (RLS)
-                       └─ recommend-movies Edge Function → DeepSeek API
+                       └─ recommend-movies Edge Function → AI model + TMDB
 ```
 
 - `src/pages` owns routes; `src/components` owns reusable UI and feature views.
 - `src/hooks` coordinates server state; `src/services` isolates external APIs.
 - `src/stores` owns client state; `supabase/migrations` and `supabase/functions` own backend behavior.
-- Signed-out AI picks use the local rule-based fallback. Signed-in requests use the Edge Function and also fall back locally if the provider fails.
+- AI picking requires sign-in. If model reranking fails, the Edge Function deterministically ranks the TMDB candidates it already retrieved.
 
 ## Security
 
-- Verified on **2026-07-16** with `supabase secrets list`: `DEEPSEEK_API_KEY` exists in the linked project's Supabase Secrets.
-- The DeepSeek key is stored in Supabase Secrets and read only inside the Edge Function; the frontend never receives it.
-- `.env*` files are ignored by Git except `.env.example`, and no DeepSeek secret value is tracked.
-- The Edge Function requires a bearer token and verifies the caller with `supabase.auth.getUser()` before calling DeepSeek or writing history.
+- The AI provider key and server-side movie-data token are stored in Supabase Secrets; the frontend never receives them.
+- `.env*` files are ignored by Git except `.env.example`, and no provider secret value is tracked.
+- The Edge Function requires a bearer token and verifies the caller with `supabase.auth.getUser()` before calling the AI model or writing history.
 - Row Level Security restricts both tables to rows where `auth.uid() = user_id`; the browser uses only the public anon key.
-- The AI endpoint accepts `POST` only and limits each request to 10 candidate movies.
+- The AI endpoint accepts `POST` only, limits input length, and cancels unfinished upstream work at the ten-second deadline.
 
 ## Checks
 

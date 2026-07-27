@@ -3,13 +3,23 @@ import { getSupabaseClient } from './client'
 
 export interface RecommendationRunItem {
   movie_id: number
-  reason: string
+  reason?: string
+  kind: 'primary' | 'wildcard'
   movie_snapshot: Movie
 }
 
 export interface RecommendationRun {
   id: string
-  answers: Record<string, string>
+  intent: {
+    summary: string
+    hard_constraints: Record<string, unknown>
+    soft_preferences: Record<string, unknown>
+    display_labels: {
+      hard: string[]
+      soft: string[]
+    }
+  }
+  discover_plan: Record<string, unknown>
   recommendations: RecommendationRunItem[]
   provider: string
   model: string
@@ -19,14 +29,6 @@ export interface RecommendationRun {
 export interface RecommendationHistoryRemote {
   listLatest: (userId: string) => Promise<RecommendationRun[]>
   deleteRun: (userId: string, runId: string) => Promise<void>
-  createRun: (input: {
-    userId: string
-    answers: Record<string, string>
-    candidateMovieIds: number[]
-    recommendations: RecommendationRunItem[]
-    provider: string
-    model: string
-  }) => Promise<void>
 }
 
 function throwIfSupabaseError(error: { message: string } | null) {
@@ -40,7 +42,9 @@ export const supabaseRecommendationHistoryRemote: RecommendationHistoryRemote =
     async listLatest(userId) {
       const { data, error } = await getSupabaseClient()
         .from('ai_recommendation_runs')
-        .select('id, answers, recommendations, provider, model, created_at')
+        .select(
+          'id, intent, discover_plan, recommendations, provider, model, created_at',
+        )
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
         .limit(20)
@@ -56,28 +60,6 @@ export const supabaseRecommendationHistoryRemote: RecommendationHistoryRemote =
         .delete()
         .eq('user_id', userId)
         .eq('id', runId)
-
-      throwIfSupabaseError(error)
-    },
-
-    async createRun({
-      userId,
-      answers,
-      candidateMovieIds,
-      recommendations,
-      provider,
-      model,
-    }) {
-      const { error } = await getSupabaseClient()
-        .from('ai_recommendation_runs')
-        .insert({
-          user_id: userId,
-          answers,
-          candidate_movie_ids: candidateMovieIds,
-          recommendations,
-          provider,
-          model,
-        })
 
       throwIfSupabaseError(error)
     },

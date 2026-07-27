@@ -4,14 +4,17 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { AiPickerPreferenceBadge } from '@/components/features/ai-picker/AiPickerPreferenceBadge'
 import { MovieCard } from '@/components/features/movie/MovieCard'
 import { cn } from '@/lib/utils'
-import type { AiPickerDisplayRecommendation } from '@/utils/aiRecommendationFlow'
+import type { Movie } from '@/services/tmdb/types'
+
+export interface AiPickerDisplayRecommendation {
+  movie: Movie
+  reason?: string
+}
 
 interface AiRecommendationCarouselProps {
   recommendations: AiPickerDisplayRecommendation[]
-  isReasonLoading: boolean
   shouldShowOverviewReasons: boolean
 }
 
@@ -65,7 +68,6 @@ function getSlideState(offset: number, reduceMotion: boolean) {
 
 export function AiRecommendationCarousel({
   recommendations,
-  isReasonLoading,
   shouldShowOverviewReasons,
 }: AiRecommendationCarouselProps) {
   const { t } = useTranslation()
@@ -176,7 +178,7 @@ export function AiRecommendationCarousel({
                     aria-label={t('aiPicker.carousel.goTo', {
                       title: recommendation.movie.title,
                     })}
-                    className="absolute inset-0 rounded-lg focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
+                    className="focus-visible:ring-primary focus-visible:ring-offset-background absolute inset-0 rounded-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                   />
                 )}
               </div>
@@ -223,7 +225,7 @@ export function AiRecommendationCarousel({
               })}
               aria-current={index === activeIndex}
               className={cn(
-                'h-2 rounded-full transition-[background-color,width] duration-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none',
+                'focus-visible:ring-primary focus-visible:ring-offset-background h-2 rounded-full transition-[background-color,width] duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
                 index === activeIndex
                   ? 'bg-primary w-7'
                   : 'bg-muted-foreground/45 hover:bg-muted-foreground w-2',
@@ -246,30 +248,9 @@ export function AiRecommendationCarousel({
             transition={{ duration: shouldReduceMotion ? 0.08 : 0.2 }}
             className="text-muted-foreground text-sm leading-relaxed"
           >
-            {activeRecommendation.reason ? (
-              activeRecommendation.reason
-            ) : isReasonLoading ? (
-              <span className="block space-y-2">
-                <Skeleton className="h-3 w-full" />
-                <Skeleton className="h-3 w-5/6" />
-              </span>
-            ) : activeReason ? (
-              activeReason
-            ) : (
-              <>
-                {t('aiPicker.reasonPrefix')}{' '}
-                {activeRecommendation.matchedKeywordKeys.map((keywordKey) => (
-                  <AiPickerPreferenceBadge
-                    key={`${activeRecommendation.movie.id}-${keywordKey}`}
-                    keywordKey={keywordKey}
-                    className="mx-0.5 align-middle"
-                  />
-                ))}{' '}
-                {activeIndex === 0
-                  ? t('aiPicker.reasonTop')
-                  : t('aiPicker.reasonFit')}
-              </>
-            )}
+            {activeRecommendation.reason ??
+              activeReason ??
+              t('movieCard.noOverview')}
           </motion.div>
         </AnimatePresence>
       </div>

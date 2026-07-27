@@ -1,28 +1,19 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { ChevronDown, RotateCcw, Sparkles } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import {
-  AiRecommendationCarousel,
-  AiRecommendationCarouselSkeleton,
-} from '@/components/features/ai-picker/AiRecommendationCarousel'
-import { AiPickerPreferenceBadge } from '@/components/features/ai-picker/AiPickerPreferenceBadge'
+import { AiRecommendationCarousel } from '@/components/features/ai-picker/AiRecommendationCarousel'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { discoverMovies } from '@/services/tmdb/api'
 import {
-  analyzeMovieRequest,
   MAX_MOVIE_REQUEST_LENGTH,
-} from '@/services/supabase/movieRequestAnalysis'
-import { getRecommendationHistoryRemote } from '@/services/supabase/recommendationHistory'
+  RECOMMENDATION_DEADLINE_MS,
+  requestContextRecommendations,
+} from '@/services/supabase/aiRecommendations'
 import { useAuthStore } from '@/stores/authStore'
 import { useLanguageStore } from '@/stores/languageStore'
 import { cn } from '@/lib/utils'
-import { TMDB_LANGUAGE_MAP } from '@/utils/constants'
-import {
-  buildAiMovieQuery,
-  getAiPickerKeywordKeys,
-} from '@/utils/aiMoviePicker'
 
 interface AiMoviePickerProps {
   onBrowseMovies?: () => void
@@ -32,96 +23,82 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const { t } = useTranslation()
   const language = useLanguageStore((state) => state.language)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
-  const user = useAuthStore((state) => state.user)
   const [requestText, setRequestText] = useState('')
   const [inputError, setInputError] = useState(false)
-  const savedHistoryKeyRef = useRef<string | null>(null)
+  const startedAtRef = useRef(0)
+  const progressBarRef = useRef<HTMLDivElement>(null)
+  const progressFillRef = useRef<HTMLDivElement>(null)
+  const progressTextRef = useRef<HTMLSpanElement>(null)
 
-  const analysisMutation = useMutation({
-    mutationFn: ({ request, locale }: { request: string; locale: string }) =>
-      analyzeMovieRequest(request, locale),
-  })
-  const criteria = analysisMutation.data?.criteria ?? null
-  const keywordKeys = criteria ? getAiPickerKeywordKeys(criteria) : []
-
-  const movieQuery = useQuery({
-    queryKey: ['ai-request-movies', criteria, language],
-    queryFn: async () => {
-      if (!criteria) {
-        throw new Error('AI movie criteria are unavailable')
+  const recommendationMutation = useMutation({
+    mutationFn: async (request: string) => {
+      const controller = new AbortController()
+      const timeout = window.setTimeout(
+        () => controller.abort(),
+        RECOMMENDATION_DEADLINE_MS,
+      )
+      try {
+        return await requestContextRecommendations(
+          request,
+          language,
+          controller.signal,
+        )
+      } finally {
+        window.clearTimeout(timeout)
       }
-
-      const response = await discoverMovies({
-        ...buildAiMovieQuery(criteria),
-        language: TMDB_LANGUAGE_MAP[language],
-      })
-
-      return response.results.slice(0, 5)
     },
-    enabled: Boolean(criteria),
   })
-
-  const recommendations = (movieQuery.data ?? []).map((movie) => ({
-    movie,
-    matchedKeywordKeys: keywordKeys,
-    reason: undefined,
-  }))
 
   useEffect(() => {
-    if (!criteria || !analysisMutation.data || !movieQuery.data || !user) {
-      return
+    if (!recommendationMutation.isPending) return
+
+    const updateProgress = () => {
+      const elapsed = Date.now() - startedAtRef.current
+      const value = Math.min(
+        90,
+        Math.floor((elapsed / RECOMMENDATION_DEADLINE_MS) * 90),
+      )
+      progressBarRef.current?.setAttribute('aria-valuenow', String(value))
+      if (progressFillRef.current) {
+        progressFillRef.current.style.width = `${value}%`
+      }
+      if (progressTextRef.current) {
+        progressTextRef.current.textContent = `${value}%`
+      }
     }
+    const interval = window.setInterval(updateProgress, 100)
+    return () => window.clearInterval(interval)
+  }, [recommendationMutation.isPending])
 
-    const historyKey = `${user.uid}:${requestText.trim()}:${movieQuery.data
-      .map((movie) => movie.id)
-      .join(',')}`
-    if (savedHistoryKeyRef.current === historyKey) return
-
-    savedHistoryKeyRef.current = historyKey
-    getRecommendationHistoryRemote()
-      .createRun({
-        userId: user.uid,
-        answers: criteria,
-        candidateMovieIds: movieQuery.data.map((movie) => movie.id),
-        recommendations: movieQuery.data.map((movie) => ({
-          movie_id: movie.id,
-          reason: movie.overview || t('movieCard.noOverview'),
-          movie_snapshot: movie,
-        })),
-        provider: 'deepseek-criteria',
-        model: analysisMutation.data.model,
-      })
-      .catch((error: unknown) => {
-        console.error('AI-first recommendation history write failed', error)
-      })
-  }, [analysisMutation.data, criteria, movieQuery.data, requestText, t, user])
-
-  const submitRequest = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const startRecommendation = () => {
     const request = requestText.trim()
-
     if (request.length < 2) {
       setInputError(true)
       return
     }
 
     setInputError(false)
-    analysisMutation.mutate({ request, locale: language })
+    startedAtRef.current = Date.now()
+    recommendationMutation.mutate(request)
   }
 
-  const retryAnalysis = () => {
-    const request = requestText.trim()
-    if (request.length < 2) return
-
-    analysisMutation.mutate({ request, locale: language })
+  const submitRequest = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    startRecommendation()
   }
 
   const reset = () => {
     setRequestText('')
     setInputError(false)
-    savedHistoryKeyRef.current = null
-    analysisMutation.reset()
+    recommendationMutation.reset()
   }
+
+  const result = recommendationMutation.data
+  const recommendations =
+    result?.recommendations.map((recommendation) => ({
+      movie: recommendation.movie_snapshot,
+      reason: recommendation.reason,
+    })) ?? []
 
   return (
     <section className="border-border relative overflow-hidden border-b">
@@ -130,7 +107,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
 
       <div className="relative container mx-auto flex min-h-[calc(100svh-64px)] flex-1 flex-col justify-center px-6 py-10 md:px-12 md:py-12 lg:px-16">
         <div className="bg-card/85 border-border rounded-lg border p-4 shadow-[rgba(0,0,0,0.45)_0px_18px_48px] backdrop-blur md:p-6">
-          {!criteria ? (
+          {!result ? (
             <div className="mx-auto max-w-3xl space-y-6">
               <div className="space-y-2 text-center">
                 <div className="text-primary bg-primary/10 mx-auto flex size-11 items-center justify-center rounded-full">
@@ -164,7 +141,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                   aria-describedby={
                     inputError ? 'movie-request-error' : 'movie-request-hint'
                   }
-                  disabled={analysisMutation.isPending}
+                  disabled={recommendationMutation.isPending}
                 />
                 <div className="flex items-start justify-between gap-4 text-xs">
                   <p
@@ -193,25 +170,51 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 <Button
                   type="submit"
                   size="lg"
-                  disabled={!isAuthenticated || analysisMutation.isPending}
+                  disabled={
+                    !isAuthenticated || recommendationMutation.isPending
+                  }
                   className="w-full"
                 >
                   <Sparkles
                     className={cn(
                       'size-4',
-                      analysisMutation.isPending && 'animate-pulse',
+                      recommendationMutation.isPending && 'animate-pulse',
                     )}
                   />
-                  {analysisMutation.isPending
-                    ? t('aiPicker.analyzing')
+                  {recommendationMutation.isPending
+                    ? t('aiPicker.loading')
                     : t('aiPicker.analyzeRequest')}
                 </Button>
               </form>
 
-              {analysisMutation.isError && (
+              {recommendationMutation.isPending && (
+                <div className="space-y-2" aria-live="polite">
+                  <div className="flex justify-between text-sm">
+                    <span>{t('aiPicker.progressLabel')}</span>
+                    <span ref={progressTextRef}>0%</span>
+                  </div>
+                  <div
+                    ref={progressBarRef}
+                    role="progressbar"
+                    aria-label={t('aiPicker.progressLabel')}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={0}
+                    className="bg-secondary h-2 overflow-hidden rounded-full"
+                  >
+                    <div
+                      ref={progressFillRef}
+                      className="bg-primary h-full transition-[width] duration-100"
+                      style={{ width: '0%' }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {recommendationMutation.isError && (
                 <div
                   role="alert"
-                  className="border-destructive/40 bg-destructive/10 flex flex-col items-center justify-between gap-3 rounded-lg border px-4 py-3 text-sm shadow-[rgba(243,114,127,0.12)_0px_8px_24px] sm:flex-row"
+                  className="border-destructive/40 bg-destructive/10 flex flex-col items-center justify-between gap-3 rounded-lg border px-4 py-3 text-sm sm:flex-row"
                 >
                   <p className="text-destructive">
                     {t('aiPicker.analysisError')}
@@ -220,16 +223,9 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     type="button"
                     variant="secondary"
                     size="sm"
-                    onClick={retryAnalysis}
-                    disabled={analysisMutation.isPending}
-                    className="tracking-[1.4px] uppercase"
+                    onClick={startRecommendation}
                   >
-                    <RotateCcw
-                      className={cn(
-                        'size-4',
-                        analysisMutation.isPending && 'animate-spin',
-                      )}
-                    />
+                    <RotateCcw className="size-4" />
                     {t('aiPicker.retryAnalysis')}
                   </Button>
                 </div>
@@ -237,22 +233,37 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="relative">
-                <div className="flex flex-col items-center space-y-2">
-                  <p className="text-primary text-xs font-bold tracking-[1.4px] uppercase">
-                    {t('aiPicker.criteriaReady')}
-                  </p>
-                  <h2 className="text-2xl font-bold">
-                    {t('aiPicker.resultsTitle')}
-                  </h2>
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {keywordKeys.map((keywordKey) => (
-                      <AiPickerPreferenceBadge
-                        key={keywordKey}
-                        keywordKey={keywordKey}
-                      />
-                    ))}
-                  </div>
+              <div className="space-y-1" aria-live="polite">
+                <div className="flex justify-between text-xs">
+                  <span>{t('aiPicker.progressLabel')}</span>
+                  <span>100%</span>
+                </div>
+                <div
+                  role="progressbar"
+                  aria-label={t('aiPicker.progressLabel')}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={100}
+                  className="bg-primary h-1 rounded-full"
+                />
+              </div>
+              <div className="relative text-center">
+                <p className="text-primary text-xs font-bold tracking-[1.4px] uppercase">
+                  {t('aiPicker.directionTitle')}
+                </p>
+                <h2 className="mt-2 text-2xl font-bold">
+                  {result.direction.summary}
+                </h2>
+                <div className="mt-3 flex flex-wrap justify-center gap-2">
+                  {result.direction.labels.map((label) => (
+                    <Badge
+                      key={`${label.kind}-${label.text}`}
+                      variant={label.kind === 'hard' ? 'outline' : 'secondary'}
+                      className="rounded-full px-3 py-1.5"
+                    >
+                      {label.text}
+                    </Badge>
+                  ))}
                 </div>
                 <Button
                   variant="ghost"
@@ -264,36 +275,10 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 </Button>
               </div>
 
-              {movieQuery.isLoading && <AiRecommendationCarouselSkeleton />}
-
-              {movieQuery.isError && (
-                <div
-                  role="alert"
-                  className="border-destructive/40 bg-destructive/10 rounded-lg border p-6 text-center shadow-[rgba(243,114,127,0.12)_0px_8px_24px]"
-                >
-                  <p className="text-destructive">{t('aiPicker.error')}</p>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => void movieQuery.refetch()}
-                    disabled={movieQuery.isFetching}
-                    className="mt-4 tracking-[1.4px] uppercase"
-                  >
-                    <RotateCcw
-                      className={cn(
-                        'size-4',
-                        movieQuery.isFetching && 'animate-spin',
-                      )}
-                    />
-                    {t('aiPicker.retryMovies')}
-                  </Button>
-                </div>
-              )}
-
-              {movieQuery.isSuccess && recommendations.length === 0 && (
+              {recommendations.length === 0 ? (
                 <div
                   role="status"
-                  className="bg-secondary/70 rounded-lg p-6 text-center shadow-[rgba(0,0,0,0.3)_0px_8px_24px]"
+                  className="bg-secondary/70 rounded-lg p-6 text-center"
                 >
                   <p className="text-muted-foreground">
                     {t('aiPicker.noResults')}
@@ -302,18 +287,15 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     type="button"
                     variant="secondary"
                     onClick={reset}
-                    className="mt-4 tracking-[1.4px] uppercase"
+                    className="mt-4"
                   >
                     {t('aiPicker.refineRequest')}
                   </Button>
                 </div>
-              )}
-
-              {recommendations.length > 0 && (
+              ) : (
                 <AiRecommendationCarousel
                   recommendations={recommendations}
-                  isReasonLoading={false}
-                  shouldShowOverviewReasons
+                  shouldShowOverviewReasons={result.used_fallback}
                 />
               )}
             </div>

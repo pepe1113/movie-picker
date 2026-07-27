@@ -6,6 +6,7 @@ import {
   type AiPickerAnswers,
 } from '@/utils/aiMoviePicker'
 import type { Movie } from '@/services/tmdb/types'
+import { getMediaTitle } from '@/utils/media'
 
 const baseMovie: Movie = {
   adult: false,
@@ -111,7 +112,7 @@ describe('aiMoviePicker', () => {
     const recommendations = recommendMovies(movies, answers, 2026)
 
     expect(recommendations).toHaveLength(3)
-    expect(recommendations.map((item) => item.movie.title)).toEqual([
+    expect(recommendations.map((item) => getMediaTitle(item.movie))).toEqual([
       'Action Crowd',
       'Thrill Ride',
       'Comedy Night',

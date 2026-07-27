@@ -4,10 +4,11 @@ import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { useWishlistStore } from '@/stores/wishlistStore'
-import type { Movie } from '@/services/tmdb/types'
+import type { MediaItem } from '@/services/tmdb/types'
+import { getMediaTitle, getMediaType } from '@/utils/media'
 
 interface WishlistButtonProps {
-  movie: Movie
+  movie: MediaItem
   size?: 'default' | 'lg'
 }
 
@@ -17,7 +18,9 @@ export function WishlistButton({
 }: WishlistButtonProps) {
   const { t } = useTranslation()
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlistStore()
-  const isWishlisted = isInWishlist(movie.id)
+  const mediaType = getMediaType(movie)
+  const title = getMediaTitle(movie)
+  const isWishlisted = isInWishlist(movie.id, mediaType)
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -25,11 +28,11 @@ export function WishlistButton({
 
     try {
       if (isWishlisted) {
-        await removeFromWishlist(movie.id)
-        toast.success(t('wishlist.button.removedToast', { title: movie.title }))
+        await removeFromWishlist(movie.id, mediaType)
+        toast.success(t('wishlist.button.removedToast', { title }))
       } else {
         await addToWishlist(movie)
-        toast.success(t('wishlist.button.addedToast', { title: movie.title }))
+        toast.success(t('wishlist.button.addedToast', { title }))
       }
     } catch {
       toast.error(t('wishlist.button.syncFailed'))

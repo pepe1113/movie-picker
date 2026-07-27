@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "Movie Picker",
-    "search": "搜尋電影...",
+    "search": "搜尋電影與影集...",
     "login": "登入",
     "logout": "登出",
     "user": "使用者",
@@ -9,74 +9,77 @@
     "loading": "載入中...",
     "noResults": "沒有找到相關結果"
   },
+  "mediaType": {
+    "movie": "電影",
+    "tv": "影集",
+    "movies": "電影",
+    "tvShows": "影集"
+  },
+  "genres": {
+    "label": "依類型瀏覽",
+    "all": "全部"
+  },
+  "search": {
+    "title": "搜尋電影與影集"
+  },
   "nav": {
     "home": "首頁",
-    "top100": "Top 100",
-    "random": "隨機挑片",
     "wishlist": "收藏清單",
     "history": "推薦紀錄"
   },
   "home": {
-    "hero": {
-      "title": "發現\n你的下一部\n經典電影",
-      "subtitle": "從熱門大片到經典佳作，讓我們幫你找到完美的觀影選擇。智能推薦系統與隨機挑片功能，解決你的選擇困難。",
-      "ctaRandom": "開始隨機挑片",
-      "ctaTop100": "瀏覽 TOP 100"
-    },
     "aiHero": {
       "badge": "今晚交給 AI 挑片",
       "title": "別再滑片單，讓 AI 直接開演",
-      "subtitle": "回答 4 題，Movie Picker 會從最新電影池裡挑出 3 部適合今晚的候選片。",
+      "subtitle": "說出今晚想看的感覺，Movie Picker 會從電影與影集裡找出適合的片單。",
       "cta": "開始 AI 挑片",
       "scrollHint": "往下開始"
     },
     "sections": {
-      "trending": "本週趨勢",
-      "trendingLabel": "正在升溫",
-      "nowPlaying": "最新上映",
-      "nowPlayingLabel": "院線新片",
-      "popular": "熱門電影",
-      "popularLabel": "大眾熱度",
-      "topRated": "高評分電影",
-      "topRatedLabel": "影迷口碑",
-      "viewAll": "查看完整 TOP 100"
+      "movie": {
+        "latest": "最新上映",
+        "trending": "本週趨勢",
+        "popular": "熱門電影",
+        "topRated": "高評分電影"
+      },
+      "tv": {
+        "latest": "最新播出",
+        "trending": "本週趨勢影集",
+        "popular": "熱門影集",
+        "topRated": "高評分影集"
+      }
     }
   },
   "footer": {
     "tmdbDisclaimer": "資料來源為 TMDB/OMDb API，個人專案使用，可能出現API限制導致錯誤，請小心愛護❤️",
-    "copyright": "Movie Picker",
-    "ticker": "AI 選片上線中 / 本週趨勢同步 / 熱門片單掃描 / 低延遲預告片預覽 / 今晚別再選擇困難"
+    "copyright": "Movie Picker"
   },
   "aiPicker": {
     "badge": "AI 選片指南",
     "title": "說出今晚想看的感覺，AI 幫你轉成片單",
     "heroTitles": [
-      "🍷 紅酒倒好了，電影也該上場 🎬",
-      "🎬 今晚不猜片，讓靈感自己開演 🍷",
-      "🍷 挑片別皺眉，今晚交給 Movie Picker 🎬",
-      "🎬 片荒退散，紅酒與好電影集合 🍷",
-      "🍷 你的沙發特映會，現在開始 🎬",
-      "🎬 一杯紅酒，一部剛剛好的電影 🍷",
-      "🍷 不再滑片單，今晚直接開播 🎬",
-      "🎬 讓選擇困難下片，讓電影登場 🍷",
-      "🍷 今晚的電影運氣，由你開瓶 🎬",
-      "🍷 電影杯倒滿，今晚片單開演 🎬"
+      "今晚，讓好故事先開場",
+      "停止滑動，直接進入正片",
+      "電影或影集，下一部由你決定",
+      "你的私人放映廳，現在開演"
     ],
-    "subtitle": "輸入心情或觀影需求，AI 會先分析條件，再從 TMDB 找出適合的電影。",
-    "heroHint": "往下描述今晚想看的電影。",
-    "requestTitle": "今晚想看什麼樣的電影？",
-    "requestSubtitle": "先由 DeepSeek 理解你的心情與需求，通過格式驗證後才會查詢 TMDB 電影資料。",
+    "subtitle": "輸入心情或觀影需求，AI 會先分析條件，再從 TMDB 找出適合的電影與影集。",
+    "heroHint": "往下描述今晚想看的內容。",
+    "requestTitle": "今晚想看什麼？",
+    "requestSubtitle": "先由 DeepSeek 理解你的心情與需求，通過格式驗證後才會查詢 TMDB。",
+    "mediaTypeLabel": "內容類型",
+    "mediaTypeHint": "至少選擇一項；兩項都選時會推薦 3 部電影與 3 部影集。",
     "requestLabel": "觀影需求",
     "requestPlaceholder": "例如：今天很累，想和另一半看一部步調輕鬆、近幾年的溫暖電影。",
     "requestHint": "可以描述心情、一起看的人、節奏或偏好的年代。",
     "requestRequired": "請至少輸入兩個字的觀影需求。",
     "signInRequired": "請先登入，才能使用 DeepSeek 分析觀影需求。",
-    "analyzeRequest": "分析需求並找電影",
+    "analyzeRequest": "分析需求並找片",
     "analyzing": "AI 正在分析需求...",
     "analysisError": "AI 無法分析這次需求，請稍後再試。",
     "retryAnalysis": "重新分析",
     "criteriaReady": "AI 條件驗證完成",
-    "noResults": "找不到符合這組條件的電影，試著換一種描述。",
+    "noResults": "找不到符合這組條件的內容，試著換一種描述。",
     "refineRequest": "調整觀影需求",
     "progressLabel": "選片進度",
     "back": "上一步",
@@ -199,56 +202,8 @@
       }
     }
   },
-  "random": {
-    "title": "隨機挑片",
-    "subtitle": "選擇障礙救星！讓命運幫你決定今晚看什麼。從完全隨機到條件篩選，找到你的完美觀影選擇。",
-    "modes": {
-      "random": "完全隨機",
-      "filtered": "條件篩選"
-    },
-    "descriptions": {
-      "random": "從熱門電影中隨機挑選 3 部",
-      "filtered": "設定你的偏好條件"
-    },
-    "buttons": {
-      "roll": "開始挑片",
-      "rollAgain": "再搖一次"
-    },
-    "results": {
-      "title": "你的隨機選擇"
-    },
-    "noResults": {
-      "title": "找不到符合條件的電影",
-      "description": "試著調整篩選條件，再搖一次骰子吧！"
-    },
-    "initial": "按下按鈕，讓命運幫你決定今晚看什麼！"
-  },
-  "top100": {
-    "title": "Top 100 電影",
-    "subtitle": "影迷票選最高評分電影",
-    "loadMore": "載入更多",
-    "loading": "載入中..."
-  },
-  "filter": {
-    "sortBy": "排序方式",
-    "genres": "類型",
-    "year": "年份",
-    "minRating": "最低評分",
-    "yearFrom": "從",
-    "yearTo": "到",
-    "ratingAbove": "{{rating}} 分以上",
-    "resetFilters": "重置篩選",
-    "sortOptions": {
-      "popularityDesc": "熱門度 (高→低)",
-      "popularityAsc": "熱門度 (低→高)",
-      "ratingDesc": "評分 (高→低)",
-      "ratingAsc": "評分 (低→高)",
-      "releaseDateDesc": "上映日期 (新→舊)",
-      "releaseDateAsc": "上映日期 (舊→新)"
-    }
-  },
   "movieDetail": {
-    "notFound": "找不到這部電影",
+    "notFound": "找不到這筆內容",
     "backToHome": "回到首頁",
     "backButton": "返回",
     "watchTrailer": "觀看預告片",
@@ -256,7 +211,7 @@
     "sections": {
       "overview": "劇情簡介",
       "cast": "演員陣容",
-      "info": "電影資訊"
+      "info": "作品資訊"
     },
     "info": {
       "originalTitle": "原始片名",
@@ -265,16 +220,27 @@
       "revenue": "票房"
     }
   },
+  "tvDetail": {
+    "seasons": "共 {{count}} 季",
+    "episodes": "共 {{count}} 集",
+    "nextEpisode": "下一集"
+  },
   "wishlist": {
     "title": "收藏清單",
+    "filters": {
+      "all": "全部",
+      "movie": "電影",
+      "tv": "影集",
+      "empty": "這個分類目前沒有收藏"
+    },
     "stats": {
-      "movieCount": "共 {{count}} 部電影",
+      "contentCount": "共 {{count}} 筆內容",
       "avgRating": "平均評分"
     },
     "clearButton": "清空收藏",
     "clearDialog": {
       "title": "確定要清空收藏清單？",
-      "description": "這會移除所有 {{count}} 部收藏的電影，此操作無法復原。",
+      "description": "這會移除全部 {{count}} 筆收藏，此操作無法復原。",
       "cancel": "取消",
       "confirm": "確定清空"
     },
@@ -294,8 +260,8 @@
     },
     "empty": {
       "title": "收藏清單是空的",
-      "description": "開始探索電影，將喜歡的電影加入收藏吧！",
-      "explore": "探索電影"
+      "description": "開始探索電影與影集，將喜歡的內容加入收藏吧！",
+      "explore": "開始探索"
     }
   },
   "history": {
@@ -325,8 +291,7 @@
     "loadFailed": "載入失敗，請稍後再試"
   },
   "movieCard": {
-    "noOverview": "暫無簡介",
-    "loadingTrailer": "載入預告片"
+    "noOverview": "暫無簡介"
   },
   "searchBar": {
     "placeholder": "搜尋電影名稱...",
@@ -336,14 +301,13 @@
     "viewMore": "查看更多"
   },
   "searchResults": {
-    "found": "找到 {{count}} 部相關電影",
-    "notFound": "找不到「{{query}}」的相關電影"
-  },
-  "filterChips": {
-    "label": "篩選條件：",
-    "yearFrom": "從 {{year}} 年",
-    "yearTo": "到 {{year}} 年",
-    "ratingAbove": "{{rating}} 分以上"
+    "found": "找到 {{count}} 筆相關內容",
+    "notFound": "找不到「{{query}}」的相關電影或影集",
+    "filters": {
+      "all": "全部",
+      "movie": "電影",
+      "tv": "影集"
+    }
   },
   "movieGrid": {
     "noMovies": "找不到任何電影"

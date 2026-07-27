@@ -4,14 +4,15 @@ import userEvent from '@testing-library/user-event'
 import { I18nextProvider } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
-import { discoverMovies } from '@/services/tmdb/api'
+import { discoverMovies, discoverTv } from '@/services/tmdb/api'
 import { analyzeMovieRequest } from '@/services/supabase/movieRequestAnalysis'
 import { setRecommendationHistoryRemoteForTesting } from '@/services/supabase/recommendationHistory'
-import type { Movie } from '@/services/tmdb/types'
+import type { Movie, TvShow } from '@/services/tmdb/types'
 import { useAuthStore } from '@/stores/authStore'
 
 vi.mock('@/services/tmdb/api', () => ({
   discoverMovies: vi.fn(),
+  discoverTv: vi.fn(),
 }))
 
 vi.mock('@/services/supabase/movieRequestAnalysis', () => ({
@@ -53,6 +54,26 @@ function movie(id: number, title = `Movie ${id}`): Movie {
     release_date: '2026-01-01',
     title,
     video: false,
+    vote_average: 8,
+    vote_count: 100,
+  }
+}
+
+function tvShow(id: number, name = `Series ${id}`): TvShow {
+  return {
+    adult: false,
+    backdrop_path: null,
+    first_air_date: '2026-01-01',
+    genre_ids: [35],
+    id,
+    media_type: 'tv',
+    name,
+    origin_country: ['TW'],
+    original_language: 'zh',
+    original_name: name,
+    overview: `Overview ${id}`,
+    popularity: 10,
+    poster_path: null,
     vote_average: 8,
     vote_count: 100,
   }
@@ -112,6 +133,62 @@ async function renderPicker() {
 }
 
 describe('AiMoviePicker', () => {
+  it('defaults to movies and never allows all media types to be unchecked', async () => {
+    const user = userEvent.setup()
+    await renderPicker()
+
+    const movieCheckbox = screen.getByRole('checkbox', { name: '電影' })
+    const tvCheckbox = screen.getByRole('checkbox', { name: '影集' })
+
+    expect(movieCheckbox).toBeChecked()
+    expect(movieCheckbox).toBeDisabled()
+    expect(tvCheckbox).not.toBeChecked()
+
+    await user.click(tvCheckbox)
+
+    expect(movieCheckbox).not.toBeDisabled()
+    expect(tvCheckbox).toBeChecked()
+  }, 15000)
+
+  it('returns three movies and three series when both media types are selected', async () => {
+    authenticate()
+    const user = userEvent.setup()
+    vi.mocked(analyzeMovieRequest).mockResolvedValue(analysis)
+    vi.mocked(discoverMovies).mockResolvedValue({
+      page: 1,
+      results: Array.from({ length: 6 }, (_, index) =>
+        movie(index + 1, `Mixed Movie ${index + 1}`),
+      ),
+      total_pages: 1,
+      total_results: 6,
+    })
+    vi.mocked(discoverTv).mockResolvedValue({
+      page: 1,
+      results: Array.from({ length: 6 }, (_, index) =>
+        tvShow(index + 101, `Mixed Series ${index + 1}`),
+      ),
+      total_pages: 1,
+      total_results: 6,
+    })
+
+    await renderPicker()
+    await user.click(screen.getByRole('checkbox', { name: '影集' }))
+    await user.type(screen.getByLabelText('觀影需求'), '今晚想放鬆一下')
+    await user.click(screen.getByRole('button', { name: '分析需求並找片' }))
+
+    expect(await screen.findByText('Mixed Movie 1')).toBeInTheDocument()
+    expect(screen.getByText('Mixed Movie 3')).toBeInTheDocument()
+    expect(screen.queryByText('Mixed Movie 4')).not.toBeInTheDocument()
+    expect(screen.getByText('Mixed Series 1')).toBeInTheDocument()
+    expect(screen.getByText('Mixed Series 3')).toBeInTheDocument()
+    expect(screen.queryByText('Mixed Series 4')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: '重新選片' }))
+
+    expect(screen.getByRole('checkbox', { name: '電影' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: '影集' })).not.toBeChecked()
+  }, 15000)
+
   it('asks signed-out users to sign in before DeepSeek analysis', async () => {
     await renderPicker()
 
@@ -119,7 +196,7 @@ describe('AiMoviePicker', () => {
       screen.getByText('請先登入，才能使用 DeepSeek 分析觀影需求。'),
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('button', { name: '分析需求並找電影' }),
+      screen.getByRole('button', { name: '分析需求並找片' }),
     ).toBeDisabled()
   }, 15000)
 
@@ -147,15 +224,14 @@ describe('AiMoviePicker', () => {
       screen.getByLabelText('觀影需求'),
       '今天很累，想和另一半看溫暖的新電影',
     )
-    await user.click(screen.getByRole('button', { name: '分析需求並找電影' }))
+    await user.click(screen.getByRole('button', { name: '分析需求並找片' }))
 
     expect(analyzeMovieRequest).toHaveBeenCalledWith(
       '今天很累，想和另一半看溫暖的新電影',
       'zh-TW',
     )
     expect(await screen.findByText('AI First Movie 1')).toBeInTheDocument()
-    expect(screen.getByText('AI First Movie 5')).toBeInTheDocument()
-    expect(screen.queryByText('AI First Movie 6')).not.toBeInTheDocument()
+    expect(screen.getByText('AI First Movie 6')).toBeInTheDocument()
     expect(discoverMovies).toHaveBeenCalledWith(
       expect.objectContaining({
         language: 'zh-TW',
@@ -171,7 +247,7 @@ describe('AiMoviePicker', () => {
           userId: 'user-id',
           provider: 'deepseek-criteria',
           model: 'deepseek-v4-flash',
-          candidateMovieIds: [1, 2, 3, 4, 5],
+          candidateMovieIds: [1, 2, 3, 4, 5, 6],
         }),
       )
     })
@@ -186,7 +262,7 @@ describe('AiMoviePicker', () => {
 
     await renderPicker()
     await user.type(screen.getByLabelText('觀影需求'), '想看刺激的電影')
-    await user.click(screen.getByRole('button', { name: '分析需求並找電影' }))
+    await user.click(screen.getByRole('button', { name: '分析需求並找片' }))
 
     expect(
       screen.getByRole('button', { name: 'AI 正在分析需求...' }),
@@ -209,7 +285,7 @@ describe('AiMoviePicker', () => {
 
     await renderPicker()
     await user.type(screen.getByLabelText('觀影需求'), '想看溫暖的電影')
-    await user.click(screen.getByRole('button', { name: '分析需求並找電影' }))
+    await user.click(screen.getByRole('button', { name: '分析需求並找片' }))
 
     expect(
       await screen.findByText('AI 無法分析這次需求，請稍後再試。'),
@@ -238,7 +314,7 @@ describe('AiMoviePicker', () => {
 
     await renderPicker()
     await user.type(screen.getByLabelText('觀影需求'), '想看近年的電影')
-    await user.click(screen.getByRole('button', { name: '分析需求並找電影' }))
+    await user.click(screen.getByRole('button', { name: '分析需求並找片' }))
 
     expect(
       await screen.findByText('推薦片單載入失敗，請稍後再試。'),
@@ -263,10 +339,10 @@ describe('AiMoviePicker', () => {
 
     await renderPicker()
     await user.type(screen.getByLabelText('觀影需求'), '想看非常特別的電影')
-    await user.click(screen.getByRole('button', { name: '分析需求並找電影' }))
+    await user.click(screen.getByRole('button', { name: '分析需求並找片' }))
 
     expect(
-      await screen.findByText('找不到符合這組條件的電影，試著換一種描述。'),
+      await screen.findByText('找不到符合這組條件的內容，試著換一種描述。'),
     ).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: '調整觀影需求' }))
 
@@ -278,7 +354,7 @@ describe('AiMoviePicker', () => {
     const user = userEvent.setup()
 
     await renderPicker()
-    await user.click(screen.getByRole('button', { name: '分析需求並找電影' }))
+    await user.click(screen.getByRole('button', { name: '分析需求並找片' }))
 
     expect(screen.getByText('請至少輸入兩個字的觀影需求。')).toBeInTheDocument()
     expect(analyzeMovieRequest).not.toHaveBeenCalled()

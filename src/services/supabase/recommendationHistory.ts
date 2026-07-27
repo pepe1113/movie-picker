@@ -1,10 +1,10 @@
-import type { Movie } from '@/services/tmdb/types'
+import type { MediaItem } from '@/services/tmdb/types'
 import { getSupabaseClient } from './client'
 
 export interface RecommendationRunItem {
   movie_id: number
   reason: string
-  movie_snapshot: Movie
+  movie_snapshot: MediaItem
 }
 
 export interface RecommendationRun {

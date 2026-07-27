@@ -4,12 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { MovieCard } from './MovieCard'
 import { MovieSkeleton } from './MovieSkeleton'
-import type { Movie } from '@/services/tmdb/types'
+import type { MediaItem } from '@/services/tmdb/types'
+import { getMediaKey } from '@/utils/media'
 
 interface MovieSectionProps {
   title: string
   subtitle?: string
-  movies: Movie[]
+  movies: MediaItem[]
   isLoading?: boolean
   limit?: number
   moreLink?: string
@@ -19,7 +20,6 @@ interface MovieSectionProps {
   onLoadMore?: () => void
   loadMoreText?: string
   sectionLabel?: string
-  enableTrailerPreview?: boolean
 }
 
 export function MovieSection({
@@ -35,7 +35,6 @@ export function MovieSection({
   onLoadMore,
   loadMoreText,
   sectionLabel,
-  enableTrailerPreview = false,
 }: MovieSectionProps) {
   const { t } = useTranslation()
   const displayMovies = limit ? movies.slice(0, limit) : movies
@@ -75,19 +74,15 @@ export function MovieSection({
 
         {/* Movie Grid */}
         {isLoading ? (
-          <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
             {Array.from({ length: limit ?? 12 }).map((_, i) => (
               <MovieSkeleton key={i} />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
             {displayMovies.map((movie) => (
-              <MovieCard
-                key={movie.id}
-                movie={movie}
-                enableTrailerPreview={enableTrailerPreview}
-              />
+              <MovieCard key={getMediaKey(movie)} movie={movie} />
             ))}
           </div>
         )}

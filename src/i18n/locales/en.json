@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "Movie Picker",
-    "search": "Search movies...",
+    "search": "Search movies and series...",
     "login": "Login",
     "logout": "Logout",
     "user": "User",
@@ -9,74 +9,77 @@
     "loading": "Loading...",
     "noResults": "No results found"
   },
+  "mediaType": {
+    "movie": "Movies",
+    "tv": "Series",
+    "movies": "Movies",
+    "tvShows": "Series"
+  },
+  "genres": {
+    "label": "Browse by genre",
+    "all": "All"
+  },
+  "search": {
+    "title": "Search movies and series"
+  },
   "nav": {
     "home": "Home",
-    "top100": "Top 100",
-    "random": "Random Pick",
     "wishlist": "Wishlist",
     "history": "History"
   },
   "home": {
-    "hero": {
-      "title": "Discover\nYour Next\nClassic Movie",
-      "subtitle": "From blockbusters to classics, let us help you find the perfect movie. Smart recommendations and random picks to solve your choice paralysis.",
-      "ctaRandom": "Start Random Pick",
-      "ctaTop100": "Browse TOP 100"
-    },
     "aiHero": {
       "badge": "Let AI pick tonight",
       "title": "Stop scrolling. Let AI start the movie.",
-      "subtitle": "Answer 4 questions and Movie Picker will choose 3 candidates from the latest movie pool.",
+      "subtitle": "Describe tonight's mood and Movie Picker will search movies and series for the right lineup.",
       "cta": "Start AI Picker",
       "scrollHint": "Scroll to start"
     },
     "sections": {
-      "trending": "Trending This Week",
-      "trendingLabel": "Heating Up",
-      "nowPlaying": "Now Playing",
-      "nowPlayingLabel": "Fresh Releases",
-      "popular": "Popular Movies",
-      "popularLabel": "Audience Heat",
-      "topRated": "Top Rated Movies",
-      "topRatedLabel": "Fan Favorites",
-      "viewAll": "View Full TOP 100"
+      "movie": {
+        "latest": "Now Playing",
+        "trending": "Trending Movies",
+        "popular": "Popular Movies",
+        "topRated": "Top Rated Movies"
+      },
+      "tv": {
+        "latest": "On the Air",
+        "trending": "Trending Series",
+        "popular": "Popular Series",
+        "topRated": "Top Rated Series"
+      }
     }
   },
   "footer": {
     "tmdbDisclaimer": "movie data refers to TMDB/OMDb API. made for personal use ❤️",
-    "copyright": "Movie Picker",
-    "ticker": "AI picker online / Weekly trends synced / Popular watchlists scanning / Low-latency trailer preview / No more choice paralysis tonight"
+    "copyright": "Movie Picker"
   },
   "aiPicker": {
     "badge": "AI Movie Guide",
     "title": "Describe your movie night. Let AI build the criteria.",
     "heroTitles": [
-      "🍷 Wine is poured. Let the movie begin 🎬",
-      "🎬 Skip the scroll. Tonight picks itself 🍷",
-      "🍷 Movie night, uncorked by Movie Picker 🎬",
-      "🎬 No more title hunting, just press play 🍷",
-      "🍷 Your sofa screening starts right now 🎬",
-      "🎬 One glass, one perfectly timed movie 🍷",
-      "🍷 Stop scrolling. Start watching 🎬",
-      "🎬 Let choice paralysis fade to black 🍷",
-      "🍷 Tonight's movie luck is ready to pour 🎬",
-      "🍷 Fill the glass. Roll tonight's credits 🎬"
+      "Let a great story begin tonight",
+      "Stop scrolling. Start the feature",
+      "Movie or series, choose what plays next",
+      "Your private screening starts now"
     ],
-    "subtitle": "Enter your mood or movie needs. AI analyzes them first, then searches TMDB for matching movies.",
+    "subtitle": "Enter your mood or viewing needs. AI analyzes them first, then searches TMDB for matching movies and series.",
     "heroHint": "Describe what you want to watch below.",
-    "requestTitle": "What kind of movie do you want tonight?",
+    "requestTitle": "What do you want to watch tonight?",
     "requestSubtitle": "DeepSeek first turns your request into validated criteria. TMDB is searched only after the structure passes validation.",
+    "mediaTypeLabel": "Content type",
+    "mediaTypeHint": "Choose at least one. Selecting both returns 3 movies and 3 series.",
     "requestLabel": "Movie Request",
     "requestPlaceholder": "For example: I am tired and want a warm, easy recent movie to watch with my partner.",
     "requestHint": "Mention your mood, who is watching, preferred pace, or era.",
     "requestRequired": "Enter at least two characters describing what you want.",
     "signInRequired": "Sign in to let DeepSeek analyze your movie request.",
-    "analyzeRequest": "Analyze and Find Movies",
+    "analyzeRequest": "Analyze and Find Picks",
     "analyzing": "AI is analyzing your request...",
     "analysisError": "AI could not analyze this request. Please try again.",
     "retryAnalysis": "Retry Analysis",
     "criteriaReady": "AI Criteria Validated",
-    "noResults": "No movies matched these criteria. Try describing your request differently.",
+    "noResults": "Nothing matched these criteria. Try describing your request differently.",
     "refineRequest": "Refine Movie Request",
     "progressLabel": "Picker Progress",
     "back": "Back",
@@ -199,56 +202,8 @@
       }
     }
   },
-  "random": {
-    "title": "Random Pick",
-    "subtitle": "Can't decide? Let fate choose for you! From completely random to filtered picks, find your perfect movie tonight.",
-    "modes": {
-      "random": "Fully Random",
-      "filtered": "With Filters"
-    },
-    "descriptions": {
-      "random": "Pick 3 random movies from popular titles",
-      "filtered": "Set your preferences"
-    },
-    "buttons": {
-      "roll": "Roll the Dice",
-      "rollAgain": "Roll Again"
-    },
-    "results": {
-      "title": "Your Random Picks"
-    },
-    "noResults": {
-      "title": "No movies match your criteria",
-      "description": "Try adjusting your filters and roll again!"
-    },
-    "initial": "Hit the button and let fate decide what to watch tonight!"
-  },
-  "top100": {
-    "title": "Top 100 Movies",
-    "subtitle": "Highest rated movies by film lovers",
-    "loadMore": "Load More",
-    "loading": "Loading..."
-  },
-  "filter": {
-    "sortBy": "Sort By",
-    "genres": "Genres",
-    "year": "Year",
-    "minRating": "Minimum Rating",
-    "yearFrom": "From",
-    "yearTo": "To",
-    "ratingAbove": "{{rating}}+ rating",
-    "resetFilters": "Reset Filters",
-    "sortOptions": {
-      "popularityDesc": "Popularity (High to Low)",
-      "popularityAsc": "Popularity (Low to High)",
-      "ratingDesc": "Rating (High to Low)",
-      "ratingAsc": "Rating (Low to High)",
-      "releaseDateDesc": "Release Date (Newest)",
-      "releaseDateAsc": "Release Date (Oldest)"
-    }
-  },
   "movieDetail": {
-    "notFound": "Movie Not Found",
+    "notFound": "Title Not Found",
     "backToHome": "Back to Home",
     "backButton": "Back",
     "watchTrailer": "Watch Trailer",
@@ -256,7 +211,7 @@
     "sections": {
       "overview": "Overview",
       "cast": "Cast",
-      "info": "Movie Info"
+      "info": "Title Info"
     },
     "info": {
       "originalTitle": "Original Title",
@@ -265,16 +220,27 @@
       "revenue": "Revenue"
     }
   },
+  "tvDetail": {
+    "seasons": "{{count}} seasons",
+    "episodes": "{{count}} episodes",
+    "nextEpisode": "Next episode"
+  },
   "wishlist": {
     "title": "Wishlist",
+    "filters": {
+      "all": "All",
+      "movie": "Movies",
+      "tv": "Series",
+      "empty": "No saved titles in this category"
+    },
     "stats": {
-      "movieCount": "{{count}} movies",
+      "contentCount": "{{count}} saved titles",
       "avgRating": "Average Rating"
     },
     "clearButton": "Clear All",
     "clearDialog": {
       "title": "Clear your wishlist?",
-      "description": "This will remove all {{count}} movies from your wishlist. This action cannot be undone.",
+      "description": "This will remove all {{count}} saved titles. This action cannot be undone.",
       "cancel": "Cancel",
       "confirm": "Clear All"
     },
@@ -294,8 +260,8 @@
     },
     "empty": {
       "title": "Your wishlist is empty",
-      "description": "Start exploring movies and add your favorites!",
-      "explore": "Explore Movies"
+      "description": "Explore movies and series, then save your favorites.",
+      "explore": "Start Exploring"
     }
   },
   "history": {
@@ -325,8 +291,7 @@
     "loadFailed": "Failed to load, please try again later"
   },
   "movieCard": {
-    "noOverview": "No overview available",
-    "loadingTrailer": "Loading trailer"
+    "noOverview": "No overview available"
   },
   "searchBar": {
     "placeholder": "Search movies...",
@@ -336,14 +301,13 @@
     "viewMore": "View More"
   },
   "searchResults": {
-    "found": "Found {{count}} movies",
-    "notFound": "No movies found for \"{{query}}\""
-  },
-  "filterChips": {
-    "label": "Filters:",
-    "yearFrom": "From {{year}}",
-    "yearTo": "To {{year}}",
-    "ratingAbove": "{{rating}}+ rating"
+    "found": "Found {{count}} results",
+    "notFound": "No movies or series found for \"{{query}}\"",
+    "filters": {
+      "all": "All",
+      "movie": "Movies",
+      "tv": "Series"
+    }
   },
   "movieGrid": {
     "noMovies": "No movies found"

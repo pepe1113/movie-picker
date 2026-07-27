@@ -1,13 +1,14 @@
 import { act, render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { TypewriterHeroTitle } from '@/components/features/ai-picker/TypewriterHeroTitle'
+
+afterEach(() => {
+  vi.useRealTimers()
+})
 
 describe('TypewriterHeroTitle', () => {
   it('renders a configurable heading level with typewriter text and cursor', async () => {
     vi.useFakeTimers()
-
-    const { TypewriterHeroTitle } = await import(
-      '@/components/features/ai-picker/TypewriterHeroTitle'
-    )
 
     render(
       <TypewriterHeroTitle
@@ -33,7 +34,5 @@ describe('TypewriterHeroTitle', () => {
     expect(screen.getByTestId('hero-title-cursor')).toHaveClass(
       'hero-title-cursor',
     )
-
-    vi.useRealTimers()
   })
 })

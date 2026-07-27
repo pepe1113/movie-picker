@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { ChevronDown, RotateCcw, Sparkles } from 'lucide-react'
+import { RotateCcw, Sparkles } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import {
   AiRecommendationCarousel,
@@ -9,7 +9,8 @@ import {
 import { AiPickerPreferenceBadge } from '@/components/features/ai-picker/AiPickerPreferenceBadge'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { discoverMovies } from '@/services/tmdb/api'
+import { discoverMovies, discoverTv } from '@/services/tmdb/api'
+import type { MediaType } from '@/services/tmdb/types'
 import {
   analyzeMovieRequest,
   MAX_MOVIE_REQUEST_LENGTH,
@@ -21,20 +22,21 @@ import { cn } from '@/lib/utils'
 import { TMDB_LANGUAGE_MAP } from '@/utils/constants'
 import {
   buildAiMovieQuery,
+  buildAiTvQuery,
   getAiPickerKeywordKeys,
 } from '@/utils/aiMoviePicker'
+import { getMediaKey } from '@/utils/media'
 
-interface AiMoviePickerProps {
-  onBrowseMovies?: () => void
-}
-
-export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
+export function AiMoviePicker() {
   const { t } = useTranslation()
   const language = useLanguageStore((state) => state.language)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
   const user = useAuthStore((state) => state.user)
   const [requestText, setRequestText] = useState('')
   const [inputError, setInputError] = useState(false)
+  const [selectedMediaTypes, setSelectedMediaTypes] = useState<MediaType[]>([
+    'movie',
+  ])
   const savedHistoryKeyRef = useRef<string | null>(null)
 
   const analysisMutation = useMutation({
@@ -44,36 +46,56 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const criteria = analysisMutation.data?.criteria ?? null
   const keywordKeys = criteria ? getAiPickerKeywordKeys(criteria) : []
 
-  const movieQuery = useQuery({
-    queryKey: ['ai-request-movies', criteria, language],
+  const mediaQuery = useQuery({
+    queryKey: [
+      'ai-request-media',
+      criteria,
+      language,
+      selectedMediaTypes.join(','),
+    ],
     queryFn: async () => {
       if (!criteria) {
-        throw new Error('AI movie criteria are unavailable')
+        throw new Error('AI media criteria are unavailable')
       }
 
-      const response = await discoverMovies({
-        ...buildAiMovieQuery(criteria),
-        language: TMDB_LANGUAGE_MAP[language],
-      })
+      const tmdbLanguage = TMDB_LANGUAGE_MAP[language]
+      const [movies, tvShows] = await Promise.all([
+        selectedMediaTypes.includes('movie')
+          ? discoverMovies({
+              ...buildAiMovieQuery(criteria),
+              language: tmdbLanguage,
+            }).then((response) => response.results)
+          : Promise.resolve([]),
+        selectedMediaTypes.includes('tv')
+          ? discoverTv({
+              ...buildAiTvQuery(criteria),
+              language: tmdbLanguage,
+            }).then((response) => response.results)
+          : Promise.resolve([]),
+      ])
 
-      return response.results.slice(0, 5)
+      if (selectedMediaTypes.length === 2) {
+        return [...movies.slice(0, 3), ...tvShows.slice(0, 3)]
+      }
+
+      return (movies.length > 0 ? movies : tvShows).slice(0, 6)
     },
     enabled: Boolean(criteria),
   })
 
-  const recommendations = (movieQuery.data ?? []).map((movie) => ({
+  const recommendations = (mediaQuery.data ?? []).map((movie) => ({
     movie,
     matchedKeywordKeys: keywordKeys,
     reason: undefined,
   }))
 
   useEffect(() => {
-    if (!criteria || !analysisMutation.data || !movieQuery.data || !user) {
+    if (!criteria || !analysisMutation.data || !mediaQuery.data || !user) {
       return
     }
 
-    const historyKey = `${user.uid}:${requestText.trim()}:${movieQuery.data
-      .map((movie) => movie.id)
+    const historyKey = `${user.uid}:${requestText.trim()}:${mediaQuery.data
+      .map(getMediaKey)
       .join(',')}`
     if (savedHistoryKeyRef.current === historyKey) return
 
@@ -81,9 +103,12 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
     getRecommendationHistoryRemote()
       .createRun({
         userId: user.uid,
-        answers: criteria,
-        candidateMovieIds: movieQuery.data.map((movie) => movie.id),
-        recommendations: movieQuery.data.map((movie) => ({
+        answers: {
+          ...criteria,
+          mediaTypes: selectedMediaTypes.join(','),
+        },
+        candidateMovieIds: mediaQuery.data.map((movie) => movie.id),
+        recommendations: mediaQuery.data.map((movie) => ({
           movie_id: movie.id,
           reason: movie.overview || t('movieCard.noOverview'),
           movie_snapshot: movie,
@@ -94,7 +119,27 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
       .catch((error: unknown) => {
         console.error('AI-first recommendation history write failed', error)
       })
-  }, [analysisMutation.data, criteria, movieQuery.data, requestText, t, user])
+  }, [
+    analysisMutation.data,
+    criteria,
+    mediaQuery.data,
+    requestText,
+    selectedMediaTypes,
+    t,
+    user,
+  ])
+
+  const toggleMediaType = (mediaType: MediaType) => {
+    setSelectedMediaTypes((current) => {
+      if (current.includes(mediaType)) {
+        return current.length === 1
+          ? current
+          : current.filter((type) => type !== mediaType)
+      }
+
+      return [...current, mediaType]
+    })
+  }
 
   const submitRequest = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -119,13 +164,14 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const reset = () => {
     setRequestText('')
     setInputError(false)
+    setSelectedMediaTypes(['movie'])
     savedHistoryKeyRef.current = null
     analysisMutation.reset()
   }
 
   return (
     <section className="border-border relative overflow-hidden border-b">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(30,215,96,0.18),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(83,157,245,0.14),transparent_24%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(214,43,66,0.2),transparent_30%),radial-gradient(circle_at_80%_10%,rgba(214,43,66,0.08),transparent_24%)]" />
       <div className="via-primary/70 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent" />
 
       <div className="relative container mx-auto flex min-h-[calc(100svh-64px)] flex-1 flex-col justify-center px-6 py-10 md:px-12 md:py-12 lg:px-16">
@@ -145,6 +191,38 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
               </div>
 
               <form onSubmit={submitRequest} className="space-y-4">
+                <fieldset className="space-y-2">
+                  <legend className="text-sm font-bold tracking-[1.4px] uppercase">
+                    {t('aiPicker.mediaTypeLabel')}
+                  </legend>
+                  <div className="flex flex-wrap gap-3">
+                    {(['movie', 'tv'] as const).map((mediaType) => {
+                      const isChecked = selectedMediaTypes.includes(mediaType)
+                      const isOnlySelection =
+                        isChecked && selectedMediaTypes.length === 1
+
+                      return (
+                        <label
+                          key={mediaType}
+                          className="border-border bg-secondary/60 has-checked:border-primary has-checked:bg-primary/10 flex cursor-pointer items-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            disabled={isOnlySelection}
+                            onChange={() => toggleMediaType(mediaType)}
+                            className="accent-primary size-4"
+                          />
+                          {t(`mediaType.${mediaType}`)}
+                        </label>
+                      )
+                    })}
+                  </div>
+                  <p className="text-muted-foreground text-xs">
+                    {t('aiPicker.mediaTypeHint')}
+                  </p>
+                </fieldset>
+
                 <label
                   htmlFor="movie-request"
                   className="text-sm font-bold tracking-[1.4px] uppercase"
@@ -185,7 +263,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 </div>
 
                 {!isAuthenticated && (
-                  <p className="rounded-lg border border-[#539df5]/40 bg-[#539df5]/10 px-4 py-3 text-sm text-[#539df5]">
+                  <p className="border-primary/40 bg-primary/10 text-primary rounded-lg border px-4 py-3 text-sm">
                     {t('aiPicker.signInRequired')}
                   </p>
                 )}
@@ -264,9 +342,9 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 </Button>
               </div>
 
-              {movieQuery.isLoading && <AiRecommendationCarouselSkeleton />}
+              {mediaQuery.isLoading && <AiRecommendationCarouselSkeleton />}
 
-              {movieQuery.isError && (
+              {mediaQuery.isError && (
                 <div
                   role="alert"
                   className="border-destructive/40 bg-destructive/10 rounded-lg border p-6 text-center shadow-[rgba(243,114,127,0.12)_0px_8px_24px]"
@@ -275,14 +353,14 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                   <Button
                     type="button"
                     variant="secondary"
-                    onClick={() => void movieQuery.refetch()}
-                    disabled={movieQuery.isFetching}
+                    onClick={() => void mediaQuery.refetch()}
+                    disabled={mediaQuery.isFetching}
                     className="mt-4 tracking-[1.4px] uppercase"
                   >
                     <RotateCcw
                       className={cn(
                         'size-4',
-                        movieQuery.isFetching && 'animate-spin',
+                        mediaQuery.isFetching && 'animate-spin',
                       )}
                     />
                     {t('aiPicker.retryMovies')}
@@ -290,7 +368,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 </div>
               )}
 
-              {movieQuery.isSuccess && recommendations.length === 0 && (
+              {mediaQuery.isSuccess && recommendations.length === 0 && (
                 <div
                   role="status"
                   className="bg-secondary/70 rounded-lg p-6 text-center shadow-[rgba(0,0,0,0.3)_0px_8px_24px]"
@@ -319,17 +397,6 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
             </div>
           )}
         </div>
-
-        {onBrowseMovies && (
-          <button
-            type="button"
-            onClick={onBrowseMovies}
-            className="text-muted-foreground hover:text-foreground mx-auto mt-7 flex flex-col items-center gap-2 text-xs font-bold tracking-[1.4px] uppercase transition-colors"
-          >
-            <span>{t('aiPicker.browseMoviesHint')}</span>
-            <ChevronDown className="text-primary size-6 animate-bounce" />
-          </button>
-        )}
       </div>
     </section>
   )

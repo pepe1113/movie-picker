@@ -1,5 +1,3 @@
-import type { Movie } from '@/services/tmdb/types'
-
 export interface FetchNextMoviePageInput {
   visibleCount: number
   increment: number
@@ -18,8 +16,4 @@ export function shouldFetchNextMoviePage({
   hasNextPage,
 }: FetchNextMoviePageInput) {
   return Boolean(hasNextPage) && visibleCount + increment >= loadedCount
-}
-
-export function toTop100Movies(movies: Movie[]) {
-  return movies.slice(0, 100)
 }

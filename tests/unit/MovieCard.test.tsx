@@ -1,17 +1,10 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { I18nextProvider } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { MovieCard } from '@/components/features/movie/MovieCard'
-import type { Movie } from '@/services/tmdb/types'
+import type { Movie, TvShow } from '@/services/tmdb/types'
 import i18n from '@/i18n/config'
-
-const getMovieVideos = vi.fn()
-
-vi.mock('@/services/tmdb/api', () => ({
-  getMovieVideos: (...args: unknown[]) => getMovieVideos(...args),
-}))
 
 const movie: Movie = {
   adult: false,
@@ -30,75 +23,47 @@ const movie: Movie = {
   vote_count: 100,
 }
 
-function renderMovieCard(enableTrailerPreview = false) {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false },
-    },
-  })
+const tvShow: TvShow = {
+  adult: false,
+  backdrop_path: null,
+  first_air_date: '2025-03-02',
+  genre_ids: [18],
+  id: 42,
+  media_type: 'tv',
+  name: 'Hover Series',
+  origin_country: ['TW'],
+  original_language: 'zh',
+  original_name: 'Hover Series',
+  overview: 'A TV overview.',
+  popularity: 10,
+  poster_path: null,
+  vote_average: 8,
+  vote_count: 100,
+}
 
+function renderCard(media: Movie | TvShow) {
   return render(
     <I18nextProvider i18n={i18n}>
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <MovieCard movie={movie} enableTrailerPreview={enableTrailerPreview} />
-        </MemoryRouter>
-      </QueryClientProvider>
+      <MemoryRouter>
+        <MovieCard movie={media} />
+      </MemoryRouter>
     </I18nextProvider>,
   )
 }
 
 describe('MovieCard', () => {
-  beforeAll(() => {
-    class MockIntersectionObserver {
-      observe = vi.fn()
-      unobserve = vi.fn()
-      disconnect = vi.fn()
-    }
+  it('uses the shared media title, date, and detail route', () => {
+    renderCard(tvShow)
 
-    vi.stubGlobal('IntersectionObserver', MockIntersectionObserver)
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: vi.fn().mockImplementation((query) => ({
-        matches: true,
-        media: query,
-        onchange: null,
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      })),
-    })
+    expect(screen.getByText('Hover Series')).toBeInTheDocument()
+    expect(screen.getByText('2025')).toBeInTheDocument()
+    expect(screen.getByRole('link')).toHaveAttribute('href', '/tv/42')
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-    vi.useRealTimers()
-  })
+  it('uses one poster flip animation and never renders a trailer iframe', () => {
+    const { container } = renderCard(movie)
 
-  it('does not load trailer previews unless explicitly enabled', () => {
-    vi.useFakeTimers()
-    renderMovieCard()
-
-    act(() => {
-      fireEvent.mouseEnter(screen.getByText('Hover Movie').closest('.group')!)
-      vi.advanceTimersByTime(500)
-    })
-
-    expect(getMovieVideos).not.toHaveBeenCalled()
-  })
-
-  it('loads trailer previews on desktop hover when enabled', async () => {
-    vi.useFakeTimers()
-    getMovieVideos.mockResolvedValue({ results: [] })
-    renderMovieCard(true)
-
-    act(() => {
-      fireEvent.mouseEnter(screen.getByText('Hover Movie').closest('.group')!)
-      vi.advanceTimersByTime(500)
-    })
-
-    expect(getMovieVideos).toHaveBeenCalledWith(42, 'zh-TW')
+    expect(container.querySelector('.poster-card-flip')).toBeInTheDocument()
+    expect(container.querySelector('iframe')).not.toBeInTheDocument()
   })
 })

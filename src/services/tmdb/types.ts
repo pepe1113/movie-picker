@@ -14,6 +14,7 @@ export interface Movie {
   backdrop_path: string | null
   genre_ids: number[]
   id: number
+  media_type?: 'movie'
   original_language: string
   original_title: string
   overview: string
@@ -26,6 +27,28 @@ export interface Movie {
   vote_count: number
 }
 
+// --- TV (列表項目) ---
+export interface TvShow {
+  adult: boolean
+  backdrop_path: string | null
+  first_air_date: string
+  genre_ids: number[]
+  id: number
+  media_type: 'tv'
+  name: string
+  origin_country: string[]
+  original_language: string
+  original_name: string
+  overview: string
+  popularity: number
+  poster_path: string | null
+  vote_average: number
+  vote_count: number
+}
+
+export type MediaType = 'movie' | 'tv'
+export type MediaItem = Movie | TvShow
+
 // --- 分頁回應 ---
 export interface PaginatedResponse<T> {
   page: number
@@ -35,6 +58,8 @@ export interface PaginatedResponse<T> {
 }
 
 export type MovieListResponse = PaginatedResponse<Movie>
+export type TvListResponse = PaginatedResponse<TvShow>
+export type MediaListResponse = PaginatedResponse<MediaItem>
 
 // --- Movie Detail ---
 export interface BelongsToCollection {
@@ -90,6 +115,62 @@ export interface MovieDetail {
   vote_count: number
 }
 
+// --- TV Detail ---
+export interface TvEpisodeSummary {
+  id: number
+  name: string
+  air_date: string | null
+  episode_number: number
+  runtime: number | null
+  season_number: number
+  still_path: string | null
+}
+
+export interface TvNetwork {
+  id: number
+  logo_path: string | null
+  name: string
+  origin_country: string
+}
+
+export interface TvCreator {
+  id: number
+  name: string
+  profile_path: string | null
+}
+
+export interface TvDetail {
+  adult: boolean
+  backdrop_path: string | null
+  created_by: TvCreator[]
+  episode_run_time: number[]
+  first_air_date: string
+  genres: Genre[]
+  homepage: string
+  id: number
+  in_production: boolean
+  last_air_date: string
+  name: string
+  networks: TvNetwork[]
+  next_episode_to_air: TvEpisodeSummary | null
+  number_of_episodes: number
+  number_of_seasons: number
+  origin_country: string[]
+  original_language: string
+  original_name: string
+  overview: string
+  popularity: number
+  poster_path: string | null
+  production_companies: ProductionCompany[]
+  production_countries: ProductionCountry[]
+  spoken_languages: SpokenLanguage[]
+  status: string
+  tagline: string
+  type: string
+  vote_average: number
+  vote_count: number
+}
+
 // --- Credits ---
 export interface CastMember {
   adult: boolean
@@ -126,6 +207,30 @@ export interface CreditsResponse {
   crew: CrewMember[]
 }
 
+export interface TvCastMember {
+  adult: boolean
+  gender: number | null
+  id: number
+  known_for_department: string | null
+  name: string
+  original_name: string
+  popularity: number
+  profile_path: string | null
+  order: number
+  roles: {
+    credit_id: string
+    character: string
+    episode_count: number
+  }[]
+  total_episode_count: number
+}
+
+export interface TvAggregateCreditsResponse {
+  id: number
+  cast: TvCastMember[]
+  crew: CrewMember[]
+}
+
 // --- Videos ---
 export interface Video {
   id: string
@@ -153,6 +258,18 @@ export interface DiscoverMovieParams {
   with_genres?: string
   'primary_release_date.gte'?: string
   'primary_release_date.lte'?: string
+  'vote_average.gte'?: number
+  'vote_average.lte'?: number
+  'vote_count.gte'?: number
+}
+
+export interface DiscoverTvParams {
+  page?: number
+  language?: string
+  sort_by?: string
+  with_genres?: string
+  'first_air_date.gte'?: string
+  'first_air_date.lte'?: string
   'vote_average.gte'?: number
   'vote_average.lte'?: number
   'vote_count.gte'?: number

@@ -43,7 +43,7 @@ describe('MovieDetailPage', () => {
     const heroBackground = container.querySelector('section > div.absolute')
 
     expect(heroBackground).toHaveClass(
-      'bg-[radial-gradient(circle_at_20%_20%,rgb(30_215_96/0.22),transparent_32%),linear-gradient(135deg,var(--background)_0%,var(--muted)_48%,var(--background)_100%)]',
+      'bg-[radial-gradient(circle_at_20%_20%,rgb(214_43_66/0.24),transparent_32%),linear-gradient(135deg,var(--background)_0%,var(--muted)_48%,var(--background)_100%)]',
     )
   })
 
@@ -56,7 +56,9 @@ describe('MovieDetailPage', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.queryByTestId('regional-posters-carousel')).not.toBeInTheDocument()
+    expect(
+      screen.queryByTestId('regional-posters-carousel'),
+    ).not.toBeInTheDocument()
     expect(
       screen.getByRole('heading', { name: 'Gradient Movie' }),
     ).toBeInTheDocument()

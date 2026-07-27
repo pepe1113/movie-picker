@@ -1,47 +1,71 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import {
+  getOnTheAirTv,
+  getPopularTv,
   getTrendingMovies,
+  getTrendingTv,
   getPopularMovies,
+  getTopRatedTv,
   getTopRatedMovies,
   getNowPlayingMovies,
 } from '@/services/tmdb/api'
 import { QUERY_KEYS, TMDB_LANGUAGE_MAP } from '@/utils/constants'
 import { useLanguageStore } from '@/stores/languageStore'
-import type { MovieListResponse } from '@/services/tmdb/types'
+import type { MediaListResponse, MediaType } from '@/services/tmdb/types'
 
 type MovieListType = 'trending' | 'popular' | 'top_rated' | 'now_playing'
+export type MediaListType = 'trending' | 'popular' | 'top_rated' | 'latest'
 
 const fetcherMap: Record<
-  MovieListType,
-  (page: number, language?: string) => Promise<MovieListResponse>
+  MediaType,
+  Record<
+    MediaListType,
+    (page: number, language?: string) => Promise<MediaListResponse>
+  >
 > = {
-  trending: getTrendingMovies,
-  popular: getPopularMovies,
-  top_rated: getTopRatedMovies,
-  now_playing: getNowPlayingMovies,
+  movie: {
+    trending: getTrendingMovies,
+    popular: getPopularMovies,
+    top_rated: getTopRatedMovies,
+    latest: getNowPlayingMovies,
+  },
+  tv: {
+    trending: getTrendingTv,
+    popular: getPopularTv,
+    top_rated: getTopRatedTv,
+    latest: getOnTheAirTv,
+  },
 }
 
-const queryKeyMap: Record<MovieListType, () => readonly string[]> = {
-  trending: QUERY_KEYS.movies.trending,
-  popular: QUERY_KEYS.movies.popular,
-  top_rated: QUERY_KEYS.movies.topRated,
-  now_playing: QUERY_KEYS.movies.nowPlaying,
+interface UseMediaListOptions {
+  enabled?: boolean
 }
 
-export function useMovies(type: MovieListType) {
+export function useMediaList(
+  mediaType: MediaType,
+  type: MediaListType,
+  options: UseMediaListOptions = {},
+) {
   const language = useLanguageStore((state) => state.language)
 
   return useInfiniteQuery({
-    queryKey: [...queryKeyMap[type](), language],
-    queryFn: ({ pageParam }) => fetcherMap[type](pageParam, TMDB_LANGUAGE_MAP[language]),
+    queryKey: [...QUERY_KEYS.media.list(mediaType, type), language],
+    queryFn: ({ pageParam }) =>
+      fetcherMap[mediaType][type](pageParam, TMDB_LANGUAGE_MAP[language]),
     initialPageParam: 1,
     getNextPageParam: (lastPage) =>
       lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined,
     select: (data) => ({
       pages: data.pages,
       pageParams: data.pageParams,
+      media: data.pages.flatMap((page) => page.results),
       movies: data.pages.flatMap((page) => page.results),
       totalResults: data.pages[0]?.total_results ?? 0,
     }),
+    enabled: options.enabled ?? true,
   })
+}
+
+export function useMovies(type: MovieListType) {
+  return useMediaList('movie', type === 'now_playing' ? 'latest' : type)
 }

@@ -8,6 +8,7 @@ import { AiPickerPreferenceBadge } from '@/components/features/ai-picker/AiPicke
 import { MovieCard } from '@/components/features/movie/MovieCard'
 import { cn } from '@/lib/utils'
 import type { AiPickerDisplayRecommendation } from '@/utils/aiRecommendationFlow'
+import { getMediaKey, getMediaTitle } from '@/utils/media'
 
 interface AiRecommendationCarouselProps {
   recommendations: AiPickerDisplayRecommendation[]
@@ -140,7 +141,7 @@ export function AiRecommendationCarousel({
 
           return (
             <motion.div
-              key={recommendation.movie.id}
+              key={getMediaKey(recommendation.movie)}
               animate={slideState}
               initial={false}
               transition={{
@@ -162,11 +163,10 @@ export function AiRecommendationCarousel({
               >
                 <MovieCard
                   movie={recommendation.movie}
-                  enableTrailerPreview={isActive}
                   className={cn(
                     'shadow-[rgba(0,0,0,0.45)_0px_18px_36px]',
                     isActive &&
-                      'shadow-[rgba(30,215,96,0.16)_0px_0px_0px_1px,rgba(0,0,0,0.58)_0px_26px_58px]',
+                      'shadow-[rgba(214,43,66,0.18)_0px_0px_0px_1px,rgba(0,0,0,0.58)_0px_26px_58px]',
                   )}
                 />
                 {isClickableNeighbor && (
@@ -174,9 +174,9 @@ export function AiRecommendationCarousel({
                     type="button"
                     onClick={() => goToIndex(index)}
                     aria-label={t('aiPicker.carousel.goTo', {
-                      title: recommendation.movie.title,
+                      title: getMediaTitle(recommendation.movie),
                     })}
-                    className="absolute inset-0 rounded-lg focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
+                    className="focus-visible:ring-primary focus-visible:ring-offset-background absolute inset-0 rounded-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                   />
                 )}
               </div>
@@ -214,16 +214,16 @@ export function AiRecommendationCarousel({
         <div className="flex justify-center gap-2">
           {recommendations.map((recommendation, index) => (
             <motion.button
-              key={recommendation.movie.id}
+              key={getMediaKey(recommendation.movie)}
               type="button"
               whileTap={{ scale: 0.9 }}
               onClick={() => goToIndex(index)}
               aria-label={t('aiPicker.carousel.goTo', {
-                title: recommendation.movie.title,
+                title: getMediaTitle(recommendation.movie),
               })}
               aria-current={index === activeIndex}
               className={cn(
-                'h-2 rounded-full transition-[background-color,width] duration-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none',
+                'focus-visible:ring-primary focus-visible:ring-offset-background h-2 rounded-full transition-[background-color,width] duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
                 index === activeIndex
                   ? 'bg-primary w-7'
                   : 'bg-muted-foreground/45 hover:bg-muted-foreground w-2',
@@ -239,7 +239,7 @@ export function AiRecommendationCarousel({
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={activeRecommendation.movie.id}
+            key={getMediaKey(activeRecommendation.movie)}
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -8 }}
@@ -260,7 +260,7 @@ export function AiRecommendationCarousel({
                 {t('aiPicker.reasonPrefix')}{' '}
                 {activeRecommendation.matchedKeywordKeys.map((keywordKey) => (
                   <AiPickerPreferenceBadge
-                    key={`${activeRecommendation.movie.id}-${keywordKey}`}
+                    key={`${getMediaKey(activeRecommendation.movie)}-${keywordKey}`}
                     keywordKey={keywordKey}
                     className="mx-0.5 align-middle"
                   />

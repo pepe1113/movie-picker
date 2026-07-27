@@ -47,7 +47,7 @@ export function Component() {
             <div className="text-muted-foreground mt-2 flex items-center gap-4 text-sm">
               <span className="flex items-center gap-1">
                 <Clock className="size-4" />
-                {t('wishlist.stats.movieCount', { count: wishlist.length })}
+                {t('wishlist.stats.contentCount', { count: wishlist.length })}
               </span>
               <span className="flex items-center gap-1">
                 <Star className="size-4" />

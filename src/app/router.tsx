@@ -17,16 +17,12 @@ export const router = createBrowserRouter(
           lazy: () => import('@/pages/MovieDetailPage'),
         },
         {
+          path: '/tv/:id',
+          lazy: () => import('@/pages/MovieDetailPage'),
+        },
+        {
           path: '/search',
           lazy: () => import('@/pages/Search'),
-        },
-        {
-          path: '/top100',
-          lazy: () => import('@/pages/Top100'),
-        },
-        {
-          path: '/random',
-          lazy: () => import('@/pages/RandomPick'),
         },
         {
           path: '/wishlist',

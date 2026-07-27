@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { Movie } from '@/services/tmdb/types'
+import type { Movie, TvShow } from '@/services/tmdb/types'
 import { useAuthStore } from '@/stores/authStore'
 import {
   setWishlistRemoteForTesting,
@@ -20,6 +20,26 @@ function movie(id: number, title = `Movie ${id}`): Movie {
     release_date: '2026-01-01',
     title,
     video: false,
+    vote_average: 8,
+    vote_count: 100,
+  }
+}
+
+function tvShow(id: number, name = `TV ${id}`): TvShow {
+  return {
+    adult: false,
+    backdrop_path: null,
+    first_air_date: '2026-01-01',
+    genre_ids: [18],
+    id,
+    media_type: 'tv',
+    name,
+    origin_country: ['TW'],
+    original_language: 'zh',
+    original_name: name,
+    overview: '',
+    popularity: 10,
+    poster_path: null,
     vote_average: 8,
     vote_count: 100,
   }
@@ -58,6 +78,19 @@ describe('wishlist store sync', () => {
     expect(useWishlistStore.getState().wishlist).toEqual([])
   })
 
+  it('keeps a movie and TV show that share the same TMDB id', async () => {
+    await useWishlistStore.getState().addToWishlist(movie(1))
+    await useWishlistStore.getState().addToWishlist(tvShow(1))
+
+    expect(useWishlistStore.getState().wishlist).toHaveLength(2)
+    expect(useWishlistStore.getState().isInWishlist(1, 'movie')).toBe(true)
+    expect(useWishlistStore.getState().isInWishlist(1, 'tv')).toBe(true)
+
+    await useWishlistStore.getState().removeFromWishlist(1, 'tv')
+
+    expect(useWishlistStore.getState().wishlist).toEqual([movie(1)])
+  })
+
   it('merges local and remote wishlist by movie id after login', async () => {
     const remoteMovie = movie(2)
     const localMovie = movie(1)
@@ -85,9 +118,9 @@ describe('wishlist store sync', () => {
 
     await useWishlistStore.getState().syncWithRemoteWishlist()
 
-    expect(useWishlistStore.getState().wishlist.map((item) => item.id)).toEqual([
-      1, 2,
-    ])
+    expect(useWishlistStore.getState().wishlist.map((item) => item.id)).toEqual(
+      [1, 2],
+    )
     expect(upsert).toHaveBeenCalledWith('user-id', [localMovie, remoteMovie])
   })
 
@@ -129,9 +162,9 @@ describe('wishlist store sync', () => {
       clear: vi.fn(),
     })
 
-    await expect(useWishlistStore.getState().addToWishlist(movie(4))).rejects.toThrow(
-      'network failed',
-    )
+    await expect(
+      useWishlistStore.getState().addToWishlist(movie(4)),
+    ).rejects.toThrow('network failed')
 
     expect(useWishlistStore.getState().wishlist).toEqual([])
     expect(useWishlistStore.getState().error).toBe('network failed')

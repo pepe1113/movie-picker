@@ -1,12 +1,17 @@
+import { useState } from 'react'
 import { Heart } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { MovieGrid } from '@/components/features/movie/MovieGrid'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import type { MediaType } from '@/services/tmdb/types'
 import { useWishlistStore } from '@/stores/wishlistStore'
+import { getMediaType } from '@/utils/media'
 
 export function WishlistGrid() {
   const { t } = useTranslation()
   const { wishlist } = useWishlistStore()
+  const [filter, setFilter] = useState<'all' | MediaType>('all')
 
   if (wishlist.length === 0) {
     return (
@@ -29,5 +34,33 @@ export function WishlistGrid() {
     )
   }
 
-  return <MovieGrid movies={wishlist} />
+  const filteredWishlist =
+    filter === 'all'
+      ? wishlist
+      : wishlist.filter((item) => getMediaType(item) === filter)
+
+  return (
+    <div className="space-y-6">
+      <Tabs
+        value={filter}
+        onValueChange={(value) => setFilter(value as typeof filter)}
+      >
+        <TabsList className="bg-secondary rounded-full p-1">
+          <TabsTrigger value="all" className="rounded-full">
+            {t('wishlist.filters.all')}
+          </TabsTrigger>
+          <TabsTrigger value="movie" className="rounded-full">
+            {t('mediaType.movies')}
+          </TabsTrigger>
+          <TabsTrigger value="tv" className="rounded-full">
+            {t('mediaType.tvShows')}
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+      <MovieGrid
+        movies={filteredWishlist}
+        emptyMessage={t('wishlist.filters.empty')}
+      />
+    </div>
+  )
 }

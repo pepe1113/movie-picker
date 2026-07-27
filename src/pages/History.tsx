@@ -12,6 +12,7 @@ import {
 } from '@/services/supabase/recommendationHistory'
 import { useAuthStore } from '@/stores/authStore'
 import type { AiPickerQuestionId } from '@/utils/aiMoviePicker'
+import { getMediaKey } from '@/utils/media'
 
 function isAiPickerQuestionId(key: string): key is AiPickerQuestionId {
   return ['mood', 'occasion', 'pace', 'era'].includes(key)
@@ -144,7 +145,7 @@ export function Component() {
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
               {run.recommendations.map((recommendation) => (
                 <div
-                  key={recommendation.movie_id}
+                  key={getMediaKey(recommendation.movie_snapshot)}
                   className="mx-auto w-full max-w-[220px] space-y-3"
                 >
                   <MovieCard movie={recommendation.movie_snapshot} />

@@ -1,8 +1,12 @@
 import type { OmdbMovieResponse } from '@/services/omdb/types'
 import { findYouTubeTrailer } from '@/utils/trailerMedia'
 import type {
+  CastMember,
   CreditsResponse,
+  MediaItem,
   MovieDetail,
+  TvAggregateCreditsResponse,
+  TvDetail,
   VideosResponse,
 } from '@/services/tmdb/types'
 export interface ExternalRating {
@@ -15,6 +19,12 @@ interface MovieDetailPresentationInput {
   credits?: CreditsResponse
   videos?: VideosResponse
   omdb?: OmdbMovieResponse | null
+}
+
+interface TvDetailPresentationInput {
+  detail: TvDetail
+  credits?: TvAggregateCreditsResponse
+  videos?: VideosResponse
 }
 
 export function getExternalRatings(
@@ -63,5 +73,44 @@ export function buildMovieDetailPresentation({
       vote_average: detail.vote_average,
       vote_count: detail.vote_count,
     },
+  }
+}
+
+export function buildTvDetailPresentation({
+  detail,
+  credits,
+  videos,
+}: TvDetailPresentationInput) {
+  const cast: CastMember[] =
+    credits?.cast.slice(0, 12).map((member) => ({
+      ...member,
+      cast_id: member.id,
+      character: member.roles[0]?.character ?? '',
+      credit_id: member.roles[0]?.credit_id ?? `tv-${member.id}`,
+    })) ?? []
+
+  const mediaForWishlist: MediaItem = {
+    adult: detail.adult,
+    backdrop_path: detail.backdrop_path,
+    first_air_date: detail.first_air_date,
+    genre_ids: detail.genres.map((genre) => genre.id),
+    id: detail.id,
+    media_type: 'tv',
+    name: detail.name,
+    origin_country: detail.origin_country,
+    original_language: detail.original_language,
+    original_name: detail.original_name,
+    overview: detail.overview,
+    popularity: detail.popularity,
+    poster_path: detail.poster_path,
+    vote_average: detail.vote_average,
+    vote_count: detail.vote_count,
+  }
+
+  return {
+    cast,
+    trailer: findYouTubeTrailer(videos?.results),
+    externalRatings: [],
+    movieForWishlist: mediaForWishlist,
   }
 }

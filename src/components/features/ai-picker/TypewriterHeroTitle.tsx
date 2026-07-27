@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useReducedMotion } from 'motion/react'
 import { cn } from '@/lib/utils'
 
 const HERO_TITLE_TYPE_INTERVAL_MS = 100
@@ -16,16 +17,24 @@ export function TypewriterHeroTitle({
   as: Heading = 'h2',
   className,
 }: TypewriterHeroTitleProps) {
+  const shouldReduceMotion = useReducedMotion()
   const [typedTitleState, setTypedTitleState] = useState({
     title,
     length: 0,
   })
   const titleCharacters = useMemo(() => Array.from(title), [title])
-  const typedTitleLength =
-    typedTitleState.title === title ? typedTitleState.length : 0
+  const typedTitleLength = shouldReduceMotion
+    ? titleCharacters.length
+    : typedTitleState.title === title
+      ? typedTitleState.length
+      : 0
   const typedTitle = titleCharacters.slice(0, typedTitleLength).join('')
 
   useEffect(() => {
+    if (shouldReduceMotion) {
+      return
+    }
+
     const titleTimer = window.setInterval(() => {
       setTypedTitleState((current) => {
         const currentLength = current.title === title ? current.length : 0
@@ -40,13 +49,13 @@ export function TypewriterHeroTitle({
     }, HERO_TITLE_TYPE_INTERVAL_MS)
 
     return () => window.clearInterval(titleTimer)
-  }, [title, titleCharacters.length])
+  }, [shouldReduceMotion, title, titleCharacters.length])
 
   return (
     <Heading
       aria-label={title}
       className={cn(
-        'hero-title-gradient mx-auto w-full max-w-5xl text-center font-mono text-3xl leading-snug font-bold md:text-4xl lg:text-6xl',
+        'hero-title-gradient mx-auto w-full max-w-5xl text-center font-mono text-2xl leading-snug font-bold sm:text-3xl md:text-4xl lg:text-6xl',
         className,
       )}
     >

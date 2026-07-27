@@ -1,5 +1,4 @@
 import type { DiscoverMovieParams } from '@/services/tmdb/types'
-import type { FilterState } from '@/types/filter'
 
 export type AiPickerQuestionId = 'mood' | 'occasion' | 'pace' | 'era'
 
@@ -85,16 +84,19 @@ export const AI_PICKER_QUESTIONS: AiPickerQuestion[] = [
       {
         value: 'relaxed',
         labelKey: 'aiPicker.questions.mood.options.relaxed.label',
-        descriptionKey:
-          'aiPicker.questions.mood.options.relaxed.description',
-        genreIds: [GENRES.comedy, GENRES.animation, GENRES.family, GENRES.music],
+        descriptionKey: 'aiPicker.questions.mood.options.relaxed.description',
+        genreIds: [
+          GENRES.comedy,
+          GENRES.animation,
+          GENRES.family,
+          GENRES.music,
+        ],
         keywordKey: 'aiPicker.questions.mood.options.relaxed.keyword',
       },
       {
         value: 'exciting',
         labelKey: 'aiPicker.questions.mood.options.exciting.label',
-        descriptionKey:
-          'aiPicker.questions.mood.options.exciting.description',
+        descriptionKey: 'aiPicker.questions.mood.options.exciting.description',
         genreIds: [
           GENRES.action,
           GENRES.adventure,
@@ -115,7 +117,12 @@ export const AI_PICKER_QUESTIONS: AiPickerQuestion[] = [
         labelKey: 'aiPicker.questions.mood.options.mindBending.label',
         descriptionKey:
           'aiPicker.questions.mood.options.mindBending.description',
-        genreIds: [GENRES.mystery, GENRES.sciFi, GENRES.thriller, GENRES.fantasy],
+        genreIds: [
+          GENRES.mystery,
+          GENRES.sciFi,
+          GENRES.thriller,
+          GENRES.fantasy,
+        ],
         keywordKey: 'aiPicker.questions.mood.options.mindBending.keyword',
       },
     ],
@@ -128,16 +135,14 @@ export const AI_PICKER_QUESTIONS: AiPickerQuestion[] = [
       {
         value: 'solo',
         labelKey: 'aiPicker.questions.occasion.options.solo.label',
-        descriptionKey:
-          'aiPicker.questions.occasion.options.solo.description',
+        descriptionKey: 'aiPicker.questions.occasion.options.solo.description',
         genreIds: [GENRES.drama, GENRES.mystery, GENRES.sciFi],
         keywordKey: 'aiPicker.questions.occasion.options.solo.keyword',
       },
       {
         value: 'date',
         labelKey: 'aiPicker.questions.occasion.options.date.label',
-        descriptionKey:
-          'aiPicker.questions.occasion.options.date.description',
+        descriptionKey: 'aiPicker.questions.occasion.options.date.description',
         genreIds: [GENRES.romance, GENRES.comedy, GENRES.drama],
         keywordKey: 'aiPicker.questions.occasion.options.date.keyword',
       },
@@ -154,7 +159,12 @@ export const AI_PICKER_QUESTIONS: AiPickerQuestion[] = [
         labelKey: 'aiPicker.questions.occasion.options.family.label',
         descriptionKey:
           'aiPicker.questions.occasion.options.family.description',
-        genreIds: [GENRES.family, GENRES.animation, GENRES.adventure, GENRES.comedy],
+        genreIds: [
+          GENRES.family,
+          GENRES.animation,
+          GENRES.adventure,
+          GENRES.comedy,
+        ],
         keywordKey: 'aiPicker.questions.occasion.options.family.keyword',
       },
     ],
@@ -173,8 +183,7 @@ export const AI_PICKER_QUESTIONS: AiPickerQuestion[] = [
       {
         value: 'immersive',
         labelKey: 'aiPicker.questions.pace.options.immersive.label',
-        descriptionKey:
-          'aiPicker.questions.pace.options.immersive.description',
+        descriptionKey: 'aiPicker.questions.pace.options.immersive.description',
         keywordKey: 'aiPicker.questions.pace.options.immersive.keyword',
       },
       {
@@ -216,8 +225,9 @@ export function getAiPickerOption(
   questionId: AiPickerQuestionId,
   value: string,
 ) {
-  return AI_PICKER_QUESTIONS.find((question) => question.id === questionId)
-    ?.options.find((option) => option.value === value)
+  return AI_PICKER_QUESTIONS.find(
+    (question) => question.id === questionId,
+  )?.options.find((option) => option.value === value)
 }
 
 export function getAiPickerPreferenceMeta(
@@ -256,38 +266,6 @@ export function getAiPickerKeywordKeys(answers: Partial<AiPickerAnswers>) {
     const option = value ? getAiPickerOption(question.id, value) : undefined
     return option ? [option.keywordKey] : []
   })
-}
-
-export function buildFilterDiscoverQuery(
-  filter: FilterState,
-  options: QueryOptions = {},
-): DiscoverMovieParams {
-  const params: DiscoverMovieParams = {
-    sort_by: filter.sortBy,
-    'vote_count.gte': 100,
-  }
-
-  if (filter.genres.length > 0) {
-    params.with_genres = filter.genres.join('|')
-  }
-
-  if (filter.year.from) {
-    params['primary_release_date.gte'] = `${filter.year.from}-01-01`
-  }
-
-  if (filter.year.to) {
-    params['primary_release_date.lte'] = `${filter.year.to}-12-31`
-  }
-
-  if (filter.rating.min > 0) {
-    params['vote_average.gte'] = filter.rating.min
-  }
-
-  if (filter.rating.max < 10) {
-    params['vote_average.lte'] = filter.rating.max
-  }
-
-  return withQueryOptions(params, options)
 }
 
 export function buildAiDiscoverQuery(

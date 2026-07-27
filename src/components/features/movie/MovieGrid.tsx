@@ -2,10 +2,11 @@ import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MovieCard } from './MovieCard'
 import { MovieSkeleton } from './MovieSkeleton'
-import type { Movie } from '@/services/tmdb/types'
+import type { MediaItem } from '@/services/tmdb/types'
+import { getMediaKey } from '@/utils/media'
 
 interface MovieGridProps {
-  movies: Movie[]
+  movies: MediaItem[]
   isLoading?: boolean
   hasNextPage?: boolean
   isFetchingNextPage?: boolean
@@ -51,7 +52,7 @@ export function MovieGrid({
   // 初始 Loading
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         {Array.from({ length: skeletonCount }).map((_, i) => (
           <MovieSkeleton key={i} />
         ))}
@@ -62,28 +63,50 @@ export function MovieGrid({
   // 空狀態
   if (movies.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <p className="text-muted-foreground text-lg">{defaultEmptyMessage}</p>
-      </div>
+      <>
+        <div className="flex flex-col items-center justify-center py-20">
+          <p className="text-muted-foreground text-lg">{defaultEmptyMessage}</p>
+        </div>
+        {isFetchingNextPage && (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <MovieSkeleton key={`loading-empty-${i}`} />
+            ))}
+          </div>
+        )}
+        {hasNextPage && (
+          <div
+            ref={loadMoreRef}
+            data-testid="movie-grid-load-more"
+            className="h-10"
+          />
+        )}
+      </>
     )
   }
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         {movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+          <MovieCard key={getMediaKey(movie)} movie={movie} />
         ))}
 
         {/* 載入更多 Skeleton */}
         {isFetchingNextPage &&
-          Array.from({ length: 5 }).map((_, i) => (
+          Array.from({ length: 6 }).map((_, i) => (
             <MovieSkeleton key={`loading-${i}`} />
           ))}
       </div>
 
       {/* 無限滾動觸發點 */}
-      {hasNextPage && <div ref={loadMoreRef} className="h-10" />}
+      {hasNextPage && (
+        <div
+          ref={loadMoreRef}
+          data-testid="movie-grid-load-more"
+          className="h-10"
+        />
+      )}
     </>
   )
 }

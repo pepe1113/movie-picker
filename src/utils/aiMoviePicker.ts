@@ -1,4 +1,9 @@
-import type { DiscoverMovieParams, Movie } from '@/services/tmdb/types'
+import type {
+  DiscoverMovieParams,
+  DiscoverTvParams,
+  MediaItem,
+  Movie,
+} from '@/services/tmdb/types'
 import {
   buildAiDiscoverQuery,
   getAiPickerKeywordKeys,
@@ -20,7 +25,7 @@ export {
 } from '@/utils/pickerCriteria'
 
 export interface AiMovieRecommendation {
-  movie: Movie
+  movie: MediaItem
   matchedKeywordKeys: string[]
 }
 
@@ -29,6 +34,38 @@ export function buildAiMovieQuery(
   currentYear = new Date().getFullYear(),
 ): DiscoverMovieParams {
   return buildAiDiscoverQuery(answers, { currentYear })
+}
+
+const TV_GENRE_MAP: Record<number, number> = {
+  12: 10759,
+  14: 10765,
+  28: 10759,
+  878: 10765,
+}
+
+export function buildAiTvQuery(
+  answers: AiPickerAnswers,
+  currentYear = new Date().getFullYear(),
+): DiscoverTvParams {
+  const movieQuery = buildAiMovieQuery(answers, currentYear)
+  const mappedGenres = movieQuery.with_genres
+    ?.split('|')
+    .map(Number)
+    .map((genreId) => TV_GENRE_MAP[genreId] ?? genreId)
+
+  return {
+    language: movieQuery.language,
+    page: movieQuery.page,
+    sort_by: movieQuery.sort_by,
+    with_genres: mappedGenres
+      ? [...new Set(mappedGenres)].join('|')
+      : undefined,
+    'first_air_date.gte': movieQuery['primary_release_date.gte'],
+    'first_air_date.lte': movieQuery['primary_release_date.lte'],
+    'vote_average.gte': movieQuery['vote_average.gte'],
+    'vote_average.lte': movieQuery['vote_average.lte'],
+    'vote_count.gte': movieQuery['vote_count.gte'],
+  }
 }
 
 export function recommendMovies(
@@ -67,5 +104,11 @@ function scoreMovie(
   const paceBonus =
     answers.pace === 'fast' ? movie.popularity / 2 : movie.vote_average * 1.3
 
-  return genreMatches * 20 + movie.vote_average * 3 + paceBonus + recentBonus + classicBonus
+  return (
+    genreMatches * 20 +
+    movie.vote_average * 3 +
+    paceBonus +
+    recentBonus +
+    classicBonus
+  )
 }

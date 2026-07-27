@@ -1,24 +1,25 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import type { Movie } from '@/services/tmdb/types'
+import type { MediaItem, MediaType } from '@/services/tmdb/types'
 import {
   supabaseWishlistRemote,
   type WishlistRemote,
 } from '@/services/supabase/wishlist'
+import { getMediaKey, getMediaType } from '@/utils/media'
 import { useAuthStore } from './authStore'
 
 interface WishlistState {
-  wishlist: Movie[]
+  wishlist: MediaItem[]
   isLoading: boolean
   error: string | null
 }
 
 interface WishlistActions {
-  addToWishlist: (movie: Movie) => Promise<void>
-  removeFromWishlist: (movieId: number) => Promise<void>
+  addToWishlist: (media: MediaItem) => Promise<void>
+  removeFromWishlist: (mediaId: number, mediaType?: MediaType) => Promise<void>
   clearWishlist: () => Promise<void>
   syncWithRemoteWishlist: () => Promise<void>
-  isInWishlist: (movieId: number) => boolean
+  isInWishlist: (mediaId: number, mediaType?: MediaType) => boolean
 }
 
 type WishlistStore = WishlistState & WishlistActions
@@ -32,14 +33,14 @@ function getAuthenticatedUserId() {
   return useAuthStore.getState().user?.uid ?? null
 }
 
-function mergeWishlistByMovieId(localMovies: Movie[], remoteMovies: Movie[]) {
-  const merged = new Map<number, Movie>()
+function mergeWishlist(localItems: MediaItem[], remoteItems: MediaItem[]) {
+  const merged = new Map<string, MediaItem>()
 
-  localMovies.forEach((movie) => {
-    merged.set(movie.id, movie)
+  localItems.forEach((media) => {
+    merged.set(getMediaKey(media), media)
   })
-  remoteMovies.forEach((movie) => {
-    merged.set(movie.id, movie)
+  remoteItems.forEach((media) => {
+    merged.set(getMediaKey(media), media)
   })
 
   return Array.from(merged.values())
@@ -59,14 +60,15 @@ export const useWishlistStore = create<WishlistStore>()(
         error: null,
 
         // Actions
-        addToWishlist: async (movie) => {
+        addToWishlist: async (media) => {
           const userId = getAuthenticatedUserId()
           const { wishlist } = get()
-          if (wishlist.some((m) => m.id === movie.id)) return
+          const mediaKey = getMediaKey(media)
+          if (wishlist.some((item) => getMediaKey(item) === mediaKey)) return
 
           if (!userId) {
             set(
-              { wishlist: [...wishlist, movie], error: null },
+              { wishlist: [...wishlist, media], error: null },
               false,
               'addToWishlist/local',
             )
@@ -74,9 +76,9 @@ export const useWishlistStore = create<WishlistStore>()(
           }
 
           try {
-            await wishlistRemote.add(userId, movie)
+            await wishlistRemote.add(userId, media)
             set(
-              { wishlist: [...wishlist, movie], error: null },
+              { wishlist: [...wishlist, media], error: null },
               false,
               'addToWishlist/remote',
             )
@@ -86,13 +88,16 @@ export const useWishlistStore = create<WishlistStore>()(
           }
         },
 
-        removeFromWishlist: async (movieId) => {
+        removeFromWishlist: async (mediaId, mediaType = 'movie') => {
           const userId = getAuthenticatedUserId()
 
           if (!userId) {
             set(
               (state) => ({
-                wishlist: state.wishlist.filter((m) => m.id !== movieId),
+                wishlist: state.wishlist.filter(
+                  (item) =>
+                    item.id !== mediaId || getMediaType(item) !== mediaType,
+                ),
                 error: null,
               }),
               false,
@@ -102,10 +107,13 @@ export const useWishlistStore = create<WishlistStore>()(
           }
 
           try {
-            await wishlistRemote.remove(userId, movieId)
+            await wishlistRemote.remove(userId, mediaId, mediaType)
             set(
               (state) => ({
-                wishlist: state.wishlist.filter((m) => m.id !== movieId),
+                wishlist: state.wishlist.filter(
+                  (item) =>
+                    item.id !== mediaId || getMediaType(item) !== mediaType,
+                ),
                 error: null,
               }),
               false,
@@ -146,10 +154,7 @@ export const useWishlistStore = create<WishlistStore>()(
 
           try {
             const remoteWishlist = await wishlistRemote.list(userId)
-            const mergedWishlist = mergeWishlistByMovieId(
-              get().wishlist,
-              remoteWishlist,
-            )
+            const mergedWishlist = mergeWishlist(get().wishlist, remoteWishlist)
             await wishlistRemote.upsert(userId, mergedWishlist)
             set(
               { wishlist: mergedWishlist, isLoading: false, error: null },
@@ -166,8 +171,10 @@ export const useWishlistStore = create<WishlistStore>()(
           }
         },
 
-        isInWishlist: (movieId) => {
-          return get().wishlist.some((m) => m.id === movieId)
+        isInWishlist: (mediaId, mediaType = 'movie') => {
+          return get().wishlist.some(
+            (item) => item.id === mediaId && getMediaType(item) === mediaType,
+          )
         },
       }),
       { name: 'wishlist-storage' },

@@ -1,5 +1,4 @@
-/* Spotify-inspired movie app design system */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+/* Cinematic red-and-black movie app design system */
 
 @import 'tailwindcss';
 @import 'tw-animate-css';
@@ -52,38 +51,38 @@
 :root {
   --radius: 8px;
 
-  --background: rgb(18 18 18);
-  --foreground: rgb(255 255 255);
-  --card: rgb(24 24 24);
-  --card-foreground: rgb(255 255 255);
-  --popover: rgb(31 31 31);
-  --popover-foreground: rgb(255 255 255);
-  --primary: rgb(30 215 96);
-  --primary-foreground: rgb(0 0 0);
-  --secondary: rgb(31 31 31);
-  --secondary-foreground: rgb(255 255 255);
-  --muted: rgb(37 37 37);
-  --muted-foreground: rgb(179 179 179);
-  --accent: rgb(30 215 96);
-  --accent-foreground: rgb(0 0 0);
-  --destructive: rgb(243 114 127);
+  --background: rgb(11 11 14);
+  --foreground: rgb(244 244 245);
+  --card: rgb(23 23 27);
+  --card-foreground: rgb(244 244 245);
+  --popover: rgb(32 32 38);
+  --popover-foreground: rgb(244 244 245);
+  --primary: rgb(214 43 66);
+  --primary-foreground: rgb(255 255 255);
+  --secondary: rgb(32 32 38);
+  --secondary-foreground: rgb(244 244 245);
+  --muted: rgb(39 39 45);
+  --muted-foreground: rgb(161 161 170);
+  --accent: rgb(214 43 66);
+  --accent-foreground: rgb(255 255 255);
+  --destructive: rgb(240 78 97);
   --destructive-foreground: rgb(255 255 255);
-  --border: rgb(77 77 77);
-  --input: rgb(31 31 31);
-  --ring: rgb(30 215 96);
-  --chart-1: rgb(30 215 96);
-  --chart-2: rgb(83 157 245);
-  --chart-3: rgb(255 164 43);
-  --chart-4: rgb(243 114 127);
+  --border: rgb(52 52 58);
+  --input: rgb(32 32 38);
+  --ring: rgb(214 43 66);
+  --chart-1: rgb(214 43 66);
+  --chart-2: rgb(160 32 49);
+  --chart-3: rgb(245 158 11);
+  --chart-4: rgb(240 78 97);
   --chart-5: rgb(203 203 203);
-  --sidebar: rgb(18 18 18);
-  --sidebar-foreground: rgb(255 255 255);
-  --sidebar-primary: rgb(30 215 96);
-  --sidebar-primary-foreground: rgb(0 0 0);
-  --sidebar-accent: rgb(31 31 31);
-  --sidebar-accent-foreground: rgb(255 255 255);
-  --sidebar-border: rgb(77 77 77);
-  --sidebar-ring: rgb(30 215 96);
+  --sidebar: rgb(11 11 14);
+  --sidebar-foreground: rgb(244 244 245);
+  --sidebar-primary: rgb(214 43 66);
+  --sidebar-primary-foreground: rgb(255 255 255);
+  --sidebar-accent: rgb(32 32 38);
+  --sidebar-accent-foreground: rgb(244 244 245);
+  --sidebar-border: rgb(52 52 58);
+  --sidebar-ring: rgb(214 43 66);
 }
 
 @layer base {
@@ -93,7 +92,6 @@
 
   body {
     font-family:
-      'Inter',
       'Helvetica Neue',
       helvetica,
       arial,
@@ -153,20 +151,6 @@ button[role='tab'] {
   }
 }
 
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.marquee {
-  animation: marquee 29s linear infinite;
-}
-
 @keyframes hero-title-cursor-blink {
   0%,
   100% {
@@ -182,10 +166,10 @@ button[role='tab'] {
   color: transparent;
   background-image: linear-gradient(
     90deg,
-    rgb(255 255 255),
-    rgb(30 215 96),
-    rgb(83 157 245),
-    rgb(255 255 255)
+    rgb(244 244 245),
+    rgb(214 43 66),
+    rgb(255 92 113),
+    rgb(244 244 245)
   );
   background-size: 260% 100%;
   background-clip: text;
@@ -196,7 +180,7 @@ button[role='tab'] {
 .hero-title-cursor {
   margin-left: 1rem;
   display: inline-block;
-  animation: hero-title-cursor-blink 1s step-end infinite;;
+  animation: hero-title-cursor-blink 1s step-end infinite;
 }
 
 @keyframes hero-title-gradient-shift {
@@ -206,5 +190,24 @@ button[role='tab'] {
 
   to {
     background-position: 260% 50%;
+  }
+}
+
+@keyframes poster-card-flip {
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .group:hover > .poster-card-flip {
+    animation: poster-card-flip 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-title-gradient,
+  .hero-title-cursor {
+    animation: none;
   }
 }

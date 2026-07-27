@@ -17,6 +17,23 @@ export const IMAGE_SIZES = {
 } as const
 
 export const QUERY_KEYS = {
+  media: {
+    all: ['media'] as const,
+    list: (mediaType: string, listType: string) =>
+      [...QUERY_KEYS.media.all, mediaType, listType] as const,
+    detail: (mediaType: string, id: number, language?: string) =>
+      [...QUERY_KEYS.media.all, mediaType, 'detail', id, language] as const,
+    credits: (mediaType: string, id: number, language?: string) =>
+      [...QUERY_KEYS.media.all, mediaType, 'credits', id, language] as const,
+    videos: (mediaType: string, id: number, language?: string) =>
+      [...QUERY_KEYS.media.all, mediaType, 'videos', id, language] as const,
+    search: (query: string, language: string) =>
+      [...QUERY_KEYS.media.all, 'search', query, language] as const,
+    discover: (mediaType: string, params?: Record<string, unknown>) =>
+      [...QUERY_KEYS.media.all, mediaType, 'discover', params ?? {}] as const,
+    genres: (mediaType: string, language: string) =>
+      [...QUERY_KEYS.media.all, mediaType, 'genres', language] as const,
+  },
   movies: {
     all: ['movies'] as const,
     trending: () => [...QUERY_KEYS.movies.all, 'trending'] as const,
@@ -41,12 +58,13 @@ export const QUERY_KEYS = {
 
 export const TMDB_LANGUAGE_MAP = {
   'zh-TW': 'zh-TW',
-  'en': 'en-US'
+  en: 'en-US',
 } as const
 
 export const ROUTES = {
   HOME: '/',
   MOVIE_DETAIL: (id: number | string) => `/movie/${id}`,
+  TV_DETAIL: (id: number | string) => `/tv/${id}`,
   SEARCH: '/search',
   WISHLIST: '/wishlist',
   HISTORY: '/history',

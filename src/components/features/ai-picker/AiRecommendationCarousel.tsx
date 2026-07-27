@@ -164,7 +164,6 @@ export function AiRecommendationCarousel({
               >
                 <MovieCard
                   movie={recommendation.movie}
-                  enableTrailerPreview={isActive}
                   className={cn(
                     'shadow-[rgba(0,0,0,0.45)_0px_18px_36px]',
                     isActive &&

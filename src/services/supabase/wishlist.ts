@@ -1,23 +1,29 @@
-import type { Movie } from '@/services/tmdb/types'
+import type { MediaItem, MediaType } from '@/services/tmdb/types'
+import { getMediaType } from '@/utils/media'
 import { getSupabaseClient } from './client'
 
 interface WishlistRow {
-  movie_snapshot: Movie
+  movie_snapshot: MediaItem
 }
 
 export interface WishlistRemote {
-  list: (userId: string) => Promise<Movie[]>
-  upsert: (userId: string, movies: Movie[]) => Promise<void>
-  add: (userId: string, movie: Movie) => Promise<void>
-  remove: (userId: string, movieId: number) => Promise<void>
+  list: (userId: string) => Promise<MediaItem[]>
+  upsert: (userId: string, media: MediaItem[]) => Promise<void>
+  add: (userId: string, media: MediaItem) => Promise<void>
+  remove: (
+    userId: string,
+    mediaId: number,
+    mediaType: MediaType,
+  ) => Promise<void>
   clear: (userId: string) => Promise<void>
 }
 
-function toWishlistPayload(userId: string, movie: Movie) {
+function toWishlistPayload(userId: string, media: MediaItem) {
   return {
     user_id: userId,
-    movie_id: movie.id,
-    movie_snapshot: movie,
+    movie_id: media.id,
+    media_type: getMediaType(media),
+    movie_snapshot: media,
     updated_at: new Date().toISOString(),
   }
 }
@@ -41,28 +47,32 @@ export const supabaseWishlistRemote: WishlistRemote = {
     return ((data ?? []) as WishlistRow[]).map((row) => row.movie_snapshot)
   },
 
-  async upsert(userId, movies) {
-    if (movies.length === 0) return
+  async upsert(userId, media) {
+    if (media.length === 0) return
 
     const { error } = await getSupabaseClient()
       .from('wishlist_items')
-      .upsert(movies.map((movie) => toWishlistPayload(userId, movie)), {
-        onConflict: 'user_id,movie_id',
-      })
+      .upsert(
+        media.map((item) => toWishlistPayload(userId, item)),
+        {
+          onConflict: 'user_id,media_type,movie_id',
+        },
+      )
 
     throwIfSupabaseError(error)
   },
 
-  async add(userId, movie) {
-    await this.upsert(userId, [movie])
+  async add(userId, media) {
+    await this.upsert(userId, [media])
   },
 
-  async remove(userId, movieId) {
+  async remove(userId, mediaId, mediaType) {
     const { error } = await getSupabaseClient()
       .from('wishlist_items')
       .delete()
       .eq('user_id', userId)
-      .eq('movie_id', movieId)
+      .eq('movie_id', mediaId)
+      .eq('media_type', mediaType)
 
     throwIfSupabaseError(error)
   },

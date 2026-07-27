@@ -1,6 +1,6 @@
 # Movie Picker
 
-> A portfolio movie discovery and recommendation app built with React, TMDB, Supabase, and an AI model.
+> A portfolio movie and TV discovery and recommendation app built with React, TMDB, Supabase, and an AI model.
 
 [繁體中文](./README.md) | [English](./README.en.md) | [日本語](./README.ja.md)
 
@@ -8,13 +8,12 @@
 
 ## Features
 
-- Browse now-playing, trending, popular, and top-rated movies
-- Search movies and view details, credits, trailers, and OMDb ratings
-- Pick three movies randomly or from genre/rating/year filters
+- Browse latest, trending, popular, top-rated, and genre lists for movies and TV
+- Search both media types and view details, credits, trailers, seasons, and episode counts
 - Signed-in users describe their context, goals, and constraints in natural language and receive up to five AI-selected movies
-- Save a wishlist locally, then merge and sync it after GitHub sign-in
+- Save movies and TV locally, then merge and sync the wishlist after GitHub sign-in
 - Review and delete the latest 20 AI recommendation runs
-- Switch between English/Traditional Chinese and light/dark themes
+- Switch between English and Traditional Chinese in a responsive cinematic red-and-black UI
 
 ## Tech Stack
 
@@ -24,7 +23,7 @@ React 19, TypeScript, Vite, Tailwind CSS 4, React Router, TanStack Query, Zustan
 
 | Data                      | Storage                                                                   | Purpose                                                           |
 | ------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Wishlist                  | Browser `localStorage` while signed out; synced to Supabase after sign-in | Keeps saved movies available across devices                       |
+| Wishlist                  | Browser `localStorage` while signed out; synced to Supabase after sign-in | Keeps saved movies and TV available across devices                |
 | AI recommendation history | Supabase                                                                  | Stores picker preferences, recommendation results, and timestamps |
 | User identity             | Supabase Auth                                                             | Supports GitHub sign-in and separates each user's data            |
 

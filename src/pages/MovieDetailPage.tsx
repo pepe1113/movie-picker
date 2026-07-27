@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useLocation } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { ArrowLeft, Calendar, Clock, Play } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -15,7 +15,10 @@ import {
 } from '@/components/ui/dialog'
 import { WishlistButton } from '@/components/features/wishlist/WishlistButton'
 import { useMovieDetail } from '@/hooks/useMovieDetail'
-import { buildMovieDetailPresentation } from '@/utils/movieDetail'
+import {
+  buildMovieDetailPresentation,
+  buildTvDetailPresentation,
+} from '@/utils/movieDetail'
 import { buildTrailerEmbedUrl } from '@/utils/trailerMedia'
 import {
   getPosterUrl,
@@ -26,13 +29,26 @@ import {
   formatRuntime,
 } from '@/utils/helpers'
 import { ROUTES } from '@/utils/constants'
+import type {
+  CreditsResponse,
+  MediaType,
+  MovieDetail,
+  TvAggregateCreditsResponse,
+  TvDetail,
+} from '@/services/tmdb/types'
 
 export function Component() {
   const { t } = useTranslation()
+  const location = useLocation()
   const { id } = useParams()
   const movieId = Number(id)
-  const { detail, credits, videos, omdb, isLoading, isError } =
-    useMovieDetail(movieId)
+  const mediaType: MediaType = location.pathname.startsWith('/tv/')
+    ? 'tv'
+    : 'movie'
+  const { detail, credits, videos, omdb, isLoading, isError } = useMovieDetail(
+    movieId,
+    mediaType,
+  )
 
   if (isError) {
     return (
@@ -54,8 +70,30 @@ export function Component() {
     return <DetailSkeleton />
   }
 
-  const { trailer, cast, externalRatings, movieForWishlist } =
-    buildMovieDetailPresentation({ detail, credits, videos, omdb })
+  const isTv = mediaType === 'tv' && isTvDetail(detail)
+  const presentation = isTv
+    ? buildTvDetailPresentation({
+        detail,
+        credits: credits as TvAggregateCreditsResponse | undefined,
+        videos,
+      })
+    : buildMovieDetailPresentation({
+        detail: detail as MovieDetail,
+        credits: credits as CreditsResponse | undefined,
+        videos,
+        omdb,
+      })
+  const { trailer, cast, externalRatings, movieForWishlist } = presentation
+  const title = isTv ? detail.name : (detail as MovieDetail).title
+  const originalTitle = isTv
+    ? detail.original_name
+    : (detail as MovieDetail).original_title
+  const releaseDate = isTv
+    ? detail.first_air_date
+    : (detail as MovieDetail).release_date
+  const runtime = isTv
+    ? (detail.episode_run_time[0] ?? 0)
+    : (detail as MovieDetail).runtime
 
   return (
     <div className="min-h-screen pb-20">
@@ -71,10 +109,10 @@ export function Component() {
             <div className="from-background via-background/85 absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t to-transparent" />
           </div>
         ) : (
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgb(30_215_96/0.22),transparent_32%),linear-gradient(135deg,var(--background)_0%,var(--muted)_48%,var(--background)_100%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgb(214_43_66/0.24),transparent_32%),linear-gradient(135deg,var(--background)_0%,var(--muted)_48%,var(--background)_100%)]" />
         )}
 
-        <div className="lg:px-16] relative container mx-auto flex min-h-180 flex-col px-6 py-8 md:px-12">
+        <div className="relative container mx-auto flex min-h-180 flex-col px-6 py-8 md:px-12 lg:px-16">
           <Button variant="ghost" size="sm" className="mb-8 self-start" asChild>
             <Link to={ROUTES.HOME}>
               <ArrowLeft className="size-4" />
@@ -96,7 +134,7 @@ export function Component() {
             >
               <img
                 src={getPosterUrl(detail.poster_path, 'large')}
-                alt={detail.title}
+                alt={title}
                 className="w-40 rounded-lg shadow-[rgba(0,0,0,0.5)_0px_8px_24px] md:w-56 lg:w-72"
               />
             </motion.div>
@@ -109,7 +147,7 @@ export function Component() {
             >
               <div className="space-y-4">
                 <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl">
-                  {detail.title}
+                  {title}
                 </h1>
 
                 {detail.tagline && (
@@ -139,18 +177,41 @@ export function Component() {
               <div className="text-muted-foreground flex flex-wrap items-center gap-4 text-sm">
                 <span className="flex items-center gap-2">
                   <Calendar className="size-4" />
-                  {formatYear(detail.release_date)}
+                  {formatYear(releaseDate)}
                 </span>
-                {detail.runtime > 0 && (
+                {runtime > 0 && (
                   <>
                     <span className="text-border">|</span>
                     <span className="flex items-center gap-2">
                       <Clock className="size-4" />
-                      {formatRuntime(detail.runtime)}
+                      {formatRuntime(runtime)}
                     </span>
                   </>
                 )}
               </div>
+
+              {isTv && (
+                <div className="flex flex-wrap gap-3 text-sm font-semibold">
+                  <Badge variant="secondary">
+                    {t('tvDetail.seasons', {
+                      count: detail.number_of_seasons,
+                    })}
+                  </Badge>
+                  <Badge variant="secondary">
+                    {t('tvDetail.episodes', {
+                      count: detail.number_of_episodes,
+                    })}
+                  </Badge>
+                  {detail.next_episode_to_air?.air_date && (
+                    <span className="text-muted-foreground flex items-center gap-2">
+                      {t('tvDetail.nextEpisode')}
+                      <time dateTime={detail.next_episode_to_air.air_date}>
+                        {detail.next_episode_to_air.air_date}
+                      </time>
+                    </span>
+                  )}
+                </div>
+              )}
 
               <div className="flex flex-wrap gap-2">
                 {detail.genres.map((genre) => (
@@ -263,7 +324,7 @@ export function Component() {
               <p className="text-muted-foreground text-xs tracking-[1.4px] uppercase">
                 {t('movieDetail.info.originalTitle')}
               </p>
-              <p className="font-semibold">{detail.original_title}</p>
+              <p className="font-semibold">{originalTitle}</p>
             </div>
             <div className="space-y-2">
               <p className="text-muted-foreground text-xs tracking-[1.4px] uppercase">
@@ -271,23 +332,23 @@ export function Component() {
               </p>
               <p className="font-semibold">{detail.status}</p>
             </div>
-            {detail.budget > 0 && (
+            {!isTv && (detail as MovieDetail).budget > 0 && (
               <div className="space-y-2">
                 <p className="text-muted-foreground text-xs tracking-[1.4px] uppercase">
                   {t('movieDetail.info.budget')}
                 </p>
                 <p className="font-semibold">
-                  ${detail.budget.toLocaleString()}
+                  ${(detail as MovieDetail).budget.toLocaleString()}
                 </p>
               </div>
             )}
-            {detail.revenue > 0 && (
+            {!isTv && (detail as MovieDetail).revenue > 0 && (
               <div className="space-y-2">
                 <p className="text-muted-foreground text-xs tracking-[1.4px] uppercase">
                   {t('movieDetail.info.revenue')}
                 </p>
                 <p className="font-semibold">
-                  ${detail.revenue.toLocaleString()}
+                  ${(detail as MovieDetail).revenue.toLocaleString()}
                 </p>
               </div>
             )}
@@ -296,6 +357,10 @@ export function Component() {
       </div>
     </div>
   )
+}
+
+function isTvDetail(detail: MovieDetail | TvDetail): detail is TvDetail {
+  return 'number_of_seasons' in detail
 }
 
 function DetailSkeleton() {
@@ -329,7 +394,7 @@ interface RatingPillProps {
 
 function RatingPill({ brand, label, value, meta }: RatingPillProps) {
   return (
-    <div className="bg-card/90 flex min-h-16 items-center gap-3 rounded-full px-4 py-3 shadow-[rgba(0,0,0,0.3)_0px_8px_8px] ring-1 ring-white/10 backdrop-blur-sm">
+    <div className="bg-card/90 flex min-h-16 items-center gap-3 rounded-full px-4 py-3 ring-1 shadow-[rgba(0,0,0,0.3)_0px_8px_8px] ring-white/10 backdrop-blur-sm">
       <RatingLogo brand={brand} label={label} />
       <div className="space-y-0.5 leading-none">
         <p className="text-muted-foreground text-[0.68rem] font-bold tracking-[1.4px] uppercase">
@@ -348,13 +413,7 @@ function RatingPill({ brand, label, value, meta }: RatingPillProps) {
   )
 }
 
-function RatingLogo({
-  brand,
-  label,
-}: {
-  brand: RatingBrand
-  label: string
-}) {
+function RatingLogo({ brand, label }: { brand: RatingBrand; label: string }) {
   if (brand === 'imdb') {
     return (
       <span

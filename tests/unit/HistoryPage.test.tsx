@@ -4,13 +4,14 @@ import userEvent from '@testing-library/user-event'
 import { I18nextProvider } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { Movie } from '@/services/tmdb/types'
+import type { Movie, TvShow } from '@/services/tmdb/types'
 import {
   setRecommendationHistoryRemoteForTesting,
   type RecommendationRun,
 } from '@/services/supabase/recommendationHistory'
 import { useAuthStore } from '@/stores/authStore'
 import i18n from '@/i18n/config'
+import { Component as HistoryPage } from '@/pages/History'
 
 function movie(id: number, title = `Movie ${id}`): Movie {
   return {
@@ -18,6 +19,7 @@ function movie(id: number, title = `Movie ${id}`): Movie {
     backdrop_path: null,
     genre_ids: [35],
     id,
+    media_type: 'movie',
     original_language: 'en',
     original_title: title,
     overview: `Overview ${id}`,
@@ -31,9 +33,30 @@ function movie(id: number, title = `Movie ${id}`): Movie {
   }
 }
 
+function tv(id: number, name = `Show ${id}`): TvShow {
+  return {
+    adult: false,
+    backdrop_path: null,
+    first_air_date: '2026-01-01',
+    genre_ids: [35],
+    id,
+    media_type: 'tv',
+    name,
+    origin_country: ['JP'],
+    original_language: 'ja',
+    original_name: name,
+    overview: `TV Overview ${id}`,
+    popularity: 10,
+    poster_path: null,
+    vote_average: 8,
+    vote_count: 100,
+  }
+}
+
 function run(overrides: Partial<RecommendationRun> = {}): RecommendationRun {
   return {
     id: 'run-1',
+    media_type: 'movie',
     intent: {
       summary: '今晚以輕鬆且好理解的作品為主',
       hard_constraints: { exclude_genre_ids: [27] },
@@ -49,14 +72,14 @@ function run(overrides: Partial<RecommendationRun> = {}): RecommendationRun {
     },
     recommendations: [
       {
-        movie_id: 1,
+        media_id: 1,
         reason: '喜劇類型適合現在轉換心情。',
         kind: 'primary',
-        movie_snapshot: movie(1, 'History Pick'),
+        media_snapshot: movie(1, 'History Pick'),
       },
     ],
-    provider: 'openrouter',
-    model: 'inclusionai/ling-3.0-flash:free',
+    provider: 'openai',
+    model: 'gpt-4o-mini',
     created_at: '2026-07-27T12:00:00Z',
     ...overrides,
   }
@@ -77,7 +100,6 @@ function authenticate() {
 }
 
 async function renderHistoryPage() {
-  const [{ Component }] = await Promise.all([import('@/pages/History')])
   await i18n.changeLanguage('zh-TW')
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -90,7 +112,7 @@ async function renderHistoryPage() {
     <I18nextProvider i18n={i18n}>
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <Component />
+          <HistoryPage />
         </MemoryRouter>
       </QueryClientProvider>
     </I18nextProvider>,
@@ -136,9 +158,7 @@ describe('History page', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('不要恐怖片')).toBeInTheDocument()
     expect(screen.getByText('輕鬆')).toBeInTheDocument()
-    expect(
-      screen.getByText('AI 模型：inclusionai/ling-3.0-flash:free'),
-    ).toBeInTheDocument()
+    expect(screen.getByText('AI 模型：gpt-4o-mini')).toBeInTheDocument()
     expect(screen.getByText('History Pick')).toBeInTheDocument()
     expect(screen.getByText('喜劇類型適合現在轉換心情。')).toBeInTheDocument()
   })
@@ -150,9 +170,9 @@ describe('History page', () => {
         run({
           recommendations: [
             {
-              movie_id: 2,
+              media_id: 2,
               kind: 'primary',
-              movie_snapshot: movie(2, 'Fallback History Pick'),
+              media_snapshot: movie(2, 'Fallback History Pick'),
             },
           ],
         }),
@@ -163,6 +183,46 @@ describe('History page', () => {
     await renderHistoryPage()
     expect(await screen.findByText('Fallback History Pick')).toBeInTheDocument()
     expect(screen.getAllByText('Overview 2')).toHaveLength(2)
+  })
+
+  it('keeps colliding movie and TV ids distinct and links each detail route', async () => {
+    authenticate()
+    setRecommendationHistoryRemoteForTesting({
+      listLatest: vi.fn().mockResolvedValue([
+        run({
+          id: 'movie-run',
+          recommendations: [
+            {
+              media_id: 1,
+              kind: 'primary',
+              media_snapshot: movie(1, 'Same ID Movie'),
+            },
+          ],
+        }),
+        run({
+          id: 'tv-run',
+          media_type: 'tv',
+          recommendations: [
+            {
+              media_id: 1,
+              kind: 'primary',
+              media_snapshot: tv(1, 'Same ID Show'),
+            },
+          ],
+        }),
+      ]),
+      deleteRun: vi.fn(),
+    })
+
+    await renderHistoryPage()
+
+    expect(
+      (await screen.findByText('Same ID Movie')).closest('a'),
+    ).toHaveAttribute('href', '/movie/1')
+    expect(screen.getByText('Same ID Show').closest('a')).toHaveAttribute(
+      'href',
+      '/tv/1',
+    )
   })
 
   it('deletes one recommendation run after confirmation', async () => {

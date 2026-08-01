@@ -22,7 +22,7 @@ VITE_SUPABASE_ANON_KEY=
 Do not expose these in frontend code or Vite env:
 
 ```text
-OPENROUTER_API_KEY=
+OPENAI_API_KEY=
 TMDB_ACCESS_TOKEN=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
@@ -36,17 +36,16 @@ instead of creating a partially configured client.
 The `recommend-movies` Edge Function reads:
 
 ```text
-OPENROUTER_API_KEY=
-OPENROUTER_MODEL=inclusionai/ling-3.0-flash:free
-OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4o-mini
+OPENAI_BASE_URL=https://api.openai.com/v1
 TMDB_ACCESS_TOKEN=
 SUPABASE_URL=
 SUPABASE_ANON_KEY=
 ```
 
-`OPENROUTER_MODEL` and `OPENROUTER_BASE_URL` are optional. The model defaults to
-`inclusionai/ling-3.0-flash:free`, while the base URL defaults to OpenRouter's
-OpenAI-compatible Chat Completions API.
+`OPENAI_MODEL` and `OPENAI_BASE_URL` are optional. The model defaults to
+`gpt-4o-mini`, while the base URL defaults to OpenAI's Chat Completions API.
 
 `TMDB_ACCESS_TOKEN` is a server-side TMDB v4 access token used for keyword
 search and Discover. Do not prefix any of these values with `VITE_`.
@@ -72,23 +71,29 @@ search and Discover. Do not prefix any of these values with `VITE_`.
 
 ## AI fallback behavior
 
-- Signed-in users send one free-text request and locale to `recommend-movies`.
-- OpenRouter is called twice with forced tool calling. Zod validates the query
-  plan before TMDB and validates selected movie IDs and reasons after TMDB.
-- At most two keyword names are resolved through TMDB keyword search. Popularity
-  and rating Discover requests run concurrently and build a twenty-movie pool.
-- Explicit exclusions, runtime, year, language, and adult filtering are never
-  removed. One fallback search may remove inferred include conditions only.
-- A failed first model call returns a retryable error. A failed second call
-  returns a deterministic merge of the candidates without personalized reasons.
-- One ten-second `AbortController` signal reaches every OpenRouter and TMDB
+- Signed-in users send one free-text request, locale, and required `media_type`
+  (`movie` or `tv`) to `recommend-movies`.
+- OpenAI is called once with forced function calling. Zod validates the query
+  plan before TMDB.
+- At most two people and two keyword names are resolved through TMDB search.
+  Movie and TV routes use their matching Discover and credits endpoints.
+- Popularity and rating Discover requests run concurrently and build a
+  twenty-item pool.
+- Media type, people, explicit keywords, exclusions, runtime, year, language,
+  origin country, and adult filtering are never removed. One fallback search
+  may remove inferred genres and keywords only.
+- A failed model call returns a retryable error. Successful plans return a
+  deterministic merge of the candidates without personalized reasons.
+- One thirty-second `AbortController` signal reaches every OpenAI and TMDB
   request. The frontend does not perform hidden retries.
 - Signed-out users see a sign-in prompt and do not invoke the Edge Function.
 
 ## Recommendation history
 
-- Apply `20260726171508_replace_ai_recommendation_history.sql` before deploying
-  the new function. It deletes only legacy `ai_recommendation_runs` rows.
+- Apply `20260726171508_replace_ai_recommendation_history.sql`, then
+  `20260801075037_make_ai_recommendation_history_media_neutral.sql`, before
+  deploying the new function. The second migration preserves existing rows,
+  renames candidate IDs, and adds the required media type.
 - `EdgeRuntime.waitUntil` writes the validated intent, Discover plan, candidate
   IDs, recommendation snapshots, provider, and model after the response is ready.
 - The background task catches its own errors. A failed insert does not change
@@ -104,5 +109,5 @@ Run after implementation changes:
 bun run test:run
 bun run lint
 bun run build
-rg --pcre2 -n "OPENROUTER_API_KEY|(?<!VITE_)TMDB_ACCESS_TOKEN|SUPABASE_SERVICE_ROLE_KEY" src
+rg --pcre2 -n "OPENAI_API_KEY|(?<!VITE_)TMDB_ACCESS_TOKEN|SUPABASE_SERVICE_ROLE_KEY" src
 ```

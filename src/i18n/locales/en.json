@@ -65,9 +65,10 @@
     ],
     "subtitle": "Describe how you feel and what you need. An AI model will build tonight's shortlist.",
     "heroHint": "Describe what you want to watch below.",
-    "requestTitle": "What kind of movie do you want tonight?",
+    "requestTitle": "What do you want to watch tonight?",
     "requestSubtitle": "Describe your current state, desired feeling, viewing situation, or anything you want to avoid.",
-    "requestLabel": "Movie Request",
+    "mediaTypeLabel": "Media type",
+    "requestLabel": "Watch Request",
     "requestPlaceholder": "For example: I am tired and want a warm, easy recent movie to watch with my partner.",
     "requestHint": "Mention mood, occasion, runtime, language, or explicit exclusions.",
     "requestRequired": "Enter at least two characters describing what you want.",
@@ -78,7 +79,7 @@
     "retryAnalysis": "Try Again",
     "criteriaReady": "Movie Direction Ready",
     "directionTitle": "This Pick's Direction",
-    "noResults": "No movies matched every explicit constraint. Adjust your description and try again.",
+    "noResults": "No titles matched every explicit constraint. Adjust your description and try again.",
     "refineRequest": "Refine Movie Request",
     "progressLabel": "Preparing the final shortlist",
     "back": "Back",
@@ -97,6 +98,12 @@
     "reasonPrefix": "Matched",
     "reasonTop": ", making this the closest fit for your full preference set.",
     "reasonFit": ", making this a strong candidate for tonight.",
+    "errors": {
+      "media_type_mismatch": "Your movie or series wording conflicts with the selected type. Switch the type and try again.",
+      "unresolved_person": "We could not reliably identify {{condition}}. Adjust the person's name and try again.",
+      "unresolved_keyword": "We could not resolve the theme {{condition}}. Try a more common phrase.",
+      "unknown": "This pick could not be completed. Please try again."
+    },
     "carousel": {
       "label": "AI recommendation carousel",
       "previous": "Previous recommendation",
@@ -265,7 +272,7 @@
   },
   "history": {
     "title": "Recommendation History",
-    "subtitle": "Review the latest 20 movie directions, recommendations, and model details.",
+    "subtitle": "Review the latest 20 watch directions, recommendations, and model details.",
     "loading": "Loading recommendation history...",
     "deleteAction": "Delete run",
     "confirmDelete": "Delete this recommendation run?",

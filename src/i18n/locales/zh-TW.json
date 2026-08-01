@@ -64,9 +64,10 @@
       "你的私人放映廳，現在開演"
     ],
     "subtitle": "描述你現在的狀態與觀影需求，AI 模型會直接整理出今晚的片單。",
-    "heroHint": "往下描述今晚想看的電影。",
-    "requestTitle": "今晚想看什麼樣的電影？",
+    "heroHint": "往下描述今晚想看的電影或影集。",
+    "requestTitle": "今晚想看什麼？",
     "requestSubtitle": "描述目前狀態、想獲得的感受、觀影場合或不想看到的內容。",
+    "mediaTypeLabel": "媒體型別",
     "requestLabel": "觀影需求",
     "requestPlaceholder": "例如：今天很累，想和另一半看一部步調輕鬆、近幾年的溫暖電影。",
     "requestHint": "可以描述心情、場合、片長、語言或明確排除的內容。",
@@ -78,7 +79,7 @@
     "retryAnalysis": "重新選片",
     "criteriaReady": "選片方向已完成",
     "directionTitle": "本次選片方向",
-    "noResults": "找不到符合所有明確限制的電影，請調整描述後再試。",
+    "noResults": "找不到符合所有明確限制的內容，請調整描述後再試。",
     "refineRequest": "調整觀影需求",
     "progressLabel": "正在準備最終片單",
     "back": "上一步",
@@ -97,6 +98,12 @@
     "reasonPrefix": "命中",
     "reasonTop": "，這部最接近你的完整偏好。",
     "reasonFit": "，適合作為今晚的候選片。",
+    "errors": {
+      "media_type_mismatch": "描述中的電影／影集與目前標籤不一致，請切換標籤後再試。",
+      "unresolved_person": "找不到可可靠辨識的「{{condition}}」，請調整人物名稱後再試。",
+      "unresolved_keyword": "找不到主題「{{condition}}」，請換一個較常見的說法。",
+      "unknown": "這次無法完成選片，請再試一次。"
+    },
     "carousel": {
       "label": "AI 推薦片單輪播",
       "previous": "上一部推薦",

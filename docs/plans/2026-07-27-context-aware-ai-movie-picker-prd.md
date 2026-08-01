@@ -18,7 +18,7 @@ Movie Picker 目前會先把使用者的自由文字壓縮成固定的 mood、oc
 
 結果頁顯示自然語言的「本次選片方向」與動態條件標籤，讓使用者知道系統如何理解需求，但不顯示內部推理、供應商品牌或原始 TMDB 參數。推薦理由以「使用者需求＋可驗證電影依據」為核心，不重述電影簡介、不診斷使用者，也不使用候選資料未提供的事實。
 
-整個互動最多等待十秒。畫面以動畫進度條從 0% 前進至 90%，成功時完成至 100%；這是等待回饋而非後端真實完成比例。推薦歷史在回傳結果後以背景任務保存，不阻塞使用者看到片單。
+整個互動最多等待三十秒。畫面以動畫進度條從 0% 前進至 90%，成功時完成至 100%；這是等待回饋而非後端真實完成比例。推薦歷史在回傳結果後以背景任務保存，不阻塞使用者看到片單。
 
 ## User Stories
 
@@ -45,7 +45,7 @@ Movie Picker 目前會先把使用者的自由文字壓縮成固定的 mood、oc
 21. As a 使用者, I want 軟性偏好只顯示最重要的兩至三項, so that 畫面不會被過多內部分類淹沒。
 22. As a 使用者, I want 畫面不要出現「AI 的理解」或原始 JSON, so that 介面保持自然且非技術化。
 23. As a 使用者, I want 在處理期間看到進度條與百分比, so that 我知道系統仍在工作。
-24. As a 使用者, I want 進度條在十秒內完成、回退或顯示錯誤, so that 我不會無止境等待。
+24. As a 使用者, I want 進度條在三十秒內完成、回退或顯示錯誤, so that 我不會無止境等待。
 25. As a 使用者, I want 只看到完成後的最終片單, so that 中間候選片不會突然消失或重新排序。
 26. As a 使用者, I want 條件不足以找到五部片時仍看到較少但符合要求的結果, so that 系統不會加入不合條件的電影湊數。
 27. As a 使用者, I want 完全沒有結果時能返回調整描述, so that 我可以主動放寬條件再挑一次。
@@ -56,7 +56,7 @@ Movie Picker 目前會先把使用者的自由文字壓縮成固定的 mood、oc
 32. As a 登入使用者, I want 推薦結果自動保存到歷史紀錄, so that 我能稍後重新查看片單。
 33. As a 注重隱私的使用者, I want 原始輸入不被持久保存, so that 情緒或情境描述不會留在資料庫。
 34. As a 歷史頁使用者, I want 看到結構化選片方向、推薦結果與模型資訊, so that 我能理解每次紀錄的推薦背景。
-35. As a 使用者, I want 歷史保存不延遲片單顯示, so that 資料庫寫入不會吃掉十秒等待預算。
+35. As a 使用者, I want 歷史保存不延遲片單顯示, so that 資料庫寫入不會吃掉三十秒等待預算。
 36. As a 未登入使用者, I want 仍可瀏覽、搜尋與使用其他電影功能, so that 登入限制只保護 AI 挑片額度。
 37. As a 產品擁有者, I want AI 挑片限定登入使用者, so that OpenRouter 免費額度不會被匿名濫用。
 38. As a 維護者, I want AI 供應商與模型由後端設定, so that 前端不會取得秘密金鑰且模型能在不改 UI 的情況下替換。
@@ -66,7 +66,7 @@ Movie Picker 目前會先把使用者的自由文字壓縮成固定的 mood、oc
 42. As a 維護者, I want TMDB 參數有嚴格白名單、數量與範圍限制, so that 模型不能產生任意或高成本查詢。
 43. As a 維護者, I want 一個推薦協調介面封裝驗證、查詢計畫、候選池、重排與歷史保存, so that 前端不需要理解整條供應商資料流。
 44. As a 維護者, I want 查詢計畫、候選探索與推薦重排可獨立測試, so that 外部 API 變化不會迫使測試依賴真實網路。
-45. As a 維護者, I want 十秒 deadline 能取消尚未完成的上游請求, so that timeout 後不會繼續浪費 OpenRouter 或 TMDB 資源。
+45. As a 維護者, I want 三十秒 deadline 能取消尚未完成的上游請求, so that timeout 後不會繼續浪費 OpenRouter 或 TMDB 資源。
 46. As a 維護者, I want 推薦歷史使用背景任務保存並自行處理錯誤, so that 保存失敗不會改變已回傳結果。
 47. As a 維護者, I want 清除所有舊推薦歷史資料, so that 新實作不需要維護固定四分類與新結構化意圖兩套相容邏輯。
 48. As a 維護者, I want 收藏、帳號與其他資料不受歷史清理影響, so that migration 的破壞範圍只限已確認的推薦紀錄。
@@ -102,7 +102,7 @@ Movie Picker 目前會先把使用者的自由文字壓縮成固定的 mood、oc
 - 結果區顯示「本次選片方向」自然語言摘要。不得使用「AI 的理解」作為標題，也不得顯示原始 JSON、內部推理或 TMDB 技術參數。
 - 動態標籤必須包含全部明確限制，並只顯示最重要的兩至三項 soft preferences。
 - 載入 UI 使用動畫進度條與百分比。進度從 0% 隨等待時間前進至最高 90%，成功時完成至 100%；它是視覺等待回饋，不代表後端真實階段，也不導入 SSE。
-- 整體流程有十秒 hard deadline。deadline 必須傳播到尚未完成的 OpenRouter 與 TMDB fetch，避免瀏覽器停止等待後上游仍繼續執行。
+- 整體流程有三十秒 hard deadline。deadline 必須傳播到尚未完成的 OpenRouter 與 TMDB fetch，避免瀏覽器停止等待後上游仍繼續執行。
 - 第一階段在 deadline 前未產生有效查詢計畫時回傳可重試錯誤，不用無關熱門片代替。
 - 已取得候選片但第二階段失敗或逾時時，使用熱門與高評分結果的 deterministic merge 產生最多五部 fallback。UI 不顯示額外 fallback 標籤，電影卡片顯示 overview，不冒充 AI 推薦理由。
 - 不做隱藏自動 AI retry。只有使用者主動重試才開始新的完整流程，避免快速消耗免費模型額度。
@@ -112,7 +112,7 @@ Movie Picker 目前會先把使用者的自由文字壓縮成固定的 mood、oc
 - 新 migration 必須刪除 `ai_recommendation_runs` 的全部既有資料，包括舊 `deepseek`、`deepseek-criteria` 與 `fallback` 紀錄。不得刪除或改動 wishlist、auth user 或其他資料。
 - 新歷史資料只支援新版結構，不建置舊四分類紀錄的相容 renderer。
 - AI 挑片維持登入限定。未登入使用者仍可使用一般瀏覽、搜尋、隨機挑片及其他既有功能。
-- 第一版不新增自訂 per-user rate-limit persistence。先以登入門檻、既有輸入長度限制、十秒 deadline 與供應商限制控制用量；只有觀察到實際濫用時才增加。
+- 第一版不新增自訂 per-user rate-limit persistence。先以登入門檻、既有輸入長度限制、三十秒 deadline 與供應商限制控制用量；只有觀察到實際濫用時才增加。
 - 使用者介面與三語產品 README 將特定供應商品牌改為泛稱 AI 模型。技術部署文件需明確說明 OpenRouter、`OPENROUTER_API_KEY`、`OPENROUTER_MODEL` 與 AI Picker 使用的 server-side TMDB token。
 - provider metadata 使用 `openrouter`，model metadata 保存實際使用的完整 model slug。
 - 不新增 production dependency。優先使用現有 Zod、Supabase client、TMDB service pattern、React Query 與平台 fetch/AbortController。
@@ -125,11 +125,11 @@ Movie Picker 目前會先把使用者的自由文字壓縮成固定的 mood、oc
 - 候選探索 Module 需要單元測試，覆蓋 keyword 名稱解析、熱門與高評分查詢並行結果、去重、候選上限、一次放寬及 hard constraints 不被移除。
 - 推薦重排 Module 需要單元測試，覆蓋候選 ID membership、去重、輸出順序、一至五部結果、最多一部 wildcard、理由長度與不合法 provider output。
 - Fallback 排序需要獨立測試，確保同一組熱門與高評分結果產生穩定輸出，不需要依賴模型或真實 TMDB。
-- 推薦協調 Edge Function 需要以 mock fetch 測試 authenticated success、未登入拒絕、第一階段失敗、TMDB empty、第二階段 timeout、十秒 deadline propagation 及 provider error normalization。
+- 推薦協調 Edge Function 需要以 mock fetch 測試 authenticated success、未登入拒絕、第一階段失敗、TMDB empty、第二階段 timeout、三十秒 deadline propagation 及 provider error normalization。
 - 歷史背景保存需要測試回應不等待資料庫 insert、保存 payload 不含原始輸入，以及背景 insert 失敗不改變回傳結果。
 - Migration 測試需要確認只清除 `ai_recommendation_runs`，不包含 wishlist 或 auth 相關資料。
 - 前端服務測試需要確認只呼叫單一推薦協調 endpoint、驗證回應 schema，並能處理 error、empty、少於五部與 fallback 無理由結果。
-- AI Picker UI 測試需要確認登入門檻、0% 至 90% 的等待進度、成功時 100%、十秒 timeout、完成前不顯示候選片、選片方向摘要、動態標籤及結果數量。
+- AI Picker UI 測試需要確認登入門檻、0% 至 90% 的等待進度、成功時 100%、三十秒 timeout、完成前不顯示候選片、選片方向摘要、動態標籤及結果數量。
 - History UI 測試只需要覆蓋新版 intent summary、標籤、推薦快照與 provider/model metadata；不測舊四分類相容行為。
 - i18n 測試或靜態檢查需要確認新增使用者可見文字在繁體中文與英文 locale 都存在，並移除使用者介面中的 DeepSeek 品牌名稱。
 - README 與部署文件驗證需要確認產品文案使用 AI 模型泛稱，技術文件使用 OpenRouter 真實設定名稱，且前端程式碼不讀取 provider secret。
@@ -166,7 +166,7 @@ Movie Picker 目前會先把使用者的自由文字壓縮成固定的 mood、oc
 ## Further Notes
 
 - 本 PRD 整理自 2026-07-26 至 2026-07-27 的需求訪談與現有程式資料流檢查。
-- 暫定 OpenRouter 模型 `inclusionai/ling-3.0-flash:free` 於 2026-07-27 已確認存在，但免費模型的延遲與可用性沒有 SLA。十秒是 UI 與後端的最大等待預算，不是每次都能產生完整 AI 重排結果的保證。
+- 暫定 OpenRouter 模型 `inclusionai/ling-3.0-flash:free` 於 2026-07-27 已確認存在，但免費模型的延遲與可用性沒有 SLA。三十秒是 UI 的最大等待預算，Edge Function 會提前三秒截止以保留 CORS 與傳輸時間；這不是每次都能產生完整 AI 重排結果的保證。
 - 動畫百分比是視覺等待回饋。它可以根據 elapsed time 前進，但不得被文件或 UI 描述成真實後端完成率。
 - 清除全部推薦歷史是使用者已明確確認的破壞性 migration 決策；實作與部署時仍應將 SQL 影響範圍限制在 `ai_recommendation_runs`。
 - `ready-for-agent` 表示需求與主要產品決策已收斂。實作仍應先確認 OpenRouter tool call 的 live response shape、Supabase background task 型別與 TMDB server secret 名稱。

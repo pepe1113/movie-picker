@@ -4,32 +4,32 @@ import userEvent from '@testing-library/user-event'
 import { I18nextProvider } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
-import type { Movie } from '@/services/tmdb/types'
+import type { MediaItem, Movie, TvShow } from '@/services/tmdb/types'
 import { requestContextRecommendations } from '@/services/supabase/aiRecommendations'
 import { useAuthStore } from '@/stores/authStore'
 
 vi.mock('@/services/supabase/aiRecommendations', () => ({
   MAX_MOVIE_REQUEST_LENGTH: 500,
-  RECOMMENDATION_DEADLINE_MS: 10_000,
+  RECOMMENDATION_DEADLINE_MS: 31_000,
+  RecommendationRequestError: class RecommendationRequestError extends Error {},
   requestContextRecommendations: vi.fn(),
 }))
 
 vi.mock('@/components/features/ai-picker/AiRecommendationCarousel', () => ({
   AiRecommendationCarousel: ({
     recommendations,
-    shouldShowOverviewReasons,
   }: {
-    recommendations: Array<{ movie: Movie; reason?: string }>
-    shouldShowOverviewReasons: boolean
+    recommendations: Array<{ movie: MediaItem; reason?: string }>
   }) => (
     <div>
       {recommendations.map((item) => (
-        <article key={item.movie.id}>
-          <h3>{item.movie.title}</h3>
-          <p>
-            {item.reason ??
-              (shouldShowOverviewReasons ? item.movie.overview : '')}
-          </p>
+        <article key={`${item.movie.media_type ?? 'movie'}:${item.movie.id}`}>
+          <h3>
+            {item.movie.media_type === 'tv'
+              ? item.movie.name
+              : item.movie.title}
+          </h3>
+          <p>{item.reason ?? item.movie.overview}</p>
         </article>
       ))}
     </div>
@@ -61,6 +61,7 @@ function movie(id: number, title = `Movie ${id}`): Movie {
     backdrop_path: null,
     genre_ids: [35],
     id,
+    media_type: 'movie',
     original_language: 'en',
     original_title: title,
     overview: `Overview ${id}`,
@@ -74,18 +75,40 @@ function movie(id: number, title = `Movie ${id}`): Movie {
   }
 }
 
+function tv(id: number, name = `Show ${id}`): TvShow {
+  return {
+    adult: false,
+    backdrop_path: null,
+    first_air_date: '2026-01-01',
+    genre_ids: [35],
+    id,
+    media_type: 'tv',
+    name,
+    origin_country: ['JP'],
+    original_language: 'ja',
+    original_name: name,
+    overview: `TV Overview ${id}`,
+    popularity: 10,
+    poster_path: null,
+    vote_average: 8,
+    vote_count: 100,
+  }
+}
+
 function result(
   overrides: Partial<{
+    media_type: 'movie' | 'tv'
     recommendations: Array<{
-      movie_id: number
+      media_id: number
       reason?: string
       kind: 'primary' | 'wildcard'
-      movie_snapshot: Movie
+      media_snapshot: MediaItem
     }>
     used_fallback: boolean
   }> = {},
 ) {
   return {
+    media_type: 'movie' as const,
     direction: {
       summary: '今晚以輕鬆、好理解的作品轉換心情',
       labels: [
@@ -95,14 +118,14 @@ function result(
     },
     recommendations: [
       {
-        movie_id: 1,
+        media_id: 1,
         reason: '喜劇類型適合現在轉換心情。',
         kind: 'primary' as const,
-        movie_snapshot: movie(1, 'Context Pick'),
+        media_snapshot: movie(1, 'Context Pick'),
       },
     ],
-    provider: 'openrouter' as const,
-    model: 'inclusionai/ling-3.0-flash:free',
+    provider: 'openai' as const,
+    model: 'gpt-4o-mini',
     used_fallback: false,
     ...overrides,
   }
@@ -173,6 +196,7 @@ describe('AiMoviePicker', () => {
     expect(requestContextRecommendations).toHaveBeenCalledWith(
       '很無聊，想刺激一點但不要恐怖片。',
       'zh-TW',
+      'movie',
       expect.any(AbortSignal),
     )
     expect(screen.queryByText('Context Pick')).not.toBeInTheDocument()
@@ -203,11 +227,41 @@ describe('AiMoviePicker', () => {
     })
     fireEvent.click(screen.getByRole('button', { name: '幫我選片' }))
 
-    await act(async () => vi.advanceTimersByTime(9_900))
+    await act(async () => vi.advanceTimersByTime(29_900))
     expect(
       Number(screen.getByRole('progressbar').getAttribute('aria-valuenow')),
     ).toBeLessThanOrEqual(90)
     expect(screen.queryByRole('article')).not.toBeInTheDocument()
+  })
+
+  it('sends the selected TV type and renders a TV snapshot', async () => {
+    authenticate()
+    const user = userEvent.setup()
+    vi.mocked(requestContextRecommendations).mockResolvedValue(
+      result({
+        media_type: 'tv',
+        recommendations: [
+          {
+            media_id: 7,
+            kind: 'primary',
+            media_snapshot: tv(7, 'Light Japanese Show'),
+          },
+        ],
+      }),
+    )
+
+    await renderPicker()
+    await user.click(screen.getByRole('button', { name: '影集' }))
+    await user.type(screen.getByLabelText('觀影需求'), '我想看點題材輕鬆的日劇')
+    await user.click(screen.getByRole('button', { name: '幫我選片' }))
+
+    expect(requestContextRecommendations).toHaveBeenCalledWith(
+      '我想看點題材輕鬆的日劇',
+      'zh-TW',
+      'tv',
+      expect.any(AbortSignal),
+    )
+    expect(await screen.findByText('Light Japanese Show')).toBeInTheDocument()
   })
 
   it('shows a retryable error without automatically retrying', async () => {
@@ -244,7 +298,7 @@ describe('AiMoviePicker', () => {
 
     expect(
       await screen.findByText(
-        '找不到符合所有明確限制的電影，請調整描述後再試。',
+        '找不到符合所有明確限制的內容，請調整描述後再試。',
       ),
     ).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: '調整觀影需求' }))
@@ -258,9 +312,9 @@ describe('AiMoviePicker', () => {
       result({
         recommendations: [
           {
-            movie_id: 2,
+            media_id: 2,
             kind: 'primary',
-            movie_snapshot: movie(2, 'Fallback Pick'),
+            media_snapshot: movie(2, 'Fallback Pick'),
           },
         ],
         used_fallback: true,

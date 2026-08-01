@@ -9,7 +9,7 @@ describe('supabase client config', () => {
     const config = getSupabaseConfig({
       VITE_SUPABASE_URL: 'https://example.supabase.co',
       VITE_SUPABASE_ANON_KEY: 'public-anon-key',
-      OPENROUTER_API_KEY: 'must-not-be-read',
+      OPENAI_API_KEY: 'must-not-be-read',
       TMDB_ACCESS_TOKEN: 'must-not-be-read',
       SUPABASE_SERVICE_ROLE_KEY: 'must-not-be-read',
     })
@@ -30,7 +30,7 @@ describe('supabase client config', () => {
   it('does not treat privileged or provider secrets as valid frontend config', () => {
     expect(() =>
       getSupabaseConfig({
-        OPENROUTER_API_KEY: 'provider-secret',
+        OPENAI_API_KEY: 'provider-secret',
         TMDB_ACCESS_TOKEN: 'server-token',
         SUPABASE_SERVICE_ROLE_KEY: 'service-role-secret',
       }),

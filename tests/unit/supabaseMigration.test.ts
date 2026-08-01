@@ -14,6 +14,10 @@ const mediaTypeMigrationPath = join(
   process.cwd(),
   'supabase/migrations/20260726000000_add_wishlist_media_type.sql',
 )
+const recommendationMediaMigrationPath = join(
+  process.cwd(),
+  'supabase/migrations/20260801075037_make_ai_recommendation_history_media_neutral.sql',
+)
 
 describe('Supabase wishlist and AI runs migration', () => {
   it('creates the expected tables with user-owned columns', () => {
@@ -74,5 +78,17 @@ describe('Supabase wishlist and AI runs migration', () => {
     )
     expect(sql).toContain("check (media_type in ('movie', 'tv'))")
     expect(sql).toContain('unique (user_id, media_type, movie_id)')
+  })
+
+  it('makes AI recommendation history media neutral without changing RLS', () => {
+    expect(existsSync(recommendationMediaMigrationPath)).toBe(true)
+    const sql = readFileSync(recommendationMediaMigrationPath, 'utf8')
+
+    expect(sql).toContain(
+      'rename column candidate_movie_ids to candidate_media_ids',
+    )
+    expect(sql).toContain("add column media_type text not null default 'movie'")
+    expect(sql).toContain("check (media_type in ('movie', 'tv'))")
+    expect(sql).not.toMatch(/drop\s+policy|disable\s+row\s+level/i)
   })
 })

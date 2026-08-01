@@ -6,16 +6,16 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { MovieCard } from '@/components/features/movie/MovieCard'
 import { cn } from '@/lib/utils'
-import type { Movie } from '@/services/tmdb/types'
+import type { MediaItem } from '@/services/tmdb/types'
+import { getMediaKey, getMediaTitle } from '@/utils/media'
 
 export interface AiPickerDisplayRecommendation {
-  movie: Movie
+  movie: MediaItem
   reason?: string
 }
 
 interface AiRecommendationCarouselProps {
   recommendations: AiPickerDisplayRecommendation[]
-  shouldShowOverviewReasons: boolean
 }
 
 const AUTO_ADVANCE_MS = 4000
@@ -68,7 +68,6 @@ function getSlideState(offset: number, reduceMotion: boolean) {
 
 export function AiRecommendationCarousel({
   recommendations,
-  shouldShowOverviewReasons,
 }: AiRecommendationCarouselProps) {
   const { t } = useTranslation()
   const shouldReduceMotion = useReducedMotion()
@@ -111,12 +110,8 @@ export function AiRecommendationCarousel({
   const activeReason = useMemo(() => {
     if (!activeRecommendation) return null
     if (activeRecommendation.reason) return activeRecommendation.reason
-    if (shouldShowOverviewReasons) {
-      return activeRecommendation.movie.overview || t('movieCard.noOverview')
-    }
-
-    return null
-  }, [activeRecommendation, shouldShowOverviewReasons, t])
+    return activeRecommendation.movie.overview || t('movieCard.noOverview')
+  }, [activeRecommendation, t])
 
   if (recommendations.length === 0) return null
 
@@ -142,7 +137,7 @@ export function AiRecommendationCarousel({
 
           return (
             <motion.div
-              key={recommendation.movie.id}
+              key={getMediaKey(recommendation.movie)}
               animate={slideState}
               initial={false}
               transition={{
@@ -175,7 +170,7 @@ export function AiRecommendationCarousel({
                     type="button"
                     onClick={() => goToIndex(index)}
                     aria-label={t('aiPicker.carousel.goTo', {
-                      title: recommendation.movie.title,
+                      title: getMediaTitle(recommendation.movie),
                     })}
                     className="focus-visible:ring-primary focus-visible:ring-offset-background absolute inset-0 rounded-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                   />
@@ -215,12 +210,12 @@ export function AiRecommendationCarousel({
         <div className="flex justify-center gap-2">
           {recommendations.map((recommendation, index) => (
             <motion.button
-              key={recommendation.movie.id}
+              key={getMediaKey(recommendation.movie)}
               type="button"
               whileTap={{ scale: 0.9 }}
               onClick={() => goToIndex(index)}
               aria-label={t('aiPicker.carousel.goTo', {
-                title: recommendation.movie.title,
+                title: getMediaTitle(recommendation.movie),
               })}
               aria-current={index === activeIndex}
               className={cn(
@@ -240,7 +235,7 @@ export function AiRecommendationCarousel({
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={activeRecommendation.movie.id}
+            key={getMediaKey(activeRecommendation.movie)}
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -8 }}

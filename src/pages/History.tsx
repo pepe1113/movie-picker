@@ -10,6 +10,7 @@ import {
   type RecommendationRun,
 } from '@/services/supabase/recommendationHistory'
 import { useAuthStore } from '@/stores/authStore'
+import { getMediaKey } from '@/utils/media'
 
 export function Component() {
   const { t } = useTranslation()
@@ -133,13 +134,13 @@ export function Component() {
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
               {run.recommendations.map((recommendation) => (
                 <div
-                  key={recommendation.movie_id}
+                  key={getMediaKey(recommendation.media_snapshot)}
                   className="mx-auto w-full max-w-[220px] space-y-3"
                 >
-                  <MovieCard movie={recommendation.movie_snapshot} />
+                  <MovieCard movie={recommendation.media_snapshot} />
                   <p className="text-muted-foreground text-sm leading-relaxed">
                     {recommendation.reason ||
-                      recommendation.movie_snapshot.overview ||
+                      recommendation.media_snapshot.overview ||
                       t('movieCard.noOverview')}
                   </p>
                 </div>

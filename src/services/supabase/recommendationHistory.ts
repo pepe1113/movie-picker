@@ -1,15 +1,16 @@
-import type { Movie } from '@/services/tmdb/types'
+import type { MediaItem, MediaType } from '@/services/tmdb/types'
 import { getSupabaseClient } from './client'
 
 export interface RecommendationRunItem {
-  movie_id: number
+  media_id: number
   reason?: string
   kind: 'primary' | 'wildcard'
-  movie_snapshot: Movie
+  media_snapshot: MediaItem
 }
 
 export interface RecommendationRun {
   id: string
+  media_type: MediaType
   intent: {
     summary: string
     hard_constraints: Record<string, unknown>
@@ -43,7 +44,7 @@ export const supabaseRecommendationHistoryRemote: RecommendationHistoryRemote =
       const { data, error } = await getSupabaseClient()
         .from('ai_recommendation_runs')
         .select(
-          'id, intent, discover_plan, recommendations, provider, model, created_at',
+          'id, media_type, intent, discover_plan, recommendations, provider, model, created_at',
         )
         .eq('user_id', userId)
         .order('created_at', { ascending: false })

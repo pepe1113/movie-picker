@@ -9,8 +9,10 @@ import { Textarea } from '@/components/ui/textarea'
 import {
   MAX_MOVIE_REQUEST_LENGTH,
   RECOMMENDATION_DEADLINE_MS,
+  RecommendationRequestError,
   requestContextRecommendations,
 } from '@/services/supabase/aiRecommendations'
+import type { MediaType } from '@/services/tmdb/types'
 import { useAuthStore } from '@/stores/authStore'
 import { useLanguageStore } from '@/stores/languageStore'
 import { cn } from '@/lib/utils'
@@ -24,6 +26,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const language = useLanguageStore((state) => state.language)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
   const [requestText, setRequestText] = useState('')
+  const [mediaType, setMediaType] = useState<MediaType>('movie')
   const [inputError, setInputError] = useState(false)
   const startedAtRef = useRef(0)
   const progressBarRef = useRef<HTMLDivElement>(null)
@@ -31,7 +34,13 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const progressTextRef = useRef<HTMLSpanElement>(null)
 
   const recommendationMutation = useMutation({
-    mutationFn: async (request: string) => {
+    mutationFn: async ({
+      request,
+      mediaType: selectedMediaType,
+    }: {
+      request: string
+      mediaType: MediaType
+    }) => {
       const controller = new AbortController()
       const timeout = window.setTimeout(
         () => controller.abort(),
@@ -41,6 +50,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
         return await requestContextRecommendations(
           request,
           language,
+          selectedMediaType,
           controller.signal,
         )
       } finally {
@@ -79,7 +89,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
 
     setInputError(false)
     startedAtRef.current = Date.now()
-    recommendationMutation.mutate(request)
+    recommendationMutation.mutate({ request, mediaType })
   }
 
   const submitRequest = (event: FormEvent<HTMLFormElement>) => {
@@ -89,6 +99,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
 
   const reset = () => {
     setRequestText('')
+    setMediaType('movie')
     setInputError(false)
     recommendationMutation.reset()
   }
@@ -96,7 +107,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const result = recommendationMutation.data
   const recommendations =
     result?.recommendations.map((recommendation) => ({
-      movie: recommendation.movie_snapshot,
+      movie: recommendation.media_snapshot,
       reason: recommendation.reason,
     })) ?? []
 
@@ -122,6 +133,25 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
               </div>
 
               <form onSubmit={submitRequest} className="space-y-4">
+                <fieldset className="space-y-2">
+                  <legend className="text-sm font-bold tracking-[1.4px] uppercase">
+                    {t('aiPicker.mediaTypeLabel')}
+                  </legend>
+                  <div className="grid grid-cols-2 gap-2" role="group">
+                    {(['movie', 'tv'] as const).map((type) => (
+                      <Button
+                        key={type}
+                        type="button"
+                        variant={mediaType === type ? 'default' : 'secondary'}
+                        aria-pressed={mediaType === type}
+                        disabled={recommendationMutation.isPending}
+                        onClick={() => setMediaType(type)}
+                      >
+                        {t(`mediaType.${type}`)}
+                      </Button>
+                    ))}
+                  </div>
+                </fieldset>
                 <label
                   htmlFor="movie-request"
                   className="text-sm font-bold tracking-[1.4px] uppercase"
@@ -217,7 +247,16 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                   className="border-destructive/40 bg-destructive/10 flex flex-col items-center justify-between gap-3 rounded-lg border px-4 py-3 text-sm sm:flex-row"
                 >
                   <p className="text-destructive">
-                    {t('aiPicker.analysisError')}
+                    {recommendationMutation.error instanceof
+                    RecommendationRequestError
+                      ? t(
+                          `aiPicker.errors.${recommendationMutation.error.code}`,
+                          {
+                            condition:
+                              recommendationMutation.error.condition ?? '',
+                          },
+                        )
+                      : t('aiPicker.analysisError')}
                   </p>
                   <Button
                     type="button"
@@ -293,10 +332,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                   </Button>
                 </div>
               ) : (
-                <AiRecommendationCarousel
-                  recommendations={recommendations}
-                  shouldShowOverviewReasons={result.used_fallback}
-                />
+                <AiRecommendationCarousel recommendations={recommendations} />
               )}
             </div>
           )}

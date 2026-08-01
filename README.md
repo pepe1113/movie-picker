@@ -10,7 +10,7 @@
 
 - 切換瀏覽電影與影集的最新、每週趨勢、熱門、高評分及各種類型
 - 混合搜尋電影／影集；查看詳情、演員、預告片、影集季數與總集數
-- 登入後以自然文字描述當下情境、期待與限制，由 AI 模型挑選最多五部電影
+- 登入後選擇電影或影集，再以自然文字描述期待與限制，由 AI 模型規劃並挑選最多十部作品
 - 未登入時在本機保存電影與影集收藏，GitHub 登入後合併並同步至雲端
 - 查看及刪除最近 20 筆 AI 推薦紀錄
 - 支援英文／繁體中文介面與紅黑電影感響應式設計
@@ -42,7 +42,7 @@ React 頁面／元件
 - `src/pages` 管理路由頁面，`src/components` 放共用 UI 與功能元件。
 - `src/hooks` 協調伺服器狀態，`src/services` 隔離外部 API。
 - `src/stores` 管理前端狀態，`supabase/migrations` 與 `supabase/functions` 管理後端行為。
-- AI 選片限定登入使用者；模型重排失敗時由 Edge Function 使用已取得的 TMDB 候選片穩定排序。
+- AI 選片限定登入使用者；模型只產生查詢計畫，Edge Function 將 TMDB 熱門與高評分候選片穩定交錯排序。
 
 ## 安全措施
 
@@ -50,7 +50,7 @@ React 頁面／元件
 - Git 會忽略 `.env*`（僅追蹤 `.env.example`），版本庫中沒有供應商 Secret 值。
 - Edge Function 要求 Bearer Token，並先透過 `supabase.auth.getUser()` 驗證使用者，才會呼叫 AI 模型或寫入紀錄。
 - 兩張表皆啟用 Row Level Security，只允許 `auth.uid() = user_id` 的擁有者存取；瀏覽器只使用公開 anon key。
-- AI endpoint 僅接受 `POST`、限制輸入長度，並在十秒 deadline 後取消未完成的上游請求。
+- AI endpoint 僅接受 `POST`、限制輸入長度，並在 30 秒 deadline 後取消未完成的上游請求；前端最多等待 31 秒。
 
 ## 檢查指令
 

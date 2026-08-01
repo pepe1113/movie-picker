@@ -1,18 +1,21 @@
 import { describe, expect, it } from 'vitest'
 import {
+  applyDeterministicMediaRules,
   buildDiscoverSearchParams,
   createPlanMessages,
-  DEFAULT_OPENROUTER_BASE_URL,
-  DEFAULT_OPENROUTER_MODEL,
+  createPlanTool,
+  DEFAULT_OPENAI_BASE_URL,
+  DEFAULT_OPENAI_MODEL,
+  hasMediaTypeMismatch,
   mergeCandidatePools,
   parseContextPlan,
-  parseRankedRecommendations,
+  parseTmdbMedia,
   parseToolArguments,
   validateRecommendationRequest,
-  type CandidateMovie,
+  type CandidateMedia,
 } from '../../supabase/functions/recommend-movies/domain'
 
-function movie(id: number, overview = `Overview ${id}`): CandidateMovie {
+function movie(id: number) {
   return {
     adult: false,
     backdrop_path: null,
@@ -20,7 +23,7 @@ function movie(id: number, overview = `Overview ${id}`): CandidateMovie {
     id,
     original_language: 'en',
     original_title: `Movie ${id}`,
-    overview,
+    overview: `Overview ${id}`,
     popularity: 100 - id,
     poster_path: null,
     release_date: '2026-01-01',
@@ -28,6 +31,25 @@ function movie(id: number, overview = `Overview ${id}`): CandidateMovie {
     video: false,
     vote_average: 8,
     vote_count: 500,
+  }
+}
+
+function tv(id: number) {
+  return {
+    adult: false,
+    backdrop_path: null,
+    first_air_date: '2026-01-01',
+    genre_ids: [35],
+    id,
+    name: `Show ${id}`,
+    origin_country: ['JP'],
+    original_language: 'ja',
+    original_name: `Show ${id}`,
+    overview: `Overview ${id}`,
+    popularity: 100 - id,
+    poster_path: null,
+    vote_average: 8,
+    vote_count: 100,
   }
 }
 
@@ -39,105 +61,202 @@ const plan = {
     original_language: 'ja',
   },
   soft_preferences: {
-    include_genre_ids: [35],
-    keyword_names: ['healing'],
-    qualities: ['輕鬆', '低理解負擔'],
+    include_genres: [{ id: 35, source: 'explicit' as const }],
+    keywords: [
+      {
+        lookup_name: 'healing',
+        display_label: '療癒',
+        source: 'inferred' as const,
+      },
+    ],
+    qualities: ['輕鬆'],
   },
+  people: [],
+  people_match: 'any' as const,
   display_labels: {
     hard: ['不要恐怖片', '90 分鐘內', '日語'],
-    soft: ['輕鬆', '低理解負擔'],
+    soft: ['輕鬆'],
   },
 }
 
 describe('context-aware recommendation domain', () => {
-  it('uses the configured OpenRouter endpoint and replaceable default model', () => {
-    expect(DEFAULT_OPENROUTER_BASE_URL).toBe('https://openrouter.ai/api/v1')
-    expect(DEFAULT_OPENROUTER_MODEL).toBe('inclusionai/ling-3.0-flash:free')
-  })
-
-  it('validates and trims one natural-language request', () => {
+  it('uses OpenAI and validates a required single media type', () => {
+    expect(DEFAULT_OPENAI_BASE_URL).toBe('https://api.openai.com/v1')
+    expect(DEFAULT_OPENAI_MODEL).toBe('gpt-4o-mini')
     expect(
       validateRecommendationRequest({
-        request: '  工作很累，想看不用動腦的電影。 ',
+        request: '  想看輕鬆電影 ',
         locale: 'zh-TW',
+        media_type: 'movie',
       }),
     ).toEqual({
-      request: '工作很累，想看不用動腦的電影。',
+      request: '想看輕鬆電影',
       locale: 'zh-TW',
+      media_type: 'movie',
     })
     expect(() =>
-      validateRecommendationRequest({ request: ' ', locale: 'zh-TW' }),
-    ).toThrow('movie request is invalid')
+      validateRecommendationRequest({ request: '想看電影', locale: 'zh-TW' }),
+    ).toThrow('recommendation request is invalid')
   })
 
-  it('derives a strict Discover plan from validated intent fields', () => {
-    expect(parseContextPlan(plan)).toMatchObject({
-      discover_plan: {
-        include_genre_ids: [35],
-        exclude_genre_ids: [27],
-        keyword_names: ['healing'],
-        runtime_max: 90,
-        original_language: 'ja',
-      },
-    })
-    expect(() =>
-      parseContextPlan({
-        ...plan,
-        soft_preferences: {
-          ...plan.soft_preferences,
-          include_genre_ids: [999],
-        },
+  it('detects the last explicit movie or TV wording as a mismatch', () => {
+    expect(
+      hasMediaTypeMismatch({
+        request: '不要電影，我要看日劇',
+        locale: 'zh-TW',
+        media_type: 'movie',
       }),
-    ).toThrow('query plan has an invalid structure')
-  })
-
-  it('requires a visible label for every hard constraint', () => {
-    expect(() =>
-      parseContextPlan({
-        ...plan,
-        display_labels: {
-          hard: ['不要恐怖片'],
-          soft: ['輕鬆'],
-        },
+    ).toBe(true)
+    expect(
+      hasMediaTypeMismatch({
+        request: '不要電影，我要看日劇',
+        locale: 'zh-TW',
+        media_type: 'tv',
       }),
-    ).toThrow('query plan has an invalid structure')
+    ).toBe(false)
   })
 
-  it('relaxes only include conditions and preserves every hard filter', () => {
-    const discoverPlan = parseContextPlan(plan).discover_plan
+  it('uses separate movie and TV genre whitelists', () => {
+    expect(
+      parseContextPlan(plan, 'movie').discover_plan.include_genres,
+    ).toEqual([{ id: 35, source: 'explicit' }])
+    expect(() =>
+      parseContextPlan(
+        {
+          ...plan,
+          soft_preferences: {
+            ...plan.soft_preferences,
+            include_genres: [{ id: 10759, source: 'explicit' }],
+          },
+        },
+        'movie',
+      ),
+    ).toThrow('query plan has an invalid structure')
+    expect(
+      parseContextPlan(
+        {
+          ...plan,
+          hard_constraints: { exclude_genre_ids: [] },
+          soft_preferences: {
+            ...plan.soft_preferences,
+            include_genres: [{ id: 10759, source: 'explicit' }],
+          },
+        },
+        'tv',
+      ).discover_plan.include_genres,
+    ).toEqual([{ id: 10759, source: 'explicit' }])
+  })
+
+  it('keeps explicit filters when inferred preferences are relaxed', () => {
+    const discoverPlan = parseContextPlan(plan, 'movie').discover_plan
     const precise = buildDiscoverSearchParams(
+      'movie',
       discoverPlan,
       [123],
       'popularity.desc',
     )
     const relaxed = buildDiscoverSearchParams(
+      'movie',
       discoverPlan,
-      [123],
+      [],
       'vote_average.desc',
-      true,
+      false,
     )
 
     expect(precise.get('with_genres')).toBe('35')
     expect(precise.get('with_keywords')).toBe('123')
-    expect(relaxed.has('with_genres')).toBe(false)
+    expect(relaxed.get('with_genres')).toBe('35')
     expect(relaxed.has('with_keywords')).toBe(false)
     expect(relaxed.get('without_genres')).toBe('27')
     expect(relaxed.get('with_runtime.lte')).toBe('90')
     expect(relaxed.get('with_original_language')).toBe('ja')
-    expect(relaxed.get('include_adult')).toBe('false')
+    expect(relaxed.get('vote_count.gte')).toBe('100')
   })
 
-  it('interleaves popularity and rating results deterministically', () => {
+  it('deterministically routes light Japanese drama and Japanese animation', () => {
+    const base = parseContextPlan(
+      {
+        ...plan,
+        hard_constraints: { exclude_genre_ids: [] },
+        soft_preferences: {
+          include_genres: [],
+          keywords: [],
+          qualities: [],
+        },
+      },
+      'tv',
+    )
+    const drama = applyDeterministicMediaRules(
+      {
+        request: '我想看點題材輕鬆的日劇',
+        locale: 'zh-TW',
+        media_type: 'tv',
+      },
+      base,
+    )
+    const params = buildDiscoverSearchParams(
+      'tv',
+      drama.discover_plan,
+      [],
+      'popularity.desc',
+    )
+    expect(params.get('with_origin_country')).toBe('JP')
+    expect(params.get('with_original_language')).toBe('ja')
+    expect(params.get('without_genres')).toBe('16')
+    expect(params.get('with_genres')).toBe('35')
+    expect(params.get('vote_count.gte')).toBe('30')
+
+    const anime = applyDeterministicMediaRules(
+      {
+        request: '我想看日本動畫',
+        locale: 'zh-TW',
+        media_type: 'tv',
+      },
+      drama,
+    )
+    expect(anime.discover_plan.exclude_genre_ids).not.toContain(16)
+    expect(anime.discover_plan.include_genres).toContainEqual({
+      id: 16,
+      source: 'explicit',
+    })
+  })
+
+  it('normalizes movie and TV fields and strips additive provider fields', () => {
+    expect(
+      parseTmdbMedia({ results: [{ ...movie(1), extra: true }] }, 'movie'),
+    ).toEqual([{ ...movie(1), media_type: 'movie' }])
+    expect(
+      parseTmdbMedia({ results: [{ ...tv(1), extra: true }] }, 'tv'),
+    ).toEqual([{ ...tv(1), media_type: 'tv' }])
+  })
+
+  it('deduplicates by media type and numeric ID', () => {
+    const movieItem = parseTmdbMedia({ results: [movie(1)] }, 'movie')[0]
+    const tvItem = parseTmdbMedia({ results: [tv(1)] }, 'tv')[0]
     expect(
       mergeCandidatePools(
-        [movie(1), movie(2), movie(3)],
-        [movie(3), movie(4), movie(5)],
-        5,
-      ).map((item) => item.id),
-    ).toEqual([1, 3, 2, 4, 5])
+        [movieItem as CandidateMedia],
+        [tvItem as CandidateMedia],
+      ),
+    ).toHaveLength(2)
   })
 
-  it('extracts only the forced tool call arguments', () => {
+  it('uses the selected media type in the prompt and tool schema', () => {
+    const request = {
+      request: '我想看日劇',
+      locale: 'zh-TW' as const,
+      media_type: 'tv' as const,
+    }
+    expect(createPlanMessages(request)[0]?.content).toContain(
+      'UI-selected media type is tv',
+    )
+    expect(createPlanMessages(request)[1]?.content).toContain('我想看日劇')
+    expect(
+      createPlanTool('tv').function.parameters.properties.soft_preferences,
+    ).toBeDefined()
+  })
+
+  it('extracts only the forced planning tool arguments', () => {
     expect(
       parseToolArguments(
         {
@@ -159,130 +278,5 @@ describe('context-aware recommendation domain', () => {
         'plan_movie_search',
       ),
     ).toEqual(plan)
-  })
-
-  it('accepts reordered candidate IDs with at most one wildcard', () => {
-    const candidates = [movie(1), movie(2)]
-    expect(
-      parseRankedRecommendations(
-        {
-          recommendations: [
-            {
-              movie_id: 2,
-              reason: '輕鬆喜劇類型，適合現在轉換心情。',
-              kind: 'primary',
-            },
-            {
-              movie_id: 1,
-              reason: '高評分作品，保留一點新鮮感。',
-              kind: 'wildcard',
-            },
-          ],
-        },
-        candidates,
-        'zh-TW',
-      ).map((item) => item.movie_id),
-    ).toEqual([2, 1])
-  })
-
-  it.each([
-    {
-      name: 'unknown candidate',
-      recommendations: [
-        {
-          movie_id: 99,
-          reason: '輕鬆喜劇類型，適合轉換心情。',
-          kind: 'primary',
-        },
-        {
-          movie_id: 1,
-          reason: '高評分作品，帶來穩定觀影體驗。',
-          kind: 'primary',
-        },
-      ],
-    },
-    {
-      name: 'duplicate candidate',
-      recommendations: [
-        {
-          movie_id: 1,
-          reason: '輕鬆喜劇類型，適合轉換心情。',
-          kind: 'primary',
-        },
-        {
-          movie_id: 1,
-          reason: '高評分作品，帶來穩定觀影體驗。',
-          kind: 'primary',
-        },
-      ],
-    },
-    {
-      name: 'two wildcards',
-      recommendations: [
-        {
-          movie_id: 1,
-          reason: '輕鬆喜劇類型，適合轉換心情。',
-          kind: 'wildcard',
-        },
-        {
-          movie_id: 2,
-          reason: '高評分作品，帶來穩定觀影體驗。',
-          kind: 'wildcard',
-        },
-      ],
-    },
-  ])('rejects $name', ({ recommendations }) => {
-    expect(() =>
-      parseRankedRecommendations(
-        { recommendations },
-        [movie(1), movie(2)],
-        'zh-TW',
-      ),
-    ).toThrow('reranking result has an invalid structure')
-  })
-
-  it('rejects generic reasons and copied overview text', () => {
-    expect(() =>
-      parseRankedRecommendations(
-        {
-          recommendations: [
-            { movie_id: 1, reason: '符合你的條件', kind: 'primary' },
-          ],
-        },
-        [movie(1)],
-        'zh-TW',
-      ),
-    ).toThrow()
-
-    const overview = '這是一段足夠長而且不應直接複製的電影介紹文字'
-    expect(() =>
-      parseRankedRecommendations(
-        {
-          recommendations: [{ movie_id: 1, reason: overview, kind: 'primary' }],
-        },
-        [movie(1, overview)],
-        'zh-TW',
-      ),
-    ).toThrow()
-  })
-
-  it.each([
-    '工作很累，想看不用動腦的電影。',
-    '心情不好，想轉換心情。',
-    '剛失戀，想大哭。',
-    '剛失戀，但不要愛情片。',
-    '和家人看，不要恐怖或成人內容。',
-    '想看 90 分鐘內的輕鬆電影。',
-    '很無聊，想刺激一點但不要恐怖片。',
-    '想看近年的日語療癒電影。',
-  ])('keeps the acceptance request intact for planning: %s', (request) => {
-    const messages = createPlanMessages({ request, locale: 'zh-TW' })
-    expect(messages[1]?.content).toContain(request)
-    expect(messages[0]?.content).toContain(
-      'Only conditions explicitly stated by the user may become hard constraints',
-    )
-    expect(messages[0]?.content).toContain(
-      'default toward gentle mood regulation',
-    )
   })
 })

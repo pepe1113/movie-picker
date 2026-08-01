@@ -1,11 +1,14 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import {
-  DEFAULT_OPENROUTER_BASE_URL,
-  DEFAULT_OPENROUTER_MODEL,
+  DEFAULT_OPENAI_BASE_URL,
+  DEFAULT_OPENAI_MODEL,
+  hasMediaTypeMismatch,
   validateRecommendationRequest,
 } from './domain.ts'
 import {
   coordinateRecommendations,
+  RecommendationConditionError,
   RecommendationStageError,
   type CoordinatorConfig,
 } from './orchestrator.ts'
@@ -15,12 +18,7 @@ declare const EdgeRuntime: {
   waitUntil(promise: Promise<unknown>): void
 }
 
-const DEADLINE_MS = 9_500
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
-}
+const DEADLINE_MS = 30_000
 
 function jsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -40,11 +38,9 @@ function getRequiredEnv(name: string) {
 
 function getCoordinatorConfig(): CoordinatorConfig {
   return {
-    openrouterApiKey: getRequiredEnv('OPENROUTER_API_KEY'),
-    openrouterBaseUrl:
-      Deno.env.get('OPENROUTER_BASE_URL') ?? DEFAULT_OPENROUTER_BASE_URL,
-    openrouterModel:
-      Deno.env.get('OPENROUTER_MODEL') ?? DEFAULT_OPENROUTER_MODEL,
+    openaiApiKey: getRequiredEnv('OPENAI_API_KEY'),
+    openaiBaseUrl: Deno.env.get('OPENAI_BASE_URL') ?? DEFAULT_OPENAI_BASE_URL,
+    openaiModel: Deno.env.get('OPENAI_MODEL') ?? DEFAULT_OPENAI_MODEL,
     tmdbAccessToken: getRequiredEnv('TMDB_ACCESS_TOKEN'),
   }
 }
@@ -75,6 +71,10 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
     )
   }
 
+  if (hasMediaTypeMismatch(request)) {
+    return jsonResponse({ error: 'media_type_mismatch' }, 422)
+  }
+
   let result
   try {
     result = await coordinateRecommendations(
@@ -83,12 +83,18 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
       signal,
     )
   } catch (error) {
+    if (error instanceof RecommendationConditionError) {
+      return jsonResponse(
+        { error: error.code, condition: error.condition },
+        422,
+      )
+    }
     if (error instanceof RecommendationStageError) {
       console.error(error.message, error.cause)
       const message =
         error.stage === 'plan'
           ? 'Unable to plan recommendations. Please retry.'
-          : 'Unable to find matching movies. Please retry.'
+          : 'Unable to find matching titles. Please retry.'
       return jsonResponse({ error: message }, signal.aborted ? 504 : 502)
     }
     throw error
@@ -96,9 +102,12 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
 
   const historyRecord = createHistoryRecord(
     userData.user.id,
+    request.media_type,
     result.plan,
-    result.candidates.map((movie) => movie.id),
+    result.candidates.map((media) => media.id),
     result.recommendations,
+    result.resolvedPeople,
+    result.resolvedKeywords,
     result.model,
   )
   saveHistoryInBackground(
@@ -112,6 +121,7 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
   )
 
   return jsonResponse({
+    media_type: request.media_type,
     direction: {
       summary: result.plan.intent_summary,
       labels: [
@@ -126,7 +136,7 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
       ],
     },
     recommendations: result.recommendations,
-    provider: 'openrouter',
+    provider: 'openai',
     model: result.model,
     used_fallback: result.usedFallback,
   })

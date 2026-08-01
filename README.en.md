@@ -10,7 +10,7 @@
 
 - Browse latest, trending, popular, top-rated, and genre lists for movies and TV
 - Search both media types and view details, credits, trailers, seasons, and episode counts
-- Signed-in users describe their context, goals, and constraints in natural language and receive up to five AI-selected movies
+- Signed-in users choose movies or TV, describe their goals and constraints, and receive up to ten results from an AI-planned search
 - Save movies and TV locally, then merge and sync the wishlist after GitHub sign-in
 - Review and delete the latest 20 AI recommendation runs
 - Switch between English and Traditional Chinese in a responsive cinematic red-and-black UI
@@ -42,7 +42,7 @@ React pages/components
 - `src/pages` owns routes; `src/components` owns reusable UI and feature views.
 - `src/hooks` coordinates server state; `src/services` isolates external APIs.
 - `src/stores` owns client state; `supabase/migrations` and `supabase/functions` own backend behavior.
-- AI picking requires sign-in. If model reranking fails, the Edge Function deterministically ranks the TMDB candidates it already retrieved.
+- AI picking requires sign-in. The model only creates the search plan; the Edge Function deterministically interleaves popular and top-rated TMDB candidates.
 
 ## Security
 
@@ -50,7 +50,7 @@ React pages/components
 - `.env*` files are ignored by Git except `.env.example`, and no provider secret value is tracked.
 - The Edge Function requires a bearer token and verifies the caller with `supabase.auth.getUser()` before calling the AI model or writing history.
 - Row Level Security restricts both tables to rows where `auth.uid() = user_id`; the browser uses only the public anon key.
-- The AI endpoint accepts `POST` only, limits input length, and cancels unfinished upstream work at the ten-second deadline.
+- The AI endpoint accepts `POST` only, limits input length, and cancels unfinished upstream work after 30 seconds; the frontend waits up to 31 seconds.
 
 ## Checks
 

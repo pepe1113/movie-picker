@@ -25,6 +25,7 @@ function makeRecommendation(
       backdrop_path: null,
       genre_ids: [],
       id,
+      media_type: 'movie',
       original_language: 'en',
       original_title: title,
       overview: `${title} overview`,
@@ -40,18 +41,10 @@ function makeRecommendation(
   }
 }
 
-function renderCarousel(
-  recommendations: AiPickerDisplayRecommendation[],
-  options: {
-    shouldShowOverviewReasons?: boolean
-  } = {},
-) {
+function renderCarousel(recommendations: AiPickerDisplayRecommendation[]) {
   return render(
     <I18nextProvider i18n={i18n}>
-      <AiRecommendationCarousel
-        recommendations={recommendations}
-        shouldShowOverviewReasons={options.shouldShowOverviewReasons ?? false}
-      />
+      <AiRecommendationCarousel recommendations={recommendations} />
     </I18nextProvider>,
   )
 }

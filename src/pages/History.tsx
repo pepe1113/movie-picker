@@ -132,19 +132,21 @@ export function Component() {
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-              {run.recommendations.map((recommendation) => (
-                <div
-                  key={getMediaKey(recommendation.media_snapshot)}
-                  className="mx-auto w-full max-w-[220px] space-y-3"
-                >
-                  <MovieCard movie={recommendation.media_snapshot} />
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {recommendation.reason ||
-                      recommendation.media_snapshot.overview ||
-                      t('movieCard.noOverview')}
-                  </p>
-                </div>
-              ))}
+              {run.recommendations
+                .filter((recommendation) => recommendation.media_snapshot)
+                .map((recommendation) => (
+                  <div
+                    key={getMediaKey(recommendation.media_snapshot)}
+                    className="mx-auto w-full max-w-[220px] space-y-3"
+                  >
+                    <MovieCard movie={recommendation.media_snapshot} />
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {recommendation.reason ||
+                        recommendation.media_snapshot.overview ||
+                        t('movieCard.noOverview')}
+                    </p>
+                  </div>
+                ))}
             </div>
           </article>
         ))}

@@ -225,6 +225,31 @@ describe('History page', () => {
     )
   })
 
+  it('skips legacy recommendations without a media snapshot', async () => {
+    authenticate()
+    setRecommendationHistoryRemoteForTesting({
+      listLatest: vi.fn().mockResolvedValue([
+        run({
+          recommendations: [
+            {
+              media_id: 99,
+              kind: 'primary',
+            } as RecommendationRun['recommendations'][number],
+            {
+              media_id: 1,
+              kind: 'primary',
+              media_snapshot: movie(1, 'Current History Pick'),
+            },
+          ],
+        }),
+      ]),
+      deleteRun: vi.fn(),
+    })
+
+    await renderHistoryPage()
+    expect(await screen.findByText('Current History Pick')).toBeInTheDocument()
+  })
+
   it('deletes one recommendation run after confirmation', async () => {
     const user = userEvent.setup()
     const deleteRun = vi.fn().mockResolvedValue(undefined)

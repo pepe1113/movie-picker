@@ -28,14 +28,28 @@
   已套用；既有 6 筆紀錄保留、RLS 維持啟用。
 - Supabase Edge Function `recommend-movies` version 30 已部署為 `ACTIVE`，JWT
   驗證維持啟用。
-- 前端正式部署與登入後 happy path 結果記錄於本次提交完成後補上。
+- 前端已部署至 `https://movie-picker.peiwang.dev`；Supabase Auth Site URL 已改為
+  正式站，GitHub OAuth 可回到正式站並保留登入狀態。
+- Vercel 已加入 SPA rewrite；`/history` 與 `/tv/2661` 可直接開啟及重新整理。
+- 推薦紀錄會略過沒有 `media_snapshot` 的舊格式項目，避免整頁因單筆舊資料崩潰。
 
 ## 驗證
 
-- `bun run test:run --maxWorkers=1`：21 個 test files、80 個 tests 通過。
+- `bun run test:run --maxWorkers=1`：21 個 test files、81 個 tests 通過。
 - `bun run lint`：通過。
 - `bun run build`：通過；既有 chunk size warning 不影響產出。
 - Edge Function 入口以 Bun bundler 成功載入 14 個 modules。
 - `git diff --check`：通過。
 - 固定回歸案例涵蓋 Brad Pitt cast、宮崎駿 Director 排除 Thanks、人物 OR／AND、
   explicit keyword、只放寬 inferred 條件、TV credits、輕鬆日劇與電影／影集歷史路由。
+
+## 正式環境 happy path
+
+- 電影：輸入「我喜歡布萊德彼特」，解析為 person `287`／cast，回傳 10 筆電影；
+  所有結果與詳情連結均為 `movie`，歷史紀錄成功保存。
+- 影集：切換單一 active 標籤為「影集」，輸入「我想看點題材輕鬆的日劇」，
+  回傳 10 筆日本日語真人影集；所有結果與詳情連結均為 `tv`，且未混入動畫。
+- Edge Function version 30 對影集請求回傳 HTTP 200；電影與影集兩筆歷史均保存
+  20 筆候選與 10 筆推薦快照。
+- 從推薦紀錄點擊《假面騎士》可到 `/tv/2661` 顯示影集詳情；詳情頁重新整理後
+  仍正常顯示。

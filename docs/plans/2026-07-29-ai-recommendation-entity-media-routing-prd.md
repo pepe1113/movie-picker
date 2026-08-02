@@ -1,6 +1,6 @@
 # 2026-07-29 AI 推薦人物、關鍵字與媒體型別路由 PRD
 
-Status: ready-for-agent
+Status: implemented
 
 ## Problem Statement
 

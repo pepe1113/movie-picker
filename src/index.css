@@ -151,6 +151,15 @@ button[role='tab'] {
   }
 }
 
+html:has(.home-scroll-page) {
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: 4rem;
+}
+
+html:has(.home-scroll-page) footer {
+  scroll-snap-align: end;
+}
+
 @keyframes hero-title-cursor-blink {
   0%,
   100% {

@@ -106,8 +106,8 @@ export function Component() {
   }
 
   return (
-    <div className="h-[calc(100dvh-64px)] snap-y snap-mandatory overflow-y-auto scroll-smooth">
-      <section className="border-border relative flex min-h-full snap-start snap-always overflow-hidden border-b">
+    <div className="home-scroll-page min-h-screen">
+      <section className="border-border relative flex min-h-[calc(100dvh-64px)] snap-start snap-always overflow-hidden border-b">
         {heroBackdrop && (
           <img
             src={getBackdropUrl(heroBackdrop)}

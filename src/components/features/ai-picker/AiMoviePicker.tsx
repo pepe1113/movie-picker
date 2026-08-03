@@ -112,40 +112,48 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
     })) ?? []
 
   return (
-    <section className="border-border relative overflow-hidden border-b">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(30,215,96,0.18),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(83,157,245,0.14),transparent_24%)]" />
+    <section className="border-border bg-background relative isolate overflow-hidden border-b">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-10%,rgba(214,43,66,0.22),transparent_42%),linear-gradient(180deg,rgba(23,23,27,0.7),rgba(11,11,14,0.96))]" />
+      <div className="border-primary/10 absolute top-1/2 left-1/2 size-[44rem] -translate-x-1/2 -translate-y-1/2 rounded-full border" />
       <div className="via-primary/70 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent" />
 
       <div className="relative container mx-auto flex min-h-[calc(100svh-64px)] flex-1 flex-col justify-center px-6 py-10 md:px-12 md:py-12 lg:px-16">
-        <div className="bg-card/85 border-border rounded-lg border p-4 shadow-[rgba(0,0,0,0.45)_0px_18px_48px] backdrop-blur md:p-6">
+        <div className="bg-card/75 rounded-2xl border border-white/10 p-5 shadow-[rgba(108,18,35,0.22)_0px_24px_70px,rgba(0,0,0,0.45)_0px_12px_32px] backdrop-blur-xl md:p-8">
           {!result ? (
-            <div className="mx-auto max-w-3xl space-y-6">
-              <div className="space-y-2 text-center">
-                <div className="text-primary bg-primary/10 mx-auto flex size-11 items-center justify-center rounded-full">
+            <div className="mx-auto max-w-3xl space-y-7">
+              <div className="space-y-3 text-center">
+                <div className="text-primary bg-primary/10 border-primary/20 shadow-primary/10 mx-auto flex size-12 items-center justify-center rounded-xl border shadow-lg">
                   <Sparkles className="size-5" />
                 </div>
-                <h2 className="text-2xl font-bold md:text-3xl">
+                <h2 className="text-2xl font-bold tracking-tight text-balance md:text-3xl">
                   {t('aiPicker.requestTitle')}
                 </h2>
-                <p className="text-muted-foreground text-sm leading-normal">
+                <p className="text-muted-foreground mx-auto max-w-xl text-sm leading-relaxed text-pretty">
                   {t('aiPicker.requestSubtitle')}
                 </p>
               </div>
 
-              <form onSubmit={submitRequest} className="space-y-4">
+              <form onSubmit={submitRequest} className="space-y-5">
                 <fieldset className="space-y-2">
-                  <legend className="text-sm font-bold tracking-[1.4px] uppercase">
+                  <legend className="text-muted-foreground text-xs font-bold tracking-[1.4px] uppercase">
                     {t('aiPicker.mediaTypeLabel')}
                   </legend>
-                  <div className="grid grid-cols-2 gap-2" role="group">
+                  <div
+                    className="bg-background/70 grid grid-cols-2 gap-1 rounded-full border border-white/8 p-1"
+                    role="group"
+                  >
                     {(['movie', 'tv'] as const).map((type) => (
                       <Button
                         key={type}
                         type="button"
-                        variant={mediaType === type ? 'default' : 'secondary'}
+                        variant={mediaType === type ? 'default' : 'ghost'}
                         aria-pressed={mediaType === type}
                         disabled={recommendationMutation.isPending}
                         onClick={() => setMediaType(type)}
+                        className={cn(
+                          'h-10 shadow-none',
+                          mediaType !== type && 'hover:bg-white/5',
+                        )}
                       >
                         {t(`mediaType.${type}`)}
                       </Button>
@@ -154,7 +162,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 </fieldset>
                 <label
                   htmlFor="movie-request"
-                  className="text-sm font-bold tracking-[1.4px] uppercase"
+                  className="text-muted-foreground text-xs font-bold tracking-[1.4px] uppercase"
                 >
                   {t('aiPicker.requestLabel')}
                 </label>
@@ -172,6 +180,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     inputError ? 'movie-request-error' : 'movie-request-hint'
                   }
                   disabled={recommendationMutation.isPending}
+                  className="bg-background/70 min-h-36 border border-white/8 shadow-none focus:border-white/20 focus:shadow-[rgba(214,43,66,0.18)_0px_0px_0px_3px]"
                 />
                 <div className="flex items-start justify-between gap-4 text-xs">
                   <p
@@ -186,7 +195,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                       ? t('aiPicker.requestRequired')
                       : t('aiPicker.requestHint')}
                   </p>
-                  <span className="text-muted-foreground shrink-0">
+                  <span className="text-muted-foreground shrink-0 tabular-nums">
                     {requestText.length} / {MAX_MOVIE_REQUEST_LENGTH}
                   </span>
                 </div>
@@ -203,7 +212,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                   disabled={
                     !isAuthenticated || recommendationMutation.isPending
                   }
-                  className="w-full"
+                  className="w-full shadow-[rgba(214,43,66,0.24)_0px_12px_30px]"
                 >
                   <Sparkles
                     className={cn(
@@ -290,7 +299,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 <p className="text-primary text-xs font-bold tracking-[1.4px] uppercase">
                   {t('aiPicker.directionTitle')}
                 </p>
-                <h2 className="mt-2 text-2xl font-bold">
+                <h2 className="mx-auto mt-2 max-w-3xl text-2xl font-bold tracking-tight text-balance">
                   {result.direction.summary}
                 </h2>
                 <div className="mt-3 flex flex-wrap justify-center gap-2">

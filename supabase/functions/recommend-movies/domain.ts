@@ -6,15 +6,49 @@ export const MAX_MOVIE_REQUEST_LENGTH = 500
 export const MAX_CANDIDATES = 20
 export const MAX_RECOMMENDATIONS = 10
 
-export const TMDB_MOVIE_GENRE_IDS = [
-  12, 14, 16, 18, 27, 28, 35, 36, 37, 53, 80, 99, 878, 9648, 10402, 10749,
-  10751, 10752, 10770,
-] as const
+export const TMDB_MOVIE_GENRES = {
+  action: 28,
+  adventure: 12,
+  animation: 16,
+  comedy: 35,
+  crime: 80,
+  documentary: 99,
+  drama: 18,
+  family: 10751,
+  fantasy: 14,
+  history: 36,
+  horror: 27,
+  music: 10402,
+  mystery: 9648,
+  romance: 10749,
+  science_fiction: 878,
+  thriller: 53,
+  tv_movie: 10770,
+  war: 10752,
+  western: 37,
+} as const
 
-export const TMDB_TV_GENRE_IDS = [
-  16, 18, 35, 37, 80, 99, 9648, 10751, 10759, 10762, 10763, 10764, 10765, 10766,
-  10767, 10768,
-] as const
+export const TMDB_TV_GENRES = {
+  action_adventure: 10759,
+  animation: 16,
+  comedy: 35,
+  crime: 80,
+  documentary: 99,
+  drama: 18,
+  family: 10751,
+  kids: 10762,
+  mystery: 9648,
+  news: 10763,
+  reality: 10764,
+  sci_fi_fantasy: 10765,
+  soap: 10766,
+  talk: 10767,
+  war_politics: 10768,
+  western: 37,
+} as const
+
+export const TMDB_MOVIE_GENRE_IDS = Object.values(TMDB_MOVIE_GENRES)
+export const TMDB_TV_GENRE_IDS = Object.values(TMDB_TV_GENRES)
 
 export type MediaType = 'movie' | 'tv'
 export type ConditionSource = 'explicit' | 'inferred'
@@ -31,18 +65,21 @@ export const recommendationRequestSchema = z
   })
   .strict()
 
-const hardConstraintsSchema = (genreIds: ReadonlySet<number>) =>
+function genresFor(mediaType: MediaType): Readonly<Record<string, number>> {
+  return mediaType === 'movie' ? TMDB_MOVIE_GENRES : TMDB_TV_GENRES
+}
+
+const genreNameSchema = (genres: Readonly<Record<string, number>>) =>
+  z
+    .string()
+    .refine((value) => Object.hasOwn(genres, value), 'genre name is not allowed')
+
+const providerHardConstraintsSchema = (
+  genres: Readonly<Record<string, number>>,
+) =>
   z
     .object({
-      exclude_genre_ids: z
-        .array(
-          z
-            .number()
-            .int()
-            .refine((value) => genreIds.has(value), 'genre id is not allowed'),
-        )
-        .max(3)
-        .default([]),
+      exclude_genres: z.array(genreNameSchema(genres)).max(3).default([]),
       runtime_max: z.number().int().min(1).max(360).optional(),
       release_year_min: z.number().int().min(1870).max(2100).optional(),
       release_year_max: z.number().int().min(1870).max(2100).optional(),
@@ -69,20 +106,16 @@ const hardConstraintsSchema = (genreIds: ReadonlySet<number>) =>
       }
     })
 
-const softPreferencesSchema = (genreIds: ReadonlySet<number>) =>
+const providerSoftPreferencesSchema = (
+  genres: Readonly<Record<string, number>>,
+) =>
   z
     .object({
       include_genres: z
         .array(
           z
             .object({
-              id: z
-                .number()
-                .int()
-                .refine(
-                  (value) => genreIds.has(value),
-                  'genre id is not allowed',
-                ),
+              name: genreNameSchema(genres),
               source: sourceSchema,
             })
             .strict(),
@@ -117,14 +150,12 @@ const peopleSchema = z
   .max(2)
 
 function providerPlanSchema(mediaType: MediaType) {
-  const genreIds = new Set<number>(
-    mediaType === 'movie' ? TMDB_MOVIE_GENRE_IDS : TMDB_TV_GENRE_IDS,
-  )
+  const genres = genresFor(mediaType)
   return z
     .object({
       intent_summary: z.string().trim().min(1).max(200),
-      hard_constraints: hardConstraintsSchema(genreIds),
-      soft_preferences: softPreferencesSchema(genreIds),
+      hard_constraints: providerHardConstraintsSchema(genres),
+      soft_preferences: providerSoftPreferencesSchema(genres),
       people: peopleSchema.default([]),
       people_match: z.enum(['any', 'all']).default('any'),
       display_labels: z
@@ -223,8 +254,23 @@ const creditsSchema = z
   .passthrough()
 
 export type RecommendationRequest = z.infer<typeof recommendationRequestSchema>
-export type HardConstraints = z.infer<ReturnType<typeof hardConstraintsSchema>>
-export type SoftPreferences = z.infer<ReturnType<typeof softPreferencesSchema>>
+export interface HardConstraints {
+  exclude_genre_ids: number[]
+  runtime_max?: number
+  release_year_min?: number
+  release_year_max?: number
+  original_language?: string
+  origin_country?: string
+}
+export interface SoftPreferences {
+  include_genres: Array<{ id: number; source: ConditionSource }>
+  keywords: Array<{
+    lookup_name: string
+    display_label: string
+    source: ConditionSource
+  }>
+  qualities: string[]
+}
 export type CandidateMovie = z.infer<typeof movieSchema>
 export type CandidateTv = z.infer<typeof tvSchema>
 export type CandidateMedia = CandidateMovie | CandidateTv
@@ -326,9 +372,28 @@ export function parseContextPlan(
     throw new Error('query plan has an invalid structure')
   }
 
-  const { hard_constraints: hard, soft_preferences: soft } = result.data
+  const genres = genresFor(mediaType)
+  const {
+    hard_constraints: providerHard,
+    soft_preferences: providerSoft,
+    ...rest
+  } = result.data
+  const { exclude_genres: excludeGenres, ...remainingHard } = providerHard
+  const hard: HardConstraints = {
+    ...remainingHard,
+    exclude_genre_ids: excludeGenres.map((name) => genres[name]),
+  }
+  const soft: SoftPreferences = {
+    ...providerSoft,
+    include_genres: providerSoft.include_genres.map(({ name, source }) => ({
+      id: genres[name],
+      source,
+    })),
+  }
   return {
-    ...result.data,
+    ...rest,
+    hard_constraints: hard,
+    soft_preferences: soft,
     discover_plan: {
       include_genres: soft.include_genres,
       exclude_genre_ids: hard.exclude_genre_ids,
@@ -598,7 +663,7 @@ export function createPlanMessages(request: RecommendationRequest) {
   return [
     {
       role: 'system',
-      content: `Create a safe TMDB ${request.media_type} query plan and call plan_movie_search. The UI-selected media type is ${request.media_type}; never infer or change it. Write summaries, display labels, and person names in ${language}. Only add a person when the user explicitly names them. Use at most two people with role cast, director, writer, producer, or any; default to any-match and use all-match only when the user explicitly asks for shared participation. Keyword lookup_name values must be concise English TMDB terms, never IDs; display_label remains localized. Mark every included genre and keyword as explicit only when the user stated it, otherwise inferred. Explicit goals override inferred mood direction. Only explicit restrictions belong in hard_constraints. Use allowed ${request.media_type} genre IDs, at most three included genres, three excluded genres, two keywords, and three qualities. Do not diagnose the user, reveal reasoning, infer celebrities, or use reference-movie searches.`,
+      content: `Create a safe TMDB ${request.media_type} query plan and call plan_movie_search. The UI-selected media type is ${request.media_type}; never infer or change it. Write summaries, display labels, and person names in ${language}. Only add a person when the user explicitly names them. Use at most two people with role cast, director, writer, producer, or any; default to any-match and use all-match only when the user explicitly asks for shared participation. Genre values must use the supplied canonical genre names, never TMDB IDs. Keyword lookup_name values must be concise English TMDB terms, never IDs; display_label remains localized. Mark every included genre and keyword as explicit only when the user stated it, otherwise inferred. Explicit goals override inferred mood direction. Only explicit restrictions belong in hard_constraints. Use at most three included genres, three excluded genres, two keywords, and three qualities. Do not diagnose the user, reveal reasoning, infer celebrities, or use reference-movie searches.`,
     },
     {
       role: 'user',
@@ -612,8 +677,7 @@ export function createPlanMessages(request: RecommendationRequest) {
 }
 
 export function createPlanTool(mediaType: MediaType) {
-  const genreIds =
-    mediaType === 'movie' ? TMDB_MOVIE_GENRE_IDS : TMDB_TV_GENRE_IDS
+  const genreNames = Object.keys(genresFor(mediaType))
   return {
     type: 'function',
     function: {
@@ -635,12 +699,12 @@ export function createPlanTool(mediaType: MediaType) {
           hard_constraints: {
             type: 'object',
             additionalProperties: false,
-            required: ['exclude_genre_ids'],
+            required: ['exclude_genres'],
             properties: {
-              exclude_genre_ids: {
+              exclude_genres: {
                 type: 'array',
                 maxItems: 3,
-                items: { type: 'integer', enum: [...genreIds] },
+                items: { type: 'string', enum: genreNames },
               },
               runtime_max: { type: 'integer', minimum: 1, maximum: 360 },
               release_year_min: {
@@ -668,9 +732,9 @@ export function createPlanTool(mediaType: MediaType) {
                 items: {
                   type: 'object',
                   additionalProperties: false,
-                  required: ['id', 'source'],
+                  required: ['name', 'source'],
                   properties: {
-                    id: { type: 'integer', enum: [...genreIds] },
+                    name: { type: 'string', enum: genreNames },
                     source: { type: 'string', enum: ['explicit', 'inferred'] },
                   },
                 },

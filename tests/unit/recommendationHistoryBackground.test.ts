@@ -9,10 +9,10 @@ const plan = parseContextPlan(
   {
     intent_summary: '今晚用輕鬆作品轉換心情',
     hard_constraints: {
-      exclude_genre_ids: [27],
+      exclude_genres: ['horror'],
     },
     soft_preferences: {
-      include_genres: [{ id: 35, source: 'inferred' }],
+      include_genres: [{ name: 'comedy', source: 'inferred' }],
       keywords: [],
       qualities: ['輕鬆'],
     },

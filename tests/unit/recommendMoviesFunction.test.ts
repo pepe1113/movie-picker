@@ -56,12 +56,12 @@ function tv(id: number) {
 const plan = {
   intent_summary: '轉換心情，選擇輕鬆且好理解的作品',
   hard_constraints: {
-    exclude_genre_ids: [27],
+    exclude_genres: ['horror'],
     runtime_max: 90,
     original_language: 'ja',
   },
   soft_preferences: {
-    include_genres: [{ id: 35, source: 'explicit' as const }],
+    include_genres: [{ name: 'comedy', source: 'explicit' as const }],
     keywords: [
       {
         lookup_name: 'healing',
@@ -116,17 +116,21 @@ describe('context-aware recommendation domain', () => {
     ).toBe(false)
   })
 
-  it('uses separate movie and TV genre whitelists', () => {
-    expect(
-      parseContextPlan(plan, 'movie').discover_plan.include_genres,
-    ).toEqual([{ id: 35, source: 'explicit' }])
+  it('maps provider genre names with separate movie and TV whitelists', () => {
+    const moviePlan = parseContextPlan(plan, 'movie')
+    expect(moviePlan.hard_constraints.exclude_genre_ids).toEqual([27])
+    expect(moviePlan.discover_plan.include_genres).toEqual([
+      { id: 35, source: 'explicit' },
+    ])
     expect(() =>
       parseContextPlan(
         {
           ...plan,
           soft_preferences: {
             ...plan.soft_preferences,
-            include_genres: [{ id: 10759, source: 'explicit' }],
+            include_genres: [
+              { name: 'action_adventure', source: 'explicit' },
+            ],
           },
         },
         'movie',
@@ -136,10 +140,12 @@ describe('context-aware recommendation domain', () => {
       parseContextPlan(
         {
           ...plan,
-          hard_constraints: { exclude_genre_ids: [] },
+          hard_constraints: { exclude_genres: [] },
           soft_preferences: {
             ...plan.soft_preferences,
-            include_genres: [{ id: 10759, source: 'explicit' }],
+            include_genres: [
+              { name: 'action_adventure', source: 'explicit' },
+            ],
           },
         },
         'tv',
@@ -177,7 +183,7 @@ describe('context-aware recommendation domain', () => {
     const base = parseContextPlan(
       {
         ...plan,
-        hard_constraints: { exclude_genre_ids: [] },
+        hard_constraints: { exclude_genres: [] },
         soft_preferences: {
           include_genres: [],
           keywords: [],
@@ -254,6 +260,12 @@ describe('context-aware recommendation domain', () => {
     expect(
       createPlanTool('tv').function.parameters.properties.soft_preferences,
     ).toBeDefined()
+    const includeGenreItem =
+      createPlanTool('tv').function.parameters.properties.soft_preferences
+        .properties.include_genres.items
+    expect(includeGenreItem.properties).toHaveProperty('name')
+    expect(includeGenreItem.properties).not.toHaveProperty('id')
+    expect(includeGenreItem.properties.name.enum).toContain('action_adventure')
   })
 
   it('extracts only the forced planning tool arguments', () => {

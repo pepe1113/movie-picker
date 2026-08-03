@@ -16,7 +16,7 @@ const config: CoordinatorConfig = {
 function basePlan(overrides: Record<string, unknown> = {}) {
   return {
     intent_summary: '符合明確條件的片單',
-    hard_constraints: { exclude_genre_ids: [] },
+    hard_constraints: { exclude_genres: [] },
     soft_preferences: {
       include_genres: [],
       keywords: [],
@@ -422,7 +422,7 @@ describe('recommendation orchestrator', () => {
         return toolCall(
           basePlan({
             soft_preferences: {
-              include_genres: [{ id: 18, source: 'inferred' }],
+              include_genres: [{ name: 'drama', source: 'inferred' }],
               keywords: [
                 {
                   lookup_name: 'revenge',

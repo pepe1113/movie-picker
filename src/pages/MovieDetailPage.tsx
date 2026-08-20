@@ -113,9 +113,14 @@ export function Component() {
         )}
 
         <div className="relative container mx-auto flex min-h-180 flex-col px-6 py-8 md:px-12 lg:px-16">
-          <Button variant="ghost" size="sm" className="mb-8 self-start" asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="md:text-md mb-8 self-start text-xl"
+            asChild
+          >
             <Link to={ROUTES.HOME}>
-              <ArrowLeft className="size-4" />
+              <ArrowLeft className="size-6 md:size-4" />
               {t('movieDetail.backButton')}
             </Link>
           </Button>
@@ -123,7 +128,7 @@ export function Component() {
           <div
             className={clsx([
               'mt-auto flex flex-col gap-8 pb-12 lg:flex-row',
-              detail.backdrop_path && 'pt-64',
+              detail.backdrop_path && 'lg:pt-50',
             ] as ClassValue[])}
           >
             <motion.div
@@ -135,7 +140,7 @@ export function Component() {
               <img
                 src={getPosterUrl(detail.poster_path, 'large')}
                 alt={title}
-                className="w-40 rounded-lg shadow-[rgba(0,0,0,0.5)_0px_8px_24px] md:w-56 lg:w-72"
+                className="w-full rounded-lg shadow-[rgba(0,0,0,0.5)_0px_8px_24px] md:w-60 lg:w-72"
               />
             </motion.div>
 

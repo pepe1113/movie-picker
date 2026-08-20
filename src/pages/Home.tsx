@@ -113,10 +113,10 @@ export function Component() {
             src={getBackdropUrl(heroBackdrop)}
             alt=""
             aria-hidden="true"
-            className="absolute inset-0 size-full object-cover opacity-45"
+            className="absolute inset-0 size-full object-cover opacity-80"
           />
         )}
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(11_11_14/0.98)_0%,rgb(11_11_14/0.82)_48%,rgb(11_11_14/0.38)_100%),radial-gradient(circle_at_78%_28%,rgb(214_43_66/0.24),transparent_36%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(11_11_14/0.98)_0%,rgb(11_11_14/0.82)_48%,rgb(11_11_14/0.38)_100%),radial-gradient(circle_at_78%_28%,rgb(214_43_66/0.24),transparent_26%)]" />
         <div className="from-background absolute inset-x-0 bottom-0 h-36 bg-linear-to-t to-transparent" />
 
         <div className="relative container mx-auto flex w-full items-center px-6 py-10 md:px-12 lg:px-16">
@@ -126,7 +126,7 @@ export function Component() {
             transition={{ duration: 0.45 }}
             className="flex w-full max-w-4xl flex-col items-start"
           >
-            <div className="border-border/80 bg-secondary/70 text-muted-foreground mb-7 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-bold tracking-[1.4px] uppercase backdrop-blur">
+            <div className="border-border/80 bg-secondary/70 text-muted-foreground md:size-sm mb-7 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-lg font-bold tracking-[1.4px] uppercase backdrop-blur">
               <Sparkles className="text-primary size-3.5" />
               {t('home.aiHero.badge')}
             </div>

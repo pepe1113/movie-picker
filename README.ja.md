@@ -1,23 +1,54 @@
-# Movie Picker
-
-> React、TMDB、Supabase、AI モデルで構築したポートフォリオ向け映画・ドラマ検索／推薦アプリです。
+# 🍿 Movie Picker
 
 [繁體中文](./README.md) | [English](./README.en.md) | [日本語](./README.ja.md)
 
-**今すぐ使う：** [https://movie-picker.peiwang.dev/](https://movie-picker.peiwang.dev/)
+![website-demo](public/homepage-demo.gif)
 
-## 機能
+> 「いつも同じ映画ばっかりて、飽きない？」<br>
+> 「まだ知らない、自分に合う作品も観てみてほしいなぁ」
 
-- 映画とドラマの最新、週間トレンド、人気、高評価、ジャンル別リストを切り替えて閲覧
-- 映画／ドラマを横断検索し、詳細、キャスト、予告編、シーズン数、総話数を表示
-- ログイン後、映画またはドラマを選び、希望と制約を自然文で入力すると、AI モデルが検索を計画して最大10作品を選定
-- 未ログイン時は映画とドラマのお気に入りをローカル保存し、GitHub ログイン後にクラウドへ統合・同期
-- 最新20件の AI 推薦履歴を表示・削除
-- 英語／繁体字中国語 UI とレスポンシブな赤黒のシネマデザイン
+Movie Picker に、あなたに合う作品を提案してもらいましょう。
+**今の気分や観たい作品のイメージ**を入力すると、AI が興味に合いそうなジャンル、年代、キーワードを判断し、TMDB の Discover API から映画やドラマを提案します。
+
+フロントエンドは React、データベースとバックエンドは Supabase で構築し、TMDB／OMDb のデータと AI モデルを利用しています。ポートフォリオ用の個人開発プロジェクトです。
+
+### >> 👀 [Movie Picker を試す](https://movie-picker.peiwang.dev/) <<
+
+## Feature
+
+- **最新トレンド**：映画とドラマの最新、週間トレンド、人気、高評価、ジャンル別リストを切り替えて閲覧
+- **映画検索**：映画／ドラマを検索し、詳細、キャスト、予告編、シーズン数、総話数を表示
+- **AI 映画選び**：ログイン後、自然文で希望と制約を入力すると、AI モデルが検索を計画して最大10作品を選定
+- **History**：ログイン後に最新20件の AI 推薦履歴を表示し、一括削除に対応
+- **Wishlist**：映画のお気に入りリスト
+- **ユーザーログイン**：現在は GitHub のみに対応し、AI 映画選びと推薦履歴の保存が可能
+- **ローカライズ**：英語／繁体字中国語とレスポンシブデザインに対応
+
+|   feature    |             screenshot             |
+| :----------: | :--------------------------------: |
+| movie detail | ![movie-detail](public/detail.png) |
+|   History    |   ![history](public/history.png)   |
+|   Wishlist   |  ![wishlist](public/wishlist.png)  |
 
 ## Tech Stack
 
-React 19、TypeScript、Vite、Tailwind CSS 4、React Router、TanStack Query、Zustand、Supabase、TMDB、OMDb、AI モデル。
+| Framework      | 用途                                             |
+| -------------- | ------------------------------------------------ |
+| React 19       | フロントエンド UI ライブラリ                     |
+| TypeScript     | 静的型チェック                                   |
+| Vite           | ローカル開発とフロントエンドビルド               |
+| Tailwind CSS 4 | CSS スタイリング                                 |
+| shadcn/ui      | 再利用可能な UI コンポーネント                   |
+| Motion         | UI アニメーションと動きの軽減設定への対応        |
+| React Router   | SPA ルーティング                                 |
+| TanStack Query | API データの取得、キャッシュ、サーバー状態の同期 |
+| Zustand        | 言語、テーマ、ログイン、お気に入り状態の管理     |
+| i18next        | ローカライズ                                     |
+| Zod            | AI API データと検索計画の検証                    |
+| Supabase       | ユーザーデータの保存、GitHub Auth、Edge Function |
+| TMDB API       | 映画・ドラマの検索、閲覧、情報表示               |
+| OMDb API       | 映画の外部評価の取得                             |
+| AI モデル      | 自然言語の要望を TMDB 検索計画に変換             |
 
 ## データの保存方法
 
@@ -29,7 +60,7 @@ React 19、TypeScript、Vite、Tailwind CSS 4、React Router、TanStack Query、
 
 クラウドデータは Row Level Security で保護され、ログインユーザーは自分のお気に入りと推薦履歴だけにアクセスできます。
 
-## アーキテクチャ
+## Architecture
 
 ```text
 React ページ／コンポーネント
@@ -44,20 +75,6 @@ React ページ／コンポーネント
 - `src/stores` はクライアント状態、`supabase/migrations` と `supabase/functions` はバックエンドを管理します。
 - AI 選定はログインユーザー限定です。モデルは検索計画だけを作成し、Edge Function が TMDB の人気作品と高評価作品を安定した順序で交互に返します。
 
-## セキュリティ
+## Develop
 
-- AI プロバイダーキーとサーバー側の映画データ token は Supabase Secrets に保存され、フロントエンドには渡されません。
-- `.env*` は `.env.example` を除いて Git 管理外で、プロバイダー Secret の値はリポジトリに含まれません。
-- Edge Function は Bearer Token を必須とし、`supabase.auth.getUser()` でユーザーを検証してから AI モデル呼び出しと履歴保存を行います。
-- 両テーブルは Row Level Security により `auth.uid() = user_id` の所有行だけを許可し、ブラウザでは公開 anon key のみを使用します。
-- AI endpoint は `POST` のみを受け付け、入力長を制限し、30秒の deadline で未完了の上流リクエストを中止します。フロントエンドの待機上限は31秒です。
-
-## チェック
-
-```bash
-bun run test:run
-bun run lint
-bun run build
-```
-
-映画データ：[TMDB](https://www.themoviedb.org/) · 評価データ：[OMDb](https://www.omdbapi.com/)
+- ローカル開発では `.env.example` を `.env` にコピーし、AI モデルのキー、TMDB token、Supabase Secrets を設定してください。不足している場合は起動に失敗します。

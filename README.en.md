@@ -8,16 +8,32 @@
 
 ## Features
 
-- Browse latest, trending, popular, top-rated, and genre lists for movies and TV
-- Search both media types and view details, credits, trailers, seasons, and episode counts
-- Signed-in users choose movies or TV, describe their goals and constraints, and receive up to ten results from an AI-planned search
-- Save movies and TV locally, then merge and sync the wishlist after GitHub sign-in
-- Review and delete the latest 20 AI recommendation runs
-- Switch between English and Traditional Chinese in a responsive cinematic red-and-black UI
+- **Latest & Trending**: Browse latest, trending, popular, top-rated, and genre lists for movies and TV
+- **Search**: Search both media types and view details, credits, trailers, seasons, and episode counts
+- **AI Picker**: Signed-in users choose movies or TV, describe their goals and constraints, and receive up to ten results from an AI-planned search
+- **Wishlist**: Save movies and TV locally, then merge and sync the wishlist after GitHub sign-in
+- **History**: Review and delete the latest 20 AI recommendation runs
+- **Localization**: Switch between English and Traditional Chinese in a responsive cinematic red-and-black UI
 
 ## Tech Stack
 
-React 19, TypeScript, Vite, Tailwind CSS 4, React Router, TanStack Query, Zustand, Supabase, TMDB, OMDb, and an AI model.
+| Framework      | Used for                                                   |
+| -------------- | ---------------------------------------------------------- |
+| React 19       | frontend interface library                                 |
+| TypeScript     | Static type checking                                       |
+| Vite           | Local development and frontend builds                      |
+| Tailwind CSS 4 | Responsive layouts and visual styling                      |
+| shadcn/ui      | Reusable UI components built on Radix UI                   |
+| Motion         | UI animation and reduced-motion support                    |
+| React Router   | SPA routing                                                |
+| TanStack Query | API fetching, caching, and server-state synchronization    |
+| Zustand        | Language, theme, auth, and wishlist state                  |
+| i18next        | English and Traditional Chinese localization               |
+| Zod            | AI API data and query-plan validation                      |
+| Supabase       | User data storage, GitHub Auth, Edge Functions             |
+| TMDB API       | Movie and TV search, discovery, and metadata               |
+| OMDb API       | External movie ratings                                     |
+| AI model       | Converting natural-language requests into TMDB query plans |
 
 ## Data & Persistence
 

@@ -1,6 +1,6 @@
 # 🍿 Movie Picker
 
-[繁體中文](./README.md) | [English](./README.en.md)
+[繁體中文](./README.md) | [English](./README.en.md) | [日本語](./README.ja.md)
 
 ![website-demo](public/homepage-demo.gif)
 

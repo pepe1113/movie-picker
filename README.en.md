@@ -4,6 +4,8 @@
 
 [繁體中文](./README.md) | [English](./README.en.md) | [日本語](./README.ja.md)
 
+![website-demo](public/homepage-demo.gif)
+
 **Live Demo:** [https://movie-picker.peiwang.dev/](https://movie-picker.peiwang.dev/)
 
 ## Features
@@ -14,6 +16,13 @@
 - **Wishlist**: Save movies and TV locally, then merge and sync the wishlist after GitHub sign-in
 - **History**: Review and delete the latest 20 AI recommendation runs
 - **Localization**: Switch between English and Traditional Chinese in a responsive cinematic red-and-black UI
+
+|   feature    |             screenshot             |
+| :----------: | :--------------------------------: |
+| movie detail | ![movie-detail](public/detail.png) |
+|   History    |   ![history](public/history.png)   |
+|   Wishlist   |  ![wishlist](public/wishlist.png)  |
+
 
 ## Tech Stack
 
@@ -59,21 +68,3 @@ React pages/components
 - `src/hooks` coordinates server state; `src/services` isolates external APIs.
 - `src/stores` owns client state; `supabase/migrations` and `supabase/functions` own backend behavior.
 - AI picking requires sign-in. The model only creates the search plan; the Edge Function deterministically interleaves popular and top-rated TMDB candidates.
-
-## Security
-
-- The AI provider key and server-side movie-data token are stored in Supabase Secrets; the frontend never receives them.
-- `.env*` files are ignored by Git except `.env.example`, and no provider secret value is tracked.
-- The Edge Function requires a bearer token and verifies the caller with `supabase.auth.getUser()` before calling the AI model or writing history.
-- Row Level Security restricts both tables to rows where `auth.uid() = user_id`; the browser uses only the public anon key.
-- The AI endpoint accepts `POST` only, limits input length, and cancels unfinished upstream work after 30 seconds; the frontend waits up to 31 seconds.
-
-## Checks
-
-```bash
-bun run test:run
-bun run lint
-bun run build
-```
-
-Movie data: [TMDB](https://www.themoviedb.org/) · Ratings: [OMDb](https://www.omdbapi.com/)

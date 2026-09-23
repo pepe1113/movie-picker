@@ -31,6 +31,14 @@ export interface CoordinatorConfig {
   tmdbAccessToken: string
 }
 
+export interface OpenAIUsage {
+  promptTokens: number
+  completionTokens: number
+  totalTokens: number
+  cachedTokens?: number
+  reasoningTokens?: number
+}
+
 export class RecommendationStageError extends Error {
   stage: 'plan' | 'discover'
 
@@ -135,11 +143,67 @@ async function callOpenAI(
         },
         max_completion_tokens: 900,
         temperature: 0,
+        ...(config.openaiModel === 'gpt-6-luna'
+          ? { reasoning_effort: 'none' }
+          : {}),
       }),
     },
     'AI model request failed',
   )
-  return parseToolArguments(data, tool.function.name)
+  let usage: OpenAIUsage | undefined
+  if (
+    typeof data === 'object' &&
+    data !== null &&
+    'usage' in data &&
+    typeof data.usage === 'object' &&
+    data.usage !== null &&
+    'prompt_tokens' in data.usage &&
+    typeof data.usage.prompt_tokens === 'number' &&
+    'completion_tokens' in data.usage &&
+    typeof data.usage.completion_tokens === 'number' &&
+    'total_tokens' in data.usage &&
+    typeof data.usage.total_tokens === 'number'
+  ) {
+    const completionDetails =
+      'completion_tokens_details' in data.usage &&
+      typeof data.usage.completion_tokens_details === 'object' &&
+      data.usage.completion_tokens_details !== null
+        ? data.usage.completion_tokens_details
+        : undefined
+    const promptDetails =
+      'prompt_tokens_details' in data.usage &&
+      typeof data.usage.prompt_tokens_details === 'object' &&
+      data.usage.prompt_tokens_details !== null
+        ? data.usage.prompt_tokens_details
+        : undefined
+    const cachedTokens =
+      promptDetails &&
+      'cached_tokens' in promptDetails &&
+      typeof promptDetails.cached_tokens === 'number'
+        ? promptDetails.cached_tokens
+        : undefined
+    const reasoningTokens =
+      completionDetails &&
+      'reasoning_tokens' in completionDetails &&
+      typeof completionDetails.reasoning_tokens === 'number'
+        ? completionDetails.reasoning_tokens
+        : undefined
+    usage = {
+      promptTokens: data.usage.prompt_tokens,
+      completionTokens: data.usage.completion_tokens,
+      totalTokens: data.usage.total_tokens,
+      ...(cachedTokens === undefined ? {} : { cachedTokens }),
+      ...(reasoningTokens === undefined ? {} : { reasoningTokens }),
+    }
+    console.log('openai token usage', {
+      model: config.openaiModel,
+      ...usage,
+    })
+  }
+  return {
+    plan: parseToolArguments(data, tool.function.name),
+    usage,
+  }
 }
 
 function normalizedName(value: string) {
@@ -564,13 +628,13 @@ export async function coordinateRecommendations(
   fetcher: typeof fetch = fetch,
 ) {
   let plan: ContextPlan
+  let usage: OpenAIUsage | undefined
   try {
+    const planned = await callOpenAI(request, config, signal, fetcher)
+    usage = planned.usage
     plan = applyDeterministicMediaRules(
       request,
-      parseContextPlan(
-        await callOpenAI(request, config, signal, fetcher),
-        request.media_type,
-      ),
+      parseContextPlan(planned.plan, request.media_type),
     )
   } catch (error) {
     throw new RecommendationStageError('plan', { cause: error })
@@ -612,6 +676,7 @@ export async function coordinateRecommendations(
     resolvedKeywords: discovered.resolvedKeywords,
     recommendations: recommendationSnapshots(discovered.candidates),
     model: config.openaiModel,
+    usage,
     usedFallback: discovered.usedFallback,
   }
 }

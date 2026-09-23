@@ -61,7 +61,8 @@ Important settings:
 | `additionalProperties`  | `false`                    | Rejects fields that are not defined in the schema  |
 | `temperature`           | `0`                        | Reduces variation between plans for the same input |
 | `max_completion_tokens` | `900`                      | Caps output length and cost                        |
-| Default model           | `gpt-4o-mini`              | Can be overridden with the `OPENAI_MODEL` Secret   |
+| `reasoning_effort`      | Luna uses `none`           | Required for Chat Completions function calling     |
+| Default model           | `gpt-6-luna`               | Can be overridden with the `OPENAI_MODEL` Secret   |
 
 The tool schema separates the plan into:
 

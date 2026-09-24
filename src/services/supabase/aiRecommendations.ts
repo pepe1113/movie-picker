@@ -29,8 +29,68 @@ export interface ContextRecommendation {
   media_snapshot: MediaItem
 }
 
+const queryPlanSchema = z
+  .object({
+    schema_version: z.literal(1),
+    hard_constraints: z
+      .object({
+        exclude_genres: z.array(z.string()),
+        exclude_keywords: z.array(
+          z
+            .object({
+              lookup_name: z.string(),
+              display_label: z.string(),
+            })
+            .strict(),
+        ),
+        runtime_min: z.number().int().nullable(),
+        runtime_max: z.number().int().nullable(),
+        release_year_min: z.number().int().nullable(),
+        release_year_max: z.number().int().nullable(),
+        original_language: z.string().nullable(),
+        origin_country: z.string().nullable(),
+      })
+      .strict(),
+    soft_preferences: z
+      .object({
+        include_genres: z.array(
+          z
+            .object({
+              name: z.string(),
+              source: z.enum(['explicit', 'inferred']),
+            })
+            .strict(),
+        ),
+        keywords: z.array(
+          z
+            .object({
+              lookup_name: z.string(),
+              display_label: z.string(),
+              source: z.enum(['explicit', 'inferred']),
+            })
+            .strict(),
+        ),
+        qualities: z.array(z.string()),
+      })
+      .strict(),
+    people: z.array(
+      z
+        .object({
+          id: z.number().int().positive(),
+          name: z.string(),
+          role: z.enum(['cast', 'director', 'writer', 'producer']),
+        })
+        .strict(),
+    ),
+    people_match: z.enum(['any', 'all']),
+  })
+  .strict()
+
+export type QueryPlanSnapshot = z.infer<typeof queryPlanSchema>
+
 export interface ContextRecommendationResponse {
   media_type: MediaType
+  query_plan: QueryPlanSnapshot
   direction: {
     summary: string
     labels: Array<{
@@ -82,6 +142,7 @@ const tvSchema = z
 const responseSchema: z.ZodType<ContextRecommendationResponse> = z
   .object({
     media_type: z.enum(['movie', 'tv']),
+    query_plan: queryPlanSchema,
     direction: z
       .object({
         summary: z.string().trim().min(1),

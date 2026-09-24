@@ -34,6 +34,26 @@ function movie(id: number): Movie {
 function response() {
   return {
     media_type: 'movie' as const,
+    query_plan: {
+      schema_version: 1 as const,
+      hard_constraints: {
+        exclude_genres: ['horror'],
+        exclude_keywords: [],
+        runtime_min: null,
+        runtime_max: null,
+        release_year_min: null,
+        release_year_max: null,
+        original_language: null,
+        origin_country: null,
+      },
+      soft_preferences: {
+        include_genres: [{ name: 'comedy', source: 'explicit' as const }],
+        keywords: [],
+        qualities: ['輕鬆'],
+      },
+      people: [],
+      people_match: 'any' as const,
+    },
     direction: {
       summary: '今晚以輕鬆且好理解的作品為主',
       labels: [

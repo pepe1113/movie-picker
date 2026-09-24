@@ -81,6 +81,26 @@
     "retryAnalysis": "Try Again",
     "criteriaReady": "Movie Direction Ready",
     "directionTitle": "This Pick's Direction",
+    "criteria": {
+      "excludeGenre": "Exclude {{value}} genre",
+      "exclude": "Exclude {{value}}",
+      "runtimeBetween": "{{min}}–{{max}} minutes",
+      "runtimeMin": "At least {{min}} minutes",
+      "runtimeMax": "At most {{max}} minutes",
+      "yearBetween": "{{min}}–{{max}}",
+      "yearMin": "From {{min}}",
+      "yearMax": "Through {{max}}",
+      "language": "Language {{value}}",
+      "country": "Country {{value}}",
+      "genre": "{{value}} genre",
+      "person": "{{name}} ({{role}})",
+      "roles": {
+        "cast": "cast",
+        "director": "director",
+        "writer": "writer",
+        "producer": "producer"
+      }
+    },
     "noResults": "No titles matched every explicit constraint. Adjust your description and try again.",
     "refineRequest": "Refine Movie Request",
     "progressLabel": "Preparing the final shortlist",

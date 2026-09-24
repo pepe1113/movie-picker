@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { MovieCard } from '@/components/features/movie/MovieCard'
+import { queryPlanBadges } from '@/components/features/ai-picker/queryPlanBadges'
 import {
   getRecommendationHistoryRemote,
   type RecommendationRun,
@@ -101,14 +102,24 @@ export function Component() {
                 </div>
                 <h2 className="text-xl font-bold">{run.intent.summary}</h2>
                 <div className="flex flex-wrap gap-2">
-                  {run.intent.display_labels.hard.map((label) => (
-                    <Badge key={`hard-${label}`} variant="outline">
-                      {label}
-                    </Badge>
-                  ))}
-                  {run.intent.display_labels.soft.map((label) => (
-                    <Badge key={`soft-${label}`} variant="secondary">
-                      {label}
+                  {(run.intent.query_plan
+                    ? queryPlanBadges(run.intent.query_plan, t)
+                    : [
+                        ...run.intent.display_labels.hard.map((text) => ({
+                          text,
+                          kind: 'hard' as const,
+                        })),
+                        ...run.intent.display_labels.soft.map((text) => ({
+                          text,
+                          kind: 'soft' as const,
+                        })),
+                      ]
+                  ).map(({ text, kind }) => (
+                    <Badge
+                      key={`${kind}-${text}`}
+                      variant={kind === 'hard' ? 'outline' : 'secondary'}
+                    >
+                      {text}
                     </Badge>
                   ))}
                 </div>

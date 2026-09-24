@@ -109,12 +109,29 @@ function result(
 ) {
   return {
     media_type: 'movie' as const,
+    query_plan: {
+      schema_version: 1 as const,
+      hard_constraints: {
+        exclude_genres: ['horror'],
+        exclude_keywords: [],
+        runtime_min: null,
+        runtime_max: null,
+        release_year_min: null,
+        release_year_max: null,
+        original_language: null,
+        origin_country: null,
+      },
+      soft_preferences: {
+        include_genres: [],
+        keywords: [],
+        qualities: ['輕鬆'],
+      },
+      people: [],
+      people_match: 'any' as const,
+    },
     direction: {
       summary: '今晚以輕鬆、好理解的作品轉換心情',
-      labels: [
-        { text: '不要恐怖片', kind: 'hard' as const },
-        { text: '輕鬆', kind: 'soft' as const },
-      ],
+      labels: [{ text: '錯誤的 AI 標籤', kind: 'hard' as const }],
     },
     recommendations: [
       {
@@ -206,8 +223,9 @@ describe('AiMoviePicker', () => {
     expect(
       await screen.findByText('今晚以輕鬆、好理解的作品轉換心情'),
     ).toBeInTheDocument()
-    expect(screen.getByText('不要恐怖片')).toBeInTheDocument()
+    expect(screen.getByText('排除 horror 類型')).toBeInTheDocument()
     expect(screen.getByText('輕鬆')).toBeInTheDocument()
+    expect(screen.queryByText('錯誤的 AI 標籤')).not.toBeInTheDocument()
     expect(screen.getByText('Context Pick')).toBeInTheDocument()
     expect(screen.getByRole('progressbar')).toHaveAttribute(
       'aria-valuenow',

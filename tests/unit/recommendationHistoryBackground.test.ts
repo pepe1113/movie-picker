@@ -3,7 +3,10 @@ import {
   createHistoryRecord,
   saveHistoryInBackground,
 } from '../../supabase/functions/recommend-movies/history'
-import { parseContextPlan } from '../../supabase/functions/recommend-movies/domain'
+import {
+  createQueryPlanSnapshot,
+  parseContextPlan,
+} from '../../supabase/functions/recommend-movies/domain'
 
 const plan = parseContextPlan(
   {
@@ -25,6 +28,7 @@ const plan = parseContextPlan(
   },
   'movie',
 )
+const queryPlan = createQueryPlanSnapshot('movie', plan, [], [])
 
 describe('recommendation history background task', () => {
   it('creates a structured record without raw input or provider responses', () => {
@@ -32,6 +36,7 @@ describe('recommendation history background task', () => {
       'user-id',
       'movie',
       plan,
+      queryPlan,
       [1],
       [],
       [],
@@ -46,6 +51,7 @@ describe('recommendation history background task', () => {
         summary: '今晚用輕鬆作品轉換心情',
         hard_constraints: { exclude_genre_ids: [27] },
         soft_preferences: { qualities: ['輕鬆'] },
+        query_plan: queryPlan,
       },
       discover_plan: {
         include_genres: [{ id: 35, source: 'inferred' }],

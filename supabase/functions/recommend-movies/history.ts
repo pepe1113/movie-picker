@@ -1,6 +1,7 @@
 import type {
   ContextPlan,
   MediaType,
+  QueryPlanSnapshot,
   ResolvedKeyword,
   ResolvedPerson,
 } from './domain.ts'
@@ -10,6 +11,7 @@ export function createHistoryRecord(
   userId: string,
   mediaType: MediaType,
   plan: ContextPlan,
+  queryPlan: QueryPlanSnapshot,
   candidateIds: number[],
   recommendations: ReturnType<typeof recommendationSnapshots>,
   resolvedPeople: ResolvedPerson[],
@@ -26,6 +28,7 @@ export function createHistoryRecord(
       people: resolvedPeople,
       keywords: resolvedKeywords,
       display_labels: plan.display_labels,
+      query_plan: queryPlan,
     },
     discover_plan: {
       ...plan.discover_plan,

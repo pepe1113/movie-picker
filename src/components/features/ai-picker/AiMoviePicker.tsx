@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import { ChevronDown, RotateCcw, Sparkles } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { AiRecommendationCarousel } from '@/components/features/ai-picker/AiRecommendationCarousel'
+import { queryPlanBadges } from '@/components/features/ai-picker/queryPlanBadges'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -110,6 +111,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
       movie: recommendation.media_snapshot,
       reason: recommendation.reason,
     })) ?? []
+  const criteriaBadges = result ? queryPlanBadges(result.query_plan, t) : []
 
   return (
     <section className="border-border bg-background relative isolate overflow-hidden border-b">
@@ -303,7 +305,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                   {result.direction.summary}
                 </h2>
                 <div className="mt-3 flex flex-wrap justify-center gap-2">
-                  {result.direction.labels.map((label) => (
+                  {criteriaBadges.map((label) => (
                     <Badge
                       key={`${label.kind}-${label.text}`}
                       variant={label.kind === 'hard' ? 'outline' : 'secondary'}

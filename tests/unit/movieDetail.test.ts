@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   buildMovieDetailPresentation,
   getExternalRatings,
-
 } from '@/utils/movieDetail'
 import type { OmdbMovieResponse } from '@/services/omdb/types'
 import type {
@@ -12,8 +11,6 @@ import type {
 } from '@/services/tmdb/types'
 
 describe('movie detail helpers', () => {
-
-
   it('normalizes available OMDb external ratings', () => {
     const omdb: OmdbMovieResponse = {
       Response: 'True',

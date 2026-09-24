@@ -9,9 +9,7 @@ export interface SupabaseConfig {
 
 export class SupabaseConfigError extends Error {
   constructor(missingKeys: string[]) {
-    super(
-      `Missing Supabase environment variables: ${missingKeys.join(', ')}`,
-    )
+    super(`Missing Supabase environment variables: ${missingKeys.join(', ')}`)
     this.name = 'SupabaseConfigError'
   }
 }

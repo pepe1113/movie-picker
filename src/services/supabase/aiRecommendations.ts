@@ -4,6 +4,7 @@ import { getSupabaseClient } from './client'
 
 export const MAX_MOVIE_REQUEST_LENGTH = 500
 export const RECOMMENDATION_DEADLINE_MS = 31_000
+const QUERY_PLAN_ACCEPT = 'application/vnd.movie-picker.query-plan+json'
 
 export type RecommendationErrorCode =
   | 'media_type_mismatch'
@@ -90,7 +91,7 @@ export type QueryPlanSnapshot = z.infer<typeof queryPlanSchema>
 
 export interface ContextRecommendationResponse {
   media_type: MediaType
-  query_plan: QueryPlanSnapshot
+  query_plan?: QueryPlanSnapshot
   direction: {
     summary: string
     labels: Array<{
@@ -142,7 +143,7 @@ const tvSchema = z
 const responseSchema: z.ZodType<ContextRecommendationResponse> = z
   .object({
     media_type: z.enum(['movie', 'tv']),
-    query_plan: queryPlanSchema,
+    query_plan: queryPlanSchema.optional(),
     direction: z
       .object({
         summary: z.string().trim().min(1),
@@ -215,6 +216,7 @@ export async function requestContextRecommendations(
     'recommend-movies',
     {
       body: { request: request.trim(), locale, media_type: mediaType },
+      headers: { Accept: QUERY_PLAN_ACCEPT },
       signal,
       timeout: RECOMMENDATION_DEADLINE_MS,
     },

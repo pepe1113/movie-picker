@@ -311,6 +311,14 @@ const creditsSchema = z
   .passthrough()
 
 export type RecommendationRequest = z.infer<typeof recommendationRequestSchema>
+export const QUERY_PLAN_ACCEPT = 'application/vnd.movie-picker.query-plan+json'
+
+export function wantsQueryPlan(accept: string | null) {
+  return (
+    accept?.split(',').some((value) => value.trim() === QUERY_PLAN_ACCEPT) ??
+    false
+  )
+}
 export interface HardConstraints {
   exclude_genre_ids: number[]
   exclude_keywords: Array<{ lookup_name: string; display_label: string }>

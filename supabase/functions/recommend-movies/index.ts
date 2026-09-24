@@ -6,6 +6,7 @@ import {
   createQueryPlanSnapshot,
   hasMediaTypeMismatch,
   validateRecommendationRequest,
+  wantsQueryPlan,
 } from './domain.ts'
 import {
   coordinateRecommendations,
@@ -130,7 +131,9 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
 
   return jsonResponse({
     media_type: request.media_type,
-    query_plan: queryPlan,
+    ...(wantsQueryPlan(req.headers.get('Accept'))
+      ? { query_plan: queryPlan }
+      : {}),
     direction: {
       summary: result.plan.intent_summary,
       labels: [

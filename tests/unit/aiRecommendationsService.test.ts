@@ -103,10 +103,30 @@ describe('context recommendation Supabase service', () => {
         locale: 'zh-TW',
         media_type: 'movie',
       },
+      headers: { Accept: 'application/vnd.movie-picker.query-plan+json' },
       signal: controller.signal,
       timeout: RECOMMENDATION_DEADLINE_MS,
     })
     expect(result.recommendations.map((item) => item.media_id)).toEqual([2, 1])
+  })
+
+  it('accepts the previous response shape while the Edge Function is still old', async () => {
+    const { query_plan: _queryPlan, ...legacyResponse } = response()
+    expect(_queryPlan).toBeDefined()
+    const invoke = vi
+      .fn()
+      .mockResolvedValue({ data: legacyResponse, error: null })
+    vi.mocked(getSupabaseClient).mockReturnValue({
+      functions: { invoke },
+    } as unknown as ReturnType<typeof getSupabaseClient>)
+
+    const result = await requestContextRecommendations(
+      '想看輕鬆電影',
+      'zh-TW',
+      'movie',
+    )
+    expect(result.query_plan).toBeUndefined()
+    expect(result.direction.labels[0]?.text).toBe('不要恐怖片')
   })
 
   it('accepts an empty result and fallback items without fake reasons', async () => {

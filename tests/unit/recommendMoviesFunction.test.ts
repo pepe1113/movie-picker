@@ -12,7 +12,9 @@ import {
   parseContextPlan,
   parseTmdbMedia,
   parseToolArguments,
+  QUERY_PLAN_ACCEPT,
   validateRecommendationRequest,
+  wantsQueryPlan,
   type CandidateMedia,
 } from '../../supabase/functions/recommend-movies/domain'
 
@@ -81,6 +83,12 @@ const plan = {
 }
 
 describe('context-aware recommendation domain', () => {
+  it('only adds the new response field for clients that opt in', () => {
+    expect(wantsQueryPlan(null)).toBe(false)
+    expect(wantsQueryPlan('application/json')).toBe(false)
+    expect(wantsQueryPlan(QUERY_PLAN_ACCEPT)).toBe(true)
+    expect(wantsQueryPlan(`application/json, ${QUERY_PLAN_ACCEPT}`)).toBe(true)
+  })
   it('uses OpenAI and validates a required single media type', () => {
     expect(DEFAULT_OPENAI_BASE_URL).toBe('https://api.openai.com/v1')
     expect(DEFAULT_OPENAI_MODEL).toBe('gpt-6-luna')

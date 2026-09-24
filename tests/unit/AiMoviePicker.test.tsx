@@ -233,6 +233,22 @@ describe('AiMoviePicker', () => {
     )
   })
 
+  it('shows legacy labels until the opted-in Edge Function is deployed', async () => {
+    authenticate()
+    vi.mocked(requestContextRecommendations).mockResolvedValue({
+      ...result(),
+      query_plan: undefined,
+    })
+
+    await renderPicker()
+    fireEvent.change(screen.getByLabelText('觀影需求'), {
+      target: { value: '想看輕鬆電影' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: '幫我選片' }))
+
+    expect(await screen.findByText('錯誤的 AI 標籤')).toBeInTheDocument()
+  })
+
   it('keeps animated waiting progress at or below ninety percent', async () => {
     vi.useFakeTimers()
     authenticate()

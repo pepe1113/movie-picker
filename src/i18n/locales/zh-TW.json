@@ -94,6 +94,9 @@
       "country": "地區 {{value}}",
       "genre": "{{value}} 類型",
       "person": "{{name}}（{{role}}）",
+      "peopleAny": "任一人物：{{people}}",
+      "peopleAll": "全部人物：{{people}}",
+      "peopleSeparator": "、",
       "roles": {
         "cast": "演員",
         "director": "導演",

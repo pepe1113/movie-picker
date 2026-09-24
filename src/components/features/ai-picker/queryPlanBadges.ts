@@ -80,14 +80,28 @@ export function queryPlanBadges(
       text,
       kind: 'soft' as const,
     })),
-    ...plan.people.map(({ name, role }) => ({
-      text: t('aiPicker.criteria.person', {
+  )
+
+  if (plan.people.length > 0) {
+    const people = plan.people.map(({ name, role }) =>
+      t('aiPicker.criteria.person', {
         name,
         role: t(`aiPicker.criteria.roles.${role}`),
       }),
-      kind: 'hard' as const,
-    })),
-  )
+    )
+    badges.push({
+      text:
+        people.length === 1
+          ? people[0]
+          : t(
+              `aiPicker.criteria.people${plan.people_match === 'any' ? 'Any' : 'All'}`,
+              {
+                people: people.join(t('aiPicker.criteria.peopleSeparator')),
+              },
+            ),
+      kind: 'hard',
+    })
+  }
 
   return badges.filter(
     (badge, index) =>

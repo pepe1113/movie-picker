@@ -94,6 +94,9 @@
       "country": "Country {{value}}",
       "genre": "{{value}} genre",
       "person": "{{name}} ({{role}})",
+      "peopleAny": "Any of: {{people}}",
+      "peopleAll": "All of: {{people}}",
+      "peopleSeparator": ", ",
       "roles": {
         "cast": "cast",
         "director": "director",

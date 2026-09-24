@@ -111,7 +111,11 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
       movie: recommendation.media_snapshot,
       reason: recommendation.reason,
     })) ?? []
-  const criteriaBadges = result ? queryPlanBadges(result.query_plan, t) : []
+  const criteriaBadges = result
+    ? result.query_plan
+      ? queryPlanBadges(result.query_plan, t)
+      : result.direction.labels
+    : []
 
   return (
     <section className="border-border bg-background relative isolate overflow-hidden border-b">

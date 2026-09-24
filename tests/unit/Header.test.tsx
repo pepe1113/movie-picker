@@ -19,6 +19,7 @@ function renderHeader() {
 
 describe('Header', () => {
   afterEach(() => {
+    vi.unstubAllEnvs()
     act(() => {
       useAuthStore.setState({
         user: null,
@@ -76,5 +77,17 @@ describe('Header', () => {
     await user.click(screen.getByText('使用 Google 登入'))
 
     expect(signIn).toHaveBeenCalledWith('google')
+  })
+
+  it('offers anonymous sign-in only for the local development stack', async () => {
+    vi.stubEnv('VITE_LOCAL_SUPABASE', 'true')
+    const signIn = vi.fn()
+    act(() => useAuthStore.setState({ signIn }))
+
+    renderHeader()
+    await userEvent.setup().click(screen.getByRole('button', { name: '登入' }))
+    await userEvent.setup().click(screen.getByText('本機測試登入'))
+
+    expect(signIn).toHaveBeenCalledWith('local')
   })
 })

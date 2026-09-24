@@ -90,14 +90,17 @@ Data flow と validation rule の詳細は、[AI Picker、Supabase Auth、Data A
 
 ## Develop
 
-Frontend の environment variables は `.env.example` を参照して設定します。AI Function が使用する OpenAI と TMDB の key は Supabase Edge Function Secrets に保存してください。
+Frontend の environment variables は `.env.example` を参照して設定します。AI Function が使用する OpenAI、OpenRouter、TMDB の key は Supabase Edge Function Secrets に保存してください。
 
-Local で model を比較する場合は、`.env.local` に `OPENAI_API_KEY` と `TMDB_ACCESS_TOKEN` を設定し、`bun run test:ai-live -- gpt-4o-mini gpt-6-luna` を実行します。Supabase、login、database を経由せず、OpenAI と TMDB を直接呼び出し、usage、推定 cost、query plan を表示します。
+Frontend と Edge Function を本機で一緒に試す場合は Docker Desktop を起動し、環境ファイルに `OPENAI_API_KEY`、`OPENROUTER_API_KEY`、`TMDB_ACCESS_TOKEN`（または `VITE_TMDB_ACCESS_TOKEN`）を用意して、`bun --env-file=/path/to/.env.local run dev:local` を実行します。Local Supabase、`recommend-movies`、Vite が起動し、Frontend は Local API に接続します。`http://127.0.0.1:5173` で「Local test sign-in」を選ぶと推薦と履歴を手動で試せます。Ctrl+C で開発サーバーを終了し、`supabase stop` で Local stack を停止できます。Remote project は変更しません。
+
+推薦ロジックだけを試す場合は `bun --env-file=/path/to/.env.local run test:ai-live` を実行します。Supabase、login、database を経由せず、OpenAI、TMDB、OpenRouter を直接呼び出します。
 
 | Command                   | 用途                                           |
 | ------------------------- | ---------------------------------------------- |
 | `bun install`             | 依存 package をインストール                    |
 | `bun run dev`             | Local development server を起動                |
+| `bun run dev:local`       | Local Frontend、Supabase、Function を起動      |
 | `bun run test:run`        | すべての test を実行                           |
 | `bun run test:ai-live`    | AI と TMDB を Local で実測し token cost を表示 |
 | `bun run lint`            | Lint を実行                                    |

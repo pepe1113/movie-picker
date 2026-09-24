@@ -5,6 +5,7 @@
     "login": "Login",
     "loginWithGithub": "Continue with GitHub",
     "loginWithGoogle": "Continue with Google",
+    "loginForLocalTesting": "Local test sign-in",
     "logout": "Logout",
     "user": "User",
     "menu": "Menu",

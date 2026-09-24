@@ -4,6 +4,7 @@ import {
   buildDiscoverSearchParams,
   createPlanMessages,
   createPlanTool,
+  createQueryPlanSnapshot,
   DEFAULT_OPENAI_BASE_URL,
   DEFAULT_OPENAI_MODEL,
   hasMediaTypeMismatch,
@@ -11,7 +12,9 @@ import {
   parseContextPlan,
   parseTmdbMedia,
   parseToolArguments,
+  QUERY_PLAN_ACCEPT,
   validateRecommendationRequest,
+  wantsQueryPlan,
   type CandidateMedia,
 } from '../../supabase/functions/recommend-movies/domain'
 
@@ -80,6 +83,12 @@ const plan = {
 }
 
 describe('context-aware recommendation domain', () => {
+  it('only adds the new response field for clients that opt in', () => {
+    expect(wantsQueryPlan(null)).toBe(false)
+    expect(wantsQueryPlan('application/json')).toBe(false)
+    expect(wantsQueryPlan(QUERY_PLAN_ACCEPT)).toBe(true)
+    expect(wantsQueryPlan(`application/json, ${QUERY_PLAN_ACCEPT}`)).toBe(true)
+  })
   it('uses OpenAI and validates a required single media type', () => {
     expect(DEFAULT_OPENAI_BASE_URL).toBe('https://api.openai.com/v1')
     expect(DEFAULT_OPENAI_MODEL).toBe('gpt-6-luna')
@@ -147,6 +156,49 @@ describe('context-aware recommendation domain', () => {
         'tv',
       ).discover_plan.include_genres,
     ).toEqual([{ id: 10759, source: 'explicit' }])
+  })
+
+  it('snapshots the validated plan with resolved entities and explicit empty values', () => {
+    const queryPlan = createQueryPlanSnapshot(
+      'movie',
+      parseContextPlan(plan, 'movie'),
+      [{ id: 31, name: 'Tom Hanks', role: 'cast' }],
+      [
+        {
+          id: 22,
+          lookup_name: 'healing',
+          display_label: '療癒',
+          source: 'inferred',
+        },
+      ],
+    )
+
+    expect(queryPlan).toEqual({
+      schema_version: 1,
+      hard_constraints: {
+        exclude_genres: ['horror'],
+        exclude_keywords: [],
+        runtime_min: null,
+        runtime_max: 90,
+        release_year_min: null,
+        release_year_max: null,
+        original_language: 'ja',
+        origin_country: null,
+      },
+      soft_preferences: {
+        include_genres: [{ name: 'comedy', source: 'explicit' }],
+        keywords: [
+          {
+            lookup_name: 'healing',
+            display_label: '療癒',
+            source: 'inferred',
+          },
+        ],
+        qualities: ['輕鬆'],
+      },
+      people: [{ id: 31, name: 'Tom Hanks', role: 'cast' }],
+      people_match: 'any',
+    })
   })
 
   it('keeps explicit filters when inferred preferences are relaxed', () => {

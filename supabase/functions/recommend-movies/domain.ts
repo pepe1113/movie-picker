@@ -311,6 +311,14 @@ const creditsSchema = z
   .passthrough()
 
 export type RecommendationRequest = z.infer<typeof recommendationRequestSchema>
+export const QUERY_PLAN_ACCEPT = 'application/vnd.movie-picker.query-plan+json'
+
+export function wantsQueryPlan(accept: string | null) {
+  return (
+    accept?.split(',').some((value) => value.trim() === QUERY_PLAN_ACCEPT) ??
+    false
+  )
+}
 export interface HardConstraints {
   exclude_genre_ids: number[]
   exclude_keywords: Array<{ lookup_name: string; display_label: string }>
@@ -340,8 +348,9 @@ export interface PersonCondition {
   role: PersonRole
 }
 
-export interface ResolvedPerson extends PersonCondition {
+export interface ResolvedPerson extends Omit<PersonCondition, 'role'> {
   id: number
+  role: Exclude<PersonRole, 'any'>
 }
 
 export interface ResolvedKeyword extends KeywordPreference {
@@ -372,6 +381,76 @@ export interface ContextPlan {
     soft: string[]
   }
   discover_plan: DiscoverPlan
+}
+
+export interface QueryPlanSnapshot {
+  schema_version: 1
+  hard_constraints: {
+    exclude_genres: string[]
+    exclude_keywords: HardConstraints['exclude_keywords']
+    runtime_min: number | null
+    runtime_max: number | null
+    release_year_min: number | null
+    release_year_max: number | null
+    original_language: string | null
+    origin_country: string | null
+  }
+  soft_preferences: {
+    include_genres: Array<{ name: string; source: ConditionSource }>
+    keywords: KeywordPreference[]
+    qualities: string[]
+  }
+  people: ResolvedPerson[]
+  people_match: ContextPlan['people_match']
+}
+
+function genreNameFor(mediaType: MediaType, id: number) {
+  return Object.entries(genresFor(mediaType)).find(
+    ([, genreId]) => genreId === id,
+  )?.[0]
+}
+
+export function createQueryPlanSnapshot(
+  mediaType: MediaType,
+  plan: ContextPlan,
+  resolvedPeople: ResolvedPerson[],
+  resolvedKeywords: ResolvedKeyword[],
+): QueryPlanSnapshot {
+  const hard = plan.hard_constraints
+  return {
+    schema_version: 1,
+    hard_constraints: {
+      exclude_genres: hard.exclude_genre_ids.flatMap((id) => {
+        const name = genreNameFor(mediaType, id)
+        return name ? [name] : []
+      }),
+      exclude_keywords: hard.exclude_keywords,
+      runtime_min: hard.runtime_min ?? null,
+      runtime_max: hard.runtime_max ?? null,
+      release_year_min: hard.release_year_min ?? null,
+      release_year_max: hard.release_year_max ?? null,
+      original_language: hard.original_language ?? null,
+      origin_country: hard.origin_country ?? null,
+    },
+    soft_preferences: {
+      include_genres: plan.soft_preferences.include_genres.flatMap(
+        ({ id, source }) => {
+          const name = genreNameFor(mediaType, id)
+          return name ? [{ name, source }] : []
+        },
+      ),
+      keywords: resolvedKeywords.map(
+        ({ lookup_name, display_label, source }) => ({
+          lookup_name,
+          display_label,
+          source,
+        }),
+      ),
+      qualities: plan.soft_preferences.qualities,
+    },
+    people: resolvedPeople,
+    people_match: plan.people_match,
+  }
 }
 
 export function validateRecommendationRequest(

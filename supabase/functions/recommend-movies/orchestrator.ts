@@ -213,7 +213,9 @@ function departmentForRole(role: PersonRole) {
   return undefined
 }
 
-function roleForDepartment(department: string | null): PersonRole | undefined {
+function roleForDepartment(
+  department: string | null,
+): Exclude<PersonRole, 'any'> | undefined {
   if (department === 'Acting') return 'cast'
   if (department === 'Directing') return 'director'
   if (department === 'Writing') return 'writer'

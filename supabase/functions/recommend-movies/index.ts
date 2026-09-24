@@ -3,8 +3,10 @@ import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import {
   DEFAULT_OPENAI_BASE_URL,
   DEFAULT_OPENAI_MODEL,
+  createQueryPlanSnapshot,
   hasMediaTypeMismatch,
   validateRecommendationRequest,
+  wantsQueryPlan,
 } from './domain.ts'
 import {
   coordinateRecommendations,
@@ -100,10 +102,17 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
     throw error
   }
 
+  const queryPlan = createQueryPlanSnapshot(
+    request.media_type,
+    result.plan,
+    result.resolvedPeople,
+    result.resolvedKeywords,
+  )
   const historyRecord = createHistoryRecord(
     userData.user.id,
     request.media_type,
     result.plan,
+    queryPlan,
     result.candidates.map((media) => media.id),
     result.recommendations,
     result.resolvedPeople,
@@ -122,6 +131,9 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
 
   return jsonResponse({
     media_type: request.media_type,
+    ...(wantsQueryPlan(req.headers.get('Accept'))
+      ? { query_plan: queryPlan }
+      : {}),
     direction: {
       summary: result.plan.intent_summary,
       labels: [

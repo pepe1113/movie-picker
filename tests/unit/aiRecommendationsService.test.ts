@@ -34,6 +34,26 @@ function movie(id: number): Movie {
 function response() {
   return {
     media_type: 'movie' as const,
+    query_plan: {
+      schema_version: 1 as const,
+      hard_constraints: {
+        exclude_genres: ['horror'],
+        exclude_keywords: [],
+        runtime_min: null,
+        runtime_max: null,
+        release_year_min: null,
+        release_year_max: null,
+        original_language: null,
+        origin_country: null,
+      },
+      soft_preferences: {
+        include_genres: [{ name: 'comedy', source: 'explicit' as const }],
+        keywords: [],
+        qualities: ['輕鬆'],
+      },
+      people: [],
+      people_match: 'any' as const,
+    },
     direction: {
       summary: '今晚以輕鬆且好理解的作品為主',
       labels: [
@@ -83,10 +103,30 @@ describe('context recommendation Supabase service', () => {
         locale: 'zh-TW',
         media_type: 'movie',
       },
+      headers: { Accept: 'application/vnd.movie-picker.query-plan+json' },
       signal: controller.signal,
       timeout: RECOMMENDATION_DEADLINE_MS,
     })
     expect(result.recommendations.map((item) => item.media_id)).toEqual([2, 1])
+  })
+
+  it('accepts the previous response shape while the Edge Function is still old', async () => {
+    const { query_plan: _queryPlan, ...legacyResponse } = response()
+    expect(_queryPlan).toBeDefined()
+    const invoke = vi
+      .fn()
+      .mockResolvedValue({ data: legacyResponse, error: null })
+    vi.mocked(getSupabaseClient).mockReturnValue({
+      functions: { invoke },
+    } as unknown as ReturnType<typeof getSupabaseClient>)
+
+    const result = await requestContextRecommendations(
+      '想看輕鬆電影',
+      'zh-TW',
+      'movie',
+    )
+    expect(result.query_plan).toBeUndefined()
+    expect(result.direction.labels[0]?.text).toBe('不要恐怖片')
   })
 
   it('accepts an empty result and fallback items without fake reasons', async () => {

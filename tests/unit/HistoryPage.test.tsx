@@ -163,6 +163,48 @@ describe('History page', () => {
     expect(screen.getByText('喜劇類型適合現在轉換心情。')).toBeInTheDocument()
   })
 
+  it('renders saved query plan badges instead of conflicting AI labels', async () => {
+    authenticate()
+    setRecommendationHistoryRemoteForTesting({
+      listLatest: vi.fn().mockResolvedValue([
+        run({
+          intent: {
+            ...run().intent,
+            display_labels: { hard: ['錯誤條件'], soft: [] },
+            query_plan: {
+              schema_version: 1,
+              hard_constraints: {
+                exclude_genres: ['horror'],
+                exclude_keywords: [],
+                runtime_min: null,
+                runtime_max: 90,
+                release_year_min: null,
+                release_year_max: null,
+                original_language: null,
+                origin_country: null,
+              },
+              soft_preferences: {
+                include_genres: [],
+                keywords: [],
+                qualities: ['輕鬆'],
+              },
+              people: [{ id: 31, name: 'Tom Hanks', role: 'cast' }],
+              people_match: 'any',
+            },
+          },
+        }),
+      ]),
+      deleteRun: vi.fn(),
+    })
+
+    await renderHistoryPage()
+    expect(await screen.findByText('排除 horror 類型')).toBeInTheDocument()
+    expect(screen.getByText('片長最多 90 分鐘')).toBeInTheDocument()
+    expect(screen.getByText('Tom Hanks（演員）')).toBeInTheDocument()
+    expect(screen.getByText('輕鬆')).toBeInTheDocument()
+    expect(screen.queryByText('錯誤條件')).not.toBeInTheDocument()
+  })
+
   it('shows the saved overview when fallback has no reason', async () => {
     authenticate()
     setRecommendationHistoryRemoteForTesting({

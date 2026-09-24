@@ -6,6 +6,7 @@ Date: 2026-09-24
 
 - Added `bun run test:ai-live` to call `coordinateRecommendations()` directly with local OpenAI and TMDB credentials.
 - Added OpenAI prompt, cached, completion, reasoning, and total token usage to the coordinator result and console output.
+- Production logs stay quiet for normal usage and emit a warning only when one OpenAI response exceeds 20,000 total tokens.
 - Added per-model cost calculation for `gpt-4o-mini` and `gpt-6-luna`.
 - Changed the default model to `gpt-6-luna` with `reasoning_effort: none` for Chat Completions function calling.
 - Verified that hard and soft query-plan labels are rendered in the AI result UI.

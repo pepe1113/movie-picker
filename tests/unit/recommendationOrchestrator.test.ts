@@ -95,16 +95,17 @@ function toolCall(value: unknown, usage?: unknown) {
 }
 
 describe('recommendation orchestrator', () => {
-  it('logs OpenAI token usage without prompt content', async () => {
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+  it('returns OpenAI usage and warns when total tokens exceed 20,000', async () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     let requestBody: Record<string, unknown> | undefined
     const fetcher = vi.fn<typeof fetch>(async (input, init) => {
       if (String(input).includes('/chat/completions')) {
         requestBody = JSON.parse(String(init?.body)) as Record<string, unknown>
         return toolCall(basePlan(), {
-          prompt_tokens: 804,
+          prompt_tokens: 19_835,
           completion_tokens: 166,
-          total_tokens: 970,
+          total_tokens: 20_001,
           prompt_tokens_details: { cached_tokens: 128 },
           completion_tokens_details: { reasoning_tokens: 12 },
         })
@@ -123,23 +124,26 @@ describe('recommendation orchestrator', () => {
       fetcher,
     )
 
-    expect(consoleSpy).toHaveBeenCalledWith('openai token usage', {
+    expect(logSpy).not.toHaveBeenCalled()
+    expect(warnSpy).toHaveBeenCalledWith('openai token usage alert', {
       model: 'gpt-6-luna',
-      promptTokens: 804,
+      threshold: 20_000,
+      promptTokens: 19_835,
       completionTokens: 166,
-      totalTokens: 970,
+      totalTokens: 20_001,
       cachedTokens: 128,
       reasoningTokens: 12,
     })
     expect(requestBody?.reasoning_effort).toBe('none')
     expect(result.usage).toEqual({
-      promptTokens: 804,
+      promptTokens: 19_835,
       completionTokens: 166,
-      totalTokens: 970,
+      totalTokens: 20_001,
       cachedTokens: 128,
       reasoningTokens: 12,
     })
-    consoleSpy.mockRestore()
+    logSpy.mockRestore()
+    warnSpy.mockRestore()
   })
 
   it('routes Brad Pitt through Person Search and Movie Discover with_cast', async () => {

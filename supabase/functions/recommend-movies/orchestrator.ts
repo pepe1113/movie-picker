@@ -23,6 +23,7 @@ import {
 } from './domain.ts'
 
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3'
+const OPENAI_TOKEN_ALERT_THRESHOLD = 20_000
 
 export interface CoordinatorConfig {
   openaiApiKey: string
@@ -116,6 +117,39 @@ function tmdbHeaders(config: CoordinatorConfig) {
   }
 }
 
+function asRecord(value: unknown): Record<string, unknown> | undefined {
+  return typeof value === 'object' && value !== null
+    ? (value as Record<string, unknown>)
+    : undefined
+}
+
+function parseOpenAIUsage(data: unknown): OpenAIUsage | undefined {
+  const usage = asRecord(asRecord(data)?.usage)
+  if (!usage) return undefined
+
+  const { prompt_tokens, completion_tokens, total_tokens } = usage
+  if (
+    typeof prompt_tokens !== 'number' ||
+    typeof completion_tokens !== 'number' ||
+    typeof total_tokens !== 'number'
+  ) {
+    return undefined
+  }
+
+  const promptDetails = asRecord(usage.prompt_tokens_details)
+  const completionDetails = asRecord(usage.completion_tokens_details)
+  const cachedTokens = promptDetails?.cached_tokens
+  const reasoningTokens = completionDetails?.reasoning_tokens
+
+  return {
+    promptTokens: prompt_tokens,
+    completionTokens: completion_tokens,
+    totalTokens: total_tokens,
+    ...(typeof cachedTokens === 'number' ? { cachedTokens } : {}),
+    ...(typeof reasoningTokens === 'number' ? { reasoningTokens } : {}),
+  }
+}
+
 async function callOpenAI(
   request: RecommendationRequest,
   config: CoordinatorConfig,
@@ -150,53 +184,11 @@ async function callOpenAI(
     },
     'AI model request failed',
   )
-  let usage: OpenAIUsage | undefined
-  if (
-    typeof data === 'object' &&
-    data !== null &&
-    'usage' in data &&
-    typeof data.usage === 'object' &&
-    data.usage !== null &&
-    'prompt_tokens' in data.usage &&
-    typeof data.usage.prompt_tokens === 'number' &&
-    'completion_tokens' in data.usage &&
-    typeof data.usage.completion_tokens === 'number' &&
-    'total_tokens' in data.usage &&
-    typeof data.usage.total_tokens === 'number'
-  ) {
-    const completionDetails =
-      'completion_tokens_details' in data.usage &&
-      typeof data.usage.completion_tokens_details === 'object' &&
-      data.usage.completion_tokens_details !== null
-        ? data.usage.completion_tokens_details
-        : undefined
-    const promptDetails =
-      'prompt_tokens_details' in data.usage &&
-      typeof data.usage.prompt_tokens_details === 'object' &&
-      data.usage.prompt_tokens_details !== null
-        ? data.usage.prompt_tokens_details
-        : undefined
-    const cachedTokens =
-      promptDetails &&
-      'cached_tokens' in promptDetails &&
-      typeof promptDetails.cached_tokens === 'number'
-        ? promptDetails.cached_tokens
-        : undefined
-    const reasoningTokens =
-      completionDetails &&
-      'reasoning_tokens' in completionDetails &&
-      typeof completionDetails.reasoning_tokens === 'number'
-        ? completionDetails.reasoning_tokens
-        : undefined
-    usage = {
-      promptTokens: data.usage.prompt_tokens,
-      completionTokens: data.usage.completion_tokens,
-      totalTokens: data.usage.total_tokens,
-      ...(cachedTokens === undefined ? {} : { cachedTokens }),
-      ...(reasoningTokens === undefined ? {} : { reasoningTokens }),
-    }
-    console.log('openai token usage', {
+  const usage = parseOpenAIUsage(data)
+  if (usage && usage.totalTokens > OPENAI_TOKEN_ALERT_THRESHOLD) {
+    console.warn('openai token usage alert', {
       model: config.openaiModel,
+      threshold: OPENAI_TOKEN_ALERT_THRESHOLD,
       ...usage,
     })
   }

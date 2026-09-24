@@ -58,6 +58,19 @@ async function run(
   console.log('usage', result.usage ?? 'unavailable')
   console.log('estimatedCostUsd', cost?.toFixed(8) ?? 'pricing unavailable')
   console.log('queryPlan', JSON.stringify(result.plan, null, 2))
+  const title = (media: (typeof result.candidates)[number]) =>
+    media.media_type === 'movie' ? media.title : media.name
+  console.log(
+    'before (first 5 TMDB candidates)',
+    result.candidates.slice(0, 5).map((media) => ({ id: media.id, title: title(media) })),
+  )
+  console.log(
+    'after (Jev final order)',
+    result.recommendations.map(({ media_id, media_snapshot }) => ({
+      id: media_id,
+      title: title(media_snapshot),
+    })),
+  )
   console.log('tmdb', {
     candidateCount: result.candidates.length,
     recommendationCount: result.recommendations.length,

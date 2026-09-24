@@ -46,8 +46,9 @@ async function run(
   config: Omit<CoordinatorConfig, 'openaiModel'>,
 ) {
   const startedAt = performance.now()
+  const locale = process.env.AI_LIVE_LOCALE === 'en' ? 'en' : 'zh-TW'
   const result = await coordinateRecommendations(
-    { request, locale: 'zh-TW', media_type: 'movie' },
+    { request, locale, media_type: 'movie' },
     { ...config, openaiModel: model },
     AbortSignal.timeout(30_000),
   )
@@ -58,11 +59,15 @@ async function run(
   console.log('estimatedCostUsd', cost?.toFixed(8) ?? 'pricing unavailable')
   console.log('queryPlan', JSON.stringify(result.plan, null, 2))
   console.log('tmdb', {
+    candidateCount: result.candidates.length,
     recommendationCount: result.recommendations.length,
     titles: result.recommendations.map(({ media_snapshot: media }) =>
       media.media_type === 'movie' ? media.title : media.name,
     ),
   })
+  console.log('provider', result.provider)
+  console.log('model', result.model)
+  console.log('usedFallback', result.usedFallback)
   console.log('durationMs', Math.round(performance.now() - startedAt))
 }
 
@@ -71,6 +76,7 @@ async function main() {
   const request = process.env.AI_LIVE_REQUEST?.trim() || DEFAULT_REQUEST
   const config = {
     openaiApiKey: requiredEnv('OPENAI_API_KEY'),
+    openrouterApiKey: requiredEnv('OPENROUTER_API_KEY'),
     openaiBaseUrl: process.env.OPENAI_BASE_URL ?? DEFAULT_OPENAI_BASE_URL,
     tmdbAccessToken: requiredEnv('TMDB_ACCESS_TOKEN', 'VITE_TMDB_ACCESS_TOKEN'),
   }

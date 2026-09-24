@@ -117,16 +117,17 @@ describe('context recommendation Supabase service', () => {
     expect(result.recommendations[0]?.reason).toBeUndefined()
   })
 
-  it('accepts ten recommendations', async () => {
+  it('accepts OpenRouter responses with up to five recommendations', async () => {
     const invoke = vi.fn().mockResolvedValue({
       data: {
         ...response(),
-        recommendations: Array.from({ length: 10 }, (_, index) => ({
+        recommendations: Array.from({ length: 5 }, (_, index) => ({
           media_id: index + 1,
           kind: 'primary',
           media_snapshot: movie(index + 1),
         })),
-        used_fallback: true,
+        provider: 'openrouter',
+        used_fallback: false,
       },
       error: null,
     })
@@ -139,7 +140,8 @@ describe('context recommendation Supabase service', () => {
       'zh-TW',
       'movie',
     )
-    expect(result.recommendations).toHaveLength(10)
+    expect(result.recommendations).toHaveLength(5)
+    expect(result.provider).toBe('openrouter')
   })
 
   it('rejects malformed coordinator responses', async () => {

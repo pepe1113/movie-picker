@@ -91,14 +91,17 @@ flowchart LR
 
 ## Develop
 
-前端環境變數依照 `.env.example` 設定；AI Function 使用的 OpenAI 與 TMDB 金鑰另外放在 Supabase Edge Function Secrets。
+前端環境變數依照 `.env.example` 設定；AI Function 使用的 OpenAI、OpenRouter 與 TMDB 金鑰另外放在 Supabase Edge Function Secrets。
 
-若要在本機直接比較模型，請將 `OPENAI_API_KEY` 與 `TMDB_ACCESS_TOKEN` 放入 `.env.local`，再執行 `bun run test:ai-live -- gpt-4o-mini gpt-6-luna`。此指令會直接呼叫 OpenAI 與 TMDB、列印 usage、預估成本和查詢計畫，不會經過 Supabase、登入或資料庫。
+完整本機測試：先啟動 Docker Desktop，確認環境檔有 `OPENAI_API_KEY`、`OPENROUTER_API_KEY` 與 `TMDB_ACCESS_TOKEN`（或 `VITE_TMDB_ACCESS_TOKEN`），再執行 `bun --env-file=/path/to/.env.local run dev:local`。腳本會啟動本機 Supabase、`recommend-movies` Edge Function 與 Vite，並自動使用本機 API URL/key。開啟 `http://127.0.0.1:5173`，選「本機測試登入」即可手動測推薦與歷史紀錄。按 Ctrl+C 結束兩個開發伺服器；本機 Supabase 可另以 `supabase stop` 停止。此流程不會修改遠端 Supabase 專案。
+
+若只要直接測推薦核心，可執行 `bun --env-file=/path/to/.env.local run test:ai-live`。此指令會直接呼叫 OpenAI、TMDB 與 OpenRouter，略過 Supabase、登入與資料庫。
 
 | 指令                      | 用途                                   |
 | ------------------------- | -------------------------------------- |
 | `bun install`             | 安裝依賴                               |
 | `bun run dev`             | 啟動本機開發環境                       |
+| `bun run dev:local`       | 啟動本機前端、Supabase 與 Edge Function |
 | `bun run test:run`        | 執行全部測試                           |
 | `bun run test:ai-live`    | 本機實測 AI 與 TMDB，輸出 token 與成本 |
 | `bun run lint`            | 檢查程式碼                             |

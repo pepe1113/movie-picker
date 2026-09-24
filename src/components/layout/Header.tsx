@@ -173,6 +173,13 @@ export function Header() {
                   </span>
                   {t('common.loginWithGoogle')}
                 </DropdownMenuItem>
+                {import.meta.env.DEV &&
+                  import.meta.env.VITE_LOCAL_SUPABASE === 'true' && (
+                    <DropdownMenuItem onClick={() => signIn('local')}>
+                      <User className="size-4" />
+                      {t('common.loginForLocalTesting')}
+                    </DropdownMenuItem>
+                  )}
               </DropdownMenuContent>
             </DropdownMenu>
           )}

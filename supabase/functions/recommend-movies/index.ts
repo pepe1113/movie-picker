@@ -41,6 +41,7 @@ function getCoordinatorConfig(): CoordinatorConfig {
     openaiApiKey: getRequiredEnv('OPENAI_API_KEY'),
     openaiBaseUrl: Deno.env.get('OPENAI_BASE_URL') ?? DEFAULT_OPENAI_BASE_URL,
     openaiModel: Deno.env.get('OPENAI_MODEL') ?? DEFAULT_OPENAI_MODEL,
+    openrouterApiKey: Deno.env.get('OPENROUTER_API_KEY'),
     tmdbAccessToken: getRequiredEnv('TMDB_ACCESS_TOKEN'),
   }
 }
@@ -108,6 +109,7 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
     result.recommendations,
     result.resolvedPeople,
     result.resolvedKeywords,
+    result.provider,
     result.model,
   )
   saveHistoryInBackground(
@@ -136,7 +138,7 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
       ],
     },
     recommendations: result.recommendations,
-    provider: 'openai',
+    provider: result.provider,
     model: result.model,
     used_fallback: result.usedFallback,
   })

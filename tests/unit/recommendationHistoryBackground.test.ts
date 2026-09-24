@@ -36,6 +36,7 @@ describe('recommendation history background task', () => {
       [],
       [],
       [],
+      'openrouter',
       'test/model',
     )
 
@@ -52,7 +53,7 @@ describe('recommendation history background task', () => {
         exclude_genre_ids: [27],
       },
       candidate_media_ids: [1],
-      provider: 'openai',
+      provider: 'openrouter',
       model: 'test/model',
     })
     expect(JSON.stringify(record)).not.toContain('raw')

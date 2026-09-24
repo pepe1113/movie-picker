@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:local": "bun run scripts/dev-local.ts",
     "build": "tsc -b && vite build",
     "deploy:supabase": "supabase functions deploy recommend-movies --project-ref rvwalztmysynzfiqchsl --use-api",
     "lint": "eslint .",

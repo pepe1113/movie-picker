@@ -21,6 +21,7 @@ import {
   type ResolvedKeyword,
   type ResolvedPerson,
 } from './domain.ts'
+import { rerankCandidates } from './rerank.ts'
 
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3'
 const OPENAI_TOKEN_ALERT_THRESHOLD = 20_000
@@ -29,6 +30,7 @@ export interface CoordinatorConfig {
   openaiApiKey: string
   openaiBaseUrl: string
   openaiModel: string
+  openrouterApiKey?: string
   tmdbAccessToken: string
 }
 
@@ -661,14 +663,26 @@ export async function coordinateRecommendations(
     throw new RecommendationStageError('discover', { cause: error })
   }
 
+  const reranked = await rerankCandidates(
+    discovered.candidates,
+    plan,
+    discovered.resolvedKeywords,
+    config.openrouterApiKey,
+    signal,
+    fetcher,
+  )
+
   return {
     plan,
     candidates: discovered.candidates,
     resolvedPeople: discovered.resolvedPeople,
     resolvedKeywords: discovered.resolvedKeywords,
-    recommendations: recommendationSnapshots(discovered.candidates),
-    model: config.openaiModel,
+    recommendations: recommendationSnapshots(reranked.candidates),
+    provider: reranked.fullFallback
+      ? ('openai' as const)
+      : ('openrouter' as const),
+    model: reranked.model ?? config.openaiModel,
     usage,
-    usedFallback: discovered.usedFallback,
+    usedFallback: discovered.usedFallback || reranked.fullFallback,
   }
 }

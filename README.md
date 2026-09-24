@@ -93,11 +93,14 @@ flowchart LR
 
 前端環境變數依照 `.env.example` 設定；AI Function 使用的 OpenAI 與 TMDB 金鑰另外放在 Supabase Edge Function Secrets。
 
-| 指令                      | 用途                                  |
-| ------------------------- | ------------------------------------- |
-| `bun install`             | 安裝依賴                              |
-| `bun run dev`             | 啟動本機開發環境                      |
-| `bun run test:run`        | 執行全部測試                          |
-| `bun run lint`            | 檢查程式碼                            |
-| `bun run build`           | 型別檢查並建立 production bundle      |
-| `bun run deploy:supabase` | 部署 `recommend-movies` Edge Function |
+若要在本機直接比較模型，請將 `OPENAI_API_KEY` 與 `TMDB_ACCESS_TOKEN` 放入 `.env.local`，再執行 `bun run test:ai-live -- gpt-4o-mini gpt-6-luna`。此指令會直接呼叫 OpenAI 與 TMDB、列印 usage、預估成本和查詢計畫，不會經過 Supabase、登入或資料庫。
+
+| 指令                      | 用途                                   |
+| ------------------------- | -------------------------------------- |
+| `bun install`             | 安裝依賴                               |
+| `bun run dev`             | 啟動本機開發環境                       |
+| `bun run test:run`        | 執行全部測試                           |
+| `bun run test:ai-live`    | 本機實測 AI 與 TMDB，輸出 token 與成本 |
+| `bun run lint`            | 檢查程式碼                             |
+| `bun run build`           | 型別檢查並建立 production bundle       |
+| `bun run deploy:supabase` | 部署 `recommend-movies` Edge Function  |

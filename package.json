@@ -12,6 +12,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest",
+    "test:ai-live": "bun run scripts/test-ai-live.ts",
     "test:run": "vitest run",
     "preview": "vite preview"
   },

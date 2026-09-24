@@ -82,7 +82,7 @@ const plan = {
 describe('context-aware recommendation domain', () => {
   it('uses OpenAI and validates a required single media type', () => {
     expect(DEFAULT_OPENAI_BASE_URL).toBe('https://api.openai.com/v1')
-    expect(DEFAULT_OPENAI_MODEL).toBe('gpt-4o-mini')
+    expect(DEFAULT_OPENAI_MODEL).toBe('gpt-6-luna')
     expect(
       validateRecommendationRequest({
         request: '  想看輕鬆電影 ',

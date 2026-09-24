@@ -23,12 +23,21 @@ import {
 } from './domain.ts'
 
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3'
+const OPENAI_TOKEN_ALERT_THRESHOLD = 20_000
 
 export interface CoordinatorConfig {
   openaiApiKey: string
   openaiBaseUrl: string
   openaiModel: string
   tmdbAccessToken: string
+}
+
+export interface OpenAIUsage {
+  promptTokens: number
+  completionTokens: number
+  totalTokens: number
+  cachedTokens?: number
+  reasoningTokens?: number
 }
 
 export class RecommendationStageError extends Error {
@@ -108,6 +117,39 @@ function tmdbHeaders(config: CoordinatorConfig) {
   }
 }
 
+function asRecord(value: unknown): Record<string, unknown> | undefined {
+  return typeof value === 'object' && value !== null
+    ? (value as Record<string, unknown>)
+    : undefined
+}
+
+function parseOpenAIUsage(data: unknown): OpenAIUsage | undefined {
+  const usage = asRecord(asRecord(data)?.usage)
+  if (!usage) return undefined
+
+  const { prompt_tokens, completion_tokens, total_tokens } = usage
+  if (
+    typeof prompt_tokens !== 'number' ||
+    typeof completion_tokens !== 'number' ||
+    typeof total_tokens !== 'number'
+  ) {
+    return undefined
+  }
+
+  const promptDetails = asRecord(usage.prompt_tokens_details)
+  const completionDetails = asRecord(usage.completion_tokens_details)
+  const cachedTokens = promptDetails?.cached_tokens
+  const reasoningTokens = completionDetails?.reasoning_tokens
+
+  return {
+    promptTokens: prompt_tokens,
+    completionTokens: completion_tokens,
+    totalTokens: total_tokens,
+    ...(typeof cachedTokens === 'number' ? { cachedTokens } : {}),
+    ...(typeof reasoningTokens === 'number' ? { reasoningTokens } : {}),
+  }
+}
+
 async function callOpenAI(
   request: RecommendationRequest,
   config: CoordinatorConfig,
@@ -135,11 +177,25 @@ async function callOpenAI(
         },
         max_completion_tokens: 900,
         temperature: 0,
+        ...(config.openaiModel === 'gpt-6-luna'
+          ? { reasoning_effort: 'none' }
+          : {}),
       }),
     },
     'AI model request failed',
   )
-  return parseToolArguments(data, tool.function.name)
+  const usage = parseOpenAIUsage(data)
+  if (usage && usage.totalTokens > OPENAI_TOKEN_ALERT_THRESHOLD) {
+    console.warn('openai token usage alert', {
+      model: config.openaiModel,
+      threshold: OPENAI_TOKEN_ALERT_THRESHOLD,
+      ...usage,
+    })
+  }
+  return {
+    plan: parseToolArguments(data, tool.function.name),
+    usage,
+  }
 }
 
 function normalizedName(value: string) {
@@ -564,13 +620,13 @@ export async function coordinateRecommendations(
   fetcher: typeof fetch = fetch,
 ) {
   let plan: ContextPlan
+  let usage: OpenAIUsage | undefined
   try {
+    const planned = await callOpenAI(request, config, signal, fetcher)
+    usage = planned.usage
     plan = applyDeterministicMediaRules(
       request,
-      parseContextPlan(
-        await callOpenAI(request, config, signal, fetcher),
-        request.media_type,
-      ),
+      parseContextPlan(planned.plan, request.media_type),
     )
   } catch (error) {
     throw new RecommendationStageError('plan', { cause: error })
@@ -612,6 +668,7 @@ export async function coordinateRecommendations(
     resolvedKeywords: discovered.resolvedKeywords,
     recommendations: recommendationSnapshots(discovered.candidates),
     model: config.openaiModel,
+    usage,
     usedFallback: discovered.usedFallback,
   }
 }

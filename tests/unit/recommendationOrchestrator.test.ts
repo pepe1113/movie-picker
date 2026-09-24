@@ -74,7 +74,7 @@ function json(data: unknown, status = 200) {
   })
 }
 
-function toolCall(value: unknown) {
+function toolCall(value: unknown, usage?: unknown) {
   return json({
     choices: [
       {
@@ -90,10 +90,62 @@ function toolCall(value: unknown) {
         },
       },
     ],
+    usage,
   })
 }
 
 describe('recommendation orchestrator', () => {
+  it('returns OpenAI usage and warns when total tokens exceed 20,000', async () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    let requestBody: Record<string, unknown> | undefined
+    const fetcher = vi.fn<typeof fetch>(async (input, init) => {
+      if (String(input).includes('/chat/completions')) {
+        requestBody = JSON.parse(String(init?.body)) as Record<string, unknown>
+        return toolCall(basePlan(), {
+          prompt_tokens: 19_835,
+          completion_tokens: 166,
+          total_tokens: 20_001,
+          prompt_tokens_details: { cached_tokens: 128 },
+          completion_tokens_details: { reasoning_tokens: 12 },
+        })
+      }
+      return json({ results: [] })
+    })
+
+    const result = await coordinateRecommendations(
+      {
+        request: '我想看科幻片',
+        locale: 'zh-TW',
+        media_type: 'movie',
+      },
+      { ...config, openaiModel: 'gpt-6-luna' },
+      new AbortController().signal,
+      fetcher,
+    )
+
+    expect(logSpy).not.toHaveBeenCalled()
+    expect(warnSpy).toHaveBeenCalledWith('openai token usage alert', {
+      model: 'gpt-6-luna',
+      threshold: 20_000,
+      promptTokens: 19_835,
+      completionTokens: 166,
+      totalTokens: 20_001,
+      cachedTokens: 128,
+      reasoningTokens: 12,
+    })
+    expect(requestBody?.reasoning_effort).toBe('none')
+    expect(result.usage).toEqual({
+      promptTokens: 19_835,
+      completionTokens: 166,
+      totalTokens: 20_001,
+      cachedTokens: 128,
+      reasoningTokens: 12,
+    })
+    logSpy.mockRestore()
+    warnSpy.mockRestore()
+  })
+
   it('routes Brad Pitt through Person Search and Movie Discover with_cast', async () => {
     const urls: string[] = []
     const plan = basePlan({

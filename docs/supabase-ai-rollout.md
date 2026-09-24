@@ -53,15 +53,16 @@ sequenceDiagram
 
 目前的重要參數：
 
-| 參數                    | 設定                         | 原因                            |
-| ----------------------- | ---------------------------- | ------------------------------- |
-| `tools`                 | 只有 `plan_movie_search`     | 限制模型只能建立查詢計畫        |
-| `tool_choice`           | 強制指定 `plan_movie_search` | 不接受自由文字回答              |
-| `strict`                | `true`                       | 要求輸出符合 JSON Schema        |
-| `additionalProperties`  | `false`                      | 禁止增加未定義欄位              |
-| `temperature`           | `0`                          | 降低相同輸入產生不同計畫的機率  |
-| `max_completion_tokens` | `900`                        | 限制輸出成本與長度              |
-| 預設模型                | `gpt-4o-mini`                | 可由 `OPENAI_MODEL` Secret 覆寫 |
+| 參數                    | 設定                         | 原因                                         |
+| ----------------------- | ---------------------------- | -------------------------------------------- |
+| `tools`                 | 只有 `plan_movie_search`     | 限制模型只能建立查詢計畫                     |
+| `tool_choice`           | 強制指定 `plan_movie_search` | 不接受自由文字回答                           |
+| `strict`                | `true`                       | 要求輸出符合 JSON Schema                     |
+| `additionalProperties`  | `false`                      | 禁止增加未定義欄位                           |
+| `temperature`           | `0`                          | 降低相同輸入產生不同計畫的機率               |
+| `max_completion_tokens` | `900`                        | 限制輸出成本與長度                           |
+| `reasoning_effort`      | Luna 使用 `none`             | Chat Completions function calling 的必要設定 |
+| 預設模型                | `gpt-6-luna`                 | 可由 `OPENAI_MODEL` Secret 覆寫              |
 
 Tool Schema 將資料拆成：
 

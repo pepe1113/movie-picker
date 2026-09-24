@@ -207,6 +207,7 @@ describe('AiMoviePicker', () => {
       await screen.findByText('今晚以輕鬆、好理解的作品轉換心情'),
     ).toBeInTheDocument()
     expect(screen.getByText('不要恐怖片')).toBeInTheDocument()
+    expect(screen.getByText('輕鬆')).toBeInTheDocument()
     expect(screen.getByText('Context Pick')).toBeInTheDocument()
     expect(screen.getByRole('progressbar')).toHaveAttribute(
       'aria-valuenow',

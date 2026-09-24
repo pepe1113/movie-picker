@@ -1,22 +1,24 @@
 import { describe, expect, it } from 'vitest'
 import {
-  applyDeterministicMediaRules,
-  buildDiscoverSearchParams,
-  createPlanMessages,
-  createPlanTool,
   createQueryPlanSnapshot,
-  DEFAULT_OPENAI_BASE_URL,
-  DEFAULT_OPENAI_MODEL,
   hasMediaTypeMismatch,
-  mergeCandidatePools,
   parseContextPlan,
-  parseTmdbMedia,
-  parseToolArguments,
   QUERY_PLAN_ACCEPT,
   validateRecommendationRequest,
   wantsQueryPlan,
-  type CandidateMedia,
 } from '../../supabase/functions/recommend-movies/domain'
+import { applyDeterministicMediaRules } from '../../supabase/functions/recommend-movies/rules'
+import {
+  buildDiscoverSearchParams,
+  mergeCandidatePools,
+  parseTmdbMedia,
+  type CandidateMedia,
+} from '../../supabase/functions/recommend-movies/tmdb'
+import {
+  createPlanMessages,
+  createPlanTool,
+  parseToolArguments,
+} from '../../supabase/functions/recommend-movies/planning'
 
 function movie(id: number) {
   return {
@@ -90,8 +92,6 @@ describe('context-aware recommendation domain', () => {
     expect(wantsQueryPlan(`application/json, ${QUERY_PLAN_ACCEPT}`)).toBe(true)
   })
   it('uses OpenAI and validates a required single media type', () => {
-    expect(DEFAULT_OPENAI_BASE_URL).toBe('https://api.openai.com/v1')
-    expect(DEFAULT_OPENAI_MODEL).toBe('gpt-6-luna')
     expect(
       validateRecommendationRequest({
         request: '  想看輕鬆電影 ',
@@ -414,5 +414,32 @@ describe('context-aware recommendation domain', () => {
         'plan_movie_search',
       ),
     ).toEqual(plan)
+  })
+
+  it('rejects malformed planning tool responses', () => {
+    expect(() => parseToolArguments({}, 'plan_movie_search')).toThrow(
+      'AI model did not call plan_movie_search',
+    )
+    expect(() =>
+      parseToolArguments(
+        {
+          choices: [
+            {
+              message: {
+                tool_calls: [
+                  {
+                    function: {
+                      name: 'plan_movie_search',
+                      arguments: '{',
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+        'plan_movie_search',
+      ),
+    ).toThrow('AI model returned invalid plan_movie_search arguments')
   })
 })

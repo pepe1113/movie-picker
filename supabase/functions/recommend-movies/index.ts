@@ -1,8 +1,6 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import {
-  DEFAULT_OPENAI_BASE_URL,
-  DEFAULT_OPENAI_MODEL,
   createQueryPlanSnapshot,
   hasMediaTypeMismatch,
   validateRecommendationRequest,
@@ -41,8 +39,8 @@ function getRequiredEnv(name: string) {
 function getCoordinatorConfig(): CoordinatorConfig {
   return {
     openaiApiKey: getRequiredEnv('OPENAI_API_KEY'),
-    openaiBaseUrl: Deno.env.get('OPENAI_BASE_URL') ?? DEFAULT_OPENAI_BASE_URL,
-    openaiModel: Deno.env.get('OPENAI_MODEL') ?? DEFAULT_OPENAI_MODEL,
+    openaiBaseUrl: getRequiredEnv('OPENAI_BASE_URL'),
+    openaiModel: getRequiredEnv('OPENAI_MODEL'),
     tmdbAccessToken: getRequiredEnv('TMDB_ACCESS_TOKEN'),
   }
 }

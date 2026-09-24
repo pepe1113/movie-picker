@@ -1,8 +1,4 @@
 import {
-  DEFAULT_OPENAI_BASE_URL,
-  DEFAULT_OPENAI_MODEL,
-} from '../supabase/functions/recommend-movies/domain.ts'
-import {
   coordinateRecommendations,
   type CoordinatorConfig,
   type OpenAIUsage,
@@ -71,14 +67,12 @@ async function main() {
   const request = process.env.AI_LIVE_REQUEST?.trim() || DEFAULT_REQUEST
   const config = {
     openaiApiKey: requiredEnv('OPENAI_API_KEY'),
-    openaiBaseUrl: process.env.OPENAI_BASE_URL ?? DEFAULT_OPENAI_BASE_URL,
+    openaiBaseUrl: requiredEnv('OPENAI_BASE_URL'),
     tmdbAccessToken: requiredEnv('TMDB_ACCESS_TOKEN', 'VITE_TMDB_ACCESS_TOKEN'),
   }
 
   console.log('request', request)
-  for (const model of models.length
-    ? models
-    : [process.env.OPENAI_MODEL ?? DEFAULT_OPENAI_MODEL]) {
+  for (const model of models.length ? models : [requiredEnv('OPENAI_MODEL')]) {
     await run(model, request, config)
   }
 }

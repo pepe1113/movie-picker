@@ -12,6 +12,7 @@ import {
 import { QUERY_KEYS, TMDB_LANGUAGE_MAP } from '@/utils/constants'
 import { useLanguageStore } from '@/stores/languageStore'
 import type { MediaListResponse, MediaType } from '@/services/tmdb/types'
+import { selectInfiniteMedia } from '@/utils/movieListBrowsing'
 
 type MovieListType = 'trending' | 'popular' | 'top_rated' | 'now_playing'
 export type MediaListType = 'trending' | 'popular' | 'top_rated' | 'latest'
@@ -55,13 +56,7 @@ export function useMediaList(
     initialPageParam: 1,
     getNextPageParam: (lastPage) =>
       lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined,
-    select: (data) => ({
-      pages: data.pages,
-      pageParams: data.pageParams,
-      media: data.pages.flatMap((page) => page.results),
-      movies: data.pages.flatMap((page) => page.results),
-      totalResults: data.pages[0]?.total_results ?? 0,
-    }),
+    select: selectInfiniteMedia,
     enabled: options.enabled ?? true,
   })
 }

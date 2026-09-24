@@ -45,6 +45,24 @@ function pickRandomHeroTitle(value: unknown, fallback: string) {
   return options[Math.floor(Math.random() * options.length)] ?? fallback
 }
 
+function LocalizedHeroTitle() {
+  const { t } = useTranslation()
+  const [title] = useState(() =>
+    pickRandomHeroTitle(
+      t('aiPicker.heroTitles', { returnObjects: true }),
+      t('aiPicker.title'),
+    ),
+  )
+
+  return (
+    <TypewriterHeroTitle
+      as="h1"
+      title={title}
+      className="mx-0 max-w-4xl text-left"
+    />
+  )
+}
+
 export function Component() {
   const { t } = useTranslation()
   const language = useLanguageStore((state) => state.language)
@@ -54,11 +72,17 @@ export function Component() {
     Record<MediaType, number | null>
   >({ movie: null, tv: null })
   const [visibleCounts, setVisibleCounts] = useState(INITIAL_COUNTS)
-  const latest = useMediaList(mediaType, 'latest')
-  const trending = useMediaList(mediaType, 'trending')
-  const popular = useMediaList(mediaType, 'popular')
-  const topRated = useMediaList(mediaType, 'top_rated')
   const selectedGenre = selectedGenres[mediaType]
+  const latest = useMediaList(mediaType, 'latest')
+  const trending = useMediaList(mediaType, 'trending', {
+    enabled: selectedGenre === null,
+  })
+  const popular = useMediaList(mediaType, 'popular', {
+    enabled: selectedGenre === null,
+  })
+  const topRated = useMediaList(mediaType, 'top_rated', {
+    enabled: selectedGenre === null,
+  })
   const genreResults = useDiscoverMedia(mediaType, selectedGenre)
   const { data: genres = [] } = useQuery({
     queryKey: QUERY_KEYS.media.genres(mediaType, language),
@@ -67,12 +91,6 @@ export function Component() {
         ? getGenres(TMDB_LANGUAGE_MAP[language])
         : getTvGenres(TMDB_LANGUAGE_MAP[language]),
   })
-  const [heroTitle] = useState(() =>
-    pickRandomHeroTitle(
-      t('aiPicker.heroTitles', { returnObjects: true }),
-      t('aiPicker.title'),
-    ),
-  )
   const heroBackdrop = latest.data?.media.find(
     (item) => item.backdrop_path,
   )?.backdrop_path
@@ -131,11 +149,7 @@ export function Component() {
               {t('home.aiHero.badge')}
             </div>
 
-            <TypewriterHeroTitle
-              as="h1"
-              title={heroTitle}
-              className="mx-0 max-w-4xl text-left"
-            />
+            <LocalizedHeroTitle key={language} />
             <p className="text-muted-foreground mt-6 max-w-xl text-base leading-relaxed md:text-lg">
               {t('home.aiHero.subtitle')}
             </p>

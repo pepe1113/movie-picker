@@ -104,3 +104,9 @@ flowchart LR
 | `bun run lint`            | 檢查程式碼                             |
 | `bun run build`           | 型別檢查並建立 production bundle       |
 | `bun run deploy:supabase` | 部署 `recommend-movies` Edge Function  |
+
+## CI 與部署
+
+GitHub Actions 會在每次 push 與指向 `master` 的 PR 執行 lint、Prettier 與測試。檢查通過且程式碼進入 `master` 後，會依序套用 Supabase migrations、部署 Edge Functions。前端 Preview／Production 由 Vercel 的 Git 整合自動部署。
+
+Supabase CD 需要 GitHub `SUPABASE_ACCESS_TOKEN`、`SUPABASE_DB_PASSWORD` secrets；workflow 使用 `production` environment。首次啟用前請確認遠端 migration history 與 repo 一致。

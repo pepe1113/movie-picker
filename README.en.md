@@ -103,3 +103,9 @@ To compare models locally, put `OPENAI_API_KEY` and `TMDB_ACCESS_TOKEN` in `.env
 | `bun run lint`            | Run code checks                             |
 | `bun run build`           | Type-check and build the production bundle  |
 | `bun run deploy:supabase` | Deploy the `recommend-movies` Edge Function |
+
+## CI and deployment
+
+GitHub Actions runs lint, Prettier, and tests on every push and pull request targeting `master`. After the checks pass on `master`, it applies Supabase migrations and deploys Edge Functions. Vercel's Git integration automatically deploys frontend Preview and Production builds.
+
+Supabase CD requires the GitHub `SUPABASE_ACCESS_TOKEN` and `SUPABASE_DB_PASSWORD` secrets and uses the `production` environment. Before its first run, confirm that the remote migration history matches the repository.

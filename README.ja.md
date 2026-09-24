@@ -103,3 +103,9 @@ Local で model を比較する場合は、`.env.local` に `OPENAI_API_KEY` と
 | `bun run lint`            | Lint を実行                                    |
 | `bun run build`           | Type check 後、production bundle を生成        |
 | `bun run deploy:supabase` | `recommend-movies` Edge Function を deploy     |
+
+## CI とデプロイ
+
+GitHub Actions はすべての push と `master` 向けの PR で lint、Prettier、test を実行します。`master` の check が成功すると Supabase migration を適用し、Edge Function をデプロイします。Frontend の Preview／Production は Vercel の Git 連携で自動デプロイします。
+
+Supabase CD には GitHub の `SUPABASE_ACCESS_TOKEN` と `SUPABASE_DB_PASSWORD` secrets が必要で、`production` environment を使用します。初回実行前に remote の migration history と repository の一致を確認してください。

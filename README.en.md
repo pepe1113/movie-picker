@@ -90,19 +90,19 @@ See [AI Picker, Supabase Auth, and Data Access Architecture](./docs/supabase-ai-
 
 ## Develop
 
-Set frontend environment variables from `.env.example`. Store the OpenAI and TMDB keys used by the AI Function in Supabase Edge Function Secrets.
+Set frontend environment variables from `.env.example`. Store the OpenAI/TMDB keys for `recommend-movies` and the TMDB/OMDb keys for `media-detail` in Supabase Edge Function Secrets. `media-detail` serves signed-out visitors too; the OMDb key is optional, and external ratings are hidden without it. For local Functions, put `TMDB_ACCESS_TOKEN` and optional `OMDB_API_KEY` in the untracked `supabase/functions/.env`.
 
 To compare models locally, put `OPENAI_API_KEY` and `TMDB_ACCESS_TOKEN` in `.env.local`, then run `bun run test:ai-live -- gpt-4o-mini gpt-6-luna`. The command calls OpenAI and TMDB directly and prints usage, estimated cost, and the query plan without Supabase, sign-in, or database access.
 
-| Command                   | Purpose                                     |
-| ------------------------- | ------------------------------------------- |
-| `bun install`             | Install dependencies                        |
-| `bun run dev`             | Start the local development server          |
-| `bun run test:run`        | Run all tests                               |
-| `bun run test:ai-live`    | Test AI and TMDB locally with token costs   |
-| `bun run lint`            | Run code checks                             |
-| `bun run build`           | Type-check and build the production bundle  |
-| `bun run deploy:supabase` | Deploy the `recommend-movies` Edge Function |
+| Command                   | Purpose                                    |
+| ------------------------- | ------------------------------------------ |
+| `bun install`             | Install dependencies                       |
+| `bun run dev`             | Start the local development server         |
+| `bun run test:run`        | Run all tests                              |
+| `bun run test:ai-live`    | Test AI and TMDB locally with token costs  |
+| `bun run lint`            | Run code checks                            |
+| `bun run build`           | Type-check and build the production bundle |
+| `bun run deploy:supabase` | Deploy all Edge Functions                  |
 
 ## CI and deployment
 

@@ -23,10 +23,6 @@ export const QUERY_KEYS = {
       [...QUERY_KEYS.media.all, mediaType, listType] as const,
     detail: (mediaType: string, id: number, language?: string) =>
       [...QUERY_KEYS.media.all, mediaType, 'detail', id, language] as const,
-    credits: (mediaType: string, id: number, language?: string) =>
-      [...QUERY_KEYS.media.all, mediaType, 'credits', id, language] as const,
-    videos: (mediaType: string, id: number, language?: string) =>
-      [...QUERY_KEYS.media.all, mediaType, 'videos', id, language] as const,
     search: (query: string, language: string) =>
       [...QUERY_KEYS.media.all, 'search', query, language] as const,
     discover: (mediaType: string, params?: Record<string, unknown>) =>
@@ -40,14 +36,6 @@ export const QUERY_KEYS = {
     popular: () => [...QUERY_KEYS.movies.all, 'popular'] as const,
     topRated: () => [...QUERY_KEYS.movies.all, 'top-rated'] as const,
     nowPlaying: () => [...QUERY_KEYS.movies.all, 'now-playing'] as const,
-    detail: (id: number, language?: string) =>
-      [...QUERY_KEYS.movies.all, 'detail', id, language] as const,
-    credits: (id: number, language?: string) =>
-      [...QUERY_KEYS.movies.all, 'credits', id, language] as const,
-    videos: (id: number, language?: string) =>
-      [...QUERY_KEYS.movies.all, 'videos', id, language] as const,
-    omdb: (imdbId: string | null | undefined) =>
-      [...QUERY_KEYS.movies.all, 'omdb', imdbId] as const,
     search: (query: string) =>
       [...QUERY_KEYS.movies.all, 'search', query] as const,
     discover: (params?: Record<string, unknown>) =>

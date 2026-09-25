@@ -1,11 +1,5 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import {
-  getCurrentSupabaseUser,
-  signInWithProvider,
-  signOutFromSupabase,
-  subscribeToSupabaseAuthState,
-} from '@/services/supabase/auth'
 import type { AuthProvider } from '@/services/supabase/auth'
 import type { User } from '@/types/user'
 
@@ -40,6 +34,8 @@ export const useAuthStore = create<AuthStore>()(
       signIn: async (provider = 'github') => {
         set({ isLoading: true, error: null }, false, 'signIn/start')
         try {
+          const { signInWithProvider } =
+            await import('@/services/supabase/auth')
           await signInWithProvider(provider)
           set({ isLoading: false }, false, 'signIn/redirectStarted')
         } catch (error) {
@@ -60,6 +56,8 @@ export const useAuthStore = create<AuthStore>()(
       signOut: async () => {
         set({ isLoading: true, error: null }, false, 'signOut/start')
         try {
+          const { signOutFromSupabase } =
+            await import('@/services/supabase/auth')
           await signOutFromSupabase()
           set(
             {
@@ -88,6 +86,8 @@ export const useAuthStore = create<AuthStore>()(
         set({ isLoading: true, error: null }, false, 'initializeAuth/start')
 
         try {
+          const { getCurrentSupabaseUser, subscribeToSupabaseAuthState } =
+            await import('@/services/supabase/auth')
           const user = await getCurrentSupabaseUser()
           set(
             { user, isAuthenticated: user !== null, isLoading: false },

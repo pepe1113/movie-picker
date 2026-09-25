@@ -123,12 +123,6 @@ export function Component() {
                     </Badge>
                   ))}
                 </div>
-                <Badge
-                  variant="ghost"
-                  className="rounded-full px-3 py-1.5 text-sm normal-case"
-                >
-                  {t('history.model', { model: run.model })}
-                </Badge>
               </div>
               <Button
                 variant="ghost"
@@ -151,11 +145,6 @@ export function Component() {
                     className="mx-auto w-full max-w-[220px] space-y-3"
                   >
                     <MovieCard movie={recommendation.media_snapshot} />
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {recommendation.reason ||
-                        recommendation.media_snapshot.overview ||
-                        t('movieCard.noOverview')}
-                    </p>
                   </div>
                 ))}
             </div>

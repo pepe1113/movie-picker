@@ -1,4 +1,4 @@
-import type { QueryPlanSnapshot } from '@/services/supabase/aiRecommendations'
+import type { QueryPlanSnapshot } from '@/services/supabase/aiRecommendationContract'
 
 function displayGenre(name: string) {
   return name.replaceAll('_', ' ')

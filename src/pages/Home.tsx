@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { motion } from 'motion/react'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -12,9 +11,8 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useDiscoverMedia } from '@/hooks/useDiscoverMedia'
 import { useMediaList } from '@/hooks/useMovies'
 import { useLanguageStore } from '@/stores/languageStore'
-import { getGenres, getTvGenres } from '@/services/tmdb/api'
 import type { MediaType } from '@/services/tmdb/types'
-import { QUERY_KEYS, TMDB_LANGUAGE_MAP } from '@/utils/constants'
+import { MOVIE_GENRES, TV_GENRES } from '@/utils/constants'
 import { getBackdropUrl } from '@/utils/helpers'
 import {
   getNextVisibleCount,
@@ -84,13 +82,12 @@ export function Component() {
     enabled: selectedGenre === null,
   })
   const genreResults = useDiscoverMedia(mediaType, selectedGenre)
-  const { data: genres = [] } = useQuery({
-    queryKey: QUERY_KEYS.media.genres(mediaType, language),
-    queryFn: () =>
-      mediaType === 'movie'
-        ? getGenres(TMDB_LANGUAGE_MAP[language])
-        : getTvGenres(TMDB_LANGUAGE_MAP[language]),
-  })
+  const genres = (mediaType === 'movie' ? MOVIE_GENRES : TV_GENRES).map(
+    ({ id, name }) => ({
+      id,
+      name: name[language],
+    }),
+  )
   const heroBackdrop = latest.data?.media.find(
     (item) => item.backdrop_path,
   )?.backdrop_path

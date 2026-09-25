@@ -201,7 +201,15 @@
   },
   "history": {
     "title": "Recommendation History",
-    "subtitle": "Review the latest 20 watch directions, recommendations, and model details.",
+    "subtitle": "Review the latest 20 watch directions, recommendations.",
+    "stats": {
+      "runCount": "{{count}} recommendation runs",
+      "avgRating": "Average Rating"
+    },
+    "filters": {
+      "all": "All",
+      "empty": "No recommendation history in this category"
+    },
     "loading": "Loading recommendation history...",
     "deleteAction": "Delete run",
     "confirmDelete": "Delete this recommendation run?",
@@ -214,7 +222,8 @@
     },
     "empty": {
       "title": "No recommendation history yet",
-      "description": "Complete a signed-in AI picker run to see it here."
+      "description": "Complete a signed-in AI picker run to see it here.",
+      "explore": "Start Picking"
     },
     "model": "AI model: {{model}}"
   },

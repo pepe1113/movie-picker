@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Clock, Sparkles, Star, Trash2 } from 'lucide-react'
+import { Clock, Sparkles, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
+import ReactTimeAgo from 'react-time-ago'
+import 'react-time-ago/locale/en'
+import 'react-time-ago/locale/zh-Hant'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { MovieCard } from '@/components/features/movie/MovieCard'
@@ -14,13 +17,15 @@ import {
 } from '@/services/supabase/recommendationHistory'
 import type { MediaType } from '@/services/tmdb/types'
 import { useAuthStore } from '@/stores/authStore'
-import { formatRating } from '@/utils/helpers'
+import { useLanguageStore } from '@/stores/languageStore'
 import { getMediaKey } from '@/utils/media'
 
 export function Component() {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const { user, isAuthenticated, signIn } = useAuthStore()
+  const language = useLanguageStore((state) => state.language)
+  const timeAgoLocale = language === 'zh-TW' ? 'zh-Hant' : 'en'
   const [filter, setFilter] = useState<'all' | MediaType>('all')
   const userId = user?.uid ?? null
   const queryKey = ['recommendation-history', userId]
@@ -52,15 +57,6 @@ export function Component() {
   }
 
   const runs = historyQuery.data ?? []
-  const recommendations = runs.flatMap((run) =>
-    run.recommendations.flatMap((recommendation) =>
-      recommendation.media_snapshot ? [recommendation.media_snapshot] : [],
-    ),
-  )
-  const avgRating = recommendations.length
-    ? recommendations.reduce((sum, item) => sum + item.vote_average, 0) /
-      recommendations.length
-    : 0
   const filteredRuns =
     filter === 'all' ? runs : runs.filter((run) => run.media_type === filter)
 
@@ -71,21 +67,10 @@ export function Component() {
           <h1 className="text-3xl font-bold md:text-4xl">
             {t('history.title')}
           </h1>
-          {runs.length > 0 && (
-            <div className="text-muted-foreground mt-2 flex items-center gap-4 text-sm">
-              <span className="flex items-center gap-1">
-                <Clock className="size-4" />
-                {t('history.stats.runCount', { count: runs.length })}
-              </span>
-              <span className="flex items-center gap-1">
-                <Star className="size-4" />
-                {t('history.stats.avgRating')} {formatRating(avgRating)}
-              </span>
-            </div>
-          )}
         </div>
       </div>
 
+      {/* no-authentication */}
       {!isAuthenticated && (
         <div className="border-border bg-card text-card-foreground flex flex-col gap-3 rounded-lg border p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -159,10 +144,24 @@ export function Component() {
                   <div className="space-y-2">
                     <div className="text-muted-foreground flex items-center gap-2 text-sm">
                       <Clock className="size-4" />
-                      {new Date(run.created_at).toLocaleString()}
+                      <ReactTimeAgo
+                        date={new Date(run.created_at)}
+                        locale={timeAgoLocale}
+                        timeStyle="round"
+                      />
                     </div>
                     <h2 className="text-xl font-bold">{run.intent.summary}</h2>
                     <div className="flex flex-wrap gap-2">
+                      {
+                        <Badge
+                          variant="destructive"
+                          className="bg-destructive/10 text-destructive"
+                        >
+                          {run.media_type === 'movie'
+                            ? t('mediaType.movies')
+                            : t('mediaType.tvShows')}
+                        </Badge>
+                      }
                       {(run.intent.query_plan
                         ? queryPlanBadges(run.intent.query_plan, t)
                         : [

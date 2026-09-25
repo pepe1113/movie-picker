@@ -35,6 +35,7 @@
     "react-hook-form": "^7.71.1",
     "react-i18next": "^16.5.4",
     "react-router-dom": "^7.13.0",
+    "react-time-ago": "^7.4.4",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",

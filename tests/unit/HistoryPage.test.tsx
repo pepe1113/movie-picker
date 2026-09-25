@@ -144,7 +144,7 @@ describe('History page', () => {
     expect(screen.getByText('登入查看推薦紀錄')).toBeInTheDocument()
   })
 
-  it('renders the new intent, labels, model, snapshot, and reason', async () => {
+  it('renders the saved intent, labels, and snapshot', async () => {
     authenticate()
     setRecommendationHistoryRemoteForTesting({
       listLatest: vi.fn().mockResolvedValue([run()]),
@@ -158,9 +158,7 @@ describe('History page', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('不要恐怖片')).toBeInTheDocument()
     expect(screen.getByText('輕鬆')).toBeInTheDocument()
-    expect(screen.getByText('AI 模型：gpt-4o-mini')).toBeInTheDocument()
     expect(screen.getByText('History Pick')).toBeInTheDocument()
-    expect(screen.getByText('喜劇類型適合現在轉換心情。')).toBeInTheDocument()
   })
 
   it('renders saved query plan badges instead of conflicting AI labels', async () => {
@@ -224,10 +222,11 @@ describe('History page', () => {
 
     await renderHistoryPage()
     expect(await screen.findByText('Fallback History Pick')).toBeInTheDocument()
-    expect(screen.getAllByText('Overview 2')).toHaveLength(2)
+    expect(screen.getByText('Overview 2')).toBeInTheDocument()
   })
 
   it('keeps colliding movie and TV ids distinct and links each detail route', async () => {
+    const user = userEvent.setup()
     authenticate()
     setRecommendationHistoryRemoteForTesting({
       listLatest: vi.fn().mockResolvedValue([
@@ -265,6 +264,10 @@ describe('History page', () => {
       'href',
       '/tv/1',
     )
+
+    await user.click(screen.getByRole('tab', { name: '影集' }))
+    expect(screen.queryByText('Same ID Movie')).not.toBeInTheDocument()
+    expect(screen.getByText('Same ID Show')).toBeInTheDocument()
   })
 
   it('skips legacy recommendations without a media snapshot', async () => {

@@ -11,8 +11,7 @@ import {
   MAX_MOVIE_REQUEST_LENGTH,
   RECOMMENDATION_DEADLINE_MS,
   RecommendationRequestError,
-  requestContextRecommendations,
-} from '@/services/supabase/aiRecommendations'
+} from '@/services/supabase/aiRecommendationContract'
 import type { MediaType } from '@/services/tmdb/types'
 import { useAuthStore } from '@/stores/authStore'
 import { useLanguageStore } from '@/stores/languageStore'
@@ -48,6 +47,8 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
         RECOMMENDATION_DEADLINE_MS,
       )
       try {
+        const { requestContextRecommendations } =
+          await import('@/services/supabase/aiRecommendations')
         return await requestContextRecommendations(
           request,
           language,

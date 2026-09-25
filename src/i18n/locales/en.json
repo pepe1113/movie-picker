@@ -135,102 +135,6 @@
       "next": "Next recommendation",
       "goTo": "Show {{title}}",
       "reasonLabel": "Why this movie"
-    },
-    "questions": {
-      "mood": {
-        "title": "What mood do you want tonight?",
-        "subtitle": "Start with the feeling you want the movie to create.",
-        "options": {
-          "relaxed": {
-            "label": "Relaxed",
-            "description": "Light, funny, and easy to watch",
-            "keyword": "Relaxed"
-          },
-          "exciting": {
-            "label": "Exciting",
-            "description": "Action, adventure, and enough tension",
-            "keyword": "Exciting"
-          },
-          "moving": {
-            "label": "Moving",
-            "description": "Emotion-forward and memorable",
-            "keyword": "Moving"
-          },
-          "mindBending": {
-            "label": "Mind-bending",
-            "description": "Mystery, sci-fi, twists, or strong worldbuilding",
-            "keyword": "Mind-bending"
-          }
-        }
-      },
-      "occasion": {
-        "title": "Who is watching?",
-        "subtitle": "Different situations need different safe bets.",
-        "options": {
-          "solo": {
-            "label": "Solo",
-            "description": "More immersive and willing to go heavier",
-            "keyword": "Solo"
-          },
-          "date": {
-            "label": "Date night",
-            "description": "Good atmosphere and easy to talk about",
-            "keyword": "Date night"
-          },
-          "friends": {
-            "label": "Friends",
-            "description": "Fast enough for everyone to get into it",
-            "keyword": "Friends"
-          },
-          "family": {
-            "label": "Family",
-            "description": "Accessible, broad, and group-friendly",
-            "keyword": "Family"
-          }
-        }
-      },
-      "pace": {
-        "title": "What pace works best?",
-        "subtitle": "This changes sorting and popularity thresholds.",
-        "options": {
-          "fast": {
-            "label": "Fast-paced",
-            "description": "Gets moving quickly without dragging",
-            "keyword": "Fast-paced"
-          },
-          "immersive": {
-            "label": "Slow burn",
-            "description": "You are willing to let it build",
-            "keyword": "Slow burn"
-          },
-          "any": {
-            "label": "Any pace",
-            "description": "Any rhythm works if the movie is strong",
-            "keyword": "Any pace"
-          }
-        }
-      },
-      "era": {
-        "title": "How old can the movie be?",
-        "subtitle": "Avoid recommendations you are not in the mood for.",
-        "options": {
-          "recent": {
-            "label": "Recent only",
-            "description": "Prioritize movies from the last five years",
-            "keyword": "Recent"
-          },
-          "classic": {
-            "label": "Classics are fine",
-            "description": "High-rated older titles are welcome",
-            "keyword": "Classic"
-          },
-          "any": {
-            "label": "No limit",
-            "description": "New or old both work",
-            "keyword": "Any era"
-          }
-        }
-      }
     }
   },
   "movieDetail": {
@@ -297,7 +201,15 @@
   },
   "history": {
     "title": "Recommendation History",
-    "subtitle": "Review the latest 20 watch directions, recommendations, and model details.",
+    "subtitle": "Review the latest 20 watch directions, recommendations.",
+    "stats": {
+      "runCount": "{{count}} recommendation runs",
+      "avgRating": "Average Rating"
+    },
+    "filters": {
+      "all": "All",
+      "empty": "No recommendation history in this category"
+    },
     "loading": "Loading recommendation history...",
     "deleteAction": "Delete run",
     "confirmDelete": "Delete this recommendation run?",
@@ -310,7 +222,8 @@
     },
     "empty": {
       "title": "No recommendation history yet",
-      "description": "Complete a signed-in AI picker run to see it here."
+      "description": "Complete a signed-in AI picker run to see it here.",
+      "explore": "Start Picking"
     },
     "model": "AI model: {{model}}"
   },

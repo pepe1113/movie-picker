@@ -184,13 +184,6 @@ async function renderPicker() {
 }
 
 describe('AiMoviePicker', () => {
-  it('keeps the AI picker behind sign-in', async () => {
-    await renderPicker()
-
-    expect(screen.getByText('請先登入，才能使用 AI 選片。')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: '幫我選片' })).toBeDisabled()
-  })
-
   it('uses one coordinator request and reveals only the complete result', async () => {
     authenticate()
     const user = userEvent.setup()

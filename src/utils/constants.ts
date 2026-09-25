@@ -57,3 +57,254 @@ export const ROUTES = {
   WISHLIST: '/wishlist',
   HISTORY: '/history',
 } as const
+
+export const MOVIE_GENRES = [
+  {
+    id: 28,
+    name: {
+      en: 'Action',
+      'zh-TW': '動作',
+    },
+  },
+  {
+    id: 12,
+    name: {
+      en: 'Adventure',
+      'zh-TW': '冒險',
+    },
+  },
+  {
+    id: 16,
+    name: {
+      en: 'Animation',
+      'zh-TW': '動畫',
+    },
+  },
+  {
+    id: 35,
+    name: {
+      en: 'Comedy',
+      'zh-TW': '喜劇',
+    },
+  },
+  {
+    id: 80,
+    name: {
+      en: 'Crime',
+      'zh-TW': '犯罪',
+    },
+  },
+  {
+    id: 99,
+    name: {
+      en: 'Documentary',
+      'zh-TW': '紀錄',
+    },
+  },
+  {
+    id: 18,
+    name: {
+      en: 'Drama',
+      'zh-TW': '劇情',
+    },
+  },
+  {
+    id: 10751,
+    name: {
+      en: 'Family',
+      'zh-TW': '家庭',
+    },
+  },
+  {
+    id: 14,
+    name: {
+      en: 'Fantasy',
+      'zh-TW': '奇幻',
+    },
+  },
+  {
+    id: 36,
+    name: {
+      en: 'History',
+      'zh-TW': '歷史',
+    },
+  },
+  {
+    id: 27,
+    name: {
+      en: 'Horror',
+      'zh-TW': '恐怖',
+    },
+  },
+  {
+    id: 10402,
+    name: {
+      en: 'Music',
+      'zh-TW': '音樂',
+    },
+  },
+  {
+    id: 9648,
+    name: {
+      en: 'Mystery',
+      'zh-TW': '懸疑',
+    },
+  },
+  {
+    id: 10749,
+    name: {
+      en: 'Romance',
+      'zh-TW': '愛情',
+    },
+  },
+  {
+    id: 878,
+    name: {
+      en: 'Science Fiction',
+      'zh-TW': '科幻',
+    },
+  },
+  {
+    id: 10770,
+    name: {
+      en: 'TV Movie',
+      'zh-TW': '電視電影',
+    },
+  },
+  {
+    id: 53,
+    name: {
+      en: 'Thriller',
+      'zh-TW': '驚悚',
+    },
+  },
+  {
+    id: 10752,
+    name: {
+      en: 'War',
+      'zh-TW': '戰爭',
+    },
+  },
+  {
+    id: 37,
+    name: {
+      en: 'Western',
+      'zh-TW': '西部',
+    },
+  },
+] as const
+
+export const TV_GENRES = [
+  {
+    id: 10759,
+    name: {
+      en: 'Action & Adventure',
+      'zh-TW': '動作冒險',
+    },
+  },
+  {
+    id: 16,
+    name: {
+      en: 'Animation',
+      'zh-TW': '動畫',
+    },
+  },
+  {
+    id: 35,
+    name: {
+      en: 'Comedy',
+      'zh-TW': '喜劇',
+    },
+  },
+  {
+    id: 80,
+    name: {
+      en: 'Crime',
+      'zh-TW': '犯罪',
+    },
+  },
+  {
+    id: 99,
+    name: {
+      en: 'Documentary',
+      'zh-TW': '紀錄',
+    },
+  },
+  {
+    id: 18,
+    name: {
+      en: 'Drama',
+      'zh-TW': '劇情',
+    },
+  },
+  {
+    id: 10751,
+    name: {
+      en: 'Family',
+      'zh-TW': '家庭',
+    },
+  },
+  {
+    id: 10762,
+    name: {
+      en: 'Kids',
+      'zh-TW': '兒童',
+    },
+  },
+  {
+    id: 9648,
+    name: {
+      en: 'Mystery',
+      'zh-TW': '懸疑',
+    },
+  },
+  {
+    id: 10763,
+    name: {
+      en: 'News',
+      'zh-TW': '新聞',
+    },
+  },
+  {
+    id: 10764,
+    name: {
+      en: 'Reality',
+      'zh-TW': '真人秀',
+    },
+  },
+  {
+    id: 10765,
+    name: {
+      en: 'Sci-Fi & Fantasy',
+      'zh-TW': '科幻與奇幻',
+    },
+  },
+  {
+    id: 10766,
+    name: {
+      en: 'Soap',
+      'zh-TW': '肥皂劇',
+    },
+  },
+  {
+    id: 10767,
+    name: {
+      en: 'Talk',
+      'zh-TW': '脫口秀',
+    },
+  },
+  {
+    id: 10768,
+    name: {
+      en: 'War & Politics',
+      'zh-TW': '戰爭與政治',
+    },
+  },
+  {
+    id: 37,
+    name: {
+      en: 'Western',
+      'zh-TW': '西部',
+    },
+  },
+] as const

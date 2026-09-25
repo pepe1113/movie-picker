@@ -1,34 +1,25 @@
 import { z } from 'zod'
-import type { MediaItem, MediaType } from '@/services/tmdb/types'
+import type { MediaType } from '@/services/tmdb/types'
+import {
+  RECOMMENDATION_DEADLINE_MS,
+  RecommendationRequestError,
+  type ContextRecommendationResponse,
+} from './aiRecommendationContract'
 import { getSupabaseClient } from './client'
 
-export const MAX_MOVIE_REQUEST_LENGTH = 500
-export const RECOMMENDATION_DEADLINE_MS = 31_000
+export {
+  MAX_MOVIE_REQUEST_LENGTH,
+  RECOMMENDATION_DEADLINE_MS,
+  RecommendationRequestError,
+} from './aiRecommendationContract'
+export type {
+  ContextRecommendation,
+  ContextRecommendationResponse,
+  QueryPlanSnapshot,
+  RecommendationErrorCode,
+} from './aiRecommendationContract'
+
 const QUERY_PLAN_ACCEPT = 'application/vnd.movie-picker.query-plan+json'
-
-export type RecommendationErrorCode =
-  | 'media_type_mismatch'
-  | 'unresolved_person'
-  | 'unresolved_keyword'
-  | 'unknown'
-
-export class RecommendationRequestError extends Error {
-  code: RecommendationErrorCode
-  condition?: string
-
-  constructor(code: RecommendationErrorCode, condition?: string) {
-    super(code)
-    this.code = code
-    this.condition = condition
-  }
-}
-
-export interface ContextRecommendation {
-  media_id: number
-  reason?: string
-  kind: 'primary' | 'wildcard'
-  media_snapshot: MediaItem
-}
 
 const queryPlanSchema = z
   .object({
@@ -86,24 +77,6 @@ const queryPlanSchema = z
     people_match: z.enum(['any', 'all']),
   })
   .strict()
-
-export type QueryPlanSnapshot = z.infer<typeof queryPlanSchema>
-
-export interface ContextRecommendationResponse {
-  media_type: MediaType
-  query_plan?: QueryPlanSnapshot
-  direction: {
-    summary: string
-    labels: Array<{
-      text: string
-      kind: 'hard' | 'soft'
-    }>
-  }
-  recommendations: ContextRecommendation[]
-  provider: 'openai'
-  model: string
-  used_fallback: boolean
-}
 
 const mediaBase = {
   adult: z.boolean(),

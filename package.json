@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "deploy:supabase": "supabase functions deploy recommend-movies --project-ref rvwalztmysynzfiqchsl --use-api",
+    "deploy:supabase": "supabase functions deploy --project-ref rvwalztmysynzfiqchsl --use-api",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",

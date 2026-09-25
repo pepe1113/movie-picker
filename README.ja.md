@@ -90,7 +90,7 @@ Data flow と validation rule の詳細は、[AI Picker、Supabase Auth、Data A
 
 ## Develop
 
-Frontend の environment variables は `.env.example` を参照して設定します。AI Function が使用する OpenAI と TMDB の key は Supabase Edge Function Secrets に保存してください。
+Frontend の environment variables は `.env.example` を参照して設定します。`recommend-movies` 用の OpenAI／TMDB key と `media-detail` 用の TMDB／OMDb key は Supabase Edge Function Secrets に保存してください。`media-detail` は未ログインでも使用できます。OMDb key は任意で、設定がない場合は外部評価を表示しません。Local の Function 用に `TMDB_ACCESS_TOKEN` と任意の `OMDB_API_KEY` を追跡対象外の `supabase/functions/.env` に設定します。
 
 Local で model を比較する場合は、`.env.local` に `OPENAI_API_KEY` と `TMDB_ACCESS_TOKEN` を設定し、`bun run test:ai-live -- gpt-4o-mini gpt-6-luna` を実行します。Supabase、login、database を経由せず、OpenAI と TMDB を直接呼び出し、usage、推定 cost、query plan を表示します。
 
@@ -102,7 +102,7 @@ Local で model を比較する場合は、`.env.local` に `OPENAI_API_KEY` と
 | `bun run test:ai-live`    | AI と TMDB を Local で実測し token cost を表示 |
 | `bun run lint`            | Lint を実行                                    |
 | `bun run build`           | Type check 後、production bundle を生成        |
-| `bun run deploy:supabase` | `recommend-movies` Edge Function を deploy     |
+| `bun run deploy:supabase` | すべての Edge Functions を deploy              |
 
 ## CI とデプロイ
 

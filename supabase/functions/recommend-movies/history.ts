@@ -49,3 +49,13 @@ export function saveHistoryInBackground(
 ) {
   waitUntil(insert().catch(onError))
 }
+
+export function saveAuthenticatedHistory(
+  userId: string | null,
+  waitUntil: (task: Promise<unknown>) => void,
+  insert: (verifiedUserId: string) => Promise<void>,
+) {
+  if (!userId) return false
+  saveHistoryInBackground(waitUntil, () => insert(userId))
+  return true
+}

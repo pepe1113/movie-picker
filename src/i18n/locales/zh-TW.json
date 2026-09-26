@@ -74,7 +74,7 @@
     "requestPlaceholder": "例如：今天很累，想和另一半看一部步調輕鬆、近幾年的溫暖電影。",
     "requestHint": "可以描述心情、場合、片長、語言或明確排除的內容。",
     "requestRequired": "請至少輸入兩個字的觀影需求。",
-    "signInRequired": "請先登入，才能使用 AI 選片。",
+    "signInToSave": "不用登入也能試用；登入後會保存推薦紀錄。",
     "analyzeRequest": "幫我選片",
     "analyzing": "AI 模型正在挑片...",
     "analysisError": "這次無法完成選片，請再試一次。",

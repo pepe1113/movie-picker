@@ -25,6 +25,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const { t } = useTranslation()
   const language = useLanguageStore((state) => state.language)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  const isAuthLoading = useAuthStore((state) => state.isLoading)
   const [requestText, setRequestText] = useState('')
   const [mediaType, setMediaType] = useState<MediaType>('movie')
   const [inputError, setInputError] = useState(false)
@@ -207,18 +208,16 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                   </span>
                 </div>
 
-                {!isAuthenticated && (
+                {!isAuthLoading && !isAuthenticated && (
                   <p className="rounded-lg border border-[#539df5]/40 bg-[#539df5]/10 px-4 py-3 text-sm text-[#539df5]">
-                    {t('aiPicker.signInRequired')}
+                    {t('aiPicker.signInToSave')}
                   </p>
                 )}
 
                 <Button
                   type="submit"
                   size="lg"
-                  disabled={
-                    !isAuthenticated || recommendationMutation.isPending
-                  }
+                  disabled={recommendationMutation.isPending}
                   className="w-full shadow-[rgba(214,43,66,0.24)_0px_12px_30px]"
                 >
                   <Sparkles

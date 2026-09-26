@@ -8,3 +8,6 @@ enabled = false
 
 [functions.media-detail]
 verify_jwt = false
+
+[functions.recommend-movies]
+verify_jwt = false

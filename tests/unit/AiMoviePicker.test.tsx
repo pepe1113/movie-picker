@@ -184,6 +184,23 @@ async function renderPicker() {
 }
 
 describe('AiMoviePicker', () => {
+  it('lets a guest request recommendations and explains how history is saved', async () => {
+    const user = userEvent.setup()
+    useAuthStore.setState({ isLoading: false })
+    vi.mocked(requestContextRecommendations).mockResolvedValue(result())
+
+    await renderPicker()
+    expect(
+      screen.getByText('不用登入也能試用；登入後會保存推薦紀錄。'),
+    ).toBeInTheDocument()
+
+    await user.type(screen.getByLabelText('觀影需求'), '想看一部輕鬆喜劇')
+    await user.click(screen.getByRole('button', { name: '幫我選片' }))
+
+    expect(requestContextRecommendations).toHaveBeenCalledOnce()
+    expect(await screen.findByText('Context Pick')).toBeInTheDocument()
+  })
+
   it('uses one coordinator request and reveals only the complete result', async () => {
     authenticate()
     const user = userEvent.setup()

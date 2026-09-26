@@ -74,7 +74,7 @@
     "requestPlaceholder": "For example: I am tired and want a warm, easy recent movie to watch with my partner.",
     "requestHint": "Mention mood, occasion, runtime, language, or explicit exclusions.",
     "requestRequired": "Enter at least two characters describing what you want.",
-    "signInRequired": "Sign in to use the AI movie picker.",
+    "signInToSave": "Try it without an account. Sign in to save your recommendation history.",
     "analyzeRequest": "Pick My Movies",
     "analyzing": "The AI model is picking movies...",
     "analysisError": "This movie pick could not be completed. Please try again.",

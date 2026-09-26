@@ -12,7 +12,13 @@ import {
   RecommendationStageError,
   type CoordinatorConfig,
 } from './orchestrator.ts'
-import { createHistoryRecord, saveHistoryInBackground } from './history.ts'
+import {
+  anonymousDailyLimit,
+  consumeAnonymousQuota,
+  getOptionalUserId,
+  hasUserAuthorization,
+} from './access.ts'
+import { createHistoryRecord, saveAuthenticatedHistory } from './history.ts'
 
 declare const EdgeRuntime: {
   waitUntil(promise: Promise<unknown>): void
@@ -20,12 +26,17 @@ declare const EdgeRuntime: {
 
 const DEADLINE_MS = 30_000
 
-function jsonResponse(body: unknown, status = 200) {
+function jsonResponse(
+  body: unknown,
+  status = 200,
+  extraHeaders: Record<string, string> = {},
+) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       ...corsHeaders,
       'Content-Type': 'application/json',
+      ...extraHeaders,
     },
   })
 }
@@ -47,18 +58,49 @@ function getCoordinatorConfig(): CoordinatorConfig {
 
 async function handleRecommendation(req: Request, signal: AbortSignal) {
   const authorization = req.headers.get('Authorization')
-  if (!authorization) {
-    return jsonResponse({ error: 'Authentication required' }, 401)
+  const supabaseUrl = getRequiredEnv('SUPABASE_URL')
+  const anonKey = getRequiredEnv('SUPABASE_ANON_KEY')
+  const hasUserToken = hasUserAuthorization(
+    authorization,
+    req.headers.get('apikey'),
+    anonKey,
+  )
+  const userClient = hasUserToken
+    ? createClient(supabaseUrl, getRequiredEnv('SUPABASE_ANON_KEY'), {
+        global: { headers: { Authorization: authorization! } },
+      })
+    : null
+  const userId = await getOptionalUserId(userClient)
+
+  if (hasUserToken && !userId) {
+    return jsonResponse({ error: 'Invalid or expired authentication' }, 401)
   }
 
-  const supabase = createClient(
-    getRequiredEnv('SUPABASE_URL'),
-    getRequiredEnv('SUPABASE_ANON_KEY'),
-    { global: { headers: { Authorization: authorization } } },
-  )
-  const { data: userData, error: userError } = await supabase.auth.getUser()
-  if (userError || !userData.user) {
-    return jsonResponse({ error: 'Authentication required' }, 401)
+  if (!userId) {
+    if (Deno.env.get('ANONYMOUS_RECOMMENDATIONS_ENABLED') === 'false') {
+      return jsonResponse({ error: 'Anonymous recommendations disabled' }, 503)
+    }
+    const quotaClient = createClient(
+      supabaseUrl,
+      getRequiredEnv('SUPABASE_SERVICE_ROLE_KEY'),
+    )
+    try {
+      const allowed = await consumeAnonymousQuota(
+        quotaClient,
+        anonymousDailyLimit(Deno.env.get('ANONYMOUS_DAILY_LIMIT')),
+      )
+      if (!allowed) {
+        return jsonResponse({ error: 'Anonymous daily limit reached' }, 429, {
+          'Retry-After': '86400',
+        })
+      }
+    } catch (error) {
+      console.error('anonymous recommendation quota failed', error)
+      return jsonResponse(
+        { error: 'Anonymous recommendations unavailable' },
+        503,
+      )
+    }
   }
 
   let request
@@ -106,21 +148,22 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
     result.resolvedPeople,
     result.resolvedKeywords,
   )
-  const historyRecord = createHistoryRecord(
-    userData.user.id,
-    request.media_type,
-    result.plan,
-    queryPlan,
-    result.candidates.map((media) => media.id),
-    result.recommendations,
-    result.resolvedPeople,
-    result.resolvedKeywords,
-    result.model,
-  )
-  saveHistoryInBackground(
+  saveAuthenticatedHistory(
+    userId,
     (task) => EdgeRuntime.waitUntil(task),
-    async () => {
-      const { error } = await supabase
+    async (verifiedUserId) => {
+      const historyRecord = createHistoryRecord(
+        verifiedUserId,
+        request.media_type,
+        result.plan,
+        queryPlan,
+        result.candidates.map((media) => media.id),
+        result.recommendations,
+        result.resolvedPeople,
+        result.resolvedKeywords,
+        result.model,
+      )
+      const { error } = await userClient!
         .from('ai_recommendation_runs')
         .insert(historyRecord)
       if (error) throw error

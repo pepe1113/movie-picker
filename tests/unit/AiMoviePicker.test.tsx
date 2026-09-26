@@ -314,6 +314,18 @@ describe('AiMoviePicker', () => {
     })
     fireEvent.click(screen.getByRole('button', { name: '幫我選片' }))
 
+    expect(screen.getByRole('status')).toHaveTextContent(
+      '猜你會喜歡什麼，施展一點魔法...',
+    )
+    expect(screen.getByTestId('nyan-cat')).toHaveAttribute(
+      'aria-hidden',
+      'true',
+    )
+    expect(screen.getByRole('progressbar')).toHaveAttribute(
+      'aria-label',
+      '魔法選片進度',
+    )
+
     await act(async () => vi.advanceTimersByTime(29_900))
     expect(
       Number(screen.getByRole('progressbar').getAttribute('aria-valuenow')),

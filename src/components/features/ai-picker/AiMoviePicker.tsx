@@ -266,19 +266,20 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                   <Sparkles
                     className={cn(
                       'size-4',
-                      recommendationMutation.isPending && 'animate-pulse',
+                      recommendationMutation.isPending &&
+                        'animate-pulse motion-reduce:animate-none',
                     )}
                   />
                   {recommendationMutation.isPending
-                    ? t('aiPicker.loading')
+                    ? t('aiPicker.loadingButton')
                     : t('aiPicker.analyzeRequest')}
                 </Button>
               </form>
 
               {recommendationMutation.isPending && (
-                <div className="space-y-2" aria-live="polite">
+                <div className="space-y-3">
                   <div className="flex justify-between text-sm">
-                    <span>{t('aiPicker.progressLabel')}</span>
+                    <span role="status">{t('aiPicker.loading')}</span>
                     <span ref={progressTextRef}>0%</span>
                   </div>
                   <div
@@ -288,13 +289,41 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     aria-valuemin={0}
                     aria-valuemax={100}
                     aria-valuenow={0}
-                    className="bg-secondary h-2 overflow-hidden rounded-full"
+                    className="nyan-progress-track bg-secondary/70 border-foreground/70 h-20 overflow-hidden border-2"
                   >
                     <div
                       ref={progressFillRef}
-                      className="bg-primary h-full transition-[width] duration-100"
+                      className="nyan-progress-fill relative h-full transition-[width] duration-100"
                       style={{ width: '0%' }}
-                    />
+                    >
+                      <div className="nyan-rainbow" aria-hidden="true">
+                        <span />
+                        <span />
+                        <span />
+                        <span />
+                        <span />
+                        <span />
+                      </div>
+                      <div
+                        className="nyan-cat"
+                        data-testid="nyan-cat"
+                        aria-hidden="true"
+                      >
+                        <span className="nyan-cat-tail" />
+                        <span className="nyan-cat-body">
+                          <i />
+                          <i />
+                          <i />
+                        </span>
+                        <span className="nyan-cat-head">
+                          <i className="nyan-cat-eye nyan-cat-eye-left" />
+                          <i className="nyan-cat-eye nyan-cat-eye-right" />
+                          <i className="nyan-cat-mouth" />
+                        </span>
+                        <span className="nyan-cat-leg nyan-cat-leg-left" />
+                        <span className="nyan-cat-leg nyan-cat-leg-right" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

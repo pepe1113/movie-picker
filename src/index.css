@@ -208,6 +208,236 @@ html:has(.home-scroll-page) footer {
   }
 }
 
+@keyframes nyan-cat-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes nyan-rainbow-wave {
+  0%,
+  100% {
+    transform: translateY(-3px);
+  }
+
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+.nyan-progress-track {
+  box-shadow: inset 4px 4px 0 rgb(0 0 0 / 35%);
+}
+
+.nyan-progress-fill {
+  min-width: 3.5rem;
+}
+
+.nyan-rainbow {
+  position: absolute;
+  top: 22px;
+  right: 38px;
+  left: 0;
+  height: 30px;
+  animation: nyan-rainbow-wave 600ms steps(2, jump-none) infinite;
+  clip-path: polygon(
+    0 10%,
+    12% 10%,
+    12% 0,
+    24% 0,
+    24% 10%,
+    36% 10%,
+    36% 0,
+    48% 0,
+    48% 10%,
+    60% 10%,
+    60% 0,
+    72% 0,
+    72% 10%,
+    84% 10%,
+    84% 0,
+    100% 0,
+    100% 90%,
+    88% 90%,
+    88% 100%,
+    76% 100%,
+    76% 90%,
+    64% 90%,
+    64% 100%,
+    52% 100%,
+    52% 90%,
+    40% 90%,
+    40% 100%,
+    28% 100%,
+    28% 90%,
+    16% 90%,
+    16% 100%,
+    0 100%
+  );
+}
+
+.nyan-rainbow span {
+  display: block;
+  height: 5px;
+}
+
+.nyan-rainbow span:nth-child(1) {
+  background: #ff3b30;
+}
+
+.nyan-rainbow span:nth-child(2) {
+  background: #ff9500;
+}
+
+.nyan-rainbow span:nth-child(3) {
+  background: #ffcc00;
+}
+
+.nyan-rainbow span:nth-child(4) {
+  background: #34c759;
+}
+
+.nyan-rainbow span:nth-child(5) {
+  background: #32ade6;
+}
+
+.nyan-rainbow span:nth-child(6) {
+  background: #af52de;
+}
+
+.nyan-cat {
+  position: absolute;
+  top: 15px;
+  right: -2px;
+  width: 56px;
+  height: 46px;
+  animation: nyan-cat-bounce 600ms steps(2, jump-none) infinite;
+  image-rendering: pixelated;
+}
+
+.nyan-cat-body {
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  width: 34px;
+  height: 30px;
+  border: 4px solid #202025;
+  background: #ff9fcb;
+  box-shadow: inset 0 0 0 3px #ffd3e7;
+}
+
+.nyan-cat-body i {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #ff4f9a;
+}
+
+.nyan-cat-body i:nth-child(1) {
+  top: 4px;
+  left: 5px;
+}
+
+.nyan-cat-body i:nth-child(2) {
+  top: 15px;
+  left: 12px;
+}
+
+.nyan-cat-body i:nth-child(3) {
+  top: 7px;
+  right: 5px;
+}
+
+.nyan-cat-head {
+  position: absolute;
+  top: 12px;
+  right: 0;
+  width: 27px;
+  height: 23px;
+  border: 4px solid #202025;
+  background: #8b8b93;
+}
+
+.nyan-cat-head::before,
+.nyan-cat-head::after {
+  position: absolute;
+  top: -10px;
+  width: 8px;
+  height: 8px;
+  border: 4px solid #202025;
+  border-bottom: 0;
+  background: #8b8b93;
+  content: '';
+}
+
+.nyan-cat-head::before {
+  left: -4px;
+}
+
+.nyan-cat-head::after {
+  right: -4px;
+}
+
+.nyan-cat-eye,
+.nyan-cat-mouth {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #202025;
+}
+
+.nyan-cat-eye {
+  top: 5px;
+}
+
+.nyan-cat-eye-left {
+  left: 4px;
+}
+
+.nyan-cat-eye-right {
+  right: 4px;
+}
+
+.nyan-cat-mouth {
+  right: 8px;
+  bottom: 3px;
+  box-shadow: -4px 0 #202025;
+}
+
+.nyan-cat-tail {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 12px;
+  height: 7px;
+  border: 4px solid #202025;
+  border-right: 0;
+  background: #8b8b93;
+}
+
+.nyan-cat-leg {
+  position: absolute;
+  bottom: 3px;
+  width: 10px;
+  height: 8px;
+  border: 4px solid #202025;
+  border-top: 0;
+  background: #8b8b93;
+}
+
+.nyan-cat-leg-left {
+  left: 13px;
+}
+
+.nyan-cat-leg-right {
+  right: 5px;
+}
+
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .group:hover > .poster-card-flip {
     animation: poster-card-flip 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -216,7 +446,9 @@ html:has(.home-scroll-page) footer {
 
 @media (prefers-reduced-motion: reduce) {
   .hero-title-gradient,
-  .hero-title-cursor {
+  .hero-title-cursor,
+  .nyan-cat,
+  .nyan-rainbow {
     animation: none;
   }
 }

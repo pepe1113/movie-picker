@@ -76,7 +76,7 @@
       {
         "emoji": "🍿",
         "label": "Easy crowd-pleaser",
-        "prompt": "I want something light, easy to get into, and well-liked. Nothing too heavy."
+        "prompt": "I want a light, easy-to-follow comedy or animated movie with a good reputation. No horror, heavy themes, or excessive gore."
       },
       {
         "emoji": "⚡",
@@ -86,12 +86,12 @@
       {
         "emoji": "💞",
         "label": "Cozy date night",
-        "prompt": "I want something warm and comforting to watch with my partner, with a little romance that is not cheesy."
+        "prompt": "I want a light romantic comedy to watch with my partner. Make it easy to follow, with no horror or heavy themes."
       },
       {
         "emoji": "🎲",
-        "label": "Hidden surprise",
-        "prompt": "I want a less mainstream, well-reviewed surprise with a fresh premise and a conclusion that is not too bleak."
+        "label": "Sci-fi surprise",
+        "prompt": "I want a fast-paced, well-reviewed science-fiction or mystery movie, but nothing scary or too bleak."
       }
     ],
     "requestPlaceholder": "For example: I am tired and want a warm, easy recent movie to watch with my partner.",

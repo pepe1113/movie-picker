@@ -21,8 +21,17 @@ interface AiMoviePickerProps {
   onBrowseMovies?: () => void
 }
 
+interface RequestTemplate {
+  emoji: string
+  label: string
+  prompt: string
+}
+
 export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const { t } = useTranslation()
+  const requestTemplates = t('aiPicker.templates', {
+    returnObjects: true,
+  }) as RequestTemplate[]
   const language = useLanguageStore((state) => state.language)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
   const isAuthLoading = useAuthStore((state) => state.isLoading)
@@ -100,6 +109,11 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
     startRecommendation()
   }
 
+  const applyTemplate = (prompt: string) => {
+    setRequestText(prompt)
+    setInputError(false)
+  }
+
   const reset = () => {
     setRequestText('')
     setMediaType('movie')
@@ -126,11 +140,11 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
       <div className="via-primary/70 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent" />
 
       <div className="relative container mx-auto flex min-h-[calc(100svh-64px)] flex-1 flex-col justify-center px-6 py-10 md:px-12 md:py-12 lg:px-16">
-        <div className="bg-card/75 rounded-2xl border border-white/10 p-5 shadow-[rgba(108,18,35,0.22)_0px_24px_70px,rgba(0,0,0,0.45)_0px_12px_32px] backdrop-blur-xl md:p-8">
+        <div className="bg-card/90 border-foreground/80 border-4 p-5 font-mono shadow-[8px_8px_0_rgba(214,43,66,0.55),12px_12px_0_rgba(0,0,0,0.5)] backdrop-blur-xl md:p-8">
           {!result ? (
             <div className="mx-auto max-w-3xl space-y-7">
               <div className="space-y-3 text-center">
-                <div className="text-primary bg-primary/10 border-primary/20 shadow-primary/10 mx-auto flex size-12 items-center justify-center rounded-xl border shadow-lg">
+                <div className="text-primary bg-primary/10 border-primary/60 mx-auto flex size-12 items-center justify-center border-2 shadow-[4px_4px_0_rgba(214,43,66,0.35)]">
                   <Sparkles className="size-5" />
                 </div>
                 <h2 className="text-2xl font-bold tracking-tight text-balance md:text-3xl">
@@ -147,7 +161,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     {t('aiPicker.mediaTypeLabel')}
                   </legend>
                   <div
-                    className="bg-background/70 grid grid-cols-2 gap-1 rounded-full border border-white/8 p-1"
+                    className="bg-background/70 grid grid-cols-2 gap-2 border-2 border-white/20 p-1"
                     role="group"
                   >
                     {(['movie', 'tv'] as const).map((type) => (
@@ -159,7 +173,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                         disabled={recommendationMutation.isPending}
                         onClick={() => setMediaType(type)}
                         className={cn(
-                          'h-10 shadow-none',
+                          'h-10 rounded-none border-2 shadow-none',
                           mediaType !== type && 'hover:bg-white/5',
                         )}
                       >
@@ -174,6 +188,35 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 >
                   {t('aiPicker.requestLabel')}
                 </label>
+                <fieldset className="space-y-2">
+                  <legend className="text-muted-foreground text-xs font-bold tracking-[1.4px] uppercase">
+                    {t('aiPicker.templatesLabel')}
+                  </legend>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {requestTemplates.map((template) => (
+                      <Button
+                        key={template.label}
+                        type="button"
+                        variant="secondary"
+                        disabled={recommendationMutation.isPending}
+                        onClick={() => applyTemplate(template.prompt)}
+                        className="border-foreground/70 h-auto min-h-20 justify-start gap-3 rounded-none border-2 px-4 py-3 text-left whitespace-normal shadow-[4px_4px_0_rgba(0,0,0,0.45)] hover:translate-x-0.5 hover:translate-y-0.5 hover:scale-100 hover:shadow-[2px_2px_0_rgba(0,0,0,0.45)]"
+                      >
+                        <span aria-hidden="true" className="text-2xl">
+                          {template.emoji}
+                        </span>
+                        <span className="space-y-1">
+                          <span className="block font-bold">
+                            {template.label}
+                          </span>
+                          <span className="text-muted-foreground block text-xs leading-relaxed font-normal">
+                            {template.prompt}
+                          </span>
+                        </span>
+                      </Button>
+                    ))}
+                  </div>
+                </fieldset>
                 <Textarea
                   id="movie-request"
                   value={requestText}
@@ -188,7 +231,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     inputError ? 'movie-request-error' : 'movie-request-hint'
                   }
                   disabled={recommendationMutation.isPending}
-                  className="bg-background/70 min-h-36 border border-white/8 shadow-none focus:border-white/20 focus:shadow-[rgba(214,43,66,0.18)_0px_0px_0px_3px]"
+                  className="bg-background/70 border-foreground/70 min-h-36 rounded-none border-2 font-mono shadow-[4px_4px_0_rgba(0,0,0,0.35)] focus:border-white/40 focus:shadow-[4px_4px_0_rgba(214,43,66,0.45)]"
                 />
                 <div className="flex items-start justify-between gap-4 text-xs">
                   <p
@@ -209,7 +252,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 </div>
 
                 {!isAuthLoading && !isAuthenticated && (
-                  <p className="rounded-lg border border-[#539df5]/40 bg-[#539df5]/10 px-4 py-3 text-sm text-[#539df5]">
+                  <p className="border-2 border-[#539df5]/60 bg-[#539df5]/10 px-4 py-3 text-sm text-[#539df5] shadow-[3px_3px_0_rgba(83,157,245,0.25)]">
                     {t('aiPicker.signInToSave')}
                   </p>
                 )}
@@ -218,7 +261,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                   type="submit"
                   size="lg"
                   disabled={recommendationMutation.isPending}
-                  className="w-full shadow-[rgba(214,43,66,0.24)_0px_12px_30px]"
+                  className="w-full rounded-none border-2 border-black/50 shadow-[5px_5px_0_rgba(0,0,0,0.55)] hover:translate-x-0.5 hover:translate-y-0.5 hover:scale-100 hover:shadow-[3px_3px_0_rgba(0,0,0,0.55)]"
                 >
                   <Sparkles
                     className={cn(

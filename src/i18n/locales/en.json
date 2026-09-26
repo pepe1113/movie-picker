@@ -71,6 +71,29 @@
     "requestSubtitle": "Describe your current state, desired feeling, viewing situation, or anything you want to avoid.",
     "mediaTypeLabel": "Media type",
     "requestLabel": "Watch Request",
+    "templatesLabel": "Quick starts",
+    "templates": [
+      {
+        "emoji": "🍿",
+        "label": "Easy crowd-pleaser",
+        "prompt": "I want something light, easy to get into, and well-liked. Nothing too heavy."
+      },
+      {
+        "emoji": "⚡",
+        "label": "Fast adventure",
+        "prompt": "I want a fast-paced, exciting adventure, but no horror or excessive gore."
+      },
+      {
+        "emoji": "💞",
+        "label": "Cozy date night",
+        "prompt": "I want something warm and comforting to watch with my partner, with a little romance that is not cheesy."
+      },
+      {
+        "emoji": "🎲",
+        "label": "Hidden surprise",
+        "prompt": "I want a less mainstream, well-reviewed surprise with a fresh premise and a conclusion that is not too bleak."
+      }
+    ],
     "requestPlaceholder": "For example: I am tired and want a warm, easy recent movie to watch with my partner.",
     "requestHint": "Mention mood, occasion, runtime, language, or explicit exclusions.",
     "requestRequired": "Enter at least two characters describing what you want.",

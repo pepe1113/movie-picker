@@ -162,6 +162,13 @@ function authenticate() {
   })
 }
 
+const requestTemplates = [
+  ['輕鬆入門', '想看節奏輕鬆、容易投入、口碑不錯的作品，不要太沉重。'],
+  ['刺激冒險', '想看節奏明快、緊張刺激的冒險故事，但不要恐怖或太血腥。'],
+  ['約會療癒', '想和另一半一起看溫暖療癒、有一點浪漫又不尷尬的作品。'],
+  ['冷門驚喜', '想看不太主流但評價好的驚喜之作，題材新鮮，結局不要太壓抑。'],
+] as const
+
 async function renderPicker() {
   const [{ AiMoviePicker }, { default: i18n }] = await Promise.all([
     import('@/components/features/ai-picker/AiMoviePicker'),
@@ -184,6 +191,41 @@ async function renderPicker() {
 }
 
 describe('AiMoviePicker', () => {
+  it.each(requestTemplates)(
+    'fills the request from the %s template without submitting',
+    async (label, prompt) => {
+      const user = userEvent.setup()
+      useAuthStore.setState({ isLoading: false })
+
+      await renderPicker()
+      await user.click(screen.getByRole('button', { name: new RegExp(label) }))
+
+      expect(screen.getByLabelText('觀影需求')).toHaveValue(prompt)
+      expect(requestContextRecommendations).not.toHaveBeenCalled()
+    },
+  )
+
+  it('supports keyboard template selection and clears the input error', async () => {
+    const user = userEvent.setup()
+    useAuthStore.setState({ isLoading: false })
+
+    await renderPicker()
+    await user.click(screen.getByRole('button', { name: '幫我選片' }))
+    expect(screen.getByText('請至少輸入兩個字的觀影需求。')).toBeInTheDocument()
+
+    const template = screen.getByRole('button', { name: /輕鬆入門/ })
+    template.focus()
+    await user.keyboard('{Enter}')
+
+    expect(screen.getByLabelText('觀影需求')).toHaveValue(
+      requestTemplates[0][1],
+    )
+    expect(
+      screen.queryByText('請至少輸入兩個字的觀影需求。'),
+    ).not.toBeInTheDocument()
+    expect(requestContextRecommendations).not.toHaveBeenCalled()
+  })
+
   it('lets a guest request recommendations and explains how history is saved', async () => {
     const user = userEvent.setup()
     useAuthStore.setState({ isLoading: false })

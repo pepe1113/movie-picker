@@ -71,6 +71,29 @@
     "requestSubtitle": "描述目前狀態、想獲得的感受、觀影場合或不想看到的內容。",
     "mediaTypeLabel": "媒體型別",
     "requestLabel": "觀影需求",
+    "templatesLabel": "快速開始",
+    "templates": [
+      {
+        "emoji": "🍿",
+        "label": "輕鬆入門",
+        "prompt": "想看節奏輕鬆、容易投入、口碑不錯的作品，不要太沉重。"
+      },
+      {
+        "emoji": "⚡",
+        "label": "刺激冒險",
+        "prompt": "想看節奏明快、緊張刺激的冒險故事，但不要恐怖或太血腥。"
+      },
+      {
+        "emoji": "💞",
+        "label": "約會療癒",
+        "prompt": "想和另一半一起看溫暖療癒、有一點浪漫又不尷尬的作品。"
+      },
+      {
+        "emoji": "🎲",
+        "label": "冷門驚喜",
+        "prompt": "想看不太主流但評價好的驚喜之作，題材新鮮，結局不要太壓抑。"
+      }
+    ],
     "requestPlaceholder": "例如：今天很累，想和另一半看一部步調輕鬆、近幾年的溫暖電影。",
     "requestHint": "可以描述心情、場合、片長、語言或明確排除的內容。",
     "requestRequired": "請至少輸入兩個字的觀影需求。",

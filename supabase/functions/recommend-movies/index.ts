@@ -57,6 +57,20 @@ function getCoordinatorConfig(): CoordinatorConfig {
 }
 
 async function handleRecommendation(req: Request, signal: AbortSignal) {
+  let request
+  try {
+    request = validateRecommendationRequest(await req.json())
+  } catch (error) {
+    return jsonResponse(
+      { error: error instanceof Error ? error.message : 'Invalid request' },
+      400,
+    )
+  }
+
+  if (hasMediaTypeMismatch(request)) {
+    return jsonResponse({ error: 'media_type_mismatch' }, 422)
+  }
+
   const authorization = req.headers.get('Authorization')
   const supabaseUrl = getRequiredEnv('SUPABASE_URL')
   const anonKey = getRequiredEnv('SUPABASE_ANON_KEY')
@@ -101,20 +115,6 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
         503,
       )
     }
-  }
-
-  let request
-  try {
-    request = validateRecommendationRequest(await req.json())
-  } catch (error) {
-    return jsonResponse(
-      { error: error instanceof Error ? error.message : 'Invalid request' },
-      400,
-    )
-  }
-
-  if (hasMediaTypeMismatch(request)) {
-    return jsonResponse({ error: 'media_type_mismatch' }, 422)
   }
 
   let result

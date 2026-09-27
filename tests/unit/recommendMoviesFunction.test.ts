@@ -19,6 +19,8 @@ import {
   createPlanTool,
   parseToolArguments,
 } from '../../supabase/functions/recommend-movies/planning'
+import en from '../../src/i18n/locales/en.json'
+import zhTW from '../../src/i18n/locales/zh-TW.json'
 
 function movie(id: number) {
   return {
@@ -85,6 +87,26 @@ const plan = {
 }
 
 describe('context-aware recommendation domain', () => {
+  it('keeps quick-start templates neutral for movie and TV requests', () => {
+    for (const { locale, templates } of [
+      { locale: 'zh-TW' as const, templates: zhTW.aiPicker.templates },
+      { locale: 'en' as const, templates: en.aiPicker.templates },
+    ]) {
+      for (const { prompt } of templates) {
+        expect(
+          hasMediaTypeMismatch({
+            request: prompt,
+            locale,
+            media_type: 'movie',
+          }),
+        ).toBe(false)
+        expect(
+          hasMediaTypeMismatch({ request: prompt, locale, media_type: 'tv' }),
+        ).toBe(false)
+      }
+    }
+  })
+
   it('only adds the new response field for clients that opt in', () => {
     expect(wantsQueryPlan(null)).toBe(false)
     expect(wantsQueryPlan('application/json')).toBe(false)

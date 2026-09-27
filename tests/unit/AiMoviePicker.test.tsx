@@ -201,6 +201,7 @@ describe('AiMoviePicker', () => {
       useAuthStore.setState({ isLoading: false })
 
       await renderPicker()
+      expect(screen.queryByText(prompt)).not.toBeInTheDocument()
       await user.click(screen.getByRole('button', { name: new RegExp(label) }))
 
       expect(screen.getByLabelText('觀影需求')).toHaveValue(prompt)
@@ -323,6 +324,10 @@ describe('AiMoviePicker', () => {
     expect(screen.getByTestId('nyan-cat')).toHaveAttribute(
       'aria-hidden',
       'true',
+    )
+    expect(screen.getByTestId('nyan-cat')).toHaveAttribute(
+      'src',
+      '/images/nyan-cat-original.jpg',
     )
     expect(screen.getByRole('progressbar')).toHaveAttribute(
       'aria-label',

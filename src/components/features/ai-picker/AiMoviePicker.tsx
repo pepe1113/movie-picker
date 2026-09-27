@@ -140,11 +140,11 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
       <div className="via-primary/70 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent" />
 
       <div className="relative container mx-auto flex min-h-[calc(100svh-64px)] flex-1 flex-col justify-center px-6 py-10 md:px-12 md:py-12 lg:px-16">
-        <div className="bg-card/90 border-foreground/80 border-4 p-5 font-mono shadow-[8px_8px_0_rgba(214,43,66,0.55),12px_12px_0_rgba(0,0,0,0.5)] backdrop-blur-xl md:p-8">
+        <div className="bg-card/75 rounded-2xl border border-white/10 p-5 shadow-[0_24px_70px_rgba(108,18,35,0.22),0_12px_32px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-8">
           {!result ? (
             <div className="mx-auto max-w-3xl space-y-7">
               <div className="space-y-3 text-center">
-                <div className="text-primary bg-primary/10 border-primary/60 mx-auto flex size-12 items-center justify-center border-2 shadow-[4px_4px_0_rgba(214,43,66,0.35)]">
+                <div className="text-primary bg-primary/10 border-primary/20 shadow-primary/10 mx-auto flex size-12 items-center justify-center rounded-xl border shadow-lg">
                   <Sparkles className="size-5" />
                 </div>
                 <h2 className="text-2xl font-bold tracking-tight text-balance md:text-3xl">
@@ -161,7 +161,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     {t('aiPicker.mediaTypeLabel')}
                   </legend>
                   <div
-                    className="bg-background/70 grid grid-cols-2 gap-2 border-2 border-white/20 p-1"
+                    className="bg-background/70 grid grid-cols-2 gap-1 rounded-xl border border-white/8 p-1"
                     role="group"
                   >
                     {(['movie', 'tv'] as const).map((type) => (
@@ -173,11 +173,35 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                         disabled={recommendationMutation.isPending}
                         onClick={() => setMediaType(type)}
                         className={cn(
-                          'h-10 rounded-none border-2 shadow-none',
+                          'h-10 rounded-lg shadow-none',
                           mediaType !== type && 'hover:bg-white/5',
                         )}
                       >
                         {t(`mediaType.${type}`)}
+                      </Button>
+                    ))}
+                  </div>
+                </fieldset>
+                <fieldset className="space-y-2">
+                  <legend className="text-muted-foreground text-xs font-bold tracking-[1.4px] uppercase">
+                    {t('aiPicker.templatesLabel')}
+                  </legend>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    {requestTemplates.map((template) => (
+                      <Button
+                        key={template.label}
+                        type="button"
+                        variant="secondary"
+                        disabled={recommendationMutation.isPending}
+                        onClick={() => applyTemplate(template.prompt)}
+                        className="bg-background/55 hover:bg-primary/10 hover:border-primary/35 h-auto min-h-16 min-w-0 flex-col gap-1.5 rounded-xl border border-white/10 px-3 py-3 text-center leading-tight whitespace-normal shadow-none hover:scale-[1.02]"
+                      >
+                        <span aria-hidden="true" className="text-xl">
+                          {template.emoji}
+                        </span>
+                        <span className="text-xs font-semibold sm:text-sm">
+                          {template.label}
+                        </span>
                       </Button>
                     ))}
                   </div>
@@ -188,35 +212,6 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 >
                   {t('aiPicker.requestLabel')}
                 </label>
-                <fieldset className="space-y-2">
-                  <legend className="text-muted-foreground text-xs font-bold tracking-[1.4px] uppercase">
-                    {t('aiPicker.templatesLabel')}
-                  </legend>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {requestTemplates.map((template) => (
-                      <Button
-                        key={template.label}
-                        type="button"
-                        variant="secondary"
-                        disabled={recommendationMutation.isPending}
-                        onClick={() => applyTemplate(template.prompt)}
-                        className="border-foreground/70 h-auto min-h-20 justify-start gap-3 rounded-none border-2 px-4 py-3 text-left whitespace-normal shadow-[4px_4px_0_rgba(0,0,0,0.45)] hover:translate-x-0.5 hover:translate-y-0.5 hover:scale-100 hover:shadow-[2px_2px_0_rgba(0,0,0,0.45)]"
-                      >
-                        <span aria-hidden="true" className="text-2xl">
-                          {template.emoji}
-                        </span>
-                        <span className="space-y-1">
-                          <span className="block font-bold">
-                            {template.label}
-                          </span>
-                          <span className="text-muted-foreground block text-xs leading-relaxed font-normal">
-                            {template.prompt}
-                          </span>
-                        </span>
-                      </Button>
-                    ))}
-                  </div>
-                </fieldset>
                 <Textarea
                   id="movie-request"
                   value={requestText}
@@ -231,7 +226,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     inputError ? 'movie-request-error' : 'movie-request-hint'
                   }
                   disabled={recommendationMutation.isPending}
-                  className="bg-background/70 border-foreground/70 min-h-36 rounded-none border-2 font-mono shadow-[4px_4px_0_rgba(0,0,0,0.35)] focus:border-white/40 focus:shadow-[4px_4px_0_rgba(214,43,66,0.45)]"
+                  className="bg-background/70 min-h-36 rounded-xl border border-white/8 shadow-none focus:border-white/20 focus:shadow-[0_0_0_3px_rgba(214,43,66,0.18)]"
                 />
                 <div className="flex items-start justify-between gap-4 text-xs">
                   <p
@@ -252,7 +247,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 </div>
 
                 {!isAuthLoading && !isAuthenticated && (
-                  <p className="border-2 border-[#539df5]/60 bg-[#539df5]/10 px-4 py-3 text-sm text-[#539df5] shadow-[3px_3px_0_rgba(83,157,245,0.25)]">
+                  <p className="rounded-xl border border-[#539df5]/35 bg-[#539df5]/10 px-4 py-3 text-sm text-[#78b5ff]">
                     {t('aiPicker.signInToSave')}
                   </p>
                 )}
@@ -261,7 +256,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                   type="submit"
                   size="lg"
                   disabled={recommendationMutation.isPending}
-                  className="w-full rounded-none border-2 border-black/50 shadow-[5px_5px_0_rgba(0,0,0,0.55)] hover:translate-x-0.5 hover:translate-y-0.5 hover:scale-100 hover:shadow-[3px_3px_0_rgba(0,0,0,0.55)]"
+                  className="w-full rounded-xl shadow-[0_12px_30px_rgba(214,43,66,0.24)] active:translate-y-px"
                 >
                   <Sparkles
                     className={cn(
@@ -289,40 +284,23 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     aria-valuemin={0}
                     aria-valuemax={100}
                     aria-valuenow={0}
-                    className="nyan-progress-track bg-secondary/70 border-foreground/70 h-20 overflow-hidden border-2"
+                    className="relative mx-auto aspect-[1258/620] w-full max-w-[520px] overflow-hidden rounded-xl border border-white/10 bg-[#214977] shadow-[0_18px_45px_rgba(0,0,0,0.3)]"
                   >
-                    <div
-                      ref={progressFillRef}
-                      className="nyan-progress-fill relative h-full transition-[width] duration-100"
-                      style={{ width: '0%' }}
-                    >
-                      <div className="nyan-rainbow" aria-hidden="true">
-                        <span />
-                        <span />
-                        <span />
-                        <span />
-                        <span />
-                        <span />
-                      </div>
+                    <img
+                      src="/images/nyan-cat-original.jpg"
+                      width={1258}
+                      height={620}
+                      alt=""
+                      aria-hidden="true"
+                      data-testid="nyan-cat"
+                      className="nyan-progress-image size-full object-contain"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 h-1.5 bg-black/25">
                       <div
-                        className="nyan-cat"
-                        data-testid="nyan-cat"
-                        aria-hidden="true"
-                      >
-                        <span className="nyan-cat-tail" />
-                        <span className="nyan-cat-body">
-                          <i />
-                          <i />
-                          <i />
-                        </span>
-                        <span className="nyan-cat-head">
-                          <i className="nyan-cat-eye nyan-cat-eye-left" />
-                          <i className="nyan-cat-eye nyan-cat-eye-right" />
-                          <i className="nyan-cat-mouth" />
-                        </span>
-                        <span className="nyan-cat-leg nyan-cat-leg-left" />
-                        <span className="nyan-cat-leg nyan-cat-leg-right" />
-                      </div>
+                        ref={progressFillRef}
+                        className="bg-primary h-full transition-[width] duration-100"
+                        style={{ width: '0%' }}
+                      />
                     </div>
                   </div>
                 </div>

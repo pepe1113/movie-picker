@@ -186,7 +186,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                   <legend className="text-muted-foreground text-xs font-bold tracking-[1.4px] uppercase">
                     {t('aiPicker.templatesLabel')}
                   </legend>
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  <div className="flex flex-wrap gap-2">
                     {requestTemplates.map((template) => (
                       <Button
                         key={template.label}
@@ -194,9 +194,9 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                         variant="secondary"
                         disabled={recommendationMutation.isPending}
                         onClick={() => applyTemplate(template.prompt)}
-                        className="bg-background/55 hover:bg-primary/10 hover:border-primary/35 h-auto min-h-16 min-w-0 flex-col gap-1.5 rounded-xl border border-white/10 px-3 py-3 text-center leading-tight whitespace-normal shadow-none hover:scale-[1.02]"
+                        className="bg-background/55 hover:bg-primary/10 hover:border-primary/35 h-10 min-w-0 flex-none gap-2 rounded-full border border-white/10 px-4 text-center leading-tight whitespace-normal shadow-none hover:scale-[1.02]"
                       >
-                        <span aria-hidden="true" className="text-xl">
+                        <span aria-hidden="true" className="text-base">
                           {template.emoji}
                         </span>
                         <span className="text-xs font-semibold sm:text-sm">
@@ -284,23 +284,24 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     aria-valuemin={0}
                     aria-valuemax={100}
                     aria-valuenow={0}
-                    className="relative mx-auto aspect-[1258/620] w-full max-w-[520px] overflow-hidden rounded-xl border border-white/10 bg-[#214977] shadow-[0_18px_45px_rgba(0,0,0,0.3)]"
+                    className="relative h-10 w-full overflow-hidden rounded-full border border-white/10 bg-[#214977] shadow-[0_12px_28px_rgba(0,0,0,0.3)]"
                   >
-                    <img
-                      src="/images/nyan-cat-original.jpg"
-                      width={1258}
-                      height={620}
-                      alt=""
-                      aria-hidden="true"
-                      data-testid="nyan-cat"
-                      className="nyan-progress-image size-full object-contain"
-                    />
-                    <div className="absolute inset-x-0 bottom-0 h-1.5 bg-black/25">
-                      <div
-                        ref={progressFillRef}
-                        className="bg-primary h-full transition-[width] duration-100"
-                        style={{ width: '0%' }}
-                      />
+                    <div
+                      ref={progressFillRef}
+                      data-testid="nyan-progress-fill"
+                      className="nyan-progress-fill absolute inset-y-0 left-0 transition-[width] duration-100"
+                      style={{ width: '0%' }}
+                    >
+                      <span className="nyan-progress-cat" aria-hidden="true">
+                        <img
+                          src="/images/nyan-cat-original.jpg"
+                          width={1258}
+                          height={620}
+                          alt=""
+                          aria-hidden="true"
+                          data-testid="nyan-cat"
+                        />
+                      </span>
                     </div>
                   </div>
                 </div>

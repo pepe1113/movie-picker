@@ -208,19 +208,45 @@ html:has(.home-scroll-page) footer {
   }
 }
 
-@keyframes nyan-progress-float {
+@keyframes nyan-progress-fly {
   0%,
   100% {
-    transform: translateY(0);
+    transform: translate(50%, -50%);
   }
 
   50% {
-    transform: translateY(-2px);
+    transform: translate(50%, calc(-50% - 2px));
   }
 }
 
-.nyan-progress-image {
-  animation: nyan-progress-float 1.2s steps(2, jump-none) infinite;
+.nyan-progress-fill {
+  background: linear-gradient(
+    to bottom,
+    #f04444 0 16.66%,
+    #ff922b 16.66% 33.33%,
+    #ffd43b 33.33% 50%,
+    #51cf66 50% 66.66%,
+    #4dabf7 66.66% 83.33%,
+    #845ef7 83.33% 100%
+  );
+}
+
+.nyan-progress-cat {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 4rem;
+  height: 2.5rem;
+  overflow: hidden;
+  animation: nyan-progress-fly 600ms steps(2, jump-none) infinite;
+  background: #214977;
+  transform: translate(50%, -50%);
+}
+
+.nyan-progress-cat img {
+  width: 8.125rem;
+  max-width: none;
+  transform: translate(-4.125rem, -0.7rem);
   image-rendering: pixelated;
 }
 
@@ -233,7 +259,7 @@ html:has(.home-scroll-page) footer {
 @media (prefers-reduced-motion: reduce) {
   .hero-title-gradient,
   .hero-title-cursor,
-  .nyan-progress-image {
+  .nyan-progress-cat {
     animation: none;
   }
 }

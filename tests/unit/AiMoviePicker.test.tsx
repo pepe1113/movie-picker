@@ -335,9 +335,14 @@ describe('AiMoviePicker', () => {
     )
 
     await act(async () => vi.advanceTimersByTime(29_900))
-    expect(
-      Number(screen.getByRole('progressbar').getAttribute('aria-valuenow')),
-    ).toBeLessThanOrEqual(90)
+    const progressValue = Number(
+      screen.getByRole('progressbar').getAttribute('aria-valuenow'),
+    )
+    expect(progressValue).toBeGreaterThan(0)
+    expect(progressValue).toBeLessThanOrEqual(90)
+    expect(screen.getByTestId('nyan-progress-fill')).toHaveStyle({
+      width: `${progressValue}%`,
+    })
     expect(screen.queryByRole('article')).not.toBeInTheDocument()
   })
 

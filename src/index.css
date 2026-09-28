@@ -152,7 +152,7 @@ button[role='tab'] {
 }
 
 html:has(.home-scroll-page) {
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity;
   scroll-padding-top: 4rem;
 }
 

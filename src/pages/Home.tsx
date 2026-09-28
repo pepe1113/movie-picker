@@ -122,7 +122,7 @@ export function Component() {
 
   return (
     <div className="home-scroll-page min-h-screen">
-      <section className="border-border relative flex min-h-[calc(100dvh-64px)] snap-start snap-always overflow-hidden border-b">
+      <section className="border-border relative flex min-h-[calc(100dvh-64px)] snap-end overflow-hidden border-b">
         {heroBackdrop && (
           <img
             src={getBackdropUrl(heroBackdrop)}
@@ -169,11 +169,11 @@ export function Component() {
         </div>
       </section>
 
-      <div ref={aiPickerRef} className="snap-start snap-always">
+      <div ref={aiPickerRef}>
         <AiMoviePicker />
       </div>
 
-      <div className="container mx-auto snap-start space-y-10 px-6 py-14 md:px-12 md:py-16 lg:px-16">
+      <div className="container mx-auto space-y-10 px-6 py-14 md:px-12 md:py-16 lg:px-16">
         <Tabs value={mediaType} onValueChange={changeMediaType}>
           <TabsList className="bg-secondary rounded-full p-1">
             <TabsTrigger value="movie" className="rounded-full px-6">

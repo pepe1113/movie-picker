@@ -53,7 +53,7 @@
     }
   },
   "footer": {
-    "tmdbDisclaimer": "資料來源為 TMDB/OMDb API，個人專案使用，可能出現API限制導致錯誤，請小心愛護❤️",
+    "tmdbDisclaimer": "Powered by TMDB/OMDb | Github ",
     "copyright": "Movie Picker"
   },
   "aiPicker": {

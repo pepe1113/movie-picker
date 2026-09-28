@@ -223,31 +223,22 @@ html:has(.home-scroll-page) footer {
   background: linear-gradient(
     to bottom,
     #f04444 0 16.66%,
-    #ff922b 16.66% 33.33%,
     #ffd43b 33.33% 50%,
-    #51cf66 50% 66.66%,
-    #4dabf7 66.66% 83.33%,
-    #845ef7 83.33% 100%
+    #4dabf7 66.66% 83.33%
   );
 }
 
 .nyan-progress-cat {
   position: absolute;
-  top: 50%;
+  z-index: 10;
+  top: 0;
   right: 0;
-  width: 4rem;
-  height: 2.5rem;
-  overflow: hidden;
+  width: 5.5rem;
   animation: nyan-progress-fly 600ms steps(2, jump-none) infinite;
-  background: #214977;
-  transform: translate(50%, -50%);
 }
 
 .nyan-progress-cat img {
-  width: 8.125rem;
-  max-width: none;
-  transform: translate(-4.125rem, -0.7rem);
-  image-rendering: pixelated;
+  transform: translatey(0.5rem);
 }
 
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {

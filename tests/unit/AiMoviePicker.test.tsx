@@ -214,6 +214,7 @@ describe('AiMoviePicker', () => {
     useAuthStore.setState({ isLoading: false })
 
     await renderPicker()
+    expect(screen.getByRole('group', { name: '快速開始' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: '幫我選片' }))
     expect(screen.getByText('請至少輸入兩個字的觀影需求。')).toBeInTheDocument()
 
@@ -305,7 +306,7 @@ describe('AiMoviePicker', () => {
     expect(await screen.findByText('錯誤的 AI 標籤')).toBeInTheDocument()
   })
 
-  it('keeps animated waiting progress at or below ninety percent', async () => {
+  it('uses the expected request duration and caps waiting progress below completion', async () => {
     vi.useFakeTimers()
     authenticate()
     vi.mocked(requestContextRecommendations).mockImplementation(
@@ -327,19 +328,25 @@ describe('AiMoviePicker', () => {
     )
     expect(screen.getByTestId('nyan-cat')).toHaveAttribute(
       'src',
-      '/images/nyan-cat-original.jpg',
+      '/images/nyan-cat.png',
     )
     expect(screen.getByRole('progressbar')).toHaveAttribute(
       'aria-label',
       '魔法選片進度',
     )
 
-    await act(async () => vi.advanceTimersByTime(29_900))
+    await act(async () => vi.advanceTimersByTime(1_000))
+    expect(screen.getByRole('progressbar')).toHaveAttribute(
+      'aria-valuenow',
+      '39',
+    )
+
+    await act(async () => vi.advanceTimersByTime(28_900))
     const progressValue = Number(
       screen.getByRole('progressbar').getAttribute('aria-valuenow'),
     )
     expect(progressValue).toBeGreaterThan(0)
-    expect(progressValue).toBeLessThanOrEqual(90)
+    expect(progressValue).toBeLessThanOrEqual(99)
     expect(screen.getByTestId('nyan-progress-fill')).toHaveStyle({
       width: `${progressValue}%`,
     })

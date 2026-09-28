@@ -27,6 +27,9 @@ interface RequestTemplate {
   prompt: string
 }
 
+const EXPECTED_RECOMMENDATION_MS = 4_000
+const WAITING_PROGRESS_CAP = 99
+
 export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const { t } = useTranslation()
   const requestTemplates = t('aiPicker.templates', {
@@ -76,10 +79,13 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
 
     const updateProgress = () => {
       const elapsed = Date.now() - startedAtRef.current
+      const ratio = elapsed / EXPECTED_RECOMMENDATION_MS
+      // Reach 86% around the expected duration; only completion renders 100%.
       const value = Math.min(
-        90,
-        Math.floor((elapsed / RECOMMENDATION_DEADLINE_MS) * 90),
+        WAITING_PROGRESS_CAP,
+        Math.floor(100 * (1 - Math.exp(-2 * ratio))),
       )
+
       progressBarRef.current?.setAttribute('aria-valuenow', String(value))
       if (progressFillRef.current) {
         progressFillRef.current.style.width = `${value}%`
@@ -182,36 +188,35 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     ))}
                   </div>
                 </fieldset>
-                <fieldset className="space-y-2">
-                  <legend className="text-muted-foreground text-xs font-bold tracking-[1.4px] uppercase">
-                    {t('aiPicker.templatesLabel')}
-                  </legend>
-                  <div className="flex flex-wrap gap-2">
-                    {requestTemplates.map((template) => (
-                      <Button
-                        key={template.label}
-                        type="button"
-                        variant="secondary"
-                        disabled={recommendationMutation.isPending}
-                        onClick={() => applyTemplate(template.prompt)}
-                        className="bg-background/55 hover:bg-primary/10 hover:border-primary/35 h-10 min-w-0 flex-none gap-2 rounded-full border border-white/10 px-4 text-center leading-tight whitespace-normal shadow-none hover:scale-[1.02]"
-                      >
-                        <span aria-hidden="true" className="text-base">
-                          {template.emoji}
-                        </span>
-                        <span className="text-xs font-semibold sm:text-sm">
-                          {template.label}
-                        </span>
-                      </Button>
-                    ))}
-                  </div>
-                </fieldset>
                 <label
                   htmlFor="movie-request"
                   className="text-muted-foreground text-xs font-bold tracking-[1.4px] uppercase"
                 >
                   {t('aiPicker.requestLabel')}
                 </label>
+                <div
+                  role="group"
+                  aria-label={t('aiPicker.templatesLabel')}
+                  className="my-2 flex flex-wrap gap-2"
+                >
+                  {requestTemplates.map((template) => (
+                    <Button
+                      key={template.label}
+                      type="button"
+                      variant="secondary"
+                      disabled={recommendationMutation.isPending}
+                      onClick={() => applyTemplate(template.prompt)}
+                      className="bg-background/55 hover:bg-primary/10 hover:border-primary/35 h-10 min-w-0 flex-none gap-2 rounded-full border border-white/10 px-4 text-center leading-tight whitespace-normal shadow-none hover:scale-[1.02]"
+                    >
+                      <span aria-hidden="true" className="text-base">
+                        {template.emoji}
+                      </span>
+                      <span className="text-xs font-semibold sm:text-sm">
+                        {template.label}
+                      </span>
+                    </Button>
+                  ))}
+                </div>
                 <Textarea
                   id="movie-request"
                   value={requestText}
@@ -256,7 +261,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                   type="submit"
                   size="lg"
                   disabled={recommendationMutation.isPending}
-                  className="w-full rounded-xl shadow-[0_12px_30px_rgba(214,43,66,0.24)] active:translate-y-px"
+                  className="relative w-full overflow-hidden rounded-xl shadow-[0_12px_30px_rgba(214,43,66,0.24)] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/4 before:-translate-x-[150%] before:skew-x-[-20deg] before:bg-linear-to-r before:from-transparent before:via-white/40 before:to-transparent before:transition-transform before:duration-700 before:content-[''] hover:before:translate-x-[500%] focus-visible:before:translate-x-[500%] active:translate-y-px motion-reduce:before:hidden"
                 >
                   <Sparkles
                     className={cn(
@@ -284,20 +289,18 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     aria-valuemin={0}
                     aria-valuemax={100}
                     aria-valuenow={0}
-                    className="relative h-10 w-full overflow-hidden rounded-full border border-white/10 bg-[#214977] shadow-[0_12px_28px_rgba(0,0,0,0.3)]"
+                    className="bg-secondary relative h-4 w-full rounded-full border border-white/10 shadow-[0_12px_28px_rgba(0,0,0,0.3)]"
                   >
                     <div
                       ref={progressFillRef}
                       data-testid="nyan-progress-fill"
-                      className="nyan-progress-fill absolute inset-y-0 left-0 transition-[width] duration-100"
+                      className="nyan-progress-fill absolute inset-y-0 left-0 rounded-full transition-[width] duration-100"
                       style={{ width: '0%' }}
                     >
                       <span className="nyan-progress-cat" aria-hidden="true">
                         <img
-                          src="/images/nyan-cat-original.jpg"
-                          width={1258}
-                          height={620}
-                          alt=""
+                          src="/images/nyan-cat.png"
+                          height={600}
                           aria-hidden="true"
                           data-testid="nyan-cat"
                         />

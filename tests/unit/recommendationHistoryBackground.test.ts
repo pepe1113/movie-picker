@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import {
   createHistoryRecord,
+  saveAuthenticatedHistory,
   saveHistoryInBackground,
 } from '../../supabase/functions/recommend-movies/history'
 import {
@@ -102,5 +103,20 @@ describe('recommendation history background task', () => {
     await task
 
     expect(onError).toHaveBeenCalledWith(error)
+  })
+
+  it('saves history only for a verified user', async () => {
+    const waitUntil = vi.fn()
+    const insert = vi.fn(async () => undefined)
+
+    expect(saveAuthenticatedHistory(null, waitUntil, insert)).toBe(false)
+    expect(insert).not.toHaveBeenCalled()
+    expect(waitUntil).not.toHaveBeenCalled()
+
+    expect(saveAuthenticatedHistory('verified-user', waitUntil, insert)).toBe(
+      true,
+    )
+    expect(insert).toHaveBeenCalledWith('verified-user')
+    expect(waitUntil).toHaveBeenCalledOnce()
   })
 })

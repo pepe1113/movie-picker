@@ -18,6 +18,11 @@ const recommendationMediaMigrationPath = join(
   process.cwd(),
   'supabase/migrations/20260801075037_make_ai_recommendation_history_media_neutral.sql',
 )
+const anonymousQuotaMigrationPath = join(
+  process.cwd(),
+  'supabase/migrations/20260926173007_add_anonymous_recommendation_quota.sql',
+)
+const supabaseConfigPath = join(process.cwd(), 'supabase/config.toml')
 
 describe('Supabase wishlist and AI runs migration', () => {
   it('creates the expected tables with user-owned columns', () => {
@@ -90,5 +95,22 @@ describe('Supabase wishlist and AI runs migration', () => {
     expect(sql).toContain("add column media_type text not null default 'movie'")
     expect(sql).toContain("check (media_type in ('movie', 'tv'))")
     expect(sql).not.toMatch(/drop\s+policy|disable\s+row\s+level/i)
+  })
+
+  it('opens only the recommendation function and caps anonymous usage server-side', () => {
+    const config = readFileSync(supabaseConfigPath, 'utf8')
+    const sql = readFileSync(anonymousQuotaMigrationPath, 'utf8')
+
+    expect(config).toContain('[functions.recommend-movies]\nverify_jwt = false')
+    expect(sql).toContain(
+      'create table private.anonymous_recommendation_daily_usage',
+    )
+    expect(sql).toContain('enable row level security')
+    expect(sql).toContain('security definer')
+    expect(sql).toContain("set search_path = ''")
+    expect(sql).toContain('request_count < p_daily_limit')
+    expect(sql).toContain('revoke all on function')
+    expect(sql).toContain('to service_role')
+    expect(sql).not.toMatch(/grant execute[\s\S]*to (anon|authenticated)/i)
   })
 })

@@ -208,6 +208,39 @@ html:has(.home-scroll-page) footer {
   }
 }
 
+@keyframes nyan-progress-fly {
+  0%,
+  100% {
+    transform: translate(50%, -50%);
+  }
+
+  50% {
+    transform: translate(50%, calc(-50% - 2px));
+  }
+}
+
+.nyan-progress-fill {
+  background: linear-gradient(
+    to bottom,
+    #f04444 0 16.66%,
+    #ffd43b 33.33% 50%,
+    #4dabf7 66.66% 83.33%
+  );
+}
+
+.nyan-progress-cat {
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  right: 0;
+  width: 5.5rem;
+  animation: nyan-progress-fly 600ms steps(2, jump-none) infinite;
+}
+
+.nyan-progress-cat img {
+  transform: translatey(0.5rem);
+}
+
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .group:hover > .poster-card-flip {
     animation: poster-card-flip 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -216,7 +249,8 @@ html:has(.home-scroll-page) footer {
 
 @media (prefers-reduced-motion: reduce) {
   .hero-title-gradient,
-  .hero-title-cursor {
+  .hero-title-cursor,
+  .nyan-progress-cat {
     animation: none;
   }
 }

@@ -71,10 +71,33 @@
     "requestSubtitle": "Describe your current state, desired feeling, viewing situation, or anything you want to avoid.",
     "mediaTypeLabel": "Media type",
     "requestLabel": "Watch Request",
+    "templatesLabel": "Quick starts",
+    "templates": [
+      {
+        "emoji": "😂",
+        "label": "Comedy",
+        "prompt": "I want something funny, fast-paced, and easy to enjoy that can actually make me laugh."
+      },
+      {
+        "emoji": "💞",
+        "label": "Romance",
+        "prompt": "I want romance, from sweet and playful to complicated or mature relationships, with natural chemistry between the leads."
+      },
+      {
+        "emoji": "🌙",
+        "label": "The Worst Night",
+        "prompt": "I want a horror story about one night going completely wrong, with chases, accidents, and an escalating nightmare."
+      },
+      {
+        "emoji": "🎨",
+        "label": "Indie",
+        "prompt": "I want something with an indie sensibility, distinctive characters, a fresh point of view, and a slower pace."
+      }
+    ],
     "requestPlaceholder": "For example: I am tired and want a warm, easy recent movie to watch with my partner.",
     "requestHint": "Mention mood, occasion, runtime, language, or explicit exclusions.",
     "requestRequired": "Enter at least two characters describing what you want.",
-    "signInRequired": "Sign in to use the AI movie picker.",
+    "signInToSave": "Try it without an account. Sign in to save your recommendation history.",
     "analyzeRequest": "Pick My Movies",
     "analyzing": "The AI model is picking movies...",
     "analysisError": "This movie pick could not be completed. Please try again.",
@@ -106,14 +129,23 @@
     },
     "noResults": "No titles matched every explicit constraint. Adjust your description and try again.",
     "refineRequest": "Refine Movie Request",
-    "progressLabel": "Preparing the final shortlist",
+    "progressLabel": "Magic movie-picking progress",
     "back": "Back",
     "next": "Next",
     "autoAdvance": "Choosing an option moves to the next question",
     "getPicks": "Generate Picks",
     "restart": "Start Over",
     "resultsTitle": "Your AI Picks",
-    "loading": "The AI model is picking movies...",
+    "loading": "Guessing your favorites, adding a little magic...",
+    "loadingMessages": [
+      "Asking the clerk for a recommendation...",
+      "Checking the staff picks...",
+      "Trust us, they’ve seen everything.",
+      "Picking the perfect movie...",
+      "Grabbing the popcorn...",
+      "Dimming the lights..."
+    ],
+    "loadingButton": "Casting movie magic...",
     "error": "Recommendations failed to load. Please try again later.",
     "retryMovies": "Reload Movies",
     "retryRecommendations": "Retry AI Recommendations",

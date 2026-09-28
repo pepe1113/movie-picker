@@ -71,10 +71,33 @@
     "requestSubtitle": "描述目前狀態、想獲得的感受、觀影場合或不想看到的內容。",
     "mediaTypeLabel": "媒體型別",
     "requestLabel": "觀影需求",
+    "templatesLabel": "快速開始",
+    "templates": [
+      {
+        "emoji": "😂",
+        "label": "喜劇",
+        "prompt": "想看輕鬆好笑、節奏明快，適合放空又能真的笑出來的。"
+      },
+      {
+        "emoji": "💞",
+        "label": "愛情",
+        "prompt": "想看以愛情為主，從甜蜜浪漫、曖昧拉扯到複雜或成熟的關係都可以，角色互動自然、有火花。"
+      },
+      {
+        "emoji": "🌙",
+        "label": "最糟的一晚",
+        "prompt": "想看一個夜晚徹底失控的恐怖故事，有追逐、意外和越來越糟的局面。"
+      },
+      {
+        "emoji": "👁️",
+        "label": "小眾獨立",
+        "prompt": "想看帶有獨立製作氣質、角色鮮明、觀點獨特，節奏可以稍微慢一點的。"
+      }
+    ],
     "requestPlaceholder": "例如：今天很累，想和另一半看一部步調輕鬆、近幾年的溫暖電影。",
     "requestHint": "可以描述心情、場合、片長、語言或明確排除的內容。",
     "requestRequired": "請至少輸入兩個字的觀影需求。",
-    "signInRequired": "請先登入，才能使用 AI 選片。",
+    "signInToSave": "不用登入也能試用；登入後會保存推薦紀錄。",
     "analyzeRequest": "幫我選片",
     "analyzing": "AI 模型正在挑片...",
     "analysisError": "這次無法完成選片，請再試一次。",
@@ -106,14 +129,23 @@
     },
     "noResults": "找不到符合所有明確限制的內容，請調整描述後再試。",
     "refineRequest": "調整觀影需求",
-    "progressLabel": "正在準備最終片單",
+    "progressLabel": "魔法選片進度",
     "back": "上一步",
     "next": "下一題",
     "autoAdvance": "選擇後自動進入下一題",
     "getPicks": "生成片單",
     "restart": "重新選片",
     "resultsTitle": "你的 AI 推薦片單",
-    "loading": "AI 模型正在挑片...",
+    "loading": "猜你會喜歡什麼，施展一點魔法...",
+    "loadingMessages": [
+      "正在請店員推薦一部片...",
+      "正在查看店員精選...",
+      "相信我們，他們什麼都看過。",
+      "正在挑選最適合今晚的電影...",
+      "正在拿爆米花...",
+      "正在調暗燈光..."
+    ],
+    "loadingButton": "施展選片魔法中...",
     "error": "推薦片單載入失敗，請稍後再試。",
     "retryMovies": "重新載入片單",
     "retryRecommendations": "重新取得 AI 推薦",

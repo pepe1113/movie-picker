@@ -87,12 +87,15 @@ const plan = {
 }
 
 describe('context-aware recommendation domain', () => {
-  it('keeps quick-start templates neutral for movie and TV requests', () => {
+  it('keeps quick-start templates brand and media-type neutral', () => {
     for (const { locale, templates } of [
       { locale: 'zh-TW' as const, templates: zhTW.aiPicker.templates },
       { locale: 'en' as const, templates: en.aiPicker.templates },
     ]) {
       for (const { prompt } of templates) {
+        expect(prompt).not.toMatch(
+          /\bA24\b|電影|影片|影集|劇集|電視劇|\b(?:movie|film|series|title|tv)\b/iu,
+        )
         expect(
           hasMediaTypeMismatch({
             request: prompt,

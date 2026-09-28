@@ -163,13 +163,19 @@ function authenticate() {
 }
 
 const requestTemplates = [
+  ['喜劇', '想看輕鬆好笑、節奏明快，適合放空又能真的笑出來的。'],
   [
-    '輕鬆入門',
-    '想看一部輕鬆好懂的喜劇或動畫作品，口碑不錯，不要恐怖、沉重或太血腥。',
+    '愛情',
+    '想看以愛情為主，從甜蜜浪漫、曖昧拉扯到複雜或成熟的關係都可以，角色互動自然、有火花。',
   ],
-  ['刺激冒險', '想看節奏明快、緊張刺激的冒險故事，但不要恐怖或太血腥。'],
-  ['約會療癒', '想和另一半一起看輕鬆好懂的愛情作品，不要恐怖或太沉重。'],
-  ['科幻驚喜', '想看科幻或懸疑作品，節奏緊湊、評價不錯，但不要恐怖或太壓抑。'],
+  [
+    '最糟的一晚',
+    '想看一個夜晚徹底失控的恐怖故事，有追逐、意外和越來越糟的局面。',
+  ],
+  [
+    '小眾獨立',
+    '想看帶有獨立製作氣質、角色鮮明、觀點獨特，節奏可以稍微慢一點的。',
+  ],
 ] as const
 
 async function renderPicker() {
@@ -218,7 +224,9 @@ describe('AiMoviePicker', () => {
     await user.click(screen.getByRole('button', { name: '幫我選片' }))
     expect(screen.getByText('請至少輸入兩個字的觀影需求。')).toBeInTheDocument()
 
-    const template = screen.getByRole('button', { name: /輕鬆入門/ })
+    const template = screen.getByRole('button', {
+      name: requestTemplates[0][0],
+    })
     template.focus()
     await user.keyboard('{Enter}')
 
@@ -319,8 +327,9 @@ describe('AiMoviePicker', () => {
     })
     fireEvent.click(screen.getByRole('button', { name: '幫我選片' }))
 
+    expect(screen.getByLabelText('觀影需求')).not.toBeVisible()
     expect(screen.getByRole('status')).toHaveTextContent(
-      '猜你會喜歡什麼，施展一點魔法...',
+      '正在請店員推薦一部片...',
     )
     expect(screen.getByTestId('nyan-cat')).toHaveAttribute(
       'aria-hidden',
@@ -340,8 +349,12 @@ describe('AiMoviePicker', () => {
       'aria-valuenow',
       '39',
     )
+    expect(screen.getByText('39%')).toBeInTheDocument()
 
-    await act(async () => vi.advanceTimersByTime(28_900))
+    await act(async () => vi.advanceTimersByTime(1_500))
+    expect(screen.getByRole('status')).toHaveTextContent('正在查看店員精選...')
+
+    await act(async () => vi.advanceTimersByTime(27_400))
     const progressValue = Number(
       screen.getByRole('progressbar').getAttribute('aria-valuenow'),
     )

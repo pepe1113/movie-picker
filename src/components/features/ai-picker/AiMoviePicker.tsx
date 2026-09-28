@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { ChevronDown, RotateCcw, Sparkles } from 'lucide-react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { AiRecommendationCarousel } from '@/components/features/ai-picker/AiRecommendationCarousel'
 import { queryPlanBadges } from '@/components/features/ai-picker/queryPlanBadges'
@@ -28,23 +29,61 @@ interface RequestTemplate {
 }
 
 const EXPECTED_RECOMMENDATION_MS = 4_000
+const LOADING_MESSAGE_INTERVAL_MS = 2_500
+const PROGRESS_TEXT_INTERVAL_MS = 500
 const WAITING_PROGRESS_CAP = 99
+
+function SlidingText({
+  value,
+  className,
+}: {
+  value: string
+  className?: string
+}) {
+  const shouldReduceMotion = useReducedMotion()
+
+  return (
+    <span className={cn('inline-grid overflow-hidden', className)}>
+      <AnimatePresence initial={false} mode="popLayout">
+        <motion.span
+          key={value}
+          initial={{
+            opacity: 0,
+            y: shouldReduceMotion ? 0 : '100%',
+          }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{
+            opacity: 0,
+            y: shouldReduceMotion ? 0 : '-100%',
+          }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
+        >
+          {value}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  )
+}
 
 export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const { t } = useTranslation()
   const requestTemplates = t('aiPicker.templates', {
     returnObjects: true,
   }) as RequestTemplate[]
+  const loadingMessages = t('aiPicker.loadingMessages', {
+    returnObjects: true,
+  }) as string[]
   const language = useLanguageStore((state) => state.language)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
   const isAuthLoading = useAuthStore((state) => state.isLoading)
   const [requestText, setRequestText] = useState('')
   const [mediaType, setMediaType] = useState<MediaType>('movie')
   const [inputError, setInputError] = useState(false)
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0)
+  const [progressText, setProgressText] = useState(0)
   const startedAtRef = useRef(0)
   const progressBarRef = useRef<HTMLDivElement>(null)
   const progressFillRef = useRef<HTMLDivElement>(null)
-  const progressTextRef = useRef<HTMLSpanElement>(null)
 
   const recommendationMutation = useMutation({
     mutationFn: async ({
@@ -77,26 +116,41 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   useEffect(() => {
     if (!recommendationMutation.isPending) return
 
-    const updateProgress = () => {
+    const getProgress = () => {
       const elapsed = Date.now() - startedAtRef.current
       const ratio = elapsed / EXPECTED_RECOMMENDATION_MS
       // Reach 86% around the expected duration; only completion renders 100%.
-      const value = Math.min(
+      return Math.min(
         WAITING_PROGRESS_CAP,
         Math.floor(100 * (1 - Math.exp(-2 * ratio))),
       )
+    }
+    const updateProgress = () => {
+      const value = getProgress()
 
       progressBarRef.current?.setAttribute('aria-valuenow', String(value))
       if (progressFillRef.current) {
         progressFillRef.current.style.width = `${value}%`
       }
-      if (progressTextRef.current) {
-        progressTextRef.current.textContent = `${value}%`
-      }
     }
-    const interval = window.setInterval(updateProgress, 100)
-    return () => window.clearInterval(interval)
-  }, [recommendationMutation.isPending])
+    const progressInterval = window.setInterval(updateProgress, 100)
+    const progressTextInterval = window.setInterval(
+      () => setProgressText(getProgress()),
+      PROGRESS_TEXT_INTERVAL_MS,
+    )
+    const messageInterval = window.setInterval(
+      () =>
+        setLoadingMessageIndex(
+          (current) => (current + 1) % loadingMessages.length,
+        ),
+      LOADING_MESSAGE_INTERVAL_MS,
+    )
+    return () => {
+      window.clearInterval(progressInterval)
+      window.clearInterval(progressTextInterval)
+      window.clearInterval(messageInterval)
+    }
+  }, [loadingMessages.length, recommendationMutation.isPending])
 
   const startRecommendation = () => {
     const request = requestText.trim()
@@ -106,6 +160,8 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
     }
 
     setInputError(false)
+    setLoadingMessageIndex(0)
+    setProgressText(0)
     startedAtRef.current = Date.now()
     recommendationMutation.mutate({ request, mediaType })
   }
@@ -161,7 +217,11 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 </p>
               </div>
 
-              <form onSubmit={submitRequest} className="space-y-5">
+              <form
+                onSubmit={submitRequest}
+                hidden={recommendationMutation.isPending}
+                className="space-y-5"
+              >
                 <fieldset className="space-y-2">
                   <legend className="text-muted-foreground text-xs font-bold tracking-[1.4px] uppercase">
                     {t('aiPicker.mediaTypeLabel')}
@@ -277,10 +337,22 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
               </form>
 
               {recommendationMutation.isPending && (
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span role="status">{t('aiPicker.loading')}</span>
-                    <span ref={progressTextRef}>0%</span>
+                <div className="flex min-h-[27rem] flex-col justify-center gap-4">
+                  <div className="flex items-center justify-between gap-4 text-base font-bold md:text-lg">
+                    <span
+                      role="status"
+                      aria-live="polite"
+                      className="min-w-0 flex-1"
+                    >
+                      <SlidingText
+                        value={loadingMessages[loadingMessageIndex]}
+                        className="w-full"
+                      />
+                    </span>
+                    <SlidingText
+                      value={`${progressText}%`}
+                      className="tabular-nums"
+                    />
                   </div>
                   <div
                     ref={progressBarRef}

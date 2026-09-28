@@ -6,6 +6,13 @@ import {
   type SoftPreferences,
 } from './domain.ts'
 
+const LIGHT_TONE_REQUEST_PATTERN =
+  /(?:不要|不想看|避開|避免).{0,8}(?:沉重|壓抑|陰鬱|嚴肅)|(?:not|nothing|avoid|without|do not want|don't want).{0,16}(?:heavy|bleak|depressing|serious)(?:\s+(?:themes?|content))?/iu
+const ABSTRACT_TONE_KEYWORD_PATTERN =
+  /^(?:heavy|bleak|depressing|serious)(?:\s+(?:themes?|content|subject matter))?$/iu
+const ABSTRACT_TONE_LABEL_PATTERN =
+  /沉重|壓抑|陰鬱|嚴肅|heavy|bleak|depressing|serious/iu
+
 function addUniqueGenre(
   genres: SoftPreferences['include_genres'],
   id: number,
@@ -21,6 +28,45 @@ export function applyDeterministicMediaRules(
   originalPlan: ContextPlan,
 ): ContextPlan {
   let plan = originalPlan
+  const wantsLightTone = LIGHT_TONE_REQUEST_PATTERN.test(request.request)
+  const isAbstractToneKeyword = (lookupName: string) =>
+    ABSTRACT_TONE_KEYWORD_PATTERN.test(lookupName.trim())
+  if (
+    wantsLightTone &&
+    plan.hard_constraints.exclude_keywords.some(({ lookup_name }) =>
+      isAbstractToneKeyword(lookup_name),
+    )
+  ) {
+    const excludeKeywords = plan.hard_constraints.exclude_keywords.filter(
+      ({ lookup_name }) => !isAbstractToneKeyword(lookup_name),
+    )
+    const quality = request.locale === 'zh-TW' ? '輕鬆' : 'Light'
+    plan = {
+      ...plan,
+      hard_constraints: {
+        ...plan.hard_constraints,
+        exclude_keywords: excludeKeywords,
+      },
+      soft_preferences: {
+        ...plan.soft_preferences,
+        qualities: plan.soft_preferences.qualities.includes(quality)
+          ? plan.soft_preferences.qualities
+          : [...plan.soft_preferences.qualities, quality].slice(0, 3),
+      },
+      display_labels: {
+        hard: plan.display_labels.hard.filter(
+          (label) => !ABSTRACT_TONE_LABEL_PATTERN.test(label),
+        ),
+        soft: plan.display_labels.soft.includes(quality)
+          ? plan.display_labels.soft
+          : [...plan.display_labels.soft, quality].slice(0, 4),
+      },
+      discover_plan: {
+        ...plan.discover_plan,
+        exclude_keywords: excludeKeywords,
+      },
+    }
+  }
   if (
     request.locale === 'zh-TW' &&
     /[\u3040-\u30ff]/u.test(plan.intent_summary)

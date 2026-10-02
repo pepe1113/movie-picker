@@ -1,10 +1,10 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import {
-  DEFAULT_OPENAI_BASE_URL,
-  DEFAULT_OPENAI_MODEL,
+  createQueryPlanSnapshot,
   hasMediaTypeMismatch,
   validateRecommendationRequest,
+  wantsQueryPlan,
 } from './domain.ts'
 import {
   coordinateRecommendations,
@@ -12,7 +12,13 @@ import {
   RecommendationStageError,
   type CoordinatorConfig,
 } from './orchestrator.ts'
-import { createHistoryRecord, saveHistoryInBackground } from './history.ts'
+import {
+  anonymousDailyLimit,
+  consumeAnonymousQuota,
+  getOptionalUserId,
+  hasUserAuthorization,
+} from './access.ts'
+import { createHistoryRecord, saveAuthenticatedHistory } from './history.ts'
 
 declare const EdgeRuntime: {
   waitUntil(promise: Promise<unknown>): void
@@ -20,12 +26,17 @@ declare const EdgeRuntime: {
 
 const DEADLINE_MS = 30_000
 
-function jsonResponse(body: unknown, status = 200) {
+function jsonResponse(
+  body: unknown,
+  status = 200,
+  extraHeaders: Record<string, string> = {},
+) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       ...corsHeaders,
       'Content-Type': 'application/json',
+      ...extraHeaders,
     },
   })
 }
@@ -39,29 +50,14 @@ function getRequiredEnv(name: string) {
 function getCoordinatorConfig(): CoordinatorConfig {
   return {
     openaiApiKey: getRequiredEnv('OPENAI_API_KEY'),
-    openaiBaseUrl: Deno.env.get('OPENAI_BASE_URL') ?? DEFAULT_OPENAI_BASE_URL,
-    openaiModel: Deno.env.get('OPENAI_MODEL') ?? DEFAULT_OPENAI_MODEL,
+    openaiBaseUrl: getRequiredEnv('OPENAI_BASE_URL'),
+    openaiModel: getRequiredEnv('OPENAI_MODEL'),
     openrouterApiKey: Deno.env.get('OPENROUTER_API_KEY'),
     tmdbAccessToken: getRequiredEnv('TMDB_ACCESS_TOKEN'),
   }
 }
 
 async function handleRecommendation(req: Request, signal: AbortSignal) {
-  const authorization = req.headers.get('Authorization')
-  if (!authorization) {
-    return jsonResponse({ error: 'Authentication required' }, 401)
-  }
-
-  const supabase = createClient(
-    getRequiredEnv('SUPABASE_URL'),
-    getRequiredEnv('SUPABASE_ANON_KEY'),
-    { global: { headers: { Authorization: authorization } } },
-  )
-  const { data: userData, error: userError } = await supabase.auth.getUser()
-  if (userError || !userData.user) {
-    return jsonResponse({ error: 'Authentication required' }, 401)
-  }
-
   let request
   try {
     request = validateRecommendationRequest(await req.json())
@@ -74,6 +70,52 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
 
   if (hasMediaTypeMismatch(request)) {
     return jsonResponse({ error: 'media_type_mismatch' }, 422)
+  }
+
+  const authorization = req.headers.get('Authorization')
+  const supabaseUrl = getRequiredEnv('SUPABASE_URL')
+  const anonKey = getRequiredEnv('SUPABASE_ANON_KEY')
+  const hasUserToken = hasUserAuthorization(
+    authorization,
+    req.headers.get('apikey'),
+    anonKey,
+  )
+  const userClient = hasUserToken
+    ? createClient(supabaseUrl, getRequiredEnv('SUPABASE_ANON_KEY'), {
+        global: { headers: { Authorization: authorization! } },
+      })
+    : null
+  const userId = await getOptionalUserId(userClient)
+
+  if (hasUserToken && !userId) {
+    return jsonResponse({ error: 'Invalid or expired authentication' }, 401)
+  }
+
+  if (!userId) {
+    if (Deno.env.get('ANONYMOUS_RECOMMENDATIONS_ENABLED') === 'false') {
+      return jsonResponse({ error: 'Anonymous recommendations disabled' }, 503)
+    }
+    const quotaClient = createClient(
+      supabaseUrl,
+      getRequiredEnv('SUPABASE_SERVICE_ROLE_KEY'),
+    )
+    try {
+      const allowed = await consumeAnonymousQuota(
+        quotaClient,
+        anonymousDailyLimit(Deno.env.get('ANONYMOUS_DAILY_LIMIT')),
+      )
+      if (!allowed) {
+        return jsonResponse({ error: 'Anonymous daily limit reached' }, 429, {
+          'Retry-After': '86400',
+        })
+      }
+    } catch (error) {
+      console.error('anonymous recommendation quota failed', error)
+      return jsonResponse(
+        { error: 'Anonymous recommendations unavailable' },
+        503,
+      )
+    }
   }
 
   let result
@@ -101,21 +143,29 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
     throw error
   }
 
-  const historyRecord = createHistoryRecord(
-    userData.user.id,
+  const queryPlan = createQueryPlanSnapshot(
     request.media_type,
     result.plan,
-    result.candidates.map((media) => media.id),
-    result.recommendations,
     result.resolvedPeople,
     result.resolvedKeywords,
-    result.provider,
-    result.model,
   )
-  saveHistoryInBackground(
+  saveAuthenticatedHistory(
+    userId,
     (task) => EdgeRuntime.waitUntil(task),
-    async () => {
-      const { error } = await supabase
+    async (verifiedUserId) => {
+      const historyRecord = createHistoryRecord(
+        verifiedUserId,
+        request.media_type,
+        result.plan,
+        queryPlan,
+        result.candidates.map((media) => media.id),
+        result.recommendations,
+        result.resolvedPeople,
+        result.resolvedKeywords,
+        result.provider,
+        result.model,
+      )
+      const { error } = await userClient!
         .from('ai_recommendation_runs')
         .insert(historyRecord)
       if (error) throw error
@@ -124,6 +174,9 @@ async function handleRecommendation(req: Request, signal: AbortSignal) {
 
   return jsonResponse({
     media_type: request.media_type,
+    ...(wantsQueryPlan(req.headers.get('Accept'))
+      ? { query_plan: queryPlan }
+      : {}),
     direction: {
       summary: result.plan.intent_summary,
       labels: [

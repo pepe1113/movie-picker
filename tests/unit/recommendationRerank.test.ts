@@ -1,8 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import type {
-  CandidateMedia,
-  ContextPlan,
-} from '../../supabase/functions/recommend-movies/domain'
+import type { ContextPlan } from '../../supabase/functions/recommend-movies/domain'
+import type { CandidateMedia } from '../../supabase/functions/recommend-movies/tmdb'
 import {
   parseJevAnswer,
   rerankCandidates,

@@ -1,19 +1,26 @@
 import { describe, expect, it } from 'vitest'
 import {
-  applyDeterministicMediaRules,
+  createQueryPlanSnapshot,
+  hasMediaTypeMismatch,
+  parseContextPlan,
+  QUERY_PLAN_ACCEPT,
+  validateRecommendationRequest,
+  wantsQueryPlan,
+} from '../../supabase/functions/recommend-movies/domain'
+import { applyDeterministicMediaRules } from '../../supabase/functions/recommend-movies/rules'
+import {
   buildDiscoverSearchParams,
+  mergeCandidatePools,
+  parseTmdbMedia,
+  type CandidateMedia,
+} from '../../supabase/functions/recommend-movies/tmdb'
+import {
   createPlanMessages,
   createPlanTool,
-  DEFAULT_OPENAI_BASE_URL,
-  DEFAULT_OPENAI_MODEL,
-  hasMediaTypeMismatch,
-  mergeCandidatePools,
-  parseContextPlan,
-  parseTmdbMedia,
   parseToolArguments,
-  validateRecommendationRequest,
-  type CandidateMedia,
-} from '../../supabase/functions/recommend-movies/domain'
+} from '../../supabase/functions/recommend-movies/planning'
+import en from '../../src/i18n/locales/en.json'
+import zhTW from '../../src/i18n/locales/zh-TW.json'
 
 function movie(id: number) {
   return {
@@ -80,9 +87,36 @@ const plan = {
 }
 
 describe('context-aware recommendation domain', () => {
+  it('keeps quick-start templates brand and media-type neutral', () => {
+    for (const { locale, templates } of [
+      { locale: 'zh-TW' as const, templates: zhTW.aiPicker.templates },
+      { locale: 'en' as const, templates: en.aiPicker.templates },
+    ]) {
+      for (const { prompt } of templates) {
+        expect(prompt).not.toMatch(
+          /\bA24\b|電影|影片|影集|劇集|電視劇|\b(?:movie|film|series|title|tv)\b/iu,
+        )
+        expect(
+          hasMediaTypeMismatch({
+            request: prompt,
+            locale,
+            media_type: 'movie',
+          }),
+        ).toBe(false)
+        expect(
+          hasMediaTypeMismatch({ request: prompt, locale, media_type: 'tv' }),
+        ).toBe(false)
+      }
+    }
+  })
+
+  it('only adds the new response field for clients that opt in', () => {
+    expect(wantsQueryPlan(null)).toBe(false)
+    expect(wantsQueryPlan('application/json')).toBe(false)
+    expect(wantsQueryPlan(QUERY_PLAN_ACCEPT)).toBe(true)
+    expect(wantsQueryPlan(`application/json, ${QUERY_PLAN_ACCEPT}`)).toBe(true)
+  })
   it('uses OpenAI and validates a required single media type', () => {
-    expect(DEFAULT_OPENAI_BASE_URL).toBe('https://api.openai.com/v1')
-    expect(DEFAULT_OPENAI_MODEL).toBe('gpt-6-luna')
     expect(
       validateRecommendationRequest({
         request: '  想看輕鬆電影 ',
@@ -147,6 +181,49 @@ describe('context-aware recommendation domain', () => {
         'tv',
       ).discover_plan.include_genres,
     ).toEqual([{ id: 10759, source: 'explicit' }])
+  })
+
+  it('snapshots the validated plan with resolved entities and explicit empty values', () => {
+    const queryPlan = createQueryPlanSnapshot(
+      'movie',
+      parseContextPlan(plan, 'movie'),
+      [{ id: 31, name: 'Tom Hanks', role: 'cast' }],
+      [
+        {
+          id: 22,
+          lookup_name: 'healing',
+          display_label: '療癒',
+          source: 'inferred',
+        },
+      ],
+    )
+
+    expect(queryPlan).toEqual({
+      schema_version: 1,
+      hard_constraints: {
+        exclude_genres: ['horror'],
+        exclude_keywords: [],
+        runtime_min: null,
+        runtime_max: 90,
+        release_year_min: null,
+        release_year_max: null,
+        original_language: 'ja',
+        origin_country: null,
+      },
+      soft_preferences: {
+        include_genres: [{ name: 'comedy', source: 'explicit' }],
+        keywords: [
+          {
+            lookup_name: 'healing',
+            display_label: '療癒',
+            source: 'inferred',
+          },
+        ],
+        qualities: ['輕鬆'],
+      },
+      people: [{ id: 31, name: 'Tom Hanks', role: 'cast' }],
+      people_match: 'any',
+    })
   })
 
   it('keeps explicit filters when inferred preferences are relaxed', () => {
@@ -362,5 +439,32 @@ describe('context-aware recommendation domain', () => {
         'plan_movie_search',
       ),
     ).toEqual(plan)
+  })
+
+  it('rejects malformed planning tool responses', () => {
+    expect(() => parseToolArguments({}, 'plan_movie_search')).toThrow(
+      'AI model did not call plan_movie_search',
+    )
+    expect(() =>
+      parseToolArguments(
+        {
+          choices: [
+            {
+              message: {
+                tool_calls: [
+                  {
+                    function: {
+                      name: 'plan_movie_search',
+                      arguments: '{',
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+        'plan_movie_search',
+      ),
+    ).toThrow('AI model returned invalid plan_movie_search arguments')
   })
 })

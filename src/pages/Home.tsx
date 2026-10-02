@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { motion } from 'motion/react'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -12,9 +11,8 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useDiscoverMedia } from '@/hooks/useDiscoverMedia'
 import { useMediaList } from '@/hooks/useMovies'
 import { useLanguageStore } from '@/stores/languageStore'
-import { getGenres, getTvGenres } from '@/services/tmdb/api'
 import type { MediaType } from '@/services/tmdb/types'
-import { QUERY_KEYS, TMDB_LANGUAGE_MAP } from '@/utils/constants'
+import { MOVIE_GENRES, TV_GENRES } from '@/utils/constants'
 import { getBackdropUrl } from '@/utils/helpers'
 import {
   getNextVisibleCount,
@@ -45,6 +43,24 @@ function pickRandomHeroTitle(value: unknown, fallback: string) {
   return options[Math.floor(Math.random() * options.length)] ?? fallback
 }
 
+function LocalizedHeroTitle() {
+  const { t } = useTranslation()
+  const [title] = useState(() =>
+    pickRandomHeroTitle(
+      t('aiPicker.heroTitles', { returnObjects: true }),
+      t('aiPicker.title'),
+    ),
+  )
+
+  return (
+    <TypewriterHeroTitle
+      as="h1"
+      title={title}
+      className="mx-0 max-w-4xl text-left"
+    />
+  )
+}
+
 export function Component() {
   const { t } = useTranslation()
   const language = useLanguageStore((state) => state.language)
@@ -54,24 +70,23 @@ export function Component() {
     Record<MediaType, number | null>
   >({ movie: null, tv: null })
   const [visibleCounts, setVisibleCounts] = useState(INITIAL_COUNTS)
-  const latest = useMediaList(mediaType, 'latest')
-  const trending = useMediaList(mediaType, 'trending')
-  const popular = useMediaList(mediaType, 'popular')
-  const topRated = useMediaList(mediaType, 'top_rated')
   const selectedGenre = selectedGenres[mediaType]
-  const genreResults = useDiscoverMedia(mediaType, selectedGenre)
-  const { data: genres = [] } = useQuery({
-    queryKey: QUERY_KEYS.media.genres(mediaType, language),
-    queryFn: () =>
-      mediaType === 'movie'
-        ? getGenres(TMDB_LANGUAGE_MAP[language])
-        : getTvGenres(TMDB_LANGUAGE_MAP[language]),
+  const latest = useMediaList(mediaType, 'latest')
+  const trending = useMediaList(mediaType, 'trending', {
+    enabled: selectedGenre === null,
   })
-  const [heroTitle] = useState(() =>
-    pickRandomHeroTitle(
-      t('aiPicker.heroTitles', { returnObjects: true }),
-      t('aiPicker.title'),
-    ),
+  const popular = useMediaList(mediaType, 'popular', {
+    enabled: selectedGenre === null,
+  })
+  const topRated = useMediaList(mediaType, 'top_rated', {
+    enabled: selectedGenre === null,
+  })
+  const genreResults = useDiscoverMedia(mediaType, selectedGenre)
+  const genres = (mediaType === 'movie' ? MOVIE_GENRES : TV_GENRES).map(
+    ({ id, name }) => ({
+      id,
+      name: name[language],
+    }),
   )
   const heroBackdrop = latest.data?.media.find(
     (item) => item.backdrop_path,
@@ -107,7 +122,7 @@ export function Component() {
 
   return (
     <div className="home-scroll-page min-h-screen">
-      <section className="border-border relative flex min-h-[calc(100dvh-64px)] snap-start snap-always overflow-hidden border-b">
+      <section className="border-border relative flex min-h-[calc(100dvh-64px)] snap-end overflow-hidden border-b">
         {heroBackdrop && (
           <img
             src={getBackdropUrl(heroBackdrop)}
@@ -131,11 +146,7 @@ export function Component() {
               {t('home.aiHero.badge')}
             </div>
 
-            <TypewriterHeroTitle
-              as="h1"
-              title={heroTitle}
-              className="mx-0 max-w-4xl text-left"
-            />
+            <LocalizedHeroTitle key={language} />
             <p className="text-muted-foreground mt-6 max-w-xl text-base leading-relaxed md:text-lg">
               {t('home.aiHero.subtitle')}
             </p>
@@ -158,11 +169,11 @@ export function Component() {
         </div>
       </section>
 
-      <div ref={aiPickerRef} className="snap-start snap-always">
+      <div ref={aiPickerRef}>
         <AiMoviePicker />
       </div>
 
-      <div className="container mx-auto snap-start space-y-10 px-6 py-14 md:px-12 md:py-16 lg:px-16">
+      <div className="container mx-auto space-y-10 px-6 py-14 md:px-12 md:py-16 lg:px-16">
         <Tabs value={mediaType} onValueChange={changeMediaType}>
           <TabsList className="bg-secondary rounded-full p-1">
             <TabsTrigger value="movie" className="rounded-full px-6">

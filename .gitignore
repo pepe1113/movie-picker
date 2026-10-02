@@ -36,6 +36,7 @@ supabase/.temp/
 .claude/
 .vscode/
 .superpowers/
+supabase/.branches/
 
 # Local agent and planning artifacts
 AGENTS.md

@@ -2,20 +2,15 @@ import axios from 'axios'
 import { TMDB_BASE_URL } from '@/utils/constants'
 import { ENDPOINTS } from './endpoints'
 import type {
-  CreditsResponse,
   DiscoverMovieParams,
   DiscoverTvParams,
   GenreListResponse,
   MediaItem,
   MediaListResponse,
-  MovieDetail,
   MovieListResponse,
   PaginatedResponse,
-  TvAggregateCreditsResponse,
-  TvDetail,
   TvListResponse,
   TvShow,
-  VideosResponse,
 } from './types'
 
 const tmdbClient = axios.create({
@@ -92,59 +87,6 @@ export function getTopRatedTv(page = 1, language = 'zh-TW') {
 
 export function getOnTheAirTv(page = 1, language = 'zh-TW') {
   return getTvList(ENDPOINTS.ON_THE_AIR_TV, page, language)
-}
-
-// --- 電影詳情 ---
-
-export async function getMovieDetail(id: number, language = 'zh-TW') {
-  const { data } = await tmdbClient.get<MovieDetail>(
-    ENDPOINTS.MOVIE_DETAIL(id),
-    {
-      params: { language },
-    },
-  )
-  return data
-}
-
-export async function getMovieCredits(id: number, language = 'zh-TW') {
-  const { data } = await tmdbClient.get<CreditsResponse>(
-    ENDPOINTS.MOVIE_CREDITS(id),
-    { params: { language } },
-  )
-  return data
-}
-
-export async function getMovieVideos(id: number, language = 'zh-TW') {
-  const { data } = await tmdbClient.get<VideosResponse>(
-    ENDPOINTS.MOVIE_VIDEOS(id),
-    { params: { language } },
-  )
-  return data
-}
-
-// --- 影集詳情 ---
-
-export async function getTvDetail(id: number, language = 'zh-TW') {
-  const { data } = await tmdbClient.get<TvDetail>(ENDPOINTS.TV_DETAIL(id), {
-    params: { language },
-  })
-  return data
-}
-
-export async function getTvAggregateCredits(id: number, language = 'zh-TW') {
-  const { data } = await tmdbClient.get<TvAggregateCreditsResponse>(
-    ENDPOINTS.TV_AGGREGATE_CREDITS(id),
-    { params: { language } },
-  )
-  return data
-}
-
-export async function getTvVideos(id: number, language = 'zh-TW') {
-  const { data } = await tmdbClient.get<VideosResponse>(
-    ENDPOINTS.TV_VIDEOS(id),
-    { params: { language } },
-  )
-  return data
 }
 
 // --- 搜尋與探索 ---

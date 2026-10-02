@@ -109,12 +109,29 @@ function result(
 ) {
   return {
     media_type: 'movie' as const,
+    query_plan: {
+      schema_version: 1 as const,
+      hard_constraints: {
+        exclude_genres: ['horror'],
+        exclude_keywords: [],
+        runtime_min: null,
+        runtime_max: null,
+        release_year_min: null,
+        release_year_max: null,
+        original_language: null,
+        origin_country: null,
+      },
+      soft_preferences: {
+        include_genres: [],
+        keywords: [],
+        qualities: ['輕鬆'],
+      },
+      people: [],
+      people_match: 'any' as const,
+    },
     direction: {
       summary: '今晚以輕鬆、好理解的作品轉換心情',
-      labels: [
-        { text: '不要恐怖片', kind: 'hard' as const },
-        { text: '輕鬆', kind: 'soft' as const },
-      ],
+      labels: [{ text: '錯誤的 AI 標籤', kind: 'hard' as const }],
     },
     recommendations: [
       {
@@ -145,6 +162,22 @@ function authenticate() {
   })
 }
 
+const requestTemplates = [
+  ['喜劇', '想看輕鬆好笑、節奏明快，適合放空又能真的笑出來的。'],
+  [
+    '愛情',
+    '想看以愛情為主，從甜蜜浪漫、曖昧拉扯到複雜或成熟的關係都可以，角色互動自然、有火花。',
+  ],
+  [
+    '最糟的一晚',
+    '想看一個夜晚徹底失控的恐怖故事，有追逐、意外和越來越糟的局面。',
+  ],
+  [
+    '小眾獨立',
+    '想看帶有獨立製作氣質、角色鮮明、觀點獨特，節奏可以稍微慢一點的。',
+  ],
+] as const
+
 async function renderPicker() {
   const [{ AiMoviePicker }, { default: i18n }] = await Promise.all([
     import('@/components/features/ai-picker/AiMoviePicker'),
@@ -167,11 +200,60 @@ async function renderPicker() {
 }
 
 describe('AiMoviePicker', () => {
-  it('keeps the AI picker behind sign-in', async () => {
-    await renderPicker()
+  it.each(requestTemplates)(
+    'fills the request from the %s template without submitting',
+    async (label, prompt) => {
+      const user = userEvent.setup()
+      useAuthStore.setState({ isLoading: false })
 
-    expect(screen.getByText('請先登入，才能使用 AI 選片。')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: '幫我選片' })).toBeDisabled()
+      await renderPicker()
+      expect(screen.queryByText(prompt)).not.toBeInTheDocument()
+      await user.click(screen.getByRole('button', { name: new RegExp(label) }))
+
+      expect(screen.getByLabelText('觀影需求')).toHaveValue(prompt)
+      expect(requestContextRecommendations).not.toHaveBeenCalled()
+    },
+  )
+
+  it('supports keyboard template selection and clears the input error', async () => {
+    const user = userEvent.setup()
+    useAuthStore.setState({ isLoading: false })
+
+    await renderPicker()
+    expect(screen.getByRole('group', { name: '快速開始' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '幫我選片' }))
+    expect(screen.getByText('請至少輸入兩個字的觀影需求。')).toBeInTheDocument()
+
+    const template = screen.getByRole('button', {
+      name: requestTemplates[0][0],
+    })
+    template.focus()
+    await user.keyboard('{Enter}')
+
+    expect(screen.getByLabelText('觀影需求')).toHaveValue(
+      requestTemplates[0][1],
+    )
+    expect(
+      screen.queryByText('請至少輸入兩個字的觀影需求。'),
+    ).not.toBeInTheDocument()
+    expect(requestContextRecommendations).not.toHaveBeenCalled()
+  })
+
+  it('lets a guest request recommendations and explains how history is saved', async () => {
+    const user = userEvent.setup()
+    useAuthStore.setState({ isLoading: false })
+    vi.mocked(requestContextRecommendations).mockResolvedValue(result())
+
+    await renderPicker()
+    expect(
+      screen.getByText('不用登入也能試用；登入後會保存推薦紀錄。'),
+    ).toBeInTheDocument()
+
+    await user.type(screen.getByLabelText('觀影需求'), '想看一部輕鬆喜劇')
+    await user.click(screen.getByRole('button', { name: '幫我選片' }))
+
+    expect(requestContextRecommendations).toHaveBeenCalledOnce()
+    expect(await screen.findByText('Context Pick')).toBeInTheDocument()
   })
 
   it('uses one coordinator request and reveals only the complete result', async () => {
@@ -206,8 +288,9 @@ describe('AiMoviePicker', () => {
     expect(
       await screen.findByText('今晚以輕鬆、好理解的作品轉換心情'),
     ).toBeInTheDocument()
-    expect(screen.getByText('不要恐怖片')).toBeInTheDocument()
+    expect(screen.getByText('排除 horror 類型')).toBeInTheDocument()
     expect(screen.getByText('輕鬆')).toBeInTheDocument()
+    expect(screen.queryByText('錯誤的 AI 標籤')).not.toBeInTheDocument()
     expect(screen.getByText('Context Pick')).toBeInTheDocument()
     expect(screen.getByRole('progressbar')).toHaveAttribute(
       'aria-valuenow',
@@ -215,7 +298,23 @@ describe('AiMoviePicker', () => {
     )
   })
 
-  it('keeps animated waiting progress at or below ninety percent', async () => {
+  it('shows legacy labels until the opted-in Edge Function is deployed', async () => {
+    authenticate()
+    vi.mocked(requestContextRecommendations).mockResolvedValue({
+      ...result(),
+      query_plan: undefined,
+    })
+
+    await renderPicker()
+    fireEvent.change(screen.getByLabelText('觀影需求'), {
+      target: { value: '想看輕鬆電影' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: '幫我選片' }))
+
+    expect(await screen.findByText('錯誤的 AI 標籤')).toBeInTheDocument()
+  })
+
+  it('uses the expected request duration and caps waiting progress below completion', async () => {
     vi.useFakeTimers()
     authenticate()
     vi.mocked(requestContextRecommendations).mockImplementation(
@@ -228,10 +327,42 @@ describe('AiMoviePicker', () => {
     })
     fireEvent.click(screen.getByRole('button', { name: '幫我選片' }))
 
-    await act(async () => vi.advanceTimersByTime(29_900))
-    expect(
-      Number(screen.getByRole('progressbar').getAttribute('aria-valuenow')),
-    ).toBeLessThanOrEqual(90)
+    expect(screen.getByLabelText('觀影需求')).not.toBeVisible()
+    expect(screen.getByRole('status')).toHaveTextContent(
+      '正在請店員推薦一部片...',
+    )
+    expect(screen.getByTestId('nyan-cat')).toHaveAttribute(
+      'aria-hidden',
+      'true',
+    )
+    expect(screen.getByTestId('nyan-cat')).toHaveAttribute(
+      'src',
+      '/images/nyan-cat.png',
+    )
+    expect(screen.getByRole('progressbar')).toHaveAttribute(
+      'aria-label',
+      '魔法選片進度',
+    )
+
+    await act(async () => vi.advanceTimersByTime(1_000))
+    expect(screen.getByRole('progressbar')).toHaveAttribute(
+      'aria-valuenow',
+      '39',
+    )
+    expect(screen.getByText('39%')).toBeInTheDocument()
+
+    await act(async () => vi.advanceTimersByTime(1_500))
+    expect(screen.getByRole('status')).toHaveTextContent('正在查看店員精選...')
+
+    await act(async () => vi.advanceTimersByTime(27_400))
+    const progressValue = Number(
+      screen.getByRole('progressbar').getAttribute('aria-valuenow'),
+    )
+    expect(progressValue).toBeGreaterThan(0)
+    expect(progressValue).toBeLessThanOrEqual(99)
+    expect(screen.getByTestId('nyan-progress-fill')).toHaveStyle({
+      width: `${progressValue}%`,
+    })
     expect(screen.queryByRole('article')).not.toBeInTheDocument()
   })
 

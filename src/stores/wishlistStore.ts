@@ -1,10 +1,7 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import type { MediaItem, MediaType } from '@/services/tmdb/types'
-import {
-  supabaseWishlistRemote,
-  type WishlistRemote,
-} from '@/services/supabase/wishlist'
+import type { WishlistRemote } from '@/services/supabase/wishlist'
 import { getMediaKey, getMediaType } from '@/utils/media'
 import { useAuthStore } from './authStore'
 
@@ -23,10 +20,17 @@ interface WishlistActions {
 }
 
 type WishlistStore = WishlistState & WishlistActions
-let wishlistRemote: WishlistRemote = supabaseWishlistRemote
+let wishlistRemote: WishlistRemote | null = null
+
+async function getWishlistRemote() {
+  return (
+    wishlistRemote ??
+    (await import('@/services/supabase/wishlist')).supabaseWishlistRemote
+  )
+}
 
 export function setWishlistRemoteForTesting(remote: WishlistRemote | null) {
-  wishlistRemote = remote ?? supabaseWishlistRemote
+  wishlistRemote = remote
 }
 
 function getAuthenticatedUserId() {
@@ -76,7 +80,7 @@ export const useWishlistStore = create<WishlistStore>()(
           }
 
           try {
-            await wishlistRemote.add(userId, media)
+            await (await getWishlistRemote()).add(userId, media)
             set(
               { wishlist: [...wishlist, media], error: null },
               false,
@@ -107,7 +111,7 @@ export const useWishlistStore = create<WishlistStore>()(
           }
 
           try {
-            await wishlistRemote.remove(userId, mediaId, mediaType)
+            await (await getWishlistRemote()).remove(userId, mediaId, mediaType)
             set(
               (state) => ({
                 wishlist: state.wishlist.filter(
@@ -138,7 +142,7 @@ export const useWishlistStore = create<WishlistStore>()(
           }
 
           try {
-            await wishlistRemote.clear(userId)
+            await (await getWishlistRemote()).clear(userId)
             set({ wishlist: [], error: null }, false, 'clearWishlist/remote')
           } catch (error) {
             set({ error: getErrorMessage(error) }, false, 'clearWishlist/error')
@@ -153,9 +157,10 @@ export const useWishlistStore = create<WishlistStore>()(
           set({ isLoading: true, error: null }, false, 'syncWishlist/start')
 
           try {
-            const remoteWishlist = await wishlistRemote.list(userId)
+            const remote = await getWishlistRemote()
+            const remoteWishlist = await remote.list(userId)
             const mergedWishlist = mergeWishlist(get().wishlist, remoteWishlist)
-            await wishlistRemote.upsert(userId, mergedWishlist)
+            await remote.upsert(userId, mergedWishlist)
             set(
               { wishlist: mergedWishlist, isLoading: false, error: null },
               false,

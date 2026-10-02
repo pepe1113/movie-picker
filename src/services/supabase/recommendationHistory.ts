@@ -1,4 +1,5 @@
 import type { MediaItem, MediaType } from '@/services/tmdb/types'
+import type { QueryPlanSnapshot } from './aiRecommendations'
 import { getSupabaseClient } from './client'
 
 export interface RecommendationRunItem {
@@ -19,6 +20,7 @@ export interface RecommendationRun {
       hard: string[]
       soft: string[]
     }
+    query_plan?: QueryPlanSnapshot
   }
   discover_plan: Record<string, unknown>
   recommendations: RecommendationRunItem[]

@@ -16,7 +16,7 @@ Frontend は React で構築し、認証、database、Edge Function に Supabase
 
 - **最新・トレンド**：映画とドラマの新着、週間トレンド、人気、高評価、ジャンル別リストを閲覧
 - **作品検索**：映画／ドラマを検索し、詳細、キャスト、予告編、シーズン数、エピソード数を表示
-- **AI Picker**：ログイン後、観たい作品と条件を自然文で入力。AI が query plan を作成し、TMDB から最大 10 作品を取得
+- **AI Picker**：ログイン後、観たい作品と条件を自然文で入力。AI が query plan を作成し、TMDB の候補を Jev で再評価し、最大 5 作品を提案
 - **History**：最新 20 件の AI 推薦履歴を表示し、1 件ずつ削除
 - **Wishlist**：後で観たい映画やドラマを保存
 - **ユーザーログイン**：GitHub／Google OAuth に対応。AI Picker、Wishlist の同期、推薦履歴の保存が可能
@@ -83,16 +83,16 @@ flowchart LR
 - **AI の責務範囲を限定**：OpenAI が生成できるのは `plan_movie_search` query plan のみです。Edge Function で validation してから TMDB を呼び出し、AI model に作品情報を直接生成させません。
 - **Explicit constraints と inferred preferences を分離**：結果が少ない場合でも、緩和するのは AI が推測した genre と keyword だけです。ユーザーが指定した人物、年代、runtime、除外条件は保持します。
 - **同名と role の曖昧さを解決**：TMDB credits を使い、actor、director、writer、producer を区別します。候補を一意に決められない場合は推測せず、条件の調整を促します。
-- **再現性のある candidate pool を構築**：popularity 順と rating 順の結果を並列で取得し、重複を除いて交互に統合した後、最大 10 作品を返します。
+- **再現性のある candidate pool を構築**：popularity 順と rating 順の結果を並列で取得し、重複を除いて交互に統合した後、候補を Jev で再評価し、最大 5 作品を返します。
 - **遅延と書き込み失敗を分離**：OpenAI と TMDB への request に共通の 30 秒 timeout を設けています。推薦履歴は background write にし、履歴の保存失敗が完了済みの response に影響しないようにしています。
 
 Data flow と validation rule の詳細は、[AI Picker、Supabase Auth、Data Access Architecture](./docs/supabase-ai-rollout.en.md)（English）を参照してください。
 
 ## Develop
 
-Frontend の environment variables は `.env.example` を参照して設定します。AI Function が使用する OpenAI、OpenRouter、TMDB の key は Supabase Edge Function Secrets に保存してください。
+Frontend の environment variables は `.env.example` を参照して設定します。`recommend-movies` 用の OpenAI／OpenRouter／TMDB key と `media-detail` 用の TMDB／OMDb key は Supabase Edge Function Secrets に保存してください。`media-detail` は未ログインでも使用できます。OMDb key は任意で、設定がない場合は外部評価を表示しません。Local の Function 用に `TMDB_ACCESS_TOKEN` と任意の `OMDB_API_KEY` を追跡対象外の `supabase/functions/.env` に設定します。
 
-Frontend と Edge Function を本機で一緒に試す場合は Docker Desktop を起動し、環境ファイルに `OPENAI_API_KEY`、`OPENROUTER_API_KEY`、`TMDB_ACCESS_TOKEN`（または `VITE_TMDB_ACCESS_TOKEN`）を用意して、`bun --env-file=/path/to/.env.local run dev:local` を実行します。Local Supabase、`recommend-movies`、Vite が起動し、Frontend は Local API に接続します。`http://127.0.0.1:5173` で「Local test sign-in」を選ぶと推薦と履歴を手動で試せます。Ctrl+C で開発サーバーを終了し、`supabase stop` で Local stack を停止できます。Remote project は変更しません。
+Frontend と Edge Function を本機で一緒に試す場合は Docker Desktop を起動し、環境ファイルに `OPENAI_API_KEY`、`OPENROUTER_API_KEY`、`TMDB_ACCESS_TOKEN`（または `VITE_TMDB_ACCESS_TOKEN`）を用意して、`bun --env-file=/path/to/.env.local run dev:local` を実行します。Local Supabase、`recommend-movies`、Vite が起動し、Frontend は Local API に接続します。`http://127.0.0.1:5174` で「Local test sign-in」を選ぶと推薦と履歴を手動で試せます。Ctrl+C で開発サーバーを終了し、`supabase stop` で Local stack を停止できます。Remote project は変更しません。
 
 推薦ロジックだけを試す場合は `bun --env-file=/path/to/.env.local run test:ai-live` を実行します。Supabase、login、database を経由せず、OpenAI、TMDB、OpenRouter を直接呼び出します。
 
@@ -105,4 +105,10 @@ Frontend と Edge Function を本機で一緒に試す場合は Docker Desktop �
 | `bun run test:ai-live`    | AI と TMDB を Local で実測し token cost を表示 |
 | `bun run lint`            | Lint を実行                                    |
 | `bun run build`           | Type check 後、production bundle を生成        |
-| `bun run deploy:supabase` | `recommend-movies` Edge Function を deploy     |
+| `bun run deploy:supabase` | すべての Edge Functions を deploy              |
+
+## CI とデプロイ
+
+GitHub Actions はすべての push と `master` 向けの PR で lint、Prettier、test を実行します。`master` の check が成功すると Supabase migration を適用し、Edge Function をデプロイします。Frontend の Preview／Production は Vercel の Git 連携で自動デプロイします。
+
+Supabase CD には GitHub の `SUPABASE_ACCESS_TOKEN` と `SUPABASE_DB_PASSWORD` secrets が必要で、`production` environment を使用します。初回実行前に remote の migration history と repository の一致を確認してください。

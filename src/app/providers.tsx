@@ -16,28 +16,31 @@ const queryClient = new QueryClient({
 
 export function Providers({ children }: { children: ReactNode }) {
   const initializeAuth = useAuthStore((state) => state.initializeAuth)
-  const user = useAuthStore((state) => state.user)
+  const userId = useAuthStore((state) => state.user?.uid ?? null)
   const syncWithRemoteWishlist = useWishlistStore(
     (state) => state.syncWithRemoteWishlist,
   )
 
   useEffect(() => {
+    let cancelled = false
     let cleanup: (() => void) | null = null
 
     initializeAuth().then((unsubscribe) => {
-      cleanup = unsubscribe
+      if (cancelled) unsubscribe()
+      else cleanup = unsubscribe
     })
 
     return () => {
+      cancelled = true
       cleanup?.()
     }
   }, [initializeAuth])
 
   useEffect(() => {
-    if (!user) return
+    if (!userId) return
 
     syncWithRemoteWishlist().catch(() => undefined)
-  }, [syncWithRemoteWishlist, user])
+  }, [syncWithRemoteWishlist, userId])
 
   return (
     <I18nextProvider i18n={i18n}>

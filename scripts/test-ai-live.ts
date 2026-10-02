@@ -1,8 +1,4 @@
 import {
-  DEFAULT_OPENAI_BASE_URL,
-  DEFAULT_OPENAI_MODEL,
-} from '../supabase/functions/recommend-movies/domain.ts'
-import {
   coordinateRecommendations,
   type CoordinatorConfig,
   type OpenAIUsage,
@@ -62,7 +58,9 @@ async function run(
     media.media_type === 'movie' ? media.title : media.name
   console.log(
     'before (first 5 TMDB candidates)',
-    result.candidates.slice(0, 5).map((media) => ({ id: media.id, title: title(media) })),
+    result.candidates
+      .slice(0, 5)
+      .map((media) => ({ id: media.id, title: title(media) })),
   )
   console.log(
     'after (Jev final order)',
@@ -90,14 +88,12 @@ async function main() {
   const config = {
     openaiApiKey: requiredEnv('OPENAI_API_KEY'),
     openrouterApiKey: requiredEnv('OPENROUTER_API_KEY'),
-    openaiBaseUrl: process.env.OPENAI_BASE_URL ?? DEFAULT_OPENAI_BASE_URL,
+    openaiBaseUrl: requiredEnv('OPENAI_BASE_URL'),
     tmdbAccessToken: requiredEnv('TMDB_ACCESS_TOKEN', 'VITE_TMDB_ACCESS_TOKEN'),
   }
 
   console.log('request', request)
-  for (const model of models.length
-    ? models
-    : [process.env.OPENAI_MODEL ?? DEFAULT_OPENAI_MODEL]) {
+  for (const model of models.length ? models : [requiredEnv('OPENAI_MODEL')]) {
     await run(model, request, config)
   }
 }

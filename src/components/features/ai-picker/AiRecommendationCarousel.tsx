@@ -124,7 +124,7 @@ export function AiRecommendationCarousel({
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="relative mx-auto flex min-h-[24rem] max-w-5xl items-center justify-center overflow-hidden px-8 sm:min-h-[29rem] md:px-16">
+      <div className="relative mx-auto mb-15 flex min-h-[24rem] max-w-5xl items-center justify-center px-8 sm:mb-0 sm:min-h-[29rem] md:px-16">
         {recommendations.map((recommendation, index) => {
           const offset = getCircularOffset(
             index,

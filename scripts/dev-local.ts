@@ -2,6 +2,8 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
+process.env.SUPABASE_TELEMETRY_DISABLED = '1'
+
 const required = ['OPENAI_API_KEY', 'OPENROUTER_API_KEY']
 const missing = required.filter((name) => !process.env[name])
 const tmdbToken =
@@ -33,17 +35,28 @@ function statusVariables() {
       .filter((line) => line.includes('='))
       .map((line) => {
         const equals = line.indexOf('=')
-        return [line.slice(0, equals), line.slice(equals + 1).replace(/^"|"$/g, '')]
+        return [
+          line.slice(0, equals),
+          line.slice(equals + 1).replace(/^"|"$/g, ''),
+        ]
       }),
   )
 }
 
 let local = statusVariables()
 if (!local) {
-  const started = Bun.spawnSync(['supabase', 'start'], {
-    stdout: 'inherit',
-    stderr: 'inherit',
-  })
+  const started = Bun.spawnSync(
+    [
+      'supabase',
+      'start',
+      '-x',
+      'storage-api,imgproxy,realtime,studio,postgres-meta,mailpit,logflare,vector,supavisor',
+    ],
+    {
+      stdout: 'inherit',
+      stderr: 'inherit',
+    },
+  )
   if (started.exitCode !== 0) throw new Error('Local Supabase failed to start')
   local = statusVariables()
 }
@@ -61,7 +74,7 @@ writeFileSync(
   [
     ...required.map((name) => `${name}=${JSON.stringify(process.env[name])}`),
     `TMDB_ACCESS_TOKEN=${JSON.stringify(tmdbToken)}`,
-    ...['OPENAI_MODEL', 'OPENAI_BASE_URL'].flatMap((name) =>
+    ...['OPENAI_MODEL', 'OPENAI_BASE_URL', 'OMDB_API_KEY'].flatMap((name) =>
       process.env[name] ? [`${name}=${JSON.stringify(process.env[name])}`] : [],
     ),
   ].join('\n'),
@@ -80,28 +93,34 @@ process.once('SIGTERM', stop)
 
 try {
   edge = Bun.spawn(
-    [
-      'supabase',
-      'functions',
-      'serve',
-      'recommend-movies',
-      '--env-file',
-      secretsFile,
-    ],
+    ['supabase', 'functions', 'serve', '--env-file', secretsFile],
     { stdout: 'inherit', stderr: 'inherit' },
   )
-  frontend = Bun.spawn(['bun', 'run', 'dev', '--', '--host', '127.0.0.1'], {
-    env: {
-      ...process.env,
-      VITE_SUPABASE_URL: apiUrl,
-      VITE_SUPABASE_ANON_KEY: anonKey,
-      VITE_LOCAL_SUPABASE: 'true',
+  frontend = Bun.spawn(
+    [
+      'bun',
+      'run',
+      'dev',
+      '--',
+      '--host',
+      '127.0.0.1',
+      '--port',
+      '5174',
+      '--strictPort',
+    ],
+    {
+      env: {
+        ...process.env,
+        VITE_SUPABASE_URL: apiUrl,
+        VITE_SUPABASE_ANON_KEY: anonKey,
+        VITE_LOCAL_SUPABASE: 'true',
+      },
+      stdout: 'inherit',
+      stderr: 'inherit',
     },
-    stdout: 'inherit',
-    stderr: 'inherit',
-  })
+  )
 
-  console.log('Local app: http://127.0.0.1:5173')
+  console.log('Local app: http://127.0.0.1:5174')
   console.log('Use "Local test sign-in" to test the AI picker and history.')
   await Promise.race([edge.exited, frontend.exited])
 } finally {

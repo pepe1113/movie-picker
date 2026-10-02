@@ -15,5 +15,5 @@ export const useLanguageStore = create<LanguageStore>((set) => ({
     set({ language: lang })
     localStorage.setItem('language', lang)
     i18n.changeLanguage(lang)
-  }
+  },
 }))

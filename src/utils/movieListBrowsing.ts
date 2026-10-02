@@ -1,3 +1,6 @@
+import type { InfiniteData } from '@tanstack/react-query'
+import type { MediaListResponse } from '@/services/tmdb/types'
+
 export interface FetchNextMoviePageInput {
   visibleCount: number
   increment: number
@@ -16,4 +19,8 @@ export function shouldFetchNextMoviePage({
   hasNextPage,
 }: FetchNextMoviePageInput) {
   return Boolean(hasNextPage) && visibleCount + increment >= loadedCount
+}
+
+export function selectInfiniteMedia(data: InfiniteData<MediaListResponse>) {
+  return { media: data.pages.flatMap((page) => page.results) }
 }

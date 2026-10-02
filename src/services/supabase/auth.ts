@@ -57,7 +57,10 @@ export type AuthProvider = 'github' | 'google' | 'local'
 
 export async function signInWithProvider(provider: AuthProvider) {
   if (provider === 'local') {
-    if (!import.meta.env.DEV || import.meta.env.VITE_LOCAL_SUPABASE !== 'true') {
+    if (
+      !import.meta.env.DEV ||
+      import.meta.env.VITE_LOCAL_SUPABASE !== 'true'
+    ) {
       throw new Error('Local sign-in is only available in local development')
     }
     const { error } = await getAuthClient().auth.signInAnonymously()

@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { ChevronDown, RotateCcw, Sparkles } from 'lucide-react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { AiRecommendationCarousel } from '@/components/features/ai-picker/AiRecommendationCarousel'
+import { queryPlanBadges } from '@/components/features/ai-picker/queryPlanBadges'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -10,8 +12,7 @@ import {
   MAX_MOVIE_REQUEST_LENGTH,
   RECOMMENDATION_DEADLINE_MS,
   RecommendationRequestError,
-  requestContextRecommendations,
-} from '@/services/supabase/aiRecommendations'
+} from '@/services/supabase/aiRecommendationContract'
 import type { MediaType } from '@/services/tmdb/types'
 import { useAuthStore } from '@/stores/authStore'
 import { useLanguageStore } from '@/stores/languageStore'
@@ -21,17 +22,68 @@ interface AiMoviePickerProps {
   onBrowseMovies?: () => void
 }
 
+interface RequestTemplate {
+  emoji: string
+  label: string
+  prompt: string
+}
+
+const EXPECTED_RECOMMENDATION_MS = 4_000
+const LOADING_MESSAGE_INTERVAL_MS = 2_500
+const PROGRESS_TEXT_INTERVAL_MS = 500
+const WAITING_PROGRESS_CAP = 99
+
+function SlidingText({
+  value,
+  className,
+}: {
+  value: string
+  className?: string
+}) {
+  const shouldReduceMotion = useReducedMotion()
+
+  return (
+    <span className={cn('inline-grid overflow-hidden', className)}>
+      <AnimatePresence initial={false} mode="popLayout">
+        <motion.span
+          key={value}
+          initial={{
+            opacity: 0,
+            y: shouldReduceMotion ? 0 : '100%',
+          }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{
+            opacity: 0,
+            y: shouldReduceMotion ? 0 : '-100%',
+          }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
+        >
+          {value}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  )
+}
+
 export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const { t } = useTranslation()
+  const requestTemplates = t('aiPicker.templates', {
+    returnObjects: true,
+  }) as RequestTemplate[]
+  const loadingMessages = t('aiPicker.loadingMessages', {
+    returnObjects: true,
+  }) as string[]
   const language = useLanguageStore((state) => state.language)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  const isAuthLoading = useAuthStore((state) => state.isLoading)
   const [requestText, setRequestText] = useState('')
   const [mediaType, setMediaType] = useState<MediaType>('movie')
   const [inputError, setInputError] = useState(false)
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0)
+  const [progressText, setProgressText] = useState(0)
   const startedAtRef = useRef(0)
   const progressBarRef = useRef<HTMLDivElement>(null)
   const progressFillRef = useRef<HTMLDivElement>(null)
-  const progressTextRef = useRef<HTMLSpanElement>(null)
 
   const recommendationMutation = useMutation({
     mutationFn: async ({
@@ -47,6 +99,8 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
         RECOMMENDATION_DEADLINE_MS,
       )
       try {
+        const { requestContextRecommendations } =
+          await import('@/services/supabase/aiRecommendations')
         return await requestContextRecommendations(
           request,
           language,
@@ -62,23 +116,41 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   useEffect(() => {
     if (!recommendationMutation.isPending) return
 
-    const updateProgress = () => {
+    const getProgress = () => {
       const elapsed = Date.now() - startedAtRef.current
-      const value = Math.min(
-        90,
-        Math.floor((elapsed / RECOMMENDATION_DEADLINE_MS) * 90),
+      const ratio = elapsed / EXPECTED_RECOMMENDATION_MS
+      // Reach 86% around the expected duration; only completion renders 100%.
+      return Math.min(
+        WAITING_PROGRESS_CAP,
+        Math.floor(100 * (1 - Math.exp(-2 * ratio))),
       )
+    }
+    const updateProgress = () => {
+      const value = getProgress()
+
       progressBarRef.current?.setAttribute('aria-valuenow', String(value))
       if (progressFillRef.current) {
         progressFillRef.current.style.width = `${value}%`
       }
-      if (progressTextRef.current) {
-        progressTextRef.current.textContent = `${value}%`
-      }
     }
-    const interval = window.setInterval(updateProgress, 100)
-    return () => window.clearInterval(interval)
-  }, [recommendationMutation.isPending])
+    const progressInterval = window.setInterval(updateProgress, 100)
+    const progressTextInterval = window.setInterval(
+      () => setProgressText(getProgress()),
+      PROGRESS_TEXT_INTERVAL_MS,
+    )
+    const messageInterval = window.setInterval(
+      () =>
+        setLoadingMessageIndex(
+          (current) => (current + 1) % loadingMessages.length,
+        ),
+      LOADING_MESSAGE_INTERVAL_MS,
+    )
+    return () => {
+      window.clearInterval(progressInterval)
+      window.clearInterval(progressTextInterval)
+      window.clearInterval(messageInterval)
+    }
+  }, [loadingMessages.length, recommendationMutation.isPending])
 
   const startRecommendation = () => {
     const request = requestText.trim()
@@ -88,6 +160,8 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
     }
 
     setInputError(false)
+    setLoadingMessageIndex(0)
+    setProgressText(0)
     startedAtRef.current = Date.now()
     recommendationMutation.mutate({ request, mediaType })
   }
@@ -95,6 +169,11 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const submitRequest = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     startRecommendation()
+  }
+
+  const applyTemplate = (prompt: string) => {
+    setRequestText(prompt)
+    setInputError(false)
   }
 
   const reset = () => {
@@ -110,6 +189,11 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
       movie: recommendation.media_snapshot,
       reason: recommendation.reason,
     })) ?? []
+  const criteriaBadges = result
+    ? result.query_plan
+      ? queryPlanBadges(result.query_plan, t)
+      : result.direction.labels
+    : []
 
   return (
     <section className="border-border bg-background relative isolate overflow-hidden border-b">
@@ -118,7 +202,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
       <div className="via-primary/70 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent" />
 
       <div className="relative container mx-auto flex min-h-[calc(100svh-64px)] flex-1 flex-col justify-center px-6 py-10 md:px-12 md:py-12 lg:px-16">
-        <div className="bg-card/75 rounded-2xl border border-white/10 p-5 shadow-[rgba(108,18,35,0.22)_0px_24px_70px,rgba(0,0,0,0.45)_0px_12px_32px] backdrop-blur-xl md:p-8">
+        <div className="bg-card/75 rounded-2xl border border-white/10 p-5 shadow-[0_24px_70px_rgba(108,18,35,0.22),0_12px_32px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-8">
           {!result ? (
             <div className="mx-auto max-w-3xl space-y-7">
               <div className="space-y-3 text-center">
@@ -133,13 +217,17 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 </p>
               </div>
 
-              <form onSubmit={submitRequest} className="space-y-5">
+              <form
+                onSubmit={submitRequest}
+                hidden={recommendationMutation.isPending}
+                className="space-y-5"
+              >
                 <fieldset className="space-y-2">
                   <legend className="text-muted-foreground text-xs font-bold tracking-[1.4px] uppercase">
                     {t('aiPicker.mediaTypeLabel')}
                   </legend>
                   <div
-                    className="bg-background/70 grid grid-cols-2 gap-1 rounded-full border border-white/8 p-1"
+                    className="bg-background/70 grid grid-cols-2 gap-1 rounded-xl border border-white/8 p-1"
                     role="group"
                   >
                     {(['movie', 'tv'] as const).map((type) => (
@@ -151,7 +239,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                         disabled={recommendationMutation.isPending}
                         onClick={() => setMediaType(type)}
                         className={cn(
-                          'h-10 shadow-none',
+                          'h-10 rounded-lg shadow-none',
                           mediaType !== type && 'hover:bg-white/5',
                         )}
                       >
@@ -166,6 +254,29 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 >
                   {t('aiPicker.requestLabel')}
                 </label>
+                <div
+                  role="group"
+                  aria-label={t('aiPicker.templatesLabel')}
+                  className="my-2 flex flex-wrap gap-2"
+                >
+                  {requestTemplates.map((template) => (
+                    <Button
+                      key={template.label}
+                      type="button"
+                      variant="secondary"
+                      disabled={recommendationMutation.isPending}
+                      onClick={() => applyTemplate(template.prompt)}
+                      className="bg-background/55 hover:bg-primary/10 hover:border-primary/35 h-10 min-w-0 flex-none gap-2 rounded-full border border-white/10 px-4 text-center leading-tight whitespace-normal shadow-none hover:scale-[1.02]"
+                    >
+                      <span aria-hidden="true" className="text-base">
+                        {template.emoji}
+                      </span>
+                      <span className="text-xs font-semibold sm:text-sm">
+                        {template.label}
+                      </span>
+                    </Button>
+                  ))}
+                </div>
                 <Textarea
                   id="movie-request"
                   value={requestText}
@@ -180,7 +291,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     inputError ? 'movie-request-error' : 'movie-request-hint'
                   }
                   disabled={recommendationMutation.isPending}
-                  className="bg-background/70 min-h-36 border border-white/8 shadow-none focus:border-white/20 focus:shadow-[rgba(214,43,66,0.18)_0px_0px_0px_3px]"
+                  className="bg-background/70 min-h-36 rounded-xl border border-white/8 shadow-none focus:border-white/20 focus:shadow-[0_0_0_3px_rgba(214,43,66,0.18)]"
                 />
                 <div className="flex items-start justify-between gap-4 text-xs">
                   <p
@@ -200,37 +311,48 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                   </span>
                 </div>
 
-                {!isAuthenticated && (
-                  <p className="rounded-lg border border-[#539df5]/40 bg-[#539df5]/10 px-4 py-3 text-sm text-[#539df5]">
-                    {t('aiPicker.signInRequired')}
+                {!isAuthLoading && !isAuthenticated && (
+                  <p className="rounded-xl border border-[#539df5]/35 bg-[#539df5]/10 px-4 py-3 text-sm text-[#78b5ff]">
+                    {t('aiPicker.signInToSave')}
                   </p>
                 )}
 
                 <Button
                   type="submit"
                   size="lg"
-                  disabled={
-                    !isAuthenticated || recommendationMutation.isPending
-                  }
-                  className="w-full shadow-[rgba(214,43,66,0.24)_0px_12px_30px]"
+                  disabled={recommendationMutation.isPending}
+                  className="relative w-full overflow-hidden rounded-xl shadow-[0_12px_30px_rgba(214,43,66,0.24)] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/4 before:-translate-x-[150%] before:skew-x-[-20deg] before:bg-linear-to-r before:from-transparent before:via-white/40 before:to-transparent before:transition-transform before:duration-700 before:content-[''] hover:before:translate-x-[500%] focus-visible:before:translate-x-[500%] active:translate-y-px motion-reduce:before:hidden"
                 >
                   <Sparkles
                     className={cn(
                       'size-4',
-                      recommendationMutation.isPending && 'animate-pulse',
+                      recommendationMutation.isPending &&
+                        'animate-pulse motion-reduce:animate-none',
                     )}
                   />
                   {recommendationMutation.isPending
-                    ? t('aiPicker.loading')
+                    ? t('aiPicker.loadingButton')
                     : t('aiPicker.analyzeRequest')}
                 </Button>
               </form>
 
               {recommendationMutation.isPending && (
-                <div className="space-y-2" aria-live="polite">
-                  <div className="flex justify-between text-sm">
-                    <span>{t('aiPicker.progressLabel')}</span>
-                    <span ref={progressTextRef}>0%</span>
+                <div className="flex min-h-[27rem] flex-col justify-center gap-4">
+                  <div className="flex items-center justify-between gap-4 text-base font-bold md:text-lg">
+                    <span
+                      role="status"
+                      aria-live="polite"
+                      className="min-w-0 flex-1"
+                    >
+                      <SlidingText
+                        value={loadingMessages[loadingMessageIndex]}
+                        className="w-full"
+                      />
+                    </span>
+                    <SlidingText
+                      value={`${progressText}%`}
+                      className="tabular-nums"
+                    />
                   </div>
                   <div
                     ref={progressBarRef}
@@ -239,13 +361,23 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                     aria-valuemin={0}
                     aria-valuemax={100}
                     aria-valuenow={0}
-                    className="bg-secondary h-2 overflow-hidden rounded-full"
+                    className="bg-secondary relative h-4 w-full rounded-full border border-white/10 shadow-[0_12px_28px_rgba(0,0,0,0.3)]"
                   >
                     <div
                       ref={progressFillRef}
-                      className="bg-primary h-full transition-[width] duration-100"
+                      data-testid="nyan-progress-fill"
+                      className="nyan-progress-fill absolute inset-y-0 left-0 rounded-full transition-[width] duration-100"
                       style={{ width: '0%' }}
-                    />
+                    >
+                      <span className="nyan-progress-cat" aria-hidden="true">
+                        <img
+                          src="/images/nyan-cat.png"
+                          height={600}
+                          aria-hidden="true"
+                          data-testid="nyan-cat"
+                        />
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -303,7 +435,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                   {result.direction.summary}
                 </h2>
                 <div className="mt-3 flex flex-wrap justify-center gap-2">
-                  {result.direction.labels.map((label) => (
+                  {criteriaBadges.map((label) => (
                     <Badge
                       key={`${label.kind}-${label.text}`}
                       variant={label.kind === 'hard' ? 'outline' : 'secondary'}

@@ -17,10 +17,17 @@ export function WishlistButton({
   size = 'default',
 }: WishlistButtonProps) {
   const { t } = useTranslation()
-  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlistStore()
   const mediaType = getMediaType(movie)
   const title = getMediaTitle(movie)
-  const isWishlisted = isInWishlist(movie.id, mediaType)
+  const isWishlisted = useWishlistStore((state) =>
+    state.wishlist.some(
+      (item) => item.id === movie.id && getMediaType(item) === mediaType,
+    ),
+  )
+  const addToWishlist = useWishlistStore((state) => state.addToWishlist)
+  const removeFromWishlist = useWishlistStore(
+    (state) => state.removeFromWishlist,
+  )
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault()

@@ -72,26 +72,81 @@
     "requestSubtitle": "Describe your current state, desired feeling, viewing situation, or anything you want to avoid.",
     "mediaTypeLabel": "Media type",
     "requestLabel": "Watch Request",
+    "templatesLabel": "Quick starts",
+    "templates": [
+      {
+        "emoji": "😂",
+        "label": "Comedy",
+        "prompt": "I want something funny, fast-paced, and easy to enjoy that can actually make me laugh."
+      },
+      {
+        "emoji": "💞",
+        "label": "Romance",
+        "prompt": "I want romance, from sweet and playful to complicated or mature relationships, with natural chemistry between the leads."
+      },
+      {
+        "emoji": "🌙",
+        "label": "The Worst Night",
+        "prompt": "I want a horror story about one night going completely wrong, with chases, accidents, and an escalating nightmare."
+      },
+      {
+        "emoji": "🎨",
+        "label": "Indie",
+        "prompt": "I want something with an indie sensibility, distinctive characters, a fresh point of view, and a slower pace."
+      }
+    ],
     "requestPlaceholder": "For example: I am tired and want a warm, easy recent movie to watch with my partner.",
     "requestHint": "Mention mood, occasion, runtime, language, or explicit exclusions.",
     "requestRequired": "Enter at least two characters describing what you want.",
-    "signInRequired": "Sign in to use the AI movie picker.",
+    "signInToSave": "Try it without an account. Sign in to save your recommendation history.",
     "analyzeRequest": "Pick My Movies",
     "analyzing": "The AI model is picking movies...",
     "analysisError": "This movie pick could not be completed. Please try again.",
     "retryAnalysis": "Try Again",
     "criteriaReady": "Movie Direction Ready",
     "directionTitle": "This Pick's Direction",
+    "criteria": {
+      "excludeGenre": "Exclude {{value}} genre",
+      "exclude": "Exclude {{value}}",
+      "runtimeBetween": "{{min}}–{{max}} minutes",
+      "runtimeMin": "At least {{min}} minutes",
+      "runtimeMax": "At most {{max}} minutes",
+      "yearBetween": "{{min}}–{{max}}",
+      "yearMin": "From {{min}}",
+      "yearMax": "Through {{max}}",
+      "language": "Language {{value}}",
+      "country": "Country {{value}}",
+      "genre": "{{value}} genre",
+      "person": "{{name}} ({{role}})",
+      "peopleAny": "Any of: {{people}}",
+      "peopleAll": "All of: {{people}}",
+      "peopleSeparator": ", ",
+      "roles": {
+        "cast": "cast",
+        "director": "director",
+        "writer": "writer",
+        "producer": "producer"
+      }
+    },
     "noResults": "No titles matched every explicit constraint. Adjust your description and try again.",
     "refineRequest": "Refine Movie Request",
-    "progressLabel": "Preparing the final shortlist",
+    "progressLabel": "Magic movie-picking progress",
     "back": "Back",
     "next": "Next",
     "autoAdvance": "Choosing an option moves to the next question",
     "getPicks": "Generate Picks",
     "restart": "Start Over",
     "resultsTitle": "Your AI Picks",
-    "loading": "The AI model is picking movies...",
+    "loading": "Guessing your favorites, adding a little magic...",
+    "loadingMessages": [
+      "Asking the clerk for a recommendation...",
+      "Checking the staff picks...",
+      "Trust us, they’ve seen everything.",
+      "Picking the perfect movie...",
+      "Grabbing the popcorn...",
+      "Dimming the lights..."
+    ],
+    "loadingButton": "Casting movie magic...",
     "error": "Recommendations failed to load. Please try again later.",
     "retryMovies": "Reload Movies",
     "retryRecommendations": "Retry AI Recommendations",
@@ -113,102 +168,6 @@
       "next": "Next recommendation",
       "goTo": "Show {{title}}",
       "reasonLabel": "Why this movie"
-    },
-    "questions": {
-      "mood": {
-        "title": "What mood do you want tonight?",
-        "subtitle": "Start with the feeling you want the movie to create.",
-        "options": {
-          "relaxed": {
-            "label": "Relaxed",
-            "description": "Light, funny, and easy to watch",
-            "keyword": "Relaxed"
-          },
-          "exciting": {
-            "label": "Exciting",
-            "description": "Action, adventure, and enough tension",
-            "keyword": "Exciting"
-          },
-          "moving": {
-            "label": "Moving",
-            "description": "Emotion-forward and memorable",
-            "keyword": "Moving"
-          },
-          "mindBending": {
-            "label": "Mind-bending",
-            "description": "Mystery, sci-fi, twists, or strong worldbuilding",
-            "keyword": "Mind-bending"
-          }
-        }
-      },
-      "occasion": {
-        "title": "Who is watching?",
-        "subtitle": "Different situations need different safe bets.",
-        "options": {
-          "solo": {
-            "label": "Solo",
-            "description": "More immersive and willing to go heavier",
-            "keyword": "Solo"
-          },
-          "date": {
-            "label": "Date night",
-            "description": "Good atmosphere and easy to talk about",
-            "keyword": "Date night"
-          },
-          "friends": {
-            "label": "Friends",
-            "description": "Fast enough for everyone to get into it",
-            "keyword": "Friends"
-          },
-          "family": {
-            "label": "Family",
-            "description": "Accessible, broad, and group-friendly",
-            "keyword": "Family"
-          }
-        }
-      },
-      "pace": {
-        "title": "What pace works best?",
-        "subtitle": "This changes sorting and popularity thresholds.",
-        "options": {
-          "fast": {
-            "label": "Fast-paced",
-            "description": "Gets moving quickly without dragging",
-            "keyword": "Fast-paced"
-          },
-          "immersive": {
-            "label": "Slow burn",
-            "description": "You are willing to let it build",
-            "keyword": "Slow burn"
-          },
-          "any": {
-            "label": "Any pace",
-            "description": "Any rhythm works if the movie is strong",
-            "keyword": "Any pace"
-          }
-        }
-      },
-      "era": {
-        "title": "How old can the movie be?",
-        "subtitle": "Avoid recommendations you are not in the mood for.",
-        "options": {
-          "recent": {
-            "label": "Recent only",
-            "description": "Prioritize movies from the last five years",
-            "keyword": "Recent"
-          },
-          "classic": {
-            "label": "Classics are fine",
-            "description": "High-rated older titles are welcome",
-            "keyword": "Classic"
-          },
-          "any": {
-            "label": "No limit",
-            "description": "New or old both work",
-            "keyword": "Any era"
-          }
-        }
-      }
     }
   },
   "movieDetail": {
@@ -275,7 +234,15 @@
   },
   "history": {
     "title": "Recommendation History",
-    "subtitle": "Review the latest 20 watch directions, recommendations, and model details.",
+    "subtitle": "Review the latest 20 watch directions, recommendations.",
+    "stats": {
+      "runCount": "{{count}} recommendation runs",
+      "avgRating": "Average Rating"
+    },
+    "filters": {
+      "all": "All",
+      "empty": "No recommendation history in this category"
+    },
     "loading": "Loading recommendation history...",
     "deleteAction": "Delete run",
     "confirmDelete": "Delete this recommendation run?",
@@ -288,7 +255,8 @@
     },
     "empty": {
       "title": "No recommendation history yet",
-      "description": "Complete a signed-in AI picker run to see it here."
+      "description": "Complete a signed-in AI picker run to see it here.",
+      "explore": "Start Picking"
     },
     "model": "AI model: {{model}}"
   },

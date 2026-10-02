@@ -1,10 +1,10 @@
 import {
   TMDB_MOVIE_GENRES,
   TMDB_TV_GENRES,
-  type CandidateMedia,
   type ContextPlan,
   type ResolvedKeyword,
 } from './domain.ts'
+import type { CandidateMedia } from './tmdb.ts'
 
 const DECISIONS_URL = 'https://openrouter.ai/api/alpha/decisions'
 const JEV_MODEL = 'typesafe/jev-1.13'

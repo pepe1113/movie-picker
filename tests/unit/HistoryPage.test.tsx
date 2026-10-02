@@ -144,7 +144,7 @@ describe('History page', () => {
     expect(screen.getByText('登入查看推薦紀錄')).toBeInTheDocument()
   })
 
-  it('renders the new intent, labels, model, snapshot, and reason', async () => {
+  it('renders the saved intent, labels, and snapshot', async () => {
     authenticate()
     setRecommendationHistoryRemoteForTesting({
       listLatest: vi.fn().mockResolvedValue([run()]),
@@ -158,9 +158,49 @@ describe('History page', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('不要恐怖片')).toBeInTheDocument()
     expect(screen.getByText('輕鬆')).toBeInTheDocument()
-    expect(screen.getByText('AI 模型：gpt-4o-mini')).toBeInTheDocument()
     expect(screen.getByText('History Pick')).toBeInTheDocument()
-    expect(screen.getByText('喜劇類型適合現在轉換心情。')).toBeInTheDocument()
+  })
+
+  it('renders saved query plan badges instead of conflicting AI labels', async () => {
+    authenticate()
+    setRecommendationHistoryRemoteForTesting({
+      listLatest: vi.fn().mockResolvedValue([
+        run({
+          intent: {
+            ...run().intent,
+            display_labels: { hard: ['錯誤條件'], soft: [] },
+            query_plan: {
+              schema_version: 1,
+              hard_constraints: {
+                exclude_genres: ['horror'],
+                exclude_keywords: [],
+                runtime_min: null,
+                runtime_max: 90,
+                release_year_min: null,
+                release_year_max: null,
+                original_language: null,
+                origin_country: null,
+              },
+              soft_preferences: {
+                include_genres: [],
+                keywords: [],
+                qualities: ['輕鬆'],
+              },
+              people: [{ id: 31, name: 'Tom Hanks', role: 'cast' }],
+              people_match: 'any',
+            },
+          },
+        }),
+      ]),
+      deleteRun: vi.fn(),
+    })
+
+    await renderHistoryPage()
+    expect(await screen.findByText('排除 horror 類型')).toBeInTheDocument()
+    expect(screen.getByText('片長最多 90 分鐘')).toBeInTheDocument()
+    expect(screen.getByText('Tom Hanks（演員）')).toBeInTheDocument()
+    expect(screen.getByText('輕鬆')).toBeInTheDocument()
+    expect(screen.queryByText('錯誤條件')).not.toBeInTheDocument()
   })
 
   it('shows the saved overview when fallback has no reason', async () => {
@@ -182,10 +222,11 @@ describe('History page', () => {
 
     await renderHistoryPage()
     expect(await screen.findByText('Fallback History Pick')).toBeInTheDocument()
-    expect(screen.getAllByText('Overview 2')).toHaveLength(2)
+    expect(screen.getByText('Overview 2')).toBeInTheDocument()
   })
 
   it('keeps colliding movie and TV ids distinct and links each detail route', async () => {
+    const user = userEvent.setup()
     authenticate()
     setRecommendationHistoryRemoteForTesting({
       listLatest: vi.fn().mockResolvedValue([
@@ -223,6 +264,10 @@ describe('History page', () => {
       'href',
       '/tv/1',
     )
+
+    await user.click(screen.getByRole('tab', { name: '影集' }))
+    expect(screen.queryByText('Same ID Movie')).not.toBeInTheDocument()
+    expect(screen.getByText('Same ID Show')).toBeInTheDocument()
   })
 
   it('skips legacy recommendations without a media snapshot', async () => {

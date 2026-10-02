@@ -558,6 +558,49 @@ describe('recommendation orchestrator', () => {
     ).toBe(false)
   })
 
+  it('treats a no-heavy-themes request as a tone preference instead of an unresolved keyword', async () => {
+    const requestedUrls: string[] = []
+    const fetcher = vi.fn<typeof fetch>(async (input) => {
+      const url = String(input)
+      requestedUrls.push(url)
+      if (url.includes('/chat/completions')) {
+        return toolCall(
+          basePlan({
+            hard_constraints: {
+              exclude_genres: [],
+              exclude_keywords: [
+                {
+                  lookup_name: 'heavy themes',
+                  display_label: '沉重題材',
+                },
+              ],
+            },
+            display_labels: { hard: ['排除沉重題材'], soft: [] },
+          }),
+        )
+      }
+      return json({ results: [movie(1)] })
+    })
+
+    const result = await coordinateRecommendations(
+      {
+        request: '想看輕鬆一點的作品，不要沉重題材。',
+        locale: 'zh-TW',
+        media_type: 'movie',
+      },
+      config,
+      new AbortController().signal,
+      fetcher,
+    )
+
+    expect(requestedUrls.some((url) => url.includes('/search/keyword'))).toBe(
+      false,
+    )
+    expect(result.plan.hard_constraints.exclude_keywords).toEqual([])
+    expect(result.plan.soft_preferences.qualities).toContain('輕鬆')
+    expect(result.recommendations).toHaveLength(1)
+  })
+
   it('relaxes an inferred genre once while preserving an explicit keyword', async () => {
     const discoverUrls: string[] = []
     const fetcher = vi.fn<typeof fetch>(async (input) => {

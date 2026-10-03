@@ -92,7 +92,7 @@ Data flow と validation rule の詳細は、[AI Picker、Supabase Auth、Data A
 
 Frontend の environment variables は `.env.example` を参照して設定します。`recommend-movies` 用の OpenAI／OpenRouter／TMDB key と `media-detail` 用の TMDB／OMDb key は Supabase Edge Function Secrets に保存してください。`media-detail` は未ログインでも使用できます。OMDb key は任意で、設定がない場合は外部評価を表示しません。Local の Function 用に `TMDB_ACCESS_TOKEN` と任意の `OMDB_API_KEY` を追跡対象外の `supabase/functions/.env` に設定します。
 
-Frontend と Edge Function を本機で一緒に試す場合は Docker Desktop を起動し、環境ファイルに `OPENAI_API_KEY`、`OPENROUTER_API_KEY`、`TMDB_ACCESS_TOKEN`（または `VITE_TMDB_ACCESS_TOKEN`）を用意して、`bun --env-file=/path/to/.env.local run dev:local` を実行します。Local Supabase、`recommend-movies`、Vite が起動し、Frontend は Local API に接続します。`http://127.0.0.1:5174` で「Local test sign-in」を選ぶと推薦と履歴を手動で試せます。Ctrl+C で開発サーバーを終了し、`supabase stop` で Local stack を停止できます。Remote project は変更しません。
+Frontend と Edge Function を本機で一緒に試す場合は Docker Desktop を起動し、環境ファイルに `OPENAI_API_KEY`、`OPENAI_BASE_URL`、`OPENAI_MODEL`、`OPENROUTER_API_KEY`、`TMDB_ACCESS_TOKEN`（または `VITE_TMDB_ACCESS_TOKEN`）を用意して、`bun --env-file=/path/to/.env.local run dev:local` を実行します。Local Supabase、`recommend-movies`、Vite が起動し、Frontend は Local API に接続します。`http://127.0.0.1:5174` で「Local test sign-in」を選ぶと推薦と履歴を手動で試せます。Ctrl+C で開発サーバーを終了し、`supabase stop` で Local stack を停止できます。Remote project は変更しません。
 
 推薦ロジックだけを試す場合は `bun --env-file=/path/to/.env.local run test:ai-live` を実行します。Supabase、login、database を経由せず、OpenAI、TMDB、OpenRouter を直接呼び出します。
 

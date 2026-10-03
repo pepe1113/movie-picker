@@ -4,7 +4,12 @@ import { join } from 'node:path'
 
 process.env.SUPABASE_TELEMETRY_DISABLED = '1'
 
-const required = ['OPENAI_API_KEY', 'OPENROUTER_API_KEY']
+const required = [
+  'OPENAI_API_KEY',
+  'OPENAI_BASE_URL',
+  'OPENAI_MODEL',
+  'OPENROUTER_API_KEY',
+]
 const missing = required.filter((name) => !process.env[name])
 const tmdbToken =
   process.env.TMDB_ACCESS_TOKEN ?? process.env.VITE_TMDB_ACCESS_TOKEN
@@ -74,7 +79,7 @@ writeFileSync(
   [
     ...required.map((name) => `${name}=${JSON.stringify(process.env[name])}`),
     `TMDB_ACCESS_TOKEN=${JSON.stringify(tmdbToken)}`,
-    ...['OPENAI_MODEL', 'OPENAI_BASE_URL', 'OMDB_API_KEY'].flatMap((name) =>
+    ...['OMDB_API_KEY'].flatMap((name) =>
       process.env[name] ? [`${name}=${JSON.stringify(process.env[name])}`] : [],
     ),
   ].join('\n'),

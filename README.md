@@ -93,7 +93,7 @@ flowchart LR
 
 前端環境變數依照 `.env.example` 設定；`recommend-movies` 使用的 OpenAI／OpenRouter／TMDB 金鑰，以及 `media-detail` 使用的 TMDB／OMDb 金鑰，需另外放在 Supabase Edge Function Secrets。`media-detail` 可讓未登入使用者查看電影與影集詳情；OMDb 金鑰可選，缺少時不顯示外部評分。本機執行 Function 時，將 `TMDB_ACCESS_TOKEN`、`OMDB_API_KEY`（可選）放在未追蹤的 `supabase/functions/.env`。
 
-完整本機測試：先啟動 Docker Desktop，確認環境檔有 `OPENAI_API_KEY`、`OPENROUTER_API_KEY` 與 `TMDB_ACCESS_TOKEN`（或 `VITE_TMDB_ACCESS_TOKEN`），再執行 `bun --env-file=/path/to/.env.local run dev:local`。腳本會啟動本機 Supabase、兩個 Edge Functions 與 Vite，並自動使用本機 API URL/key。開啟 `http://127.0.0.1:5174`，選「本機測試登入」即可手動測推薦與歷史紀錄。按 Ctrl+C 結束兩個開發伺服器；本機 Supabase 可另以 `supabase stop` 停止。此流程不會修改遠端 Supabase 專案。
+完整本機測試：先啟動 Docker Desktop，確認環境檔有 `OPENAI_API_KEY`、`OPENAI_BASE_URL`、`OPENAI_MODEL`、`OPENROUTER_API_KEY` 與 `TMDB_ACCESS_TOKEN`（或 `VITE_TMDB_ACCESS_TOKEN`），再執行 `bun --env-file=/path/to/.env.local run dev:local`。腳本會啟動本機 Supabase、兩個 Edge Functions 與 Vite，並自動使用本機 API URL/key。開啟 `http://127.0.0.1:5174`，選「本機測試登入」即可手動測推薦與歷史紀錄。按 Ctrl+C 結束兩個開發伺服器；本機 Supabase 可另以 `supabase stop` 停止。此流程不會修改遠端 Supabase 專案。
 
 若只要直接測推薦核心，可執行 `bun --env-file=/path/to/.env.local run test:ai-live`。此指令會直接呼叫 OpenAI、TMDB 與 OpenRouter，略過 Supabase、登入與資料庫。
 

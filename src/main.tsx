@@ -3,6 +3,10 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 
+if (import.meta.env.DEV && import.meta.env.VITE_LOCAL_SUPABASE === 'true') {
+  void import('../scripts/preview-timing.ts')
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />

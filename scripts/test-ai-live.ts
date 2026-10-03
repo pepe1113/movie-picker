@@ -42,8 +42,9 @@ async function run(
   config: Omit<CoordinatorConfig, 'openaiModel'>,
 ) {
   const startedAt = performance.now()
+  const locale = process.env.AI_LIVE_LOCALE === 'en' ? 'en' : 'zh-TW'
   const result = await coordinateRecommendations(
-    { request, locale: 'zh-TW', media_type: 'movie' },
+    { request, locale, media_type: 'movie' },
     { ...config, openaiModel: model },
     AbortSignal.timeout(30_000),
   )
@@ -53,12 +54,31 @@ async function run(
   console.log('usage', result.usage ?? 'unavailable')
   console.log('estimatedCostUsd', cost?.toFixed(8) ?? 'pricing unavailable')
   console.log('queryPlan', JSON.stringify(result.plan, null, 2))
+  const title = (media: (typeof result.candidates)[number]) =>
+    media.media_type === 'movie' ? media.title : media.name
+  console.log(
+    'before (first 5 TMDB candidates)',
+    result.candidates
+      .slice(0, 5)
+      .map((media) => ({ id: media.id, title: title(media) })),
+  )
+  console.log(
+    'after (Jev final order)',
+    result.recommendations.map(({ media_id, media_snapshot }) => ({
+      id: media_id,
+      title: title(media_snapshot),
+    })),
+  )
   console.log('tmdb', {
+    candidateCount: result.candidates.length,
     recommendationCount: result.recommendations.length,
     titles: result.recommendations.map(({ media_snapshot: media }) =>
       media.media_type === 'movie' ? media.title : media.name,
     ),
   })
+  console.log('provider', result.provider)
+  console.log('model', result.model)
+  console.log('usedFallback', result.usedFallback)
   console.log('durationMs', Math.round(performance.now() - startedAt))
 }
 
@@ -67,6 +87,7 @@ async function main() {
   const request = process.env.AI_LIVE_REQUEST?.trim() || DEFAULT_REQUEST
   const config = {
     openaiApiKey: requiredEnv('OPENAI_API_KEY'),
+    openrouterApiKey: requiredEnv('OPENROUTER_API_KEY'),
     openaiBaseUrl: requiredEnv('OPENAI_BASE_URL'),
     tmdbAccessToken: requiredEnv('TMDB_ACCESS_TOKEN', 'VITE_TMDB_ACCESS_TOKEN'),
   }

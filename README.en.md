@@ -8,7 +8,7 @@
 
 Tell Movie Picker what mood you are in and what you would like to watch. AI turns your request into validated search criteria, then uses the TMDB Discover API to recommend movies or TV shows.
 
-The frontend is built with React. Supabase handles sign-in, the database, and the Edge Function; TMDB and OMDb provide movie data, while OpenAI interprets each request.
+The frontend is built with React. Supabase handles sign-in, the database, and the Edge Function; TMDB and OMDb provide movie data, OpenAI interprets each request, and OpenRouter provides semantic relevance scoring and ordering through Jev rerank.
 
 #### 👀 Take a peek at [Movie Picker](https://movie-picker.peiwang.dev/)
 
@@ -16,7 +16,7 @@ The frontend is built with React. Supabase handles sign-in, the database, and th
 
 - **Latest & Trending**: Browse the latest, weekly trending, popular, top-rated, and genre lists for movies and TV shows
 - **Search**: Find movies and TV shows, then view details, cast, trailers, seasons, and episode counts
-- **AI Picker**: Sign in and describe what you want to watch and any limits; AI builds the query, and TMDB returns up to ten titles
+- **AI Picker**: Describe what you want to watch and any limits; OpenAI plans the query, TMDB supplies candidates, and Jev rerank filters and orders up to 5 recommendations. Anonymous trials and saved history after sign-in are supported
 - **History**: View the latest 20 AI recommendation runs and delete individual entries
 - **Wishlist**: Save movies and TV shows for later
 - **User Sign-in**: Sign in with GitHub or Google to use the AI picker, sync your wishlist, and save recommendation history
@@ -46,7 +46,8 @@ The frontend is built with React. Supabase handles sign-in, the database, and th
 | Supabase       | User data, OAuth, RLS, and the Edge Function            |
 | TMDB API       | Movie and TV search, discovery, and metadata            |
 | OMDb API       | External movie ratings                                  |
-| AI model       | Turning natural-language requests into TMDB query plans |
+| OpenAI         | TMDB query plans through tool calling                   |
+| OpenRouter     | Jev rerank: semantic relevance scoring and ordering     |
 
 ## Data & Persistence
 
@@ -70,8 +71,11 @@ flowchart LR
   Fn -->|Natural language| AI[OpenAI]
   AI -->|Query plan| Fn
   Fn -->|Search / Credits / Discover| TMDB[TMDB API]
+  TMDB -->|Candidates| Fn
+  Fn -->|Candidate scoring| Rerank[OpenRouter / Jev rerank]
+  Rerank -->|Relevance scores| Fn
   Fn -->|Recommendation history| DB[(Postgres + RLS)]
-  Fn -->|Up to 10 recommendations| UI
+  Fn -->|Up to 5 recommendations| UI
 ```
 
 - `src/pages` contains routed pages; `src/components` contains shared UI and feature components.
@@ -80,29 +84,28 @@ flowchart LR
 
 ## Recommendation Pipeline
 
-- **Keep AI within a clear boundary**: OpenAI can only produce a `plan_movie_search` query plan. The Edge Function validates it and calls TMDB, so the model never generates title data directly.
-- **Separate explicit constraints from inferred preferences**: If there are too few results, only AI-inferred genres and keywords are relaxed. People, years, runtime, and exclusions from the user stay in place.
-- **Handle ambiguous names and roles**: TMDB credits are used to distinguish actors, directors, writers, and producers. Ambiguous matches ask the user to adjust the request instead of guessing.
-- **Build a predictable candidate pool**: Popular and top-rated results are fetched in parallel, deduplicated, and interleaved before returning up to ten titles.
-- **Isolate slow or failed work**: OpenAI and TMDB share a 30-second deadline. Recommendation history is written in the background, so it does not delay or invalidate a completed result.
+OpenAI produces a query plan through `plan_movie_search` tool calling. The Supabase Edge Function validates it and fetches TMDB candidates, then Jev rerank filters and orders them by semantic relevance, returning up to 5 titles. Explicit constraints stay in place; total scoring failure falls back to the original candidate order, and history is written in the background.
 
-See [AI Picker, Supabase Auth, and Data Access Architecture](./docs/supabase-ai-rollout.en.md) for the full data flow and validation rules.
+See [AI Picker Architecture](./docs/supabase-ai-rollout.en.md) for data flow and access control, and [Jev rerank Implementation](./docs/changes/2026-09-24-openrouter-jev-rerank.md) for scoring and fallback rules.
 
 ## Develop
 
-Set frontend environment variables from `.env.example`. Store the OpenAI/TMDB keys for `recommend-movies` and the TMDB/OMDb keys for `media-detail` in Supabase Edge Function Secrets. `media-detail` serves signed-out visitors too; the OMDb key is optional, and external ratings are hidden without it. For local Functions, put `TMDB_ACCESS_TOKEN` and optional `OMDB_API_KEY` in the untracked `supabase/functions/.env`.
+Set frontend environment variables from `.env.example`. Store the OpenAI/OpenRouter/TMDB keys for `recommend-movies` and the TMDB/OMDb keys for `media-detail` in Supabase Edge Function Secrets. `media-detail` serves signed-out visitors too; the OMDb key is optional, and external ratings are hidden without it. For local Functions, put `TMDB_ACCESS_TOKEN` and optional `OMDB_API_KEY` in the untracked `supabase/functions/.env`.
 
-To compare models locally, put `OPENAI_API_KEY` and `TMDB_ACCESS_TOKEN` in `.env.local`, then run `bun run test:ai-live -- gpt-4o-mini gpt-6-luna`. The command calls OpenAI and TMDB directly and prints usage, estimated cost, and the query plan without Supabase, sign-in, or database access.
+For full local testing, start Docker Desktop, provide `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_MODEL`, `OPENROUTER_API_KEY`, and `TMDB_ACCESS_TOKEN` (or `VITE_TMDB_ACCESS_TOKEN`) in an env file, then run `bun --env-file=/path/to/.env.local run dev:local`. The script starts local Supabase, both Edge Functions, and Vite, and connects the frontend to the local API. Open `http://127.0.0.1:5174` and choose “Local test sign-in” to test recommendations and history. Ctrl+C stops the dev servers; `supabase stop` stops the local stack. This does not change the remote Supabase project.
 
-| Command                   | Purpose                                    |
-| ------------------------- | ------------------------------------------ |
-| `bun install`             | Install dependencies                       |
-| `bun run dev`             | Start the local development server         |
-| `bun run test:run`        | Run all tests                              |
-| `bun run test:ai-live`    | Test AI and TMDB locally with token costs  |
-| `bun run lint`            | Run code checks                            |
-| `bun run build`           | Type-check and build the production bundle |
-| `bun run deploy:supabase` | Deploy all Edge Functions                  |
+To test only the recommendation core, run `bun --env-file=/path/to/.env.local run test:ai-live`. It calls OpenAI, TMDB, and OpenRouter directly without Supabase, sign-in, or database access.
+
+| Command                   | Purpose                                                    |
+| ------------------------- | ---------------------------------------------------------- |
+| `bun install`             | Install dependencies                                       |
+| `bun run dev:local`       | Start the isolated local frontend, Supabase, and Functions |
+| `bun run dev`             | Start the local development server                         |
+| `bun run test:run`        | Run all tests                                              |
+| `bun run test:ai-live`    | Test AI and TMDB locally with token costs                  |
+| `bun run lint`            | Run code checks                                            |
+| `bun run build`           | Type-check and build the production bundle                 |
+| `bun run deploy:supabase` | Deploy all Edge Functions                                  |
 
 ## CI and deployment
 

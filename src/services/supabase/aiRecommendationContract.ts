@@ -73,7 +73,7 @@ export interface ContextRecommendationResponse {
     }>
   }
   recommendations: ContextRecommendation[]
-  provider: 'openai'
+  provider: 'openai' | 'openrouter'
   model: string
   used_fallback: boolean
 }

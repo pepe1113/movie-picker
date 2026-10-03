@@ -144,8 +144,8 @@ const responseSchema: z.ZodType<ContextRecommendationResponse> = z
           })
           .strict(),
       )
-      .max(10),
-    provider: z.literal('openai'),
+      .max(5),
+    provider: z.enum(['openai', 'openrouter']),
     model: z.string().min(1),
     used_fallback: z.boolean(),
   })

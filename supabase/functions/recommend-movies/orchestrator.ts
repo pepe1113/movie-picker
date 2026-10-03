@@ -16,12 +16,15 @@ import {
 } from './planning.ts'
 import { applyDeterministicMediaRules, isGeneralExploration } from './rules.ts'
 import type { CandidateMedia } from './tmdb.ts'
+import { rerankCandidates } from './rerank.ts'
 
 export { RecommendationConditionError } from './discovery.ts'
 export type { RecommendationConditionCode } from './discovery.ts'
 export type { OpenAIUsage } from './planning.ts'
 
-export interface CoordinatorConfig extends PlanningConfig, DiscoveryConfig {}
+export interface CoordinatorConfig extends PlanningConfig, DiscoveryConfig {
+  openrouterApiKey?: string
+}
 
 export class RecommendationStageError extends Error {
   stage: 'plan' | 'discover'
@@ -93,14 +96,26 @@ export async function coordinateRecommendations(
     throw new RecommendationStageError('discover', { cause: error })
   }
 
+  const reranked = await rerankCandidates(
+    discovered.candidates,
+    plan,
+    discovered.resolvedKeywords,
+    config.openrouterApiKey,
+    signal,
+    fetcher,
+  )
+
   return {
     plan,
     candidates: discovered.candidates,
     resolvedPeople: discovered.resolvedPeople,
     resolvedKeywords: discovered.resolvedKeywords,
-    recommendations: recommendationSnapshots(discovered.candidates),
-    model: config.openaiModel,
+    recommendations: recommendationSnapshots(reranked.candidates),
+    provider: reranked.fullFallback
+      ? ('openai' as const)
+      : ('openrouter' as const),
+    model: reranked.model ?? config.openaiModel,
     usage,
-    usedFallback: discovered.usedFallback,
+    usedFallback: discovered.usedFallback || reranked.fullFallback,
   }
 }

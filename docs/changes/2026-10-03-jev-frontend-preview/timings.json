@@ -1,0 +1,239 @@
+{
+  "revision": "9ab79a3f70a036c2878922f536068c2cb7b79001",
+  "environment": "local Vite + isolated Supabase + live providers",
+  "samples": [
+    {
+      "timestamp": "2026-10-02T19:07:15.970Z",
+      "outcome": "success",
+      "requestMs": 5491,
+      "submitToResponseMs": 5526.599999964237,
+      "submitToRenderMs": 5606.099999964237,
+      "submitToPostersMs": 6224.399999976158,
+      "posterCount": 3,
+      "posterErrors": 0,
+      "id": 1,
+      "case": {
+        "request": "最近工作很挫折，想看能讓我重新找回工作動力、靠努力突破困境的電影。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "rerank": {
+        "candidateCount": 3.0,
+        "successCount": 3.0,
+        "failureCount": 0.0,
+        "latencyMs": 613.0,
+        "cost": 8.022e-5,
+        "passingCount": 3.0
+      }
+    },
+    {
+      "timestamp": "2026-10-02T19:07:35.071Z",
+      "outcome": "success",
+      "requestMs": 3295.300000011921,
+      "submitToResponseMs": 3316,
+      "submitToRenderMs": 3405.399999976158,
+      "submitToPostersMs": 3454.899999976158,
+      "posterCount": 5,
+      "posterErrors": 0,
+      "id": 2,
+      "case": {
+        "request": "下班很累，想看輕鬆溫暖、不要沉重也不要恐怖的電影。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "rerank": {
+        "candidateCount": 20.0,
+        "successCount": 20.0,
+        "failureCount": 0.0,
+        "latencyMs": 408.0,
+        "cost": 0.00050106,
+        "passingCount": 5.0
+      }
+    },
+    {
+      "timestamp": "2026-10-02T19:07:57.390Z",
+      "outcome": "success",
+      "requestMs": 4474.300000011921,
+      "submitToResponseMs": 4488.800000011921,
+      "submitToRenderMs": 4530.900000035763,
+      "submitToPostersMs": 4559.5,
+      "posterCount": 1,
+      "posterErrors": 0,
+      "id": 3,
+      "case": {
+        "request": "想看適合情侶約會的浪漫喜劇，甜蜜、有趣，不要悲傷的愛情故事。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "rerank": {
+        "candidateCount": 20.0,
+        "successCount": 20.0,
+        "failureCount": 0.0,
+        "latencyMs": 364.0,
+        "cost": 0.0005392379999999999,
+        "passingCount": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-10-02T19:08:21.404Z",
+      "outcome": "success",
+      "requestMs": 3398.600000023842,
+      "submitToResponseMs": 3411.100000023842,
+      "submitToRenderMs": 3450.100000023842,
+      "submitToPostersMs": 3574.600000023842,
+      "posterCount": 1,
+      "posterErrors": 0,
+      "id": 4,
+      "case": {
+        "request": "想看有巧妙反轉、需要動腦的懸疑電影，不要恐怖片。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "rerank": {
+        "candidateCount": 4.0,
+        "successCount": 4.0,
+        "failureCount": 0.0,
+        "latencyMs": 388.0,
+        "cost": 0.00010609200000000001,
+        "passingCount": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-10-02T19:08:46.161Z",
+      "outcome": "success",
+      "requestMs": 4159.300000011921,
+      "submitToResponseMs": 4173.700000047684,
+      "submitToRenderMs": 4242.400000035763,
+      "submitToPostersMs": 4495.5,
+      "posterCount": 5,
+      "posterErrors": 0,
+      "id": 5,
+      "case": {
+        "request": "週末想和家人一起看溫馨的動畫電影，重視親情和互相支持。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "rerank": {
+        "candidateCount": 20.0,
+        "successCount": 20.0,
+        "failureCount": 0.0,
+        "latencyMs": 413.0,
+        "cost": 0.0005791800000000001,
+        "passingCount": 5.0
+      }
+    },
+    {
+      "timestamp": "2026-10-02T19:09:08.658Z",
+      "outcome": "success",
+      "requestMs": 3790.300000011921,
+      "submitToResponseMs": 3820.5,
+      "submitToRenderMs": 3968.800000011921,
+      "submitToPostersMs": 4117.399999976158,
+      "posterCount": 3,
+      "posterErrors": 0,
+      "id": 6,
+      "case": {
+        "request": "我想看 2010 年之後的科幻片，不要太冷門，最好有 Amy Adams。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "rerank": {
+        "candidateCount": 4.0,
+        "successCount": 4.0,
+        "failureCount": 0.0,
+        "latencyMs": 284.0,
+        "cost": 0.00010999799999999999,
+        "passingCount": 3.0
+      }
+    },
+    {
+      "timestamp": "2026-10-02T19:09:26.992Z",
+      "outcome": "success",
+      "requestMs": 3981.099999964237,
+      "submitToResponseMs": 4023.5,
+      "submitToRenderMs": 4111.900000035763,
+      "submitToPostersMs": 4971.800000011921,
+      "posterCount": 5,
+      "posterErrors": 0,
+      "id": 7,
+      "case": {
+        "request": "想看節奏慢、讓人平靜療癒的日語電影，不要暴力和恐怖。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "rerank": {
+        "candidateCount": 20.0,
+        "successCount": 20.0,
+        "failureCount": 0.0,
+        "latencyMs": 329.0,
+        "cost": 0.0006271860000000001,
+        "passingCount": 5.0
+      }
+    },
+    {
+      "timestamp": "2026-10-02T19:10:02.722Z",
+      "outcome": "success",
+      "requestMs": 4569.100000023842,
+      "submitToResponseMs": 4596.300000011921,
+      "submitToRenderMs": 4668.5,
+      "submitToPostersMs": 5258.900000035763,
+      "posterCount": 5,
+      "posterErrors": 0,
+      "id": 8,
+      "case": {
+        "request": "想看辦公室背景、輕鬆搞笑的影集，適合下班放鬆。",
+        "locale": "zh-TW",
+        "media_type": "tv"
+      },
+      "rerank": {
+        "candidateCount": 20.0,
+        "successCount": 20.0,
+        "failureCount": 0.0,
+        "latencyMs": 854.0,
+        "cost": 0.000495852,
+        "passingCount": 5.0
+      }
+    },
+    {
+      "timestamp": "2026-10-02T19:10:42.739Z",
+      "outcome": "error",
+      "requestMs": 2592.600000023842,
+      "submitToResponseMs": 2610.900000035763,
+      "submitToRenderMs": 2639.900000035763,
+      "submitToPostersMs": 2671.699999988079,
+      "posterCount": 0,
+      "posterErrors": 0,
+      "id": 9,
+      "case": {
+        "request": "I want an inspiring movie about starting over after career failure, with perseverance rather than revenge.",
+        "locale": "en",
+        "media_type": "movie"
+      },
+      "rerank": null
+    },
+    {
+      "timestamp": "2026-10-02T19:11:09.905Z",
+      "outcome": "success",
+      "requestMs": 3249.199999988079,
+      "submitToResponseMs": 3281.5,
+      "submitToRenderMs": 3321.699999988079,
+      "submitToPostersMs": 3447,
+      "posterCount": 2,
+      "posterErrors": 0,
+      "id": 10,
+      "case": {
+        "request": "Recommend a thoughtful science fiction movie about human connection, not an action-heavy space battle.",
+        "locale": "en",
+        "media_type": "movie"
+      },
+      "rerank": {
+        "candidateCount": 18.0,
+        "successCount": 18.0,
+        "failureCount": 0.0,
+        "latencyMs": 517.0,
+        "cost": 0.0004462499999999999,
+        "passingCount": 2.0
+      }
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import {
-  MAX_RECOMMENDATIONS,
+  RELAXATION_THRESHOLD,
   type ContextPlan,
   type KeywordPreference,
   type PersonRole,
@@ -432,7 +432,10 @@ export async function discoverCandidates(
   )
   let usedFallback = false
 
-  if (candidates.length < MAX_RECOMMENDATIONS && hasInferredPreferences(plan)) {
+  if (
+    candidates.length < RELAXATION_THRESHOLD &&
+    hasInferredPreferences(plan)
+  ) {
     const relaxed = await fetchPools(
       request,
       plan,

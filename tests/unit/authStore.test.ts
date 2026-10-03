@@ -28,6 +28,7 @@ describe('Supabase auth integration', () => {
       error: null,
     })
     setSupabaseAuthClientForTesting(null)
+    vi.unstubAllEnvs()
   })
 
   it('maps Supabase Auth metadata into the existing user shape', () => {
@@ -107,6 +108,17 @@ describe('Supabase auth integration', () => {
       expect(useAuthStore.getState().error).toBeNull()
     },
   )
+
+  it('uses anonymous sign-in for local development', async () => {
+    vi.stubEnv('VITE_LOCAL_SUPABASE', 'true')
+    const signInAnonymously = vi.fn().mockResolvedValue({ error: null })
+    setSupabaseAuthClientForTesting({ auth: { signInAnonymously } })
+
+    await useAuthStore.getState().signIn('local')
+
+    expect(signInAnonymously).toHaveBeenCalledOnce()
+    expect(useAuthStore.getState().error).toBeNull()
+  })
 
   it('loads the current session and updates when auth state changes', async () => {
     let authStateCallback:

@@ -8,7 +8,7 @@
 
 今の気分や観たい作品の条件を入力すると、AI が自然言語を検証可能な検索条件に整理し、TMDB Discover API を使って映画やドラマを提案します。
 
-Frontend は React で構築し、認証、database、Edge Function に Supabase を使用しています。作品情報は TMDB／OMDb から取得し、OpenAI が自然言語で入力された作品選びの条件を解釈します。
+フロントエンドは React で構築し、認証、データベース、Edge Function に Supabase を使用しています。作品情報は TMDB／OMDb から取得し、OpenAI が検索条件を解釈します。OpenRouter の Jev rerank で候補の意味的な関連性を評価し、並べ替えます。
 
 #### 👀 [Movie Picker を試す](https://movie-picker.peiwang.dev/)
 
@@ -16,7 +16,7 @@ Frontend は React で構築し、認証、database、Edge Function に Supabase
 
 - **最新・トレンド**：映画とドラマの新着、週間トレンド、人気、高評価、ジャンル別リストを閲覧
 - **作品検索**：映画／ドラマを検索し、詳細、キャスト、予告編、シーズン数、エピソード数を表示
-- **AI Picker**：ログイン後、観たい作品と条件を自然文で入力。AI が query plan を作成し、TMDB の候補を Jev で再評価し、最大 5 作品を提案
+- **AI Picker**：観たい作品と条件を自然文で入力。OpenAI が query plan を作成し、TMDB の候補を Jev rerank で絞り込み、並べ替えて最大 5 作品を推薦。匿名での試用と、ログイン後の履歴保存に対応
 - **History**：最新 20 件の AI 推薦履歴を表示し、1 件ずつ削除
 - **Wishlist**：後で観たい映画やドラマを保存
 - **ユーザーログイン**：GitHub／Google OAuth に対応。AI Picker、Wishlist の同期、推薦履歴の保存が可能
@@ -30,23 +30,24 @@ Frontend は React で構築し、認証、database、Edge Function に Supabase
 
 ## Tech Stack
 
-| Framework      | 用途                                               |
-| -------------- | -------------------------------------------------- |
-| React 19       | Frontend UI                                        |
-| TypeScript     | 静的型チェック                                     |
-| Vite           | Local development と frontend build                |
-| Tailwind CSS 4 | Responsive layout と styling                       |
-| shadcn/ui      | 再利用可能な UI component                          |
-| Motion         | UI animation と reduced-motion support             |
-| React Router   | SPA routing                                        |
-| TanStack Query | API fetching、cache、server state の同期           |
-| Zustand        | 言語、theme、auth、Wishlist state の管理           |
-| i18next        | 英語と繁体字中国語の localization                  |
-| Zod            | AI response と query plan の validation            |
-| Supabase       | User data、OAuth、RLS、Edge Function               |
-| TMDB API       | 映画・ドラマの search、Discover、metadata          |
-| OMDb API       | 映画の外部 rating を取得                           |
-| AI model       | Natural-language request を TMDB query plan に変換 |
+| Framework      | 用途                                             |
+| -------------- | ------------------------------------------------ |
+| React 19       | Frontend UI                                      |
+| TypeScript     | 静的型チェック                                   |
+| Vite           | Local development と frontend build              |
+| Tailwind CSS 4 | Responsive layout と styling                     |
+| shadcn/ui      | 再利用可能な UI component                        |
+| Motion         | UI animation と reduced-motion support           |
+| React Router   | SPA routing                                      |
+| TanStack Query | API fetching、cache、server state の同期         |
+| Zustand        | 言語、theme、auth、Wishlist state の管理         |
+| i18next        | 英語と繁体字中国語の localization                |
+| Zod            | AI response と query plan の validation          |
+| Supabase       | User data、OAuth、RLS、Edge Function             |
+| TMDB API       | 映画・ドラマの search、Discover、metadata        |
+| OMDb API       | 映画の外部 rating を取得                         |
+| OpenAI         | tool calling による TMDB query plan の生成       |
+| OpenRouter     | Jev rerank：候補の意味的な関連性の評価と並べ替え |
 
 ## Data & Persistence
 
@@ -70,8 +71,11 @@ flowchart LR
   Fn -->|Natural-language request| AI[OpenAI]
   AI -->|Query plan| Fn
   Fn -->|Search / Credits / Discover| TMDB[TMDB API]
+  TMDB -->|Candidates| Fn
+  Fn -->|Candidate scoring| Rerank[OpenRouter / Jev rerank]
+  Rerank -->|Relevance scores| Fn
   Fn -->|Recommendation history| DB[(Postgres + RLS)]
-  Fn -->|Max 10 recommendations| UI
+  Fn -->|Max 5 recommendations| UI
 ```
 
 - `src/pages` に route ごとの page、`src/components` に shared UI と feature component を配置しています。
@@ -80,13 +84,9 @@ flowchart LR
 
 ## Recommendation Pipeline
 
-- **AI の責務範囲を限定**：OpenAI が生成できるのは `plan_movie_search` query plan のみです。Edge Function で validation してから TMDB を呼び出し、AI model に作品情報を直接生成させません。
-- **Explicit constraints と inferred preferences を分離**：結果が少ない場合でも、緩和するのは AI が推測した genre と keyword だけです。ユーザーが指定した人物、年代、runtime、除外条件は保持します。
-- **同名と role の曖昧さを解決**：TMDB credits を使い、actor、director、writer、producer を区別します。候補を一意に決められない場合は推測せず、条件の調整を促します。
-- **再現性のある candidate pool を構築**：popularity 順と rating 順の結果を並列で取得し、重複を除いて交互に統合した後、候補を Jev で再評価し、最大 5 作品を返します。
-- **遅延と書き込み失敗を分離**：OpenAI と TMDB への request に共通の 30 秒 timeout を設けています。推薦履歴は background write にし、履歴の保存失敗が完了済みの response に影響しないようにしています。
+OpenAI が `plan_movie_search` の tool calling で query plan を生成し、Supabase Edge Function が検証して TMDB の候補を取得します。Jev rerank で意味的な関連性に基づいて絞り込み、並べ替え、最大 5 作品を返します。明示された条件は保持し、評価がすべて失敗した場合は元の候補順にフォールバックします。推薦履歴はバックグラウンドで保存します。
 
-Data flow と validation rule の詳細は、[AI Picker、Supabase Auth、Data Access Architecture](./docs/supabase-ai-rollout.en.md)（English）を参照してください。
+データフローと権限設計は [AI Picker Architecture](./docs/supabase-ai-rollout.en.md)、評価ルールとフォールバックは [Jev rerank 実装説明](./docs/changes/2026-09-24-openrouter-jev-rerank.md)（いずれも English）を参照してください。
 
 ## Develop
 

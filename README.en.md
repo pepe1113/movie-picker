@@ -8,7 +8,7 @@
 
 Tell Movie Picker what mood you are in and what you would like to watch. AI turns your request into validated search criteria, then uses the TMDB Discover API to recommend movies or TV shows.
 
-The frontend is built with React. Supabase handles sign-in, the database, and the Edge Function; TMDB and OMDb provide movie data, while OpenAI interprets each request.
+The frontend is built with React. Supabase handles sign-in, the database, and the Edge Function; TMDB and OMDb provide movie data, OpenAI interprets each request, and OpenRouter provides semantic relevance scoring and ordering through Jev rerank.
 
 #### 👀 Take a peek at [Movie Picker](https://movie-picker.peiwang.dev/)
 
@@ -16,7 +16,7 @@ The frontend is built with React. Supabase handles sign-in, the database, and th
 
 - **Latest & Trending**: Browse the latest, weekly trending, popular, top-rated, and genre lists for movies and TV shows
 - **Search**: Find movies and TV shows, then view details, cast, trailers, seasons, and episode counts
-- **AI Picker**: Sign in and describe what you want to watch and any limits; AI builds the query, and TMDB returns up to five titles
+- **AI Picker**: Describe what you want to watch and any limits; OpenAI plans the query, TMDB supplies candidates, and Jev rerank filters and orders up to 5 recommendations. Anonymous trials and saved history after sign-in are supported
 - **History**: View the latest 20 AI recommendation runs and delete individual entries
 - **Wishlist**: Save movies and TV shows for later
 - **User Sign-in**: Sign in with GitHub or Google to use the AI picker, sync your wishlist, and save recommendation history
@@ -46,7 +46,8 @@ The frontend is built with React. Supabase handles sign-in, the database, and th
 | Supabase       | User data, OAuth, RLS, and the Edge Function            |
 | TMDB API       | Movie and TV search, discovery, and metadata            |
 | OMDb API       | External movie ratings                                  |
-| AI model       | Turning natural-language requests into TMDB query plans |
+| OpenAI         | TMDB query plans through tool calling                   |
+| OpenRouter     | Jev rerank: semantic relevance scoring and ordering     |
 
 ## Data & Persistence
 
@@ -70,6 +71,9 @@ flowchart LR
   Fn -->|Natural language| AI[OpenAI]
   AI -->|Query plan| Fn
   Fn -->|Search / Credits / Discover| TMDB[TMDB API]
+  TMDB -->|Candidates| Fn
+  Fn -->|Candidate scoring| Rerank[OpenRouter / Jev rerank]
+  Rerank -->|Relevance scores| Fn
   Fn -->|Recommendation history| DB[(Postgres + RLS)]
   Fn -->|Up to 5 recommendations| UI
 ```
@@ -80,13 +84,9 @@ flowchart LR
 
 ## Recommendation Pipeline
 
-- **Keep AI within a clear boundary**: OpenAI can only produce a `plan_movie_search` query plan. The Edge Function validates it and calls TMDB, so the model never generates title data directly.
-- **Separate explicit constraints from inferred preferences**: If there are too few results, only AI-inferred genres and keywords are relaxed. People, years, runtime, and exclusions from the user stay in place.
-- **Handle ambiguous names and roles**: TMDB credits are used to distinguish actors, directors, writers, and producers. Ambiguous matches ask the user to adjust the request instead of guessing.
-- **Build a predictable candidate pool**: Popular and top-rated results are fetched in parallel, deduplicated, and interleaved before returning up to five titles.
-- **Isolate slow or failed work**: OpenAI and TMDB share a 30-second deadline. Recommendation history is written in the background, so it does not delay or invalidate a completed result.
+OpenAI produces a query plan through `plan_movie_search` tool calling. The Supabase Edge Function validates it and fetches TMDB candidates, then Jev rerank filters and orders them by semantic relevance, returning up to 5 titles. Explicit constraints stay in place; total scoring failure falls back to the original candidate order, and history is written in the background.
 
-See [AI Picker, Supabase Auth, and Data Access Architecture](./docs/supabase-ai-rollout.en.md) for the full data flow and validation rules.
+See [AI Picker Architecture](./docs/supabase-ai-rollout.en.md) for data flow and access control, and [Jev rerank Implementation](./docs/changes/2026-09-24-openrouter-jev-rerank.md) for scoring and fallback rules.
 
 ## Develop
 

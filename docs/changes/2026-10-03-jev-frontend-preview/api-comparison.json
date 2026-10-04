@@ -1,0 +1,606 @@
+{
+  "measuredAt": "2026-10-03T09:29:03.777Z",
+  "revision": "b963b673bffc33c8d78681807d618098f37b73b9",
+  "method": "paired full HTTP body timing; rounds alternate mode order; same local handler, API key omitted for baseline rerank; no browser rendering",
+  "results": [
+    {
+      "id": 1,
+      "round": 1,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 4958.895583,
+      "case": {
+        "request": "最近工作很挫折，想看能讓我重新找回工作動力、靠努力突破困境的電影。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 5
+    },
+    {
+      "id": 1,
+      "round": 1,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 3634.187541000001,
+      "case": {
+        "request": "最近工作很挫折，想看能讓我重新找回工作動力、靠努力突破困境的電影。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 5
+    },
+    {
+      "id": 2,
+      "round": 1,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 2511.7440420000003,
+      "case": {
+        "request": "下班很累，想看輕鬆溫暖、不要沉重也不要恐怖的電影。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 5
+    },
+    {
+      "id": 2,
+      "round": 1,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 2449.754208999999,
+      "case": {
+        "request": "下班很累，想看輕鬆溫暖、不要沉重也不要恐怖的電影。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 5
+    },
+    {
+      "id": 3,
+      "round": 1,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 3662.4314580000027,
+      "case": {
+        "request": "想看適合情侶約會的浪漫喜劇，甜蜜、有趣，不要悲傷的愛情故事。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 5
+    },
+    {
+      "id": 3,
+      "round": 1,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 3235.618000000002,
+      "case": {
+        "request": "想看適合情侶約會的浪漫喜劇，甜蜜、有趣，不要悲傷的愛情故事。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 1
+    },
+    {
+      "id": 4,
+      "round": 1,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 2868.1278329999986,
+      "case": {
+        "request": "想看有巧妙反轉、需要動腦的懸疑電影，不要恐怖片。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 4
+    },
+    {
+      "id": 4,
+      "round": 1,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 3157.6893329999984,
+      "case": {
+        "request": "想看有巧妙反轉、需要動腦的懸疑電影，不要恐怖片。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 2
+    },
+    {
+      "id": 5,
+      "round": 1,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 3073.4707500000004,
+      "case": {
+        "request": "週末想和家人一起看溫馨的動畫電影，重視親情和互相支持。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 5
+    },
+    {
+      "id": 5,
+      "round": 1,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 3381.1521250000005,
+      "case": {
+        "request": "週末想和家人一起看溫馨的動畫電影，重視親情和互相支持。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 5
+    },
+    {
+      "id": 6,
+      "round": 1,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 3158.5059170000022,
+      "case": {
+        "request": "我想看 2010 年之後的科幻片，不要太冷門，最好有 Amy Adams。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 4
+    },
+    {
+      "id": 6,
+      "round": 1,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 3212.141917000001,
+      "case": {
+        "request": "我想看 2010 年之後的科幻片，不要太冷門，最好有 Amy Adams。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 3
+    },
+    {
+      "id": 7,
+      "round": 1,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 2810.1430830000027,
+      "case": {
+        "request": "想看節奏慢、讓人平靜療癒的日語電影，不要暴力和恐怖。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 5
+    },
+    {
+      "id": 7,
+      "round": 1,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 2914.0937090000007,
+      "case": {
+        "request": "想看節奏慢、讓人平靜療癒的日語電影，不要暴力和恐怖。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 5
+    },
+    {
+      "id": 8,
+      "round": 1,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 2805.7526670000007,
+      "case": {
+        "request": "想看辦公室背景、輕鬆搞笑的影集，適合下班放鬆。",
+        "locale": "zh-TW",
+        "media_type": "tv"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 5
+    },
+    {
+      "id": 8,
+      "round": 1,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 3215.879332999997,
+      "case": {
+        "request": "想看辦公室背景、輕鬆搞笑的影集，適合下班放鬆。",
+        "locale": "zh-TW",
+        "media_type": "tv"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 5
+    },
+    {
+      "id": 9,
+      "round": 1,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 3097.3260420000006,
+      "case": {
+        "request": "I want an inspiring movie about starting over after career failure, with perseverance rather than revenge.",
+        "locale": "en",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 5
+    },
+    {
+      "id": 9,
+      "round": 1,
+      "mode": "with",
+      "status": 422,
+      "elapsedMs": 2344.8655,
+      "case": {
+        "request": "I want an inspiring movie about starting over after career failure, with perseverance rather than revenge.",
+        "locale": "en",
+        "media_type": "movie"
+      },
+      "error": "unresolved_keyword",
+      "condition": "starting over after career failure"
+    },
+    {
+      "id": 10,
+      "round": 1,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 2860.951000000001,
+      "case": {
+        "request": "Recommend a thoughtful science fiction movie about human connection, not an action-heavy space battle.",
+        "locale": "en",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 1
+    },
+    {
+      "id": 10,
+      "round": 1,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 2739.5018749999945,
+      "case": {
+        "request": "Recommend a thoughtful science fiction movie about human connection, not an action-heavy space battle.",
+        "locale": "en",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 1
+    },
+    {
+      "id": 1,
+      "round": 2,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 2641.799625000014,
+      "case": {
+        "request": "最近工作很挫折，想看能讓我重新找回工作動力、靠努力突破困境的電影。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 4
+    },
+    {
+      "id": 1,
+      "round": 2,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 3004.573583000005,
+      "case": {
+        "request": "最近工作很挫折，想看能讓我重新找回工作動力、靠努力突破困境的電影。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 5
+    },
+    {
+      "id": 2,
+      "round": 2,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 2657.555833999999,
+      "case": {
+        "request": "下班很累，想看輕鬆溫暖、不要沉重也不要恐怖的電影。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 5
+    },
+    {
+      "id": 2,
+      "round": 2,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 1896.1558340000047,
+      "case": {
+        "request": "下班很累，想看輕鬆溫暖、不要沉重也不要恐怖的電影。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 5
+    },
+    {
+      "id": 3,
+      "round": 2,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 2915.004124999992,
+      "case": {
+        "request": "想看適合情侶約會的浪漫喜劇，甜蜜、有趣，不要悲傷的愛情故事。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 1
+    },
+    {
+      "id": 3,
+      "round": 2,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 2792.1890830000048,
+      "case": {
+        "request": "想看適合情侶約會的浪漫喜劇，甜蜜、有趣，不要悲傷的愛情故事。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 5
+    },
+    {
+      "id": 4,
+      "round": 2,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 4576.326834000007,
+      "case": {
+        "request": "想看有巧妙反轉、需要動腦的懸疑電影，不要恐怖片。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 2
+    },
+    {
+      "id": 4,
+      "round": 2,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 2754.6978329999984,
+      "case": {
+        "request": "想看有巧妙反轉、需要動腦的懸疑電影，不要恐怖片。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 4
+    },
+    {
+      "id": 5,
+      "round": 2,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 3321.2734999999957,
+      "case": {
+        "request": "週末想和家人一起看溫馨的動畫電影，重視親情和互相支持。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 5
+    },
+    {
+      "id": 5,
+      "round": 2,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 2816.291624999998,
+      "case": {
+        "request": "週末想和家人一起看溫馨的動畫電影，重視親情和互相支持。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 5
+    },
+    {
+      "id": 6,
+      "round": 2,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 2871.721583000006,
+      "case": {
+        "request": "我想看 2010 年之後的科幻片，不要太冷門，最好有 Amy Adams。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 2
+    },
+    {
+      "id": 6,
+      "round": 2,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 2910.940625000003,
+      "case": {
+        "request": "我想看 2010 年之後的科幻片，不要太冷門，最好有 Amy Adams。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 4
+    },
+    {
+      "id": 7,
+      "round": 2,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 3267.5716250000114,
+      "case": {
+        "request": "想看節奏慢、讓人平靜療癒的日語電影，不要暴力和恐怖。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 5
+    },
+    {
+      "id": 7,
+      "round": 2,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 2262.3820419999975,
+      "case": {
+        "request": "想看節奏慢、讓人平靜療癒的日語電影，不要暴力和恐怖。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 5
+    },
+    {
+      "id": 8,
+      "round": 2,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 3018.113041999997,
+      "case": {
+        "request": "想看辦公室背景、輕鬆搞笑的影集，適合下班放鬆。",
+        "locale": "zh-TW",
+        "media_type": "tv"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 5
+    },
+    {
+      "id": 8,
+      "round": 2,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 2732.7350420000002,
+      "case": {
+        "request": "想看辦公室背景、輕鬆搞笑的影集，適合下班放鬆。",
+        "locale": "zh-TW",
+        "media_type": "tv"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 5
+    },
+    {
+      "id": 9,
+      "round": 2,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 3007.360625000001,
+      "case": {
+        "request": "I want an inspiring movie about starting over after career failure, with perseverance rather than revenge.",
+        "locale": "en",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 5
+    },
+    {
+      "id": 9,
+      "round": 2,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 2694.4274580000056,
+      "case": {
+        "request": "I want an inspiring movie about starting over after career failure, with perseverance rather than revenge.",
+        "locale": "en",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 5
+    },
+    {
+      "id": 10,
+      "round": 2,
+      "mode": "with",
+      "status": 200,
+      "elapsedMs": 2958.9268750000047,
+      "case": {
+        "request": "Recommend a thoughtful science fiction movie about human connection, not an action-heavy space battle.",
+        "locale": "en",
+        "media_type": "movie"
+      },
+      "provider": "openrouter",
+      "model": "typesafe/jev-1.13-20260917",
+      "recommendationCount": 1
+    },
+    {
+      "id": 10,
+      "round": 2,
+      "mode": "without",
+      "status": 200,
+      "elapsedMs": 2905.059208999999,
+      "case": {
+        "request": "Recommend a thoughtful science fiction movie about human connection, not an action-heavy space battle.",
+        "locale": "en",
+        "media_type": "movie"
+      },
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "recommendationCount": 1
+    }
+  ]
+}

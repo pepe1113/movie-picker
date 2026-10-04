@@ -16,6 +16,7 @@ export function createHistoryRecord(
   recommendations: ReturnType<typeof recommendationSnapshots>,
   resolvedPeople: ResolvedPerson[],
   resolvedKeywords: ResolvedKeyword[],
+  provider: 'openai' | 'openrouter',
   model: string,
 ) {
   return {
@@ -36,7 +37,7 @@ export function createHistoryRecord(
     },
     candidate_media_ids: candidateIds,
     recommendations,
-    provider: 'openai',
+    provider,
     model,
   }
 }

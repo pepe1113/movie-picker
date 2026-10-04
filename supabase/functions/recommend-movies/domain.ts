@@ -2,7 +2,8 @@ import { z } from 'zod'
 
 export const MAX_MOVIE_REQUEST_LENGTH = 500
 export const MAX_CANDIDATES = 20
-export const MAX_RECOMMENDATIONS = 10
+export const MAX_RECOMMENDATIONS = 5
+export const RELAXATION_THRESHOLD = 10
 
 export const TMDB_MOVIE_GENRES = {
   action: 28,

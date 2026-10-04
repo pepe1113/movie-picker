@@ -95,6 +95,50 @@ function toolCall(value: unknown, usage?: unknown) {
 }
 
 describe('recommendation orchestrator', () => {
+  it('uses Jev metadata and reranked membership when Decisions succeeds', async () => {
+    const fetcher = vi.fn<typeof fetch>(async (input, init) => {
+      const url = String(input)
+      if (url.includes('/chat/completions')) {
+        return toolCall(
+          basePlan({
+            soft_preferences: {
+              include_genres: [],
+              keywords: [],
+              qualities: ['激勵'],
+            },
+          }),
+        )
+      }
+      if (url.includes('/discover/movie')) {
+        return json({ results: [movie(1), movie(2)] })
+      }
+      const id = (
+        JSON.parse(String(init?.body)) as {
+          state: { candidate: { id: number } }
+        }
+      ).state.candidate.id
+      return json({
+        answers: {
+          is_relevant: { type: 'noul', noul: id === 2 ? 0.9 : 0.4 },
+        },
+        model: 'typesafe/jev-1.13-20260917',
+        usage: { cost: 0.00001 },
+      })
+    })
+
+    const result = await coordinateRecommendations(
+      { request: '尋找能激勵工作的電影', locale: 'zh-TW', media_type: 'movie' },
+      { ...config, openrouterApiKey: 'secret' },
+      new AbortController().signal,
+      fetcher,
+    )
+
+    expect(result.recommendations.map((item) => item.media_id)).toEqual([2])
+    expect(result.provider).toBe('openrouter')
+    expect(result.model).toBe('typesafe/jev-1.13-20260917')
+    expect(result.usedFallback).toBe(false)
+  })
+
   it('returns OpenAI usage and warns when total tokens exceed 20,000', async () => {
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})

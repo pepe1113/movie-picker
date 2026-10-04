@@ -9,7 +9,7 @@
 讓 Movie Picker 提供給你幾個電影提案吧！
 輸入**此刻心情、想看的電影描述**，由 AI 將自然語言整理成可驗證的查詢條件，再透過 TMDB Discover API 推薦電影或影集。
 
-此專案使用 React 建立前端，由 Supabase 提供登入、資料庫與 Edge Function；電影資料來自 TMDB／OMDb，OpenAI 負責解析使用者的選片需求。
+此專案使用 React 建立前端，由 Supabase 提供登入、資料庫與 Edge Function；電影資料來自 TMDB／OMDb，OpenAI 負責解析使用者的選片需求，OpenRouter 提供 Jev rerank 語意相關性評分與排序。
 
 #### 👀 Take a peek at <u>[Movie Picker](https://movie-picker.peiwang.dev/)</u>
 
@@ -17,7 +17,7 @@
 
 - **最新趨勢**：切換電影與影集的最新、每週趨勢、熱門、高評分及各種類型
 - **電影搜尋**：搜尋電影／影集，查看詳情、演員、預告片、影集季數與總集數
-- **AI 選片**：登入後使用，以自然文字描述期待與限制，由 AI 規劃查詢、TMDB 回傳最多十部作品
+- **AI 選片**：以自然文字描述期待與限制，OpenAI 規劃查詢、TMDB 取得候選，再透過 Jev rerank 篩選與排序，最多推薦 5 部作品；支援匿名試用與登入後保存紀錄
 - **History**：需登入使用，AI 選片歷史紀錄，最多載入 20 筆，支援單筆刪除
 - **Wishlist**：電影願望清單
 - **使用者登入**：支援 GitHub／Google OAuth；登入後可使用 AI 選片、同步收藏並保存推薦紀錄
@@ -47,7 +47,8 @@
 | Supabase       | 使用者資料、OAuth、RLS 與 Edge Function |
 | TMDB API       | 搜尋、瀏覽與顯示電影及影集資料          |
 | OMDb API       | 取得電影外部評分                        |
-| AI 模型        | 將自然語言需求轉換為 TMDB 查詢計畫      |
+| OpenAI         | 透過 tool calling 產生 TMDB query plan  |
+| OpenRouter     | Jev rerank：候選的語意相關性評分與排序  |
 
 ## Data & Persistence
 
@@ -71,8 +72,11 @@ flowchart LR
   Fn -->|自然語言| AI[OpenAI]
   AI -->|查詢計畫| Fn
   Fn -->|Search / Credits / Discover| TMDB[TMDB API]
+  TMDB -->|候選作品| Fn
+  Fn -->|Candidate scoring| Rerank[OpenRouter / Jev rerank]
+  Rerank -->|Relevance scores| Fn
   Fn -->|推薦紀錄| DB[(Postgres + RLS)]
-  Fn -->|最多 10 筆推薦| UI
+  Fn -->|最多 5 筆推薦| UI
 ```
 
 - `src/pages` 管理路由頁面，`src/components` 放共用 UI 與功能元件。
@@ -81,29 +85,28 @@ flowchart LR
 
 ## Recommendation Pipeline
 
-- **限制 AI 的責任**：OpenAI 只能產生 `plan_movie_search` 查詢計畫，由 Edge Function 驗證後呼叫 TMDB，避免模型直接產生作品資料。
-- **區分明確條件與推測偏好**：結果不足時，只放寬 AI 推測的類型與關鍵字，保留使用者指定的人物、年份、片長與排除條件。
-- **處理人物同名與工作類型**：人物名稱會結合 TMDB credits 判斷演員、導演、編劇或製作人；結果有歧義時請使用者調整條件，不自動猜測。
-- **建立可預期的候選池**：並行取得熱門與高評分結果，去重並交錯合併後回傳最多 10 部作品，避免排序只偏向單一指標。
-- **隔離慢速或失敗操作**：OpenAI 與 TMDB 共用 30 秒請求期限；推薦紀錄改為背景寫入，不會延後或推翻已完成的推薦。
+OpenAI 透過 `plan_movie_search` tool calling 產生 query plan，由 Supabase Edge Function 驗證並取得 TMDB 候選；Jev rerank 再依語意相關性篩選、排序，最多回傳 5 部作品。使用者的硬性條件會保留，全部評分失敗時使用原候選順序備援，推薦紀錄於背景寫入。
 
-完整的資料流與驗證規則請見 [AI 選片、Supabase Auth 與資料權限架構](./docs/supabase-ai-rollout.md)。
+資料流與權限設計請見 [AI 選片架構](./docs/supabase-ai-rollout.md)；評分規則與備援機制請見 [Jev rerank 實作說明](./docs/changes/2026-09-24-openrouter-jev-rerank.md)（English）。
 
 ## Develop
 
-前端環境變數依照 `.env.example` 設定；`recommend-movies` 使用的 OpenAI／TMDB 金鑰，以及 `media-detail` 使用的 TMDB／OMDb 金鑰，需另外放在 Supabase Edge Function Secrets。`media-detail` 可讓未登入使用者查看電影與影集詳情；OMDb 金鑰可選，缺少時不顯示外部評分。本機執行 Function 時，將 `TMDB_ACCESS_TOKEN`、`OMDB_API_KEY`（可選）放在未追蹤的 `supabase/functions/.env`。
+前端環境變數依照 `.env.example` 設定；`recommend-movies` 使用的 OpenAI／OpenRouter／TMDB 金鑰，以及 `media-detail` 使用的 TMDB／OMDb 金鑰，需另外放在 Supabase Edge Function Secrets。`media-detail` 可讓未登入使用者查看電影與影集詳情；OMDb 金鑰可選，缺少時不顯示外部評分。本機執行 Function 時，將 `TMDB_ACCESS_TOKEN`、`OMDB_API_KEY`（可選）放在未追蹤的 `supabase/functions/.env`。
 
-若要在本機直接比較模型，請將 `OPENAI_API_KEY` 與 `TMDB_ACCESS_TOKEN` 放入 `.env.local`，再執行 `bun run test:ai-live -- gpt-4o-mini gpt-6-luna`。此指令會直接呼叫 OpenAI 與 TMDB、列印 usage、預估成本和查詢計畫，不會經過 Supabase、登入或資料庫。
+完整本機測試：先啟動 Docker Desktop，確認環境檔有 `OPENAI_API_KEY`、`OPENAI_BASE_URL`、`OPENAI_MODEL`、`OPENROUTER_API_KEY` 與 `TMDB_ACCESS_TOKEN`（或 `VITE_TMDB_ACCESS_TOKEN`），再執行 `bun --env-file=/path/to/.env.local run dev:local`。腳本會啟動本機 Supabase、兩個 Edge Functions 與 Vite，並自動使用本機 API URL/key。開啟 `http://127.0.0.1:5174`，選「本機測試登入」即可手動測推薦與歷史紀錄。按 Ctrl+C 結束兩個開發伺服器；本機 Supabase 可另以 `supabase stop` 停止。此流程不會修改遠端 Supabase 專案。
 
-| 指令                      | 用途                                   |
-| ------------------------- | -------------------------------------- |
-| `bun install`             | 安裝依賴                               |
-| `bun run dev`             | 啟動本機開發環境                       |
-| `bun run test:run`        | 執行全部測試                           |
-| `bun run test:ai-live`    | 本機實測 AI 與 TMDB，輸出 token 與成本 |
-| `bun run lint`            | 檢查程式碼                             |
-| `bun run build`           | 型別檢查並建立 production bundle       |
-| `bun run deploy:supabase` | 部署所有 Edge Functions                |
+若只要直接測推薦核心，可執行 `bun --env-file=/path/to/.env.local run test:ai-live`。此指令會直接呼叫 OpenAI、TMDB 與 OpenRouter，略過 Supabase、登入與資料庫。
+
+| 指令                      | 用途                                    |
+| ------------------------- | --------------------------------------- |
+| `bun install`             | 安裝依賴                                |
+| `bun run dev`             | 啟動本機開發環境                        |
+| `bun run dev:local`       | 啟動本機前端、Supabase 與 Edge Function |
+| `bun run test:run`        | 執行全部測試                            |
+| `bun run test:ai-live`    | 本機實測 AI 與 TMDB，輸出 token 與成本  |
+| `bun run lint`            | 檢查程式碼                              |
+| `bun run build`           | 型別檢查並建立 production bundle        |
+| `bun run deploy:supabase` | 部署所有 Edge Functions                 |
 
 ## CI/CD
 

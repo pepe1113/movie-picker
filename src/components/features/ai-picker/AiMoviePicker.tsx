@@ -33,6 +33,15 @@ const LOADING_MESSAGE_INTERVAL_MS = 2_500
 const PROGRESS_TEXT_INTERVAL_MS = 500
 const WAITING_PROGRESS_CAP = 99
 
+function getWaitingProgress(elapsedMs: number) {
+  const ratio = elapsedMs / EXPECTED_RECOMMENDATION_MS
+  // Reach 86% around the expected duration; only completion renders 100%.
+  return Math.min(
+    WAITING_PROGRESS_CAP,
+    Math.floor(100 * (1 - Math.exp(-2 * ratio))),
+  )
+}
+
 function SlidingText({
   value,
   className,
@@ -79,11 +88,8 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   const [requestText, setRequestText] = useState('')
   const [mediaType, setMediaType] = useState<MediaType>('movie')
   const [inputError, setInputError] = useState(false)
-  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0)
-  const [progressText, setProgressText] = useState(0)
+  const [elapsedMs, setElapsedMs] = useState(0)
   const startedAtRef = useRef(0)
-  const progressBarRef = useRef<HTMLDivElement>(null)
-  const progressFillRef = useRef<HTMLDivElement>(null)
 
   const recommendationMutation = useMutation({
     mutationFn: async ({
@@ -116,41 +122,13 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
   useEffect(() => {
     if (!recommendationMutation.isPending) return
 
-    const getProgress = () => {
-      const elapsed = Date.now() - startedAtRef.current
-      const ratio = elapsed / EXPECTED_RECOMMENDATION_MS
-      // Reach 86% around the expected duration; only completion renders 100%.
-      return Math.min(
-        WAITING_PROGRESS_CAP,
-        Math.floor(100 * (1 - Math.exp(-2 * ratio))),
-      )
-    }
-    const updateProgress = () => {
-      const value = getProgress()
-
-      progressBarRef.current?.setAttribute('aria-valuenow', String(value))
-      if (progressFillRef.current) {
-        progressFillRef.current.style.width = `${value}%`
-      }
-    }
-    const progressInterval = window.setInterval(updateProgress, 100)
-    const progressTextInterval = window.setInterval(
-      () => setProgressText(getProgress()),
+    const timer = window.setInterval(
+      () => setElapsedMs(Date.now() - startedAtRef.current),
       PROGRESS_TEXT_INTERVAL_MS,
     )
-    const messageInterval = window.setInterval(
-      () =>
-        setLoadingMessageIndex(
-          (current) => (current + 1) % loadingMessages.length,
-        ),
-      LOADING_MESSAGE_INTERVAL_MS,
-    )
-    return () => {
-      window.clearInterval(progressInterval)
-      window.clearInterval(progressTextInterval)
-      window.clearInterval(messageInterval)
-    }
-  }, [loadingMessages.length, recommendationMutation.isPending])
+
+    return () => window.clearInterval(timer)
+  }, [recommendationMutation.isPending])
 
   const startRecommendation = () => {
     const request = requestText.trim()
@@ -160,8 +138,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
     }
 
     setInputError(false)
-    setLoadingMessageIndex(0)
-    setProgressText(0)
+    setElapsedMs(0)
     startedAtRef.current = Date.now()
     recommendationMutation.mutate({ request, mediaType })
   }
@@ -194,6 +171,9 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
       ? queryPlanBadges(result.query_plan, t)
       : result.direction.labels
     : []
+  const waitingProgress = getWaitingProgress(elapsedMs)
+  const loadingMessageIndex =
+    Math.floor(elapsedMs / LOADING_MESSAGE_INTERVAL_MS) % loadingMessages.length
 
   return (
     <section className="border-border bg-background relative isolate overflow-hidden border-b">
@@ -350,24 +330,22 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                       />
                     </span>
                     <SlidingText
-                      value={`${progressText}%`}
+                      value={`${waitingProgress}%`}
                       className="tabular-nums"
                     />
                   </div>
                   <div
-                    ref={progressBarRef}
                     role="progressbar"
                     aria-label={t('aiPicker.progressLabel')}
                     aria-valuemin={0}
                     aria-valuemax={100}
-                    aria-valuenow={0}
+                    aria-valuenow={waitingProgress}
                     className="bg-secondary relative h-4 w-full rounded-full border border-white/10 shadow-[0_12px_28px_rgba(0,0,0,0.3)]"
                   >
                     <div
-                      ref={progressFillRef}
                       data-testid="nyan-progress-fill"
-                      className="nyan-progress-fill absolute inset-y-0 left-0 rounded-full transition-[width] duration-100"
-                      style={{ width: '0%' }}
+                      className="nyan-progress-fill absolute inset-y-0 left-0 rounded-full transition-[width] duration-500"
+                      style={{ width: `${waitingProgress}%` }}
                     >
                       <span className="nyan-progress-cat" aria-hidden="true">
                         <img

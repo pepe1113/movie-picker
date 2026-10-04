@@ -17,9 +17,11 @@ const queryClient = new QueryClient({
 export function Providers({ children }: { children: ReactNode }) {
   const initializeAuth = useAuthStore((state) => state.initializeAuth)
   const userId = useAuthStore((state) => state.user?.uid ?? null)
+  const isAuthLoading = useAuthStore((state) => state.isLoading)
   const syncWithRemoteWishlist = useWishlistStore(
     (state) => state.syncWithRemoteWishlist,
   )
+  const resetForSignedOut = useWishlistStore((state) => state.resetForSignedOut)
 
   useEffect(() => {
     let cancelled = false
@@ -37,10 +39,14 @@ export function Providers({ children }: { children: ReactNode }) {
   }, [initializeAuth])
 
   useEffect(() => {
-    if (!userId) return
+    if (isAuthLoading) return
+    if (!userId) {
+      resetForSignedOut()
+      return
+    }
 
-    syncWithRemoteWishlist().catch(() => undefined)
-  }, [syncWithRemoteWishlist, userId])
+    syncWithRemoteWishlist(userId).catch(() => undefined)
+  }, [isAuthLoading, resetForSignedOut, syncWithRemoteWishlist, userId])
 
   return (
     <I18nextProvider i18n={i18n}>

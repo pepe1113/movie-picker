@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -107,11 +107,11 @@ export function AiRecommendationCarousel({
   }, [hasLoopControls, isPaused, recommendations.length, shouldReduceMotion])
 
   const activeRecommendation = recommendations[activeIndex]
-  const activeReason = useMemo(() => {
-    if (!activeRecommendation) return null
-    if (activeRecommendation.reason) return activeRecommendation.reason
-    return activeRecommendation.movie.overview || t('movieCard.noOverview')
-  }, [activeRecommendation, t])
+  const activeReason = activeRecommendation
+    ? activeRecommendation.reason ||
+      activeRecommendation.movie.overview ||
+      t('movieCard.noOverview')
+    : null
 
   if (recommendations.length === 0) return null
 

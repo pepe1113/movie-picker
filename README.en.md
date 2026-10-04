@@ -40,7 +40,7 @@ The frontend is built with React. Supabase handles sign-in, the database, and th
 | Motion         | UI animation and reduced-motion support                 |
 | React Router   | SPA routing                                             |
 | TanStack Query | API fetching, caching, and server-state synchronization |
-| Zustand        | Language, theme, auth, and wishlist state               |
+| Zustand        | Language, auth, and wishlist state                      |
 | i18next        | English and Traditional Chinese localization            |
 | Zod            | AI response and query-plan validation                   |
 | Supabase       | User data, OAuth, RLS, and the Edge Function            |

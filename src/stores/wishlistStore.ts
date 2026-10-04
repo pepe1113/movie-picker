@@ -7,6 +7,7 @@ import { useAuthStore } from './authStore'
 
 interface WishlistState {
   wishlist: MediaItem[]
+  wishlistUserId: string | null
   isLoading: boolean
   error: string | null
 }
@@ -15,7 +16,8 @@ interface WishlistActions {
   addToWishlist: (media: MediaItem) => Promise<void>
   removeFromWishlist: (mediaId: number, mediaType?: MediaType) => Promise<void>
   clearWishlist: () => Promise<void>
-  syncWithRemoteWishlist: () => Promise<void>
+  syncWithRemoteWishlist: (userId: string) => Promise<void>
+  resetForSignedOut: () => void
   isInWishlist: (mediaId: number, mediaType?: MediaType) => boolean
 }
 
@@ -35,6 +37,10 @@ export function setWishlistRemoteForTesting(remote: WishlistRemote | null) {
 
 function getAuthenticatedUserId() {
   return useAuthStore.getState().user?.uid ?? null
+}
+
+function getWishlistForUser(state: WishlistState, userId: string | null) {
+  return (state.wishlistUserId ?? null) === userId ? state.wishlist : []
 }
 
 function mergeWishlist(localItems: MediaItem[], remoteItems: MediaItem[]) {
@@ -60,19 +66,24 @@ export const useWishlistStore = create<WishlistStore>()(
       (set, get) => ({
         // State
         wishlist: [],
+        wishlistUserId: null,
         isLoading: false,
         error: null,
 
         // Actions
         addToWishlist: async (media) => {
           const userId = getAuthenticatedUserId()
-          const { wishlist } = get()
+          const wishlist = getWishlistForUser(get(), userId)
           const mediaKey = getMediaKey(media)
           if (wishlist.some((item) => getMediaKey(item) === mediaKey)) return
 
           if (!userId) {
             set(
-              { wishlist: [...wishlist, media], error: null },
+              {
+                wishlist: [...wishlist, media],
+                wishlistUserId: null,
+                error: null,
+              },
               false,
               'addToWishlist/local',
             )
@@ -81,13 +92,33 @@ export const useWishlistStore = create<WishlistStore>()(
 
           try {
             await (await getWishlistRemote()).add(userId, media)
+            if (getAuthenticatedUserId() !== userId) return
             set(
-              { wishlist: [...wishlist, media], error: null },
+              (state) => {
+                const currentWishlist = getWishlistForUser(state, userId)
+                if (
+                  currentWishlist.some((item) => getMediaKey(item) === mediaKey)
+                ) {
+                  return { wishlistUserId: userId, error: null }
+                }
+
+                return {
+                  wishlist: [...currentWishlist, media],
+                  wishlistUserId: userId,
+                  error: null,
+                }
+              },
               false,
               'addToWishlist/remote',
             )
           } catch (error) {
-            set({ error: getErrorMessage(error) }, false, 'addToWishlist/error')
+            if (getAuthenticatedUserId() === userId) {
+              set(
+                { error: getErrorMessage(error) },
+                false,
+                'addToWishlist/error',
+              )
+            }
             throw error
           }
         },
@@ -98,10 +129,11 @@ export const useWishlistStore = create<WishlistStore>()(
           if (!userId) {
             set(
               (state) => ({
-                wishlist: state.wishlist.filter(
+                wishlist: getWishlistForUser(state, null).filter(
                   (item) =>
                     item.id !== mediaId || getMediaType(item) !== mediaType,
                 ),
+                wishlistUserId: null,
                 error: null,
               }),
               false,
@@ -112,23 +144,27 @@ export const useWishlistStore = create<WishlistStore>()(
 
           try {
             await (await getWishlistRemote()).remove(userId, mediaId, mediaType)
+            if (getAuthenticatedUserId() !== userId) return
             set(
               (state) => ({
-                wishlist: state.wishlist.filter(
+                wishlist: getWishlistForUser(state, userId).filter(
                   (item) =>
                     item.id !== mediaId || getMediaType(item) !== mediaType,
                 ),
+                wishlistUserId: userId,
                 error: null,
               }),
               false,
               'removeFromWishlist/remote',
             )
           } catch (error) {
-            set(
-              { error: getErrorMessage(error) },
-              false,
-              'removeFromWishlist/error',
-            )
+            if (getAuthenticatedUserId() === userId) {
+              set(
+                { error: getErrorMessage(error) },
+                false,
+                'removeFromWishlist/error',
+              )
+            }
             throw error
           }
         },
@@ -137,47 +173,109 @@ export const useWishlistStore = create<WishlistStore>()(
           const userId = getAuthenticatedUserId()
 
           if (!userId) {
-            set({ wishlist: [], error: null }, false, 'clearWishlist/local')
+            set(
+              { wishlist: [], wishlistUserId: null, error: null },
+              false,
+              'clearWishlist/local',
+            )
             return
           }
 
           try {
             await (await getWishlistRemote()).clear(userId)
-            set({ wishlist: [], error: null }, false, 'clearWishlist/remote')
+            if (getAuthenticatedUserId() !== userId) return
+            set(
+              { wishlist: [], wishlistUserId: userId, error: null },
+              false,
+              'clearWishlist/remote',
+            )
           } catch (error) {
-            set({ error: getErrorMessage(error) }, false, 'clearWishlist/error')
+            if (getAuthenticatedUserId() === userId) {
+              set(
+                { error: getErrorMessage(error) },
+                false,
+                'clearWishlist/error',
+              )
+            }
             throw error
           }
         },
 
-        syncWithRemoteWishlist: async () => {
-          const userId = getAuthenticatedUserId()
-          if (!userId) return
+        syncWithRemoteWishlist: async (userId) => {
+          if (getAuthenticatedUserId() !== userId) return
 
-          set({ isLoading: true, error: null }, false, 'syncWishlist/start')
+          set(
+            (state) => {
+              const previousUserId = state.wishlistUserId ?? null
+              const isSwitchingAccounts =
+                previousUserId !== null && previousUserId !== userId
+
+              return {
+                wishlist: isSwitchingAccounts ? [] : state.wishlist,
+                wishlistUserId: isSwitchingAccounts
+                  ? userId
+                  : state.wishlistUserId,
+                isLoading: true,
+                error: null,
+              }
+            },
+            false,
+            'syncWishlist/start',
+          )
 
           try {
             const remote = await getWishlistRemote()
             const remoteWishlist = await remote.list(userId)
-            const mergedWishlist = mergeWishlist(get().wishlist, remoteWishlist)
+            if (getAuthenticatedUserId() !== userId) return
+
+            const state = get()
+            const localWishlist =
+              (state.wishlistUserId ?? null) === null ||
+              state.wishlistUserId === userId
+                ? state.wishlist
+                : []
+            const mergedWishlist = mergeWishlist(localWishlist, remoteWishlist)
             await remote.upsert(userId, mergedWishlist)
+            if (getAuthenticatedUserId() !== userId) return
             set(
-              { wishlist: mergedWishlist, isLoading: false, error: null },
+              {
+                wishlist: mergedWishlist,
+                wishlistUserId: userId,
+                isLoading: false,
+                error: null,
+              },
               false,
               'syncWishlist/success',
             )
           } catch (error) {
-            set(
-              { isLoading: false, error: getErrorMessage(error) },
-              false,
-              'syncWishlist/error',
-            )
+            if (getAuthenticatedUserId() === userId) {
+              set(
+                { isLoading: false, error: getErrorMessage(error) },
+                false,
+                'syncWishlist/error',
+              )
+            }
             throw error
           }
         },
 
+        resetForSignedOut: () => {
+          if (getAuthenticatedUserId()) return
+
+          set(
+            (state) => ({
+              wishlist: getWishlistForUser(state, null),
+              wishlistUserId: null,
+              isLoading: false,
+              error: null,
+            }),
+            false,
+            'resetForSignedOut',
+          )
+        },
+
         isInWishlist: (mediaId, mediaType = 'movie') => {
-          return get().wishlist.some(
+          return getWishlistForUser(get(), getAuthenticatedUserId()).some(
             (item) => item.id === mediaId && getMediaType(item) === mediaType,
           )
         },

@@ -40,7 +40,7 @@
 | Motion         | UI animation と reduced-motion support           |
 | React Router   | SPA routing                                      |
 | TanStack Query | API fetching、cache、server state の同期         |
-| Zustand        | 言語、theme、auth、Wishlist state の管理         |
+| Zustand        | 言語、auth、Wishlist state の管理                |
 | i18next        | 英語と繁体字中国語の localization                |
 | Zod            | AI response と query plan の validation          |
 | Supabase       | User data、OAuth、RLS、Edge Function             |

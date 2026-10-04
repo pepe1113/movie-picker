@@ -212,9 +212,7 @@ export const useWishlistStore = create<WishlistStore>()(
 
               return {
                 wishlist: isSwitchingAccounts ? [] : state.wishlist,
-                wishlistUserId: isSwitchingAccounts
-                  ? userId
-                  : state.wishlistUserId,
+                wishlistUserId: userId,
                 isLoading: true,
                 error: null,
               }

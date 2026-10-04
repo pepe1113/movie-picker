@@ -125,6 +125,45 @@ describe('wishlist store sync', () => {
     expect(upsert).toHaveBeenCalledWith('user-id', [localMovie, remoteMovie])
   })
 
+  it('keeps guest favorites when an add completes during the first sign-in sync', async () => {
+    let resolveList: ((items: Movie[]) => void) | undefined
+    const list = vi.fn(
+      () =>
+        new Promise<Movie[]>((resolve) => {
+          resolveList = resolve
+        }),
+    )
+    const upsert = vi.fn().mockResolvedValue(undefined)
+    setWishlistRemoteForTesting({
+      list,
+      upsert,
+      add: vi.fn().mockResolvedValue(undefined),
+      remove: vi.fn(),
+      clear: vi.fn(),
+    })
+
+    await useWishlistStore.getState().addToWishlist(movie(1))
+    useAuthStore.getState().setUser({
+      uid: 'user-id',
+      email: null,
+      displayName: null,
+      photoURL: null,
+    })
+
+    const sync = useWishlistStore.getState().syncWithRemoteWishlist('user-id')
+    await Promise.resolve()
+    expect(list).toHaveBeenCalledWith('user-id')
+    expect(useWishlistStore.getState().wishlist).toEqual([movie(1)])
+    expect(useWishlistStore.getState().wishlistUserId).toBe('user-id')
+
+    await useWishlistStore.getState().addToWishlist(movie(2))
+    resolveList?.([])
+    await sync
+
+    expect(useWishlistStore.getState().wishlist).toEqual([movie(1), movie(2)])
+    expect(upsert).toHaveBeenCalledWith('user-id', [movie(1), movie(2)])
+  })
+
   it('does not merge one account wishlist into another account', async () => {
     const upsert = vi.fn().mockResolvedValue(undefined)
     setWishlistRemoteForTesting({

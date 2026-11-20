@@ -88,6 +88,29 @@ OpenAI が `plan_movie_search` の tool calling で query plan を生成し、Su
 
 データフローと権限設計は [AI Picker Architecture](./docs/supabase-ai-rollout.en.md)、評価ルールとフォールバックは [Jev rerank 実装説明](./docs/changes/2026-09-24-openrouter-jev-rerank.md)（いずれも English）を参照してください。
 
+## Evaluation / 評価
+
+以下の数値はいずれも小規模サンプルの実測です。条件を併記しており、詳細は各レポートを参照してください。
+
+**モデル選定**（2026-08-25、4 モデル × 10 問、各 1 回、OpenAI のクエリプラン段階のみ。[詳細レポート](./docs/evaluations/2026-08-25-model-selection.md)・繁体字中国語）
+
+| モデル                                     | フィールド正答率 | 平均レイテンシ | 10 回の合計コスト |
+| ------------------------------------------ | ---------------: | -------------: | ----------------: |
+| `gpt-4o-mini`                              |            80.0% |       2,938 ms |     US$0.00178395 |
+| `gpt-5.6-luna`                             |            84.4% |       2,497 ms |     US$0.00305140 |
+| `gpt-5.6-terra`                            |            88.6% |       2,336 ms |     US$0.03232600 |
+| `gpt-5.6-sol`                              |            93.3% |       2,719 ms |     US$0.05752400 |
+| `gpt-4o-mini`（2026-08-26 修正後の再測定） |             100% |       2,503 ms |     US$0.00239775 |
+
+**Jev rerank**（2026-10-03、有効クエリ 9 件、各 3 回リランク、リランク前と同一の候補プールで比較。[詳細レポート](./docs/evaluations/2026-10-03-rerank/report.md)・繁体字中国語）
+
+- Precision@5：33.3% → 53.3%、nDCG@5：0.566 → 0.919。
+- 追加レイテンシ：p50 332 ms、p95 1462 ms（27 サンプル）。
+- 1 回あたりの平均コスト：US$0.00039661（OpenRouter が返す `usage.cost`）。
+- 注意：関連性ラベルは AI アシスタントが付与したもので、独立した人手の評価ではありません。9 件は小規模サンプルで、ユーザー満足度を示すものではありません。
+
+[2026-09-24 の単発実測](./docs/changes/2026-09-24-ai-live-model-evaluation.md)（1 問、モデルごとに 1 リクエスト）もありますが、参考値であり、レイテンシのベンチマークではありません。
+
 ## Develop
 
 Frontend の environment variables は `.env.example` を参照して設定します。`recommend-movies` 用の OpenAI／OpenRouter／TMDB key と `media-detail` 用の TMDB／OMDb key は Supabase Edge Function Secrets に保存してください。`media-detail` は未ログインでも使用できます。OMDb key は任意で、設定がない場合は外部評価を表示しません。Local の Function 用に `TMDB_ACCESS_TOKEN` と任意の `OMDB_API_KEY` を追跡対象外の `supabase/functions/.env` に設定します。

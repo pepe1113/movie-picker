@@ -1,0 +1,2071 @@
+{
+  "revision": "7f3313d3dd1155aed9addf844a07f4414d66e3a6",
+  "collectedAt": "2026-10-02T17:19:44.442Z",
+  "planningModel": "gpt-6-luna",
+  "cases": [
+    {
+      "request": "最近工作很挫折，想看能讓我重新找回工作動力、靠努力突破困境的電影。",
+      "locale": "zh-TW",
+      "media_type": "movie"
+    },
+    {
+      "request": "下班很累，想看輕鬆溫暖、不要沉重也不要恐怖的電影。",
+      "locale": "zh-TW",
+      "media_type": "movie"
+    },
+    {
+      "request": "想看適合情侶約會的浪漫喜劇，甜蜜、有趣，不要悲傷的愛情故事。",
+      "locale": "zh-TW",
+      "media_type": "movie"
+    },
+    {
+      "request": "想看有巧妙反轉、需要動腦的懸疑電影，不要恐怖片。",
+      "locale": "zh-TW",
+      "media_type": "movie"
+    },
+    {
+      "request": "週末想和家人一起看溫馨的動畫電影，重視親情和互相支持。",
+      "locale": "zh-TW",
+      "media_type": "movie"
+    },
+    {
+      "request": "我想看 2010 年之後的科幻片，不要太冷門，最好有 Amy Adams。",
+      "locale": "zh-TW",
+      "media_type": "movie"
+    },
+    {
+      "request": "想看節奏慢、讓人平靜療癒的日語電影，不要暴力和恐怖。",
+      "locale": "zh-TW",
+      "media_type": "movie"
+    },
+    {
+      "request": "想看辦公室背景、輕鬆搞笑的影集，適合下班放鬆。",
+      "locale": "zh-TW",
+      "media_type": "tv"
+    },
+    {
+      "request": "I want an inspiring movie about starting over after career failure, with perseverance rather than revenge.",
+      "locale": "en",
+      "media_type": "movie"
+    },
+    {
+      "request": "Recommend a thoughtful science fiction movie about human connection, not an action-heavy space battle.",
+      "locale": "en",
+      "media_type": "movie"
+    }
+  ],
+  "pools": [
+    {
+      "id": 1,
+      "request": {
+        "request": "最近工作很挫折，想看能讓我重新找回工作動力、靠努力突破困境的電影。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "plan": {
+        "intent_summary": "尋找能幫助重新找回工作動力、並展現靠努力突破困境的電影。",
+        "people": [],
+        "people_match": "any",
+        "display_labels": {
+          "hard": [],
+          "soft": ["重新找回工作動力", "靠努力突破困境"]
+        },
+        "hard_constraints": {
+          "exclude_keywords": [],
+          "exclude_genre_ids": []
+        },
+        "soft_preferences": {
+          "include_genres": [],
+          "keywords": [
+            {
+              "lookup_name": "perseverance",
+              "display_label": "堅持不懈",
+              "source": "inferred"
+            },
+            {
+              "lookup_name": "inspiration",
+              "display_label": "激勵人心",
+              "source": "inferred"
+            }
+          ],
+          "qualities": ["振奮人心", "展現努力克服困境"]
+        },
+        "discover_plan": {
+          "include_genres": [],
+          "exclude_genre_ids": [],
+          "exclude_keywords": [],
+          "keywords": [
+            {
+              "lookup_name": "perseverance",
+              "display_label": "堅持不懈",
+              "source": "inferred"
+            },
+            {
+              "lookup_name": "inspiration",
+              "display_label": "激勵人心",
+              "source": "inferred"
+            }
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "adult": false,
+          "backdrop_path": "/trfjdJI51Krnig9UmxJQkz15ICo.jpg",
+          "genre_ids": [18, 36, 10749],
+          "id": 11820,
+          "original_language": "en",
+          "overview": "茱莉亞蘿勃茲繼《永不妥協》勇奪奧斯卡最佳女主角之後，又一最新力作，她在片中飾演一位剛從藝術學校畢業新鮮人，該校位於美國西岸，是一間以校風開放聞名的學校，但不幸的，他畢業的第一份工作，竟然是被派往東岸一間作風保守的藝術學校任職，在老師與校方教學理念不同之下，鬧出了許多的問題，但蘿勃茲終能堅持自己的教學理念，更因此對人生有了新的體悟， 也讓當地的學生，重新的對藝術、人生、愛有了新的見解。",
+          "popularity": 7.7565,
+          "poster_path": "/bg0VKsXnLjIZ0cHmZHZLs9gzrvm.jpg",
+          "vote_average": 6.912,
+          "vote_count": 1945,
+          "original_title": "Mona Lisa Smile",
+          "release_date": "2003-12-19",
+          "title": "蒙娜麗莎的微笑",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/yGmSkfaYDp1JzrtXRcPq0Qcy6DL.jpg",
+          "genre_ids": [18],
+          "id": 63193,
+          "original_language": "en",
+          "overview": "本片根據真人真事（Brad Cohen）改編，敘述患有妥瑞症的男孩努力達到成為老師的夢想，並且克服病症的故事。  小時候的布萊德經常不由自主地抽搐扭動、吠叫鬼吼，他的父親認為他只想引人注目，鄰居則說他被惡魔附身了。其他孩子嘲笑他，小學老師更要他站在教室前面向所有同學道歉，悲慘的人生受盡羞辱。直到某天，校長知道這是一種神經性疾病的症狀，才幫助了布萊德獲得大家的理解和接納。因此，長大後的布萊德決定當個「自己從未碰過的好老師」，然而實現夢想的道路如此艱鉅，他面試了24所學校，遭到冷嘲熱諷，終於在第25次的面試，成功得到一個機會，他是第一個當選全美最佳教師的妥瑞人。  布萊德．科恩在拍片現場告訴記者，這是一個關於『永不放棄』的故事。妥瑞症是一種身心障礙，科恩卻從不認為自己是殘障人士，他視妥瑞症為他一輩子如影隨形的朋友。他說…“是妥瑞症教我成為我夢寐以求的好老師”",
+          "popularity": 5.2817,
+          "poster_path": "/wmkkbQ48TNStm5dZwsdhMYakDAX.jpg",
+          "vote_average": 8.053,
+          "vote_count": 337,
+          "original_title": "Front of the Class",
+          "release_date": "2008-12-07",
+          "title": "叫我第一名",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/aeksAhU6dZl0Fclm3dBRt6cKBmD.jpg",
+          "genre_ids": [35, 18],
+          "id": 942922,
+          "original_language": "en",
+          "overview": "金像獎®提名演員莉莉湯姆林和金像獎得主珍芳達、麗塔莫瑞諾、和莎莉菲爾德主演真實友誼冒險事件改編的充滿誠意搞笑喜劇。四位終身閨蜜踏上一場難忘旅程，去看她們的偶像湯姆布雷迪打第51屆超級盃，她們見證了體育史上最厲害的反敗為勝比賽，並了解到過豐富的人生永遠不嫌太遲。",
+          "popularity": 7.6976,
+          "poster_path": "/fhamw8OCt3NPrpvJxZPkDJJj9Q6.jpg",
+          "vote_average": 6.2,
+          "vote_count": 202,
+          "original_title": "80 for Brady",
+          "release_date": "2023-02-03",
+          "title": "80 奔赴布萊迪",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/wDln5edQPFYMeKvakkYCLUXOPRP.jpg",
+          "genre_ids": [18],
+          "id": 13920,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 7.4229,
+          "poster_path": "/uQ6ci4iFHhB6TWB2f4wftR7AEly.jpg",
+          "vote_average": 7.394,
+          "vote_count": 934,
+          "original_title": "Radio",
+          "release_date": "2003-10-24",
+          "title": "Radio",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/4lGB2Iy7BruiRfvVc6MZ2UM0yNX.jpg",
+          "genre_ids": [16, 10749, 18],
+          "id": 579741,
+          "original_language": "ja",
+          "overview": "櫻桃是不善於與人溝通的男孩，平時總是戴著耳機，避免與人交談，並只將自己的想法寫成俳句。另一方面，年輕女孩微笑原本是在Curio Live頗有名氣的網紅，但最近卻因牙套而擔心會變得不可愛，令人氣下跌，因而開始戴上口罩外出。然而某天在購物中心裡，櫻桃為躲避踏滑板的海狸而意外撞跌身旁的微笑，二人亦因此而認識，開始互傳短訊交流，櫻桃亦開始寫作以微笑為題的俳句。透過俳句和音樂，平時只將內心想法藏於心裡的二人距離縮短，卻又在相處之中漸漸疏遠。",
+          "popularity": 3.8781,
+          "poster_path": "/ioj55UtUAJgryvGim67w9B3NhA6.jpg",
+          "vote_average": 7.35,
+          "vote_count": 350,
+          "original_title": "サイダーのように言葉が湧き上がる",
+          "release_date": "2021-07-22",
+          "title": "言語如汽水般湧現",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/5mwd1quVNkdwImOF2RGm90hKZ5P.jpg",
+          "genre_ids": [878, 12, 28],
+          "id": 9922,
+          "original_language": "en",
+          "overview": "2013年，有史以來最具毀滅性的戰爭幾乎摧毀了地球，在這不易存活的社會中，人們分居在許多原始的城鎮中，各自獨立求取生存，而無法互相聯繫。在這不易存活的社會中，更令人可悲的是竟有一個專門以武力恐嚇居民的流竄軍隊，無時無刻壓榨平民百姓。\r 人們只求自保，沒有目標的生存。但意外的變化卻來自自稱是郵差的凱文科斯納。他四處流浪，一日他撿到一大包的郵件和一件制服，為了求取棲身之處，他冒稱是一名郵差進入一城鎮，沒想到他那郵件卻如此的鼓舞、振奮人心。這群幾乎被上帝遺忘的子民因發現久未聯絡親人的音訊，而燃起他們無限的希望及喜悅。\r 萬萬沒想到這個冒牌的特殊身份對人們是如此重要，居民不斷湧入的信件重點了生活的熱情也激發了他們對抗強權的鬥志。戰爭風雲將起而這名被時勢所逼的英雄，是該放棄他的身份還是加入這場因他而起的戰爭呢？！",
+          "popularity": 7.1778,
+          "poster_path": "/qo4UxbdMcR6VgvVV4wodSKfWwYu.jpg",
+          "vote_average": 6.273,
+          "vote_count": 1241,
+          "original_title": "The Postman",
+          "release_date": "1997-12-25",
+          "title": "2013終極神差",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/stRc4geXiW3F2wZGxNt6EkasqfH.jpg",
+          "genre_ids": [18],
+          "id": 19079,
+          "original_language": "en",
+          "overview": "10歲的小女孩菲比充滿豐富想像力，她最喜歡的童話故事是〈愛麗絲夢遊仙境〉。奇幻世界裡的人物經常從天而降，來到身邊和她作朋友，幫她出各種稀奇古怪的主意，不知情的爸媽卻常為此頭痛不已。 某天，學校來了個教戲劇的道奇老師，她不像其他老師有一堆規定，道格老師讓他們隨心所欲地表演，菲比在徵選會上",
+          "popularity": 4.3562,
+          "poster_path": "/iiLMczPwwJE9sKjkg4Khdh3oFFn.jpg",
+          "vote_average": 7.2,
+          "vote_count": 172,
+          "original_title": "Phoebe in Wonderland",
+          "release_date": "2008-02-07",
+          "title": "菲比夢遊仙境",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/q0kZOxL6OMSeDlT6SRNKCJYStlF.jpg",
+          "genre_ids": [80, 53],
+          "id": 302,
+          "original_language": "en",
+          "overview": "繼《挑逗性謀殺》、《乾柴烈火》、《砂之謎》、《八美圖》後，擅長描繪女性心理的法國導演歐容首度以英語為主拍攝電影《池畔謀殺案》。  在拍過海水與河水，這次把鏡頭推向游泳池，讓兩位不同世代的女演員在泳池畔勾心鬥角，愛慾交集，也讓演員在游泳池畔自然的脫下衣服，裸露身體解放自己的情慾。2003年的坎城影展代表法國參加正式競賽片的這部影片是一部穿梭真實與想像的電影，充滿著各種解讀的可性。  夏綠蒂飾演英國暢銷懸疑偵探小說家莎拉摩登，所寫的推理道維爾探長系列，受到各階層讀者的喜愛。因為創作遇到瓶頸，在出版社老闆的建議下，到他法國南部普羅旺斯的渡假別墅寄居寫作，當她正享受獨居寫作的樂趣時老闆女兒茱莉搬了進來一起住，兩人的關係因為茱莉的淫亂行為開始陷入緊張狀態。  夜夜帶著不同男人回家做愛的茱莉造成嚴肅古板的中年女作家心情震撼與生活失序，不但擾亂了莎拉的起居作息，更衝擊著她嚴謹保守的心態，兩人之間的關係更加緊繃。當茱利帶回來的男友之一對莎拉產生興趣時，她們之間終於爆發強烈的衝突，也使她們置身於危機之中，更多可疑的事一一發生。在普羅旺斯的陽光下，沉靜的戰爭，正要開始 . . . . . .",
+          "popularity": 6.9484,
+          "poster_path": "/eOD2SxThV2HZ8WU2HBQL30PClf3.jpg",
+          "vote_average": 6.491,
+          "vote_count": 820,
+          "original_title": "Swimming Pool",
+          "release_date": "2003-05-21",
+          "title": "池畔謀殺案",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/eKGjQNJ6sbSB1LoIeNoGXG0HozV.jpg",
+          "genre_ids": [18, 10749, 35],
+          "id": 352490,
+          "original_language": "en",
+          "overview": "患有強迫症的正妹貝拉，儘管人生不順遂卻依然保持樂觀的心，希望成為一名兒童文學作家。某天在房東要求下，對植物有恐懼症的她必須接管花園，因而認識了鄰居亞菲。這位年邁的鰥夫看似與她不對盤，卻在相處後逐漸成為貝拉的良師益友，她更發現，亞菲竟然是一位巧手的園藝家……",
+          "popularity": 4.1636,
+          "poster_path": "/vWUJQaJLO9O17XtAK2Pz4hbgyzq.jpg",
+          "vote_average": 7.1,
+          "vote_count": 352,
+          "original_title": "This Beautiful Fantastic",
+          "release_date": "2016-10-20",
+          "title": "歡迎光臨貝拉的奇幻花園",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/7qdeWU6XNrMFuemM2TAHD6Rc6NS.jpg",
+          "genre_ids": [35],
+          "id": 23706,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 5.7034,
+          "poster_path": "/fLMT75G2tSuaMUdXb6LRt3XspD2.jpg",
+          "vote_average": 5,
+          "vote_count": 1087,
+          "original_title": "All About Steve",
+          "release_date": "2009-08-06",
+          "title": "求愛女王",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/7yI5snbydDIB9VTgrSUYXSt7lT1.jpg",
+          "genre_ids": [28, 16, 35, 14],
+          "id": 182131,
+          "original_language": "ja",
+          "overview": "童年時代目睹魔女閃光莎莉歐（日髙のり子 配音）出神入化的魔法表演，小女孩亞可（潘惠美 配音）立志成為像偶像那樣出色的魔女。懷著這樣的夢想，亞可如願進入名門魔法學校修行。然而枯燥的課程讓她倍感無聊，周圍人對閃光莎莉的不良評價又使亞可心懷怨懟。某天，小魔女們必須參加一場迷宮尋寶的測試，途中必須與各種各樣的怪物作戰。高才生戴安娜（日笠陽子 配音）意外釋放了以吞噬魔法為生的遠古之龍，結果為學園招來了前所未有的大混亂。危急時刻，亞可無意中持有了解決一切麻煩的關鍵鑰匙…… 　　本片是Animemirai 2013公映的4部動畫影片之一。",
+          "popularity": 1.7851,
+          "poster_path": "/auEVlfTs7bE0hQsMP7xAhrcZKpV.jpg",
+          "vote_average": 7.1,
+          "vote_count": 188,
+          "original_title": "リトルウィッチアカデミア",
+          "release_date": "2013-03-02",
+          "title": "小魔女學園",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/fM4TVNg27IBCYAz8FUiLefWck1p.jpg",
+          "genre_ids": [18, 35],
+          "id": 101731,
+          "original_language": "en",
+          "overview": "坐在輪椅上，之後的人生只能靠它代步的蒙特（摩根•弗里曼 Morgan Freeman 飾）對人生不再抱有什麼希望。曾經的知名作家因爲妻子的離世而靈感不再，整日與酒爲伴的蒙特讓侄子對他放不下心來，於是爲他找了一個僻靜小鎮的小木屋，讓他在這裏散心養生。搬到這來的蒙特起初對什麼都沒有的小鎮很不滿，終日酗酒。而隔壁奧尼爾家的三個小女孩及她們的母親（維吉妮婭•馬德森 Virginia Madsen 飾）引來了蒙特的注意，隨着和她們接觸的加深，蒙特喜歡上了這一家，從中也漸漸拾得了生的樂趣；而奧尼奧家的三姐妹從蒙特身上得到了父愛和關懷，而她們的母親也再次感受到愛情。一切都在朝着好的方向發展着，哪怕當下仍是黑暗，但黎明終究會來到，在救贖與被救贖中，蒙特及奧尼爾一家得到了治癒。",
+          "popularity": 4.8583,
+          "poster_path": "/imoZLjmCnfG4f69Dq0f2Zsr9XOR.jpg",
+          "vote_average": 7,
+          "vote_count": 462,
+          "original_title": "The Magic of Belle Isle",
+          "release_date": "2012-07-06",
+          "title": "再造奇蹟",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/8h7Xg2u3oGAi5MpBehyJ5OAFBYz.jpg",
+          "genre_ids": [10749, 35],
+          "id": 46198,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 2.9522,
+          "poster_path": "/gIJlvYYQsZbABQQwzIItzv06sOU.jpg",
+          "vote_average": 5.8,
+          "vote_count": 132,
+          "original_title": "My Girlfriend's Boyfriend",
+          "release_date": "2010-04-22",
+          "title": "我女友的男友",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/AsEgGeccI32SwMBkxpwhOkhbzmF.jpg",
+          "genre_ids": [28, 878, 53, 27],
+          "id": 1011679,
+          "original_language": "en",
+          "overview": "冷戰期間，蘇聯研發出了極具攻擊性的鯊魚，由於無法殺死牠們，蘇聯軍方領導人決定將牠們送到月球。現在，一組美國太空人即將登陸月球，卻意外撞見了這批兇猛的鯊魚大軍……",
+          "popularity": 2.8026,
+          "poster_path": "/v32jxM6U1GVNRuElMY16A9ofvAU.jpg",
+          "vote_average": 5,
+          "vote_count": 165,
+          "original_title": "Shark Side of the Moon",
+          "release_date": "2022-08-12",
+          "title": "鯊戮月球",
+          "video": false,
+          "media_type": "movie"
+        }
+      ],
+      "resolvedKeywords": [
+        {
+          "lookup_name": "perseverance",
+          "display_label": "堅持不懈",
+          "source": "inferred",
+          "id": 216923
+        },
+        {
+          "lookup_name": "inspiration",
+          "display_label": "激勵人心",
+          "source": "inferred",
+          "id": 3993
+        }
+      ],
+      "baselineMs": 6226.068417,
+      "planMs": 4428.490625,
+      "tmdbMs": 1797.577792,
+      "usage": {
+        "promptTokens": 1119,
+        "completionTokens": 188,
+        "totalTokens": 1307,
+        "cachedTokens": 0,
+        "reasoningTokens": 0
+      }
+    },
+    {
+      "id": 2,
+      "request": {
+        "request": "下班很累，想看輕鬆溫暖、不要沉重也不要恐怖的電影。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "plan": {
+        "intent_summary": "想找適合下班後放鬆、輕鬆溫暖的電影，避開沉重或恐怖的內容。",
+        "people": [],
+        "people_match": "any",
+        "display_labels": {
+          "hard": ["排除恐怖片"],
+          "soft": ["輕鬆", "溫暖", "不沉重"]
+        },
+        "hard_constraints": {
+          "exclude_keywords": [],
+          "exclude_genre_ids": [27]
+        },
+        "soft_preferences": {
+          "include_genres": [],
+          "keywords": [],
+          "qualities": ["輕鬆", "溫暖", "不沉重"]
+        },
+        "discover_plan": {
+          "include_genres": [],
+          "exclude_genre_ids": [27],
+          "exclude_keywords": [],
+          "keywords": []
+        }
+      },
+      "candidates": [
+        {
+          "adult": false,
+          "backdrop_path": "/qeQJx07rK2xm8SD2sJxFKhE7gs0.jpg",
+          "genre_ids": [878, 28, 12],
+          "id": 969681,
+          "original_language": "en",
+          "overview": "彼得帕克努力專注於大學生活，把蜘蛛人拋在腦後。然而，當新的威脅危及到他的朋友時，他不得不違背諾言，再次穿上戰衣，與一位意想不到的盟友聯手，保護他所愛的人。",
+          "popularity": 583.5584,
+          "poster_path": "/2zO573CUiqm4QDuIPycE1d1GUYc.jpg",
+          "vote_average": 7.867,
+          "vote_count": 2986,
+          "original_title": "Spider-Man: Brand New Day",
+          "release_date": "2026-07-29",
+          "title": "蜘蛛人：重生日",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/buex9mhLHQvpAQnCU3Akdh6EbsB.jpg",
+          "genre_ids": [18, 35],
+          "id": 987032,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 2.1102,
+          "poster_path": "/xFKzEhOhkPwMxWms1n15xLMCXa2.jpg",
+          "vote_average": 9.9,
+          "vote_count": 143,
+          "original_title": "The Way to the Heart",
+          "release_date": "2024-04-02",
+          "title": "The Way to the Heart",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/viZqGq9TNvQ5uXSD4ahg2RpRONT.jpg",
+          "genre_ids": [35, 12, 10751],
+          "id": 1204680,
+          "original_language": "en",
+          "overview": "《威利狼大戰阿卡米公司》的故事圍繞著威利狼展開，他長期因自家品牌 Acme 生產的各種瑕疵產品害得遍體鱗傷，終於忍無可忍，決定在亞利桑那州對 Acme 公司提起訴訟。電影延續這個設定，由威爾佛提（Will Forte）飾演一位專打「冷門案件」的律師，而約翰希南（John Cena）則化身這家冷酷企業的法律代表，雙方正面交鋒！",
+          "popularity": 304.7214,
+          "poster_path": "/xONOMna5Z102bw0jMPBM4H73B9m.jpg",
+          "vote_average": 7.556,
+          "vote_count": 611,
+          "original_title": "Coyote vs. Acme",
+          "release_date": "2026-08-17",
+          "title": "威利狼大戰阿卡米公司",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/fx1wiibwJPemUMxmnWDCFzEoVeS.jpg",
+          "genre_ids": [99],
+          "id": 484133,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 5.0622,
+          "poster_path": "/28MfQRURKQ2OKcIdeSrVadPXt8g.jpg",
+          "vote_average": 9.327,
+          "vote_count": 171,
+          "original_title": "Nude",
+          "release_date": "2017-10-29",
+          "title": "裸",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/bulFtfy3oBQtCnAMSi7g6DSSds3.jpg",
+          "genre_ids": [12, 28, 14],
+          "id": 1368337,
+          "original_language": "en",
+          "overview": "講述奧德修斯在特洛伊戰爭後歷經艱險返鄉，途中遭遇獨眼巨人、女妖與女巫，最終與妻子重逢的傳奇旅程。",
+          "popularity": 302.589,
+          "poster_path": "/d7MiRRamaAe58DacYEo2ZgziBBv.jpg",
+          "vote_average": 8.012,
+          "vote_count": 3987,
+          "original_title": "The Odyssey",
+          "release_date": "2026-07-15",
+          "title": "奧德賽",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/caBIySpwuFi2i7ynvHIlnxJLOdN.jpg",
+          "genre_ids": [16, 28, 12, 18],
+          "id": 1560520,
+          "original_language": "en",
+          "overview": "阿卡漢瘋人院遭到摧毀，囚犯全都流竄到了高譚市。蝙蝠俠分秒必爭，追捕著最難纏的對手，身心瀕臨極限，還要面對全新的威脅，與名叫班恩的男子展開最終決戰！",
+          "popularity": 48.4718,
+          "poster_path": "/rtLf2S4AWNM8beBQykCI3oZfCUq.jpg",
+          "vote_average": 9.2,
+          "vote_count": 408,
+          "original_title": "Batman: Knightfall Part 1: Knightfall",
+          "release_date": "2026-06-23",
+          "title": "蝙蝠俠：騎士殞落 (一) 騎士殞落",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/2c9zNZJL0ZdagD6JbmU3hH4hovs.jpg",
+          "genre_ids": [28, 35],
+          "id": 1377237,
+          "original_language": "en",
+          "overview": "退伍軍人漢克（艾倫里奇森 飾）奉命護送醫療快遞員班（歐文威爾森 飾），要將一副健康的肝臟送到病危的女孩手中，結果意圖搶奪肝臟的傭兵集團盯上了他們……。",
+          "popularity": 255.8538,
+          "poster_path": "/yE1pA1w2zdi1igLjp9YWI8TO2tv.jpg",
+          "vote_average": 8.3,
+          "vote_count": 258,
+          "original_title": "Runner",
+          "release_date": "2026-09-07",
+          "title": "特種快遞",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/ezbrL1dMymKQZw7mDEWa2ZTzN7d.jpg",
+          "genre_ids": [16, 12, 14, 28],
+          "id": 980431,
+          "original_language": "en",
+          "overview": "安，意外得知一股古老力量，或許能拯救他的族群免於滅絕。在夥伴們的協助下，他踏上一段橫跨世界的尋找之旅，試圖在這股力量落入歹人之手、威脅到他們傾盡一切才換來的和平之前，搶先找到它。",
+          "popularity": 68.1532,
+          "poster_path": "/9emAUbgwZNTEhhb5qe5U30UuUQn.jpg",
+          "vote_average": 9.147,
+          "vote_count": 1232,
+          "original_title": "Avatar Aang: The Last Airbender",
+          "release_date": "2026-07-24",
+          "title": "降世神通：安之傳奇",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/b9q9VmbXDvJmTziRqkwdEmFdwhr.jpg",
+          "genre_ids": [878, 9648, 53],
+          "id": 1101383,
+          "original_language": "en",
+          "overview": "當一場神祕的宇宙事件，撕裂了寧靜的橡樹街社區後，整個社區竟被傳送到未知之地，普拉特一家人很快就發現：生存關鍵取決於當一家人置身於難以辨認的環境時，是否能夠緊密團結在一起。",
+          "popularity": 254.6663,
+          "poster_path": "/yJxLZruKq4iodYteRk1WaKKoXV1.jpg",
+          "vote_average": 7.046,
+          "vote_count": 1749,
+          "original_title": "The End of Oak Street",
+          "release_date": "2026-08-12",
+          "title": "橡樹街末日",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/8vDzqxZvrp7IdyAI5F8NePWGyEP.jpg",
+          "genre_ids": [10402, 99],
+          "id": 730647,
+          "original_language": "ko",
+          "overview": "",
+          "popularity": 1.6203,
+          "poster_path": "/gLNZdWq7r8ZAyWuUxoke7qC0gy8.jpg",
+          "vote_average": 9.1,
+          "vote_count": 188,
+          "original_title": "브레이크 더 사일런스: 더 무비",
+          "release_date": "2020-09-10",
+          "title": "브레이크 더 사일런스: 더 무비",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/o7Oy9Gbx1CCyaweL8xUhtMW4Puq.jpg",
+          "genre_ids": [10749, 35],
+          "id": 1032863,
+          "original_language": "en",
+          "overview": "改編自登上《紐約時報》暢銷榜的小說，《假戀愛真心動》的主角是博士候選人奧莉，她一時衝動吻了系上最令人聞風喪膽的教授亞當卡爾森。兩人因共同需要展開的假戀愛關係，變成了一場化學實驗，或許能夠解開愛情的答案。",
+          "popularity": 222.3316,
+          "poster_path": "/lRgnTOCqunKJoDdKjGyEpuVogDm.jpg",
+          "vote_average": 8.074,
+          "vote_count": 411,
+          "original_title": "The Love Hypothesis",
+          "release_date": "2026-09-23",
+          "title": "假戀愛真心動",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/PpAlok2zabLtSpleN6u8oMp7CV.jpg",
+          "genre_ids": [18],
+          "id": 373001,
+          "original_language": "es",
+          "overview": "",
+          "popularity": 0.7583,
+          "poster_path": "/r4AoFwoAYP1OBJAbmFTgUjGjAUE.jpg",
+          "vote_average": 8.991,
+          "vote_count": 112,
+          "original_title": "El Cementerio de los Elefantes",
+          "release_date": "2009-08-24",
+          "title": "El Cementerio de los Elefantes",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/e2QAGrEmbpmZpMymDRkDisJkvg9.jpg",
+          "genre_ids": [28, 53],
+          "id": 1288445,
+          "original_language": "en",
+          "overview": "目睹億萬富翁企業家老闆在面前遭到殺害後，柯爾李德被誣陷為兇手，他被迫展開逃亡，同時要在過程中設法揭發一樁國際陰謀。",
+          "popularity": 179.0745,
+          "poster_path": "/9UmRLdkctpIwvUkmPFvyz67Psu8.jpg",
+          "vote_average": 7.379,
+          "vote_count": 737,
+          "original_title": "Mutiny",
+          "release_date": "2026-08-19",
+          "title": "玩命航線",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/5tVZ1W5Pt6YbmJE4wrWcbVEUlAV.jpg",
+          "genre_ids": [16, 14, 28, 12],
+          "id": 1144107,
+          "original_language": "zh",
+          "overview": "小黑跟隨師父在小鎮上過著安甯日子，分會館遇襲，打破了妖精世界維系多年的和平，來自妖靈會館的“全新任務”也讓兩人陷入分離危機，更讓師父無限的處境發生翻天覆地的變化。面對環環相扣的謎團，小黑與師姐鹿野共同開啓了尋找真相的新冒險。這一次小黑能否經受住考驗，順利保護師父化險為夷？",
+          "popularity": 13.6524,
+          "poster_path": "/3JSNnWiYZIWCemSuWoCRGpiICPT.jpg",
+          "vote_average": 8.953,
+          "vote_count": 150,
+          "original_title": "罗小黑战记 2",
+          "release_date": "2025-07-18",
+          "title": "羅小黑戰記 2",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/4D1pdB27uph7J8HQzNf8QvvH9bn.jpg",
+          "genre_ids": [16, 10751, 35, 12],
+          "id": 1084244,
+          "original_language": "en",
+          "overview": "伴隨著時代演進、以科技入侵作為主題，玩具們將陷入 3C 危機，胡迪、巴斯光年此生最強勁敵現身，讓人愛不釋手的閃亮亮玩具登場，全新角色「莉莉板」，一款高科技、青蛙造型的智慧平板玩具，有了這個新寶貝，誰還需要玩具呢？他們將面臨史上最大的挑戰。",
+          "popularity": 169.5976,
+          "poster_path": "/8IfNwMFlqggaZ5dcJo8t4QIaSPX.jpg",
+          "vote_average": 8.314,
+          "vote_count": 2448,
+          "original_title": "Toy Story 5",
+          "release_date": "2026-06-17",
+          "title": "玩具總動員5",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/zMwhWailP1WY7sb6AoE6b8ugoy.jpg",
+          "genre_ids": [12, 16, 10751, 14],
+          "id": 1007757,
+          "original_language": "en",
+          "overview": "一隻林地小動物和一隻大鳥原本在山谷裡是水火不容的天敵，卻突然互換了身體，只好彼此合作，一邊適應著身上陌生的皮毛和羽毛，一邊想辦法平安度過此生最瘋狂的冒險。",
+          "popularity": 40.2256,
+          "poster_path": "/4vGvKIWUyOJkaoYcywAJEswv0ot.jpg",
+          "vote_average": 8.866,
+          "vote_count": 2219,
+          "original_title": "Swapped",
+          "release_date": "2026-05-01",
+          "title": "奇幻變身大冒險",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/58D9nalUYW5L5K0guw7hcpsEJBH.jpg",
+          "genre_ids": [53, 18, 80],
+          "id": 1492640,
+          "original_language": "en",
+          "overview": "這部劇情片取材自真人真事，描述泰德卡辛斯基如何從跳級錄取哈佛的神童和實驗受試者變成「大學炸彈客」，更遭到聯邦調查局追捕。",
+          "popularity": 164.998,
+          "poster_path": "/pZ5jt77v1c48Uq4FQuTGlSWYu7C.jpg",
+          "vote_average": 6.631,
+          "vote_count": 267,
+          "original_title": "UNABOMBER",
+          "release_date": "2026-09-25",
+          "title": "大學炸彈客",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/iCML6fBe3X0y06P33bM7dyYXPKZ.jpg",
+          "genre_ids": [35, 10749],
+          "id": 1632181,
+          "original_language": "es",
+          "overview": "",
+          "popularity": 13.7762,
+          "poster_path": "/j0CIVzeR7hRAPBPGR54qDZoOQpp.jpg",
+          "vote_average": 8.844,
+          "vote_count": 392,
+          "original_title": "Socias por accidente",
+          "release_date": "2026-03-12",
+          "title": "Socias por accidente",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/bicMU6xVD5deVyKP2azpyx7xkmH.jpg",
+          "genre_ids": [12, 53],
+          "id": 1263337,
+          "original_language": "en",
+          "overview": "在經歷可怕的墜機之後，特種部隊軍官詹姆斯貝爾蒙與他的戰鬥偵察犬奧丁，受困在阿拉斯加荒野深處。他們為了求生必須面對惡劣的天候。",
+          "popularity": 161.7222,
+          "poster_path": "/kY3pGqJu62TPDINS2KZ0uQbTkz4.jpg",
+          "vote_average": 7.604,
+          "vote_count": 178,
+          "original_title": "Heart of the Beast",
+          "release_date": "2026-09-19",
+          "title": "野獸之心",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/vrx9KIwXm7nxz49Fs9iTjPgxq7A.jpg",
+          "genre_ids": [99, 80],
+          "id": 753230,
+          "original_language": "es",
+          "overview": "一位母親由於墨西哥司法系統未能制裁殺害她愛女的罪犯，展開了不懈抗爭，只為將兇手繩之以法，本紀錄片檢視了這趟歷程。",
+          "popularity": 1.8527,
+          "poster_path": "/gYO7mmLti4XtIszP6C7Uc7OQnOc.jpg",
+          "vote_average": 8.8,
+          "vote_count": 246,
+          "original_title": "Las tres muertes de Marisela Escobedo",
+          "release_date": "2020-10-14",
+          "title": "死了三次的母親",
+          "video": false,
+          "media_type": "movie"
+        }
+      ],
+      "resolvedKeywords": [],
+      "baselineMs": 5035.046791999999,
+      "planMs": 4529.072125000001,
+      "tmdbMs": 505.9746669999986,
+      "usage": {
+        "promptTokens": 1117,
+        "completionTokens": 159,
+        "totalTokens": 1276,
+        "cachedTokens": 0,
+        "reasoningTokens": 0
+      }
+    },
+    {
+      "id": 4,
+      "request": {
+        "request": "想看有巧妙反轉、需要動腦的懸疑電影，不要恐怖片。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "plan": {
+        "intent_summary": "想看有巧妙反轉、需要動腦的懸疑電影，並避開恐怖片。",
+        "people": [],
+        "people_match": "any",
+        "display_labels": {
+          "hard": ["排除恐怖片"],
+          "soft": ["懸疑", "巧妙反轉", "需要動腦"]
+        },
+        "hard_constraints": {
+          "exclude_keywords": [],
+          "exclude_genre_ids": [27]
+        },
+        "soft_preferences": {
+          "include_genres": [
+            {
+              "id": 9648,
+              "source": "explicit"
+            }
+          ],
+          "keywords": [
+            {
+              "lookup_name": "plot twist",
+              "display_label": "劇情反轉",
+              "source": "explicit"
+            }
+          ],
+          "qualities": ["燒腦", "巧妙反轉"]
+        },
+        "discover_plan": {
+          "include_genres": [
+            {
+              "id": 9648,
+              "source": "explicit"
+            }
+          ],
+          "exclude_genre_ids": [27],
+          "exclude_keywords": [],
+          "keywords": [
+            {
+              "lookup_name": "plot twist",
+              "display_label": "劇情反轉",
+              "source": "explicit"
+            }
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "adult": false,
+          "backdrop_path": "/lxwCRTWWfCisuarrFFUhW43eBnW.jpg",
+          "genre_ids": [18, 9648, 53],
+          "id": 6947,
+          "original_language": "en",
+          "overview": "偏遠小山村的村民們活在恐懼之中，因為山村之外有一片禁忌森林，裡面住著一股邪惡力量。沒人敢踏進森林，直到有一名村民勇敢地面對未知的世界。",
+          "popularity": 12.3518,
+          "poster_path": "/6NZGRm0iKS2nA3KFdg9JUTIddcj.jpg",
+          "vote_average": 6.496,
+          "vote_count": 4744,
+          "original_title": "The Village",
+          "release_date": "2004-07-30",
+          "title": "陰森林",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/qqqnNDiQx62xZsVRZnxhP8GguJf.jpg",
+          "genre_ids": [53, 80, 9648],
+          "id": 68727,
+          "original_language": "en",
+          "overview": "賽門是藝術拍賣商，他卻和黑幫集團結盟，想要裡應外合竊取價值高達數百萬美元的藝術品。但在一次搶劫中他頭部受到重創，醒來後發現自己喪失記憶，完全不記得他將畫藏到哪裡了。  犯罪集團用盡心機想逼他說出藏畫地點，卻不得其門而入，集團首腦請來催眠治療師，挖掘賽門黑暗的內心深處。她在賽門破碎的潛意識中越挖越深，風險也越來越大，遊走在慾望、現實、催眠暗示的虛實交界之處。",
+          "popularity": 7.0188,
+          "poster_path": "/9w4TTQTMfG9LMyXPfdmisRisg57.jpg",
+          "vote_average": 6.616,
+          "vote_count": 2427,
+          "original_title": "Trance",
+          "release_date": "2013-03-27",
+          "title": "索命記憶",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/xU2C64VWhYJMBDrjEsFPbVTWAjN.jpg",
+          "genre_ids": [35, 9648, 878],
+          "id": 1052280,
+          "original_language": "en",
+          "overview": "歡樂的婚前派對怎麼會淪為一場生存夢魘？久未聯絡的友人現身，帶來一個手提箱，裡頭的神祕裝置可以讓人靈魂大風吹，玩遊戲的誘惑難敵，接下來的發展曲折離奇，深埋的真相、壓抑的慾望，以及深根蒂固的宿怨紛紛出籠，欺瞞與驚人發現將全面顛覆這群好友的生活。",
+          "popularity": 9.205,
+          "poster_path": "/bMJTU0PyIu4aeug2q2Ug0jdjh6Q.jpg",
+          "vote_average": 6.464,
+          "vote_count": 881,
+          "original_title": "It's What's Inside",
+          "release_date": "2024-01-19",
+          "title": "開箱靈魂",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/sWyflLpu1qWLTirUadWmL2X3eln.jpg",
+          "genre_ids": [9648, 53, 80],
+          "id": 26337,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 3.8527,
+          "poster_path": "/v2o5uqHety8727LukhGfyAfA8EE.jpg",
+          "vote_average": 6.101,
+          "vote_count": 154,
+          "original_title": "China Moon",
+          "release_date": "1994-03-04",
+          "title": "China Moon",
+          "video": false,
+          "media_type": "movie"
+        }
+      ],
+      "resolvedKeywords": [
+        {
+          "lookup_name": "plot twist",
+          "display_label": "劇情反轉",
+          "source": "explicit",
+          "id": 275311
+        }
+      ],
+      "baselineMs": 4121.601709000002,
+      "planMs": 3056.582209,
+      "tmdbMs": 1065.0195000000022,
+      "usage": {
+        "promptTokens": 1115,
+        "completionTokens": 181,
+        "totalTokens": 1296,
+        "cachedTokens": 0,
+        "reasoningTokens": 0
+      }
+    },
+    {
+      "id": 5,
+      "request": {
+        "request": "週末想和家人一起看溫馨的動畫電影，重視親情和互相支持。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "plan": {
+        "intent_summary": "週末想和家人一起欣賞溫馨、重視親情與互相支持的動畫電影。",
+        "people": [],
+        "people_match": "any",
+        "display_labels": {
+          "hard": [],
+          "soft": ["動畫", "親情", "互相支持", "溫馨"]
+        },
+        "hard_constraints": {
+          "exclude_keywords": [],
+          "exclude_genre_ids": []
+        },
+        "soft_preferences": {
+          "include_genres": [
+            {
+              "id": 16,
+              "source": "explicit"
+            }
+          ],
+          "keywords": [
+            {
+              "lookup_name": "family relationships",
+              "display_label": "親情",
+              "source": "explicit"
+            },
+            {
+              "lookup_name": "support",
+              "display_label": "互相支持",
+              "source": "explicit"
+            }
+          ],
+          "qualities": ["溫馨", "適合全家觀賞"]
+        },
+        "discover_plan": {
+          "include_genres": [
+            {
+              "id": 16,
+              "source": "explicit"
+            }
+          ],
+          "exclude_genre_ids": [],
+          "exclude_keywords": [],
+          "keywords": [
+            {
+              "lookup_name": "family relationships",
+              "display_label": "親情",
+              "source": "explicit"
+            },
+            {
+              "lookup_name": "support",
+              "display_label": "互相支持",
+              "source": "explicit"
+            }
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "adult": false,
+          "backdrop_path": "/jJKZaTBNenlFclQyjrnvzkRmvWE.jpg",
+          "genre_ids": [16, 10751, 12, 18, 35],
+          "id": 150540,
+          "original_language": "en",
+          "overview": "主角萊莉因為父親工作的因素舉家搬遷至舊金山，要準備適應新環境，但就在此時，萊莉腦中控制歡樂與憂傷的兩位腦內大臣樂樂與憂憂迷失在茫茫腦海中，大腦總部只剩下掌管憤怒、害怕與厭惡的三位幹部負責，導致本來樂觀的萊莉變成憤世嫉俗的少女。樂樂與憂憂必須要在複雜的腦中世界回到大腦總部，讓萊莉重拾原本快樂正常的情緒…",
+          "popularity": 60.7935,
+          "poster_path": "/8ZCmz0eAWhbyAPwz9FBWsYrDE7v.jpg",
+          "vote_average": 7.905,
+          "vote_count": 23948,
+          "original_title": "Inside Out",
+          "release_date": "2015-06-17",
+          "title": "腦筋急轉彎",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/5nkKy7eEDsXqsxFLJy3GxZhE90J.jpg",
+          "genre_ids": [16, 18, 14],
+          "id": 476292,
+          "original_language": "ja",
+          "overview": "一窺擁有數百年壽命的伊歐夫地區人民，如何活出傳說！  伊歐夫人民擁有數百年的壽命，卻永遠保持著十五歲的外表，因而被視作「活著的傳說」。一日，梅薩帝軍為求長壽之血，對伊歐夫地區展開猛烈的攻擊，打亂了他們習以為常的平靜生活。在一片混亂之中，失去雙親的伊歐夫少女瑪琪亞、少年克里姆、伊歐夫第一美女蕾莉亞，竟全都失了蹤。然而，當瑪琪亞總算順利逃脫時，卻遍尋不著心儀的克里姆及身旁的夥伴，在這充滿變數的時代中，瑪琪亞將會迎來怎樣的際遇呢……",
+          "popularity": 6.3351,
+          "poster_path": "/owobTzCXJ0rFSmeaXIR2Wxmc42M.jpg",
+          "vote_average": 8.134,
+          "vote_count": 739,
+          "original_title": "さよならの朝に約束の花をかざろう",
+          "release_date": "2018-02-24",
+          "title": "道別的早晨就用約定之花點綴吧",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/lxwzY9vNwjDgxWKt3zZ6zcU6rEJ.jpg",
+          "genre_ids": [28, 12, 16, 10751],
+          "id": 9806,
+          "original_language": "en",
+          "overview": "一個全家都具備特異功能的超人家庭，因為受到保護，低調地住在郊區過著寧靜的生活。不料，因為一場犯罪案件，讓超人先生一家大小再度肩負起拯救世界的超級任務 . . . . . .",
+          "popularity": 31.983,
+          "poster_path": "/dpEy8gLKwHaf2NXDrDcJsEhdUrK.jpg",
+          "vote_average": 7.729,
+          "vote_count": 19354,
+          "original_title": "The Incredibles",
+          "release_date": "2004-10-27",
+          "title": "超人特攻隊",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/wdUnHg8bOmTkHzkvxSY9sCeqJ6q.jpg",
+          "genre_ids": [16, 878, 10751, 28],
+          "id": 829402,
+          "original_language": "en",
+          "overview": "明星運動員被迫回家接手父親的「超人力霸王」身分，化身傳說中的英雄，阻止巨大怪獸破壞東京。",
+          "popularity": 5.9801,
+          "poster_path": "/sPXsGIKdT2VWYiKeoqpDBmiESl2.jpg",
+          "vote_average": 8,
+          "vote_count": 407,
+          "original_title": "Ultraman: Rising",
+          "release_date": "2024-06-14",
+          "title": "ULTRAMAN：崛起",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/vsZLf5uog08pAnfsMuDWrsLWUUF.jpg",
+          "genre_ids": [16, 12, 35],
+          "id": 501929,
+          "original_language": "en",
+          "overview": "米契一家是一個功能失調但充滿愛心的家庭，他們的公路旅行被一場威脅人類的科技起義打斷了：在世界各地，人們喜愛的電子設備——從電話到自動駕駛汽車，再到時尚的新個人機器人系列 ——開啟人性。 在兩個出現故障的機器人和這個家庭令人愉快的超重哈巴狗的幫助下，米契一家將不得不克服他們的問題，共同努力拯救彼此和世界。",
+          "popularity": 17.0693,
+          "poster_path": "/da9GtIjcefaJ8OeiUKlpxxLPBc5.jpg",
+          "vote_average": 7.823,
+          "vote_count": 3516,
+          "original_title": "The Mitchells vs. the Machines",
+          "release_date": "2021-04-22",
+          "title": "米家大戰機器人",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/bh5jnK2SeUw7iTbg9QHIi24S01Q.jpg",
+          "genre_ids": [16, 18, 10752, 36],
+          "id": 378108,
+          "original_language": "ja",
+          "overview": "出身廣島的小鈴，個性憨直可愛，畫得一手好畫，總用獨特的想像力勾勒出奇幻的美好世界。昭和19年（1944年），十八歲的她離開家鄉，嫁到吳市。稚氣未脫的新嫁娘在這個陌生的軍港城鎮裡，跌跌撞撞地開啟了新的生活。隨著空襲加劇，生活愈發艱困，但小鈴堅毅幽默面對，也漸漸發現，異鄉成了家鄉，亂世裡原無愛情的婚姻，竟也在她私密畫冊中一幅幅展開幸福。百廢待興的小鎮重新綴起閃爍燈火，小鈴與她勇敢選擇的人生，繼續展開。",
+          "popularity": 4.3082,
+          "poster_path": "/gwMVeVButlxJwinq95vnvCreh11.jpg",
+          "vote_average": 7.938,
+          "vote_count": 656,
+          "original_title": "この世界の片隅に",
+          "release_date": "2016-11-12",
+          "title": "謝謝你，在世界的角落找到我",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/3G1Q5xF40HkUBJXxt2DQgQzKTp5.jpg",
+          "genre_ids": [16, 35, 10751, 14],
+          "id": 568124,
+          "original_language": "en",
+          "overview": "本片是迪士尼動畫片廠繼【致候吾友】、【三騎士】和【變身國王】之後，再度以中南美洲為背景所製作推出的動畫電影，故事是關於一位哥倫比亞的少女 Mirabel，她出自於一個魔法家庭 Madrigal，家中成員每人都有一項獨特的魔法，偏偏唯獨 Mirabel 沒有半點魔法。 但是當有一天家族遭遇到危險，沒有魔法的 Mirabel 卻成了眾人的唯一希望，她決定放手一搏，才能挽救整個家族。",
+          "popularity": 16.9411,
+          "poster_path": "/nwjUQW130IFyv70BRAOisdh6hG3.jpg",
+          "vote_average": 7.565,
+          "vote_count": 10427,
+          "original_title": "Encanto",
+          "release_date": "2021-10-13",
+          "title": "魔法滿屋",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/jXk3ZMq7n4ugOqKYq0CtMn3gia8.jpg",
+          "genre_ids": [10751, 16, 12, 35, 14],
+          "id": 431580,
+          "original_language": "en",
+          "overview": "夢工廠動畫暨東方夢工廠聯合製作，一個擁有魔法的雪怪與家人失散，少女小宜在她居住的上海公寓大樓屋頂遇到一個雪怪，她就和她淘氣調皮的死黨阿靖和潘潘，替他取名為「埃佛勒斯」，然後踏上一場驚險刺激、史詩般的冒險旅程，試圖把這個魔法雪怪帶到地球的最高峰，再度與他的家人團聚。",
+          "popularity": 11.5115,
+          "poster_path": "/2hWJ08jkLysNriN7sKzJPb7csSD.jpg",
+          "vote_average": 7.455,
+          "vote_count": 2239,
+          "original_title": "Abominable",
+          "release_date": "2019-09-19",
+          "title": "壞壞萌雪怪",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/4IrZC1uuaDpGScO4TDyEe4E4bq2.jpg",
+          "genre_ids": [16, 35, 10751],
+          "id": 295693,
+          "original_language": "en",
+          "overview": "夢工廠3D動畫新作，改編自凱迪克獎（美國兒童繪本大獎）得主馬拉發辛最具創意的童書繪本《寶寶老闆》，講述一個再平凡不過的「家庭問題」，傳達親情的牽絆，帶給大小朋友最真實的感動。由《馬達加斯加》系列導演湯姆麥葛瑞斯執導與編劇。動畫配音邀請到亞歷鮑德溫、吉米基墨、麗莎庫卓獻聲。  這是一齣熱鬧非凡的家庭喜劇，敘述當一個新生兒來到新家庭，以一個充滿想像力的7歲男孩提姆作為主要的敘事觀點，一切看起來非常荒謬。一個不尋常的寶貝老闆坐著計程車，來到提姆的家中，他穿著西裝，帶著一只公事包，還用亞歷鮑德溫的聲音講話。  兩兄弟不斷過招對決，但到了後來，提姆發現寶貝老闆其實是一個正在執行秘密任務的間諜，而他是唯一可以幫忙寶貝老闆的人。這對看起來不起眼的小兄弟將展開一場出人意料的大冒險，一起捲入這場小狗與嬰兒之間的史詩大戰。",
+          "popularity": 6.985,
+          "poster_path": "/gKroL7ZuAQNlrh6ekjvP7Kg1EkN.jpg",
+          "vote_average": 6.45,
+          "vote_count": 7592,
+          "original_title": "The Boss Baby",
+          "release_date": "2017-03-23",
+          "title": "寶貝老闆",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/oaYeZs1DMdyJC1Q2WJNBZ6uT6no.jpg",
+          "genre_ids": [16, 18, 36],
+          "id": 842859,
+          "original_language": "fr",
+          "overview": "很久很久以前，膝下無子的窮樵夫與妻子過著寒苦日子。某日大雪，貨櫃列車如常劃破森林的寧靜，卻在鐵軌旁遺留了一名嬰孩。樵夫堅信那定是火車載運的萬惡異族所拋下的孽種，妻子則認為是上天恩賜，執意留下孩子，而這個選擇，徹底改變了他們的命運。在世界最黑暗的時刻，良善的靈魂依然催生了希望之光。",
+          "popularity": 3.7415,
+          "poster_path": "/rwXSnieMhKTcynvwQ0Z3gUEeDUl.jpg",
+          "vote_average": 7.7,
+          "vote_count": 206,
+          "original_title": "La Plus Précieuse des marchandises",
+          "release_date": "2024-11-20",
+          "title": "列車捎來的幸福",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/rhA5xJ2zunWTUbWTJoxnthhp2IZ.jpg",
+          "genre_ids": [16, 12, 10751],
+          "id": 24554,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 6.4737,
+          "poster_path": "/lSwUyNrm4KaFwrM5ilY2ZWY5bEL.jpg",
+          "vote_average": 6.3,
+          "vote_count": 261,
+          "original_title": "The Land Before Time X: The Great Longneck Migration",
+          "release_date": "2003-12-02",
+          "title": "The Land Before Time X: The Great Longneck Migration",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/reQELo8rDiLIOoYIA7M6q7KGRW0.jpg",
+          "genre_ids": [12, 16, 10751, 878],
+          "id": 804370,
+          "original_language": "fr",
+          "overview": "2075年，十歲的女孩伊莉絲目睹一位身穿彩虹斗篷的神祕男孩從天而降。他叫作艾珂，來自地球已永久休眠的2932年。在那裡，人類已遷居至飄浮空中的金屬巨樹，與宇宙和平共存。而伊莉絲所處的「現在」，孩子們由AI保姆全權照料，父母僅以虛擬影像陪伴。孤單的她決定收留艾珂，幫他尋找回家的方法。兩人的情誼在光怪陸離的探險之下越發深厚，告別時刻卻悄悄到來。",
+          "popularity": 5.933,
+          "poster_path": "/1D8ClubI3iwsFJfqFT4hJqpMc61.jpg",
+          "vote_average": 7.553,
+          "vote_count": 282,
+          "original_title": "Arco",
+          "release_date": "2025-10-22",
+          "title": "再見未來男孩",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/7LJDiAeEK5FFHR7kOIYmFPgNKNf.jpg",
+          "genre_ids": [16, 18],
+          "id": 48617,
+          "original_language": "xx",
+          "overview": "",
+          "popularity": 1.7495,
+          "poster_path": "/ubbjdHHMklvSJ1OtKruiA2otF4t.jpg",
+          "vote_average": 7.472,
+          "vote_count": 198,
+          "original_title": "Father and Daughter",
+          "release_date": "2001-04-19",
+          "title": "Father and Daughter",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/r2FXILO1vUKXGS9xnPva4kkjdHo.jpg",
+          "genre_ids": [16, 10751, 14, 12, 18],
+          "id": 475215,
+          "original_language": "ja",
+          "overview": "身為家中獨子的「小訓」沉浸在全家上下所有的愛和關注中，直到有天爸媽抱著剛出生妹妹「未來」告訴他：「從今以後你就是哥哥了！」4歲的小訓不明白何謂「哥哥」，但如果當了哥哥意味失去家族的寵愛，那他寧可不要這個妹妹！正當他處於新身分的困惑與對妹妹的埋怨中，突然出現在眼前的國中生竟然稱呼他為哥哥？來自未來已經長大的妹妹未來，將帶領小哥哥穿越時空，展開兄妹的第一場大冒險！",
+          "popularity": 5.5544,
+          "poster_path": "/bYKyQZOYyFfGqJM2f3lGuLUvfwD.jpg",
+          "vote_average": 7.158,
+          "vote_count": 890,
+          "original_title": "未来のミライ",
+          "release_date": "2018-07-20",
+          "title": "未來的未來",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/2vc5hXc4pMXcKOOsOuyI2MQ1AdK.jpg",
+          "genre_ids": [35, 14, 16, 18, 10751],
+          "id": 100271,
+          "original_language": "ja",
+          "overview": "在父母結婚週年紀念日當天，小桃因故和爸爸起了爭執，甚至講出希望爸爸別回來的重話，沒想到爸爸竟然真的因為遭逢意外過世，再也無法回家了。而爸爸遺留下的就只有寫著」給小桃」這幾個字的信。小桃抱著無法與爸爸和好的遺憾，跟媽媽一起移居到瀨戶內海上的小島居住。小桃一直提不起精神融入島上的生活，卻意外的認識了幾個不可思議的妖怪們而讓生活有了不可思議的發展。有一天，媽媽和小桃起了爭執，小桃一氣之下在颱風天出走，媽媽也再度舊疾復發。小桃知道後相當懊悔，深怕又會跟爸爸那時當時情況一樣。此時屋外的風雨逐漸加大，島上唯一的醫生被困在另一座島上無法回來，小桃該怎麼辦才好呢？ 以一封猝逝父親遺留給女兒小桃的信作為開端，深度刻畫了關於生死和家族親情所帶給人的反思與感動，而電影中更融入了充滿日本傳統妖怪色彩的奇幻想像，為劇情增添不少活潑趣味。",
+          "popularity": 4.0567,
+          "poster_path": "/nyt7m1julKKcVJxvC5vDV2N2RdN.jpg",
+          "vote_average": 7.4,
+          "vote_count": 416,
+          "original_title": "ももへの手紙",
+          "release_date": "2012-04-21",
+          "title": "給小桃的信",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/3qxj5PFU2rbvaryLfBnpCJfkXcQ.jpg",
+          "genre_ids": [12, 16, 18, 10751],
+          "id": 24102,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 4.1173,
+          "poster_path": "/waUASz6cHXXDVIUomIIwqsGGjzM.jpg",
+          "vote_average": 6.2,
+          "vote_count": 298,
+          "original_title": "The Land Before Time VII: The Stone of Cold Fire",
+          "release_date": "2000-12-05",
+          "title": "The Land Before Time VII: The Stone of Cold Fire",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/5GeUxwU8RmOJBAmaleOdEz7XcjE.jpg",
+          "genre_ids": [16, 18, 37],
+          "id": 421281,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 0.899,
+          "poster_path": "/p2FoxeUWAKwS9LbCzXszfV2er4j.jpg",
+          "vote_average": 7.339,
+          "vote_count": 192,
+          "original_title": "Borrowed Time",
+          "release_date": "2015-10-31",
+          "title": "Borrowed Time",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/hpDimUxwxtBcU7zyYRoieCe8fVJ.jpg",
+          "genre_ids": [16, 10751, 14, 12],
+          "id": 24556,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 3.6777,
+          "poster_path": "/zREv4ST6lZUcxWIy2LPJKB011Gj.jpg",
+          "vote_average": 6.3,
+          "vote_count": 209,
+          "original_title": "The Land Before Time XI: Invasion of the Tinysauruses",
+          "release_date": "2005-01-11",
+          "title": "The Land Before Time XI: Invasion of the Tinysauruses",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/kFXtr3TbiP0WMCD2U3DYqh7G0WD.jpg",
+          "genre_ids": [16, 10751, 10770],
+          "id": 28042,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 2.4448,
+          "poster_path": "/r4XMrwhhhic6W6LvxBTxzs8kXlt.jpg",
+          "vote_average": 5.7,
+          "vote_count": 119,
+          "original_title": "Frosty Returns",
+          "release_date": "1992-12-01",
+          "title": "Frosty Returns",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/mZbc7nYK7YKcyUeODDr1zozJvj0.jpg",
+          "genre_ids": [16, 14, 878],
+          "id": 10927,
+          "original_language": "de",
+          "overview": "",
+          "popularity": 2.4099,
+          "poster_path": "/jTZHhhj9dLk7P5hOZ4QWECYHDqw.jpg",
+          "vote_average": 5.3,
+          "vote_count": 104,
+          "original_title": "Back to Gaya",
+          "release_date": "2004-03-18",
+          "title": "Back to Gaya",
+          "video": false,
+          "media_type": "movie"
+        }
+      ],
+      "resolvedKeywords": [
+        {
+          "lookup_name": "family relationships",
+          "display_label": "親情",
+          "source": "explicit",
+          "id": 10235
+        },
+        {
+          "lookup_name": "support",
+          "display_label": "互相支持",
+          "source": "explicit",
+          "id": 3848
+        }
+      ],
+      "baselineMs": 5754.194749999999,
+      "planMs": 4722.805333999997,
+      "tmdbMs": 1031.3894160000018,
+      "usage": {
+        "promptTokens": 1116,
+        "completionTokens": 184,
+        "totalTokens": 1300,
+        "cachedTokens": 0,
+        "reasoningTokens": 0
+      }
+    },
+    {
+      "id": 6,
+      "request": {
+        "request": "我想看 2010 年之後的科幻片，不要太冷門，最好有 Amy Adams。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "plan": {
+        "intent_summary": "尋找 2010 年之後、較受歡迎且有 Amy Adams 演出的科幻電影。",
+        "people": [
+          {
+            "name": "艾美·亞當斯",
+            "role": "cast"
+          }
+        ],
+        "people_match": "any",
+        "display_labels": {
+          "hard": ["2011 年起"],
+          "soft": ["科幻", "較受歡迎"]
+        },
+        "hard_constraints": {
+          "exclude_keywords": [],
+          "release_year_min": 2011,
+          "exclude_genre_ids": []
+        },
+        "soft_preferences": {
+          "include_genres": [
+            {
+              "id": 878,
+              "source": "explicit"
+            }
+          ],
+          "keywords": [],
+          "qualities": ["較受歡迎"]
+        },
+        "discover_plan": {
+          "include_genres": [
+            {
+              "id": 878,
+              "source": "explicit"
+            }
+          ],
+          "exclude_genre_ids": [],
+          "exclude_keywords": [],
+          "keywords": [],
+          "release_year_min": 2011
+        }
+      },
+      "candidates": [
+        {
+          "adult": false,
+          "backdrop_path": "/69EFgWWPFWbRNHmQgYdSnyJ94Ge.jpg",
+          "genre_ids": [28, 12, 878],
+          "id": 49521,
+          "original_language": "en",
+          "overview": "一位年輕男孩得知他的超凡能力並不源自地球。長大成人後，他四處飄泊意圖發掘他的身世和他被送來地球的使命。但他內心的英雄必須破繭而出，才能拯救世界免於被毀滅，並成為全人類共同的希望象徵。",
+          "popularity": 28.3234,
+          "poster_path": "/sdOxPZqcmfAigIalyabDQkmkIkq.jpg",
+          "vote_average": 6.661,
+          "vote_count": 16646,
+          "original_title": "Man of Steel",
+          "release_date": "2013-06-12",
+          "title": "超人：鋼鐵英雄",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/1YnZchmaGc8dchgRPDpR1KGrixA.jpg",
+          "genre_ids": [10749, 878, 18],
+          "id": 152601,
+          "original_language": "en",
+          "overview": "心思細膩的西奧多靠著撰寫感人信件為生，剛結束一段愛情長跑的他還在療傷，卻在此時迷戀上先進又容易操作的AI系統莎曼珊。莎曼珊開朗貼心又幽默風趣，西奧多越來越習慣她的存在，對她的依賴和慾望也日漸增加……",
+          "popularity": 14.5886,
+          "poster_path": "/zFTiJLKXGKaS0IvHLcjQOCN0zxZ.jpg",
+          "vote_average": 7.835,
+          "vote_count": 15686,
+          "original_title": "Her",
+          "release_date": "2013-12-18",
+          "title": "雲端情人",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/8MUZz7oPXQftFTslZpRP3CVMOoq.jpg",
+          "genre_ids": [18, 878, 9648],
+          "id": 329865,
+          "original_language": "en",
+          "overview": "神秘的太空船在全球降落現身，優秀的語言學家露易絲班克思(艾美亞當斯 飾) 帶領一支菁英團隊聯手展開調查研究。就在人類徘徊在世界大戰邊緣之際，班克思帶領著團隊與時間賽跑，試圖尋求解答，此舉卻有可能讓自己的生命遭受威脅，乃至人性也可能被泯滅殆盡...。",
+          "popularity": 27.3429,
+          "poster_path": "/wLTrOjouU56VdwlLiCgaIdwyff2.jpg",
+          "vote_average": 7.635,
+          "vote_count": 19946,
+          "original_title": "Arrival",
+          "release_date": "2016-11-10",
+          "title": "異星入境",
+          "video": false,
+          "media_type": "movie"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/2nyaeISu2xIxIgZYNpX4UayY8PN.jpg",
+          "genre_ids": [28, 12, 878],
+          "id": 141052,
+          "original_language": "en",
+          "overview": "繼《蝙蝠俠對超人：正義曙光》後正式啟動正義聯盟系列電影。布魯斯韋恩因為超人的犧牲，選擇再次相信人性，他要與神力女超人遍訪世界各地尋找戰士，建立一個英雄聯盟捍衛地球安全；但是新覺醒的威脅已迫在眉睫。",
+          "popularity": 21.8245,
+          "poster_path": "/kAuH4BJ2LAWR6oKDDPnCICvuqJS.jpg",
+          "vote_average": 6.065,
+          "vote_count": 13983,
+          "original_title": "Justice League",
+          "release_date": "2017-11-15",
+          "title": "正義聯盟",
+          "video": false,
+          "media_type": "movie"
+        }
+      ],
+      "resolvedKeywords": [],
+      "baselineMs": 3661.2006249999977,
+      "planMs": 2614.4763329999987,
+      "tmdbMs": 1046.724291999999,
+      "usage": {
+        "promptTokens": 1116,
+        "completionTokens": 161,
+        "totalTokens": 1277,
+        "cachedTokens": 0,
+        "reasoningTokens": 0
+      }
+    },
+    {
+      "id": 7,
+      "request": {
+        "request": "想看節奏慢、讓人平靜療癒的日語電影，不要暴力和恐怖。",
+        "locale": "zh-TW",
+        "media_type": "movie"
+      },
+      "plan": {
+        "intent_summary": "尋找節奏緩慢、平靜療癒的日語電影。",
+        "people": [],
+        "people_match": "any",
+        "display_labels": {
+          "hard": ["日語", "排除動作片", "排除恐怖片"],
+          "soft": ["節奏緩慢", "平靜療癒"]
+        },
+        "hard_constraints": {
+          "exclude_keywords": [],
+          "original_language": "ja",
+          "exclude_genre_ids": [28, 27]
+        },
+        "soft_preferences": {
+          "include_genres": [],
+          "keywords": [
+            {
+              "lookup_name": "slow paced",
+              "display_label": "節奏緩慢",
+              "source": "explicit"
+            },
+            {
+              "lookup_name": "healing",
+              "display_label": "療癒",
+              "source": "explicit"
+            }
+          ],
+          "qualities": ["平靜", "療癒"]
+        },
+        "discover_plan": {
+          "include_genres": [],
+          "exclude_genre_ids": [28, 27],
+          "exclude_keywords": [],
+          "keywords": [
+            {
+              "lookup_name": "slow paced",
+              "display_label": "節奏緩慢",
+              "source": "explicit"
+            },
+            {
+              "lookup_name": "healing",
+              "display_label": "療癒",
+              "source": "explicit"
+            }
+          ],
+          "original_language": "ja"
+        }
+      },
+      "candidates": [],
+      "resolvedKeywords": [
+        {
+          "lookup_name": "slow paced",
+          "display_label": "節奏緩慢",
+          "source": "explicit",
+          "id": 360809
+        },
+        {
+          "lookup_name": "healing",
+          "display_label": "療癒",
+          "source": "explicit",
+          "id": 167696
+        }
+      ],
+      "baselineMs": 3842.9685420000023,
+      "planMs": 2940.543958000002,
+      "tmdbMs": 902.4245840000003,
+      "usage": {
+        "promptTokens": 1118,
+        "completionTokens": 190,
+        "totalTokens": 1308,
+        "cachedTokens": 0,
+        "reasoningTokens": 0
+      }
+    },
+    {
+      "id": 8,
+      "request": {
+        "request": "想看辦公室背景、輕鬆搞笑的影集，適合下班放鬆。",
+        "locale": "zh-TW",
+        "media_type": "tv"
+      },
+      "plan": {
+        "intent_summary": "尋找以辦公室為背景、輕鬆搞笑，適合下班放鬆的影集。",
+        "people": [],
+        "people_match": "any",
+        "display_labels": {
+          "hard": [],
+          "soft": ["喜劇", "辦公室背景", "輕鬆搞笑"]
+        },
+        "hard_constraints": {
+          "exclude_keywords": [],
+          "exclude_genre_ids": []
+        },
+        "soft_preferences": {
+          "include_genres": [
+            {
+              "id": 35,
+              "source": "explicit"
+            }
+          ],
+          "keywords": [
+            {
+              "lookup_name": "office",
+              "display_label": "辦公室",
+              "source": "explicit"
+            }
+          ],
+          "qualities": ["輕鬆", "搞笑", "適合下班放鬆"]
+        },
+        "discover_plan": {
+          "include_genres": [
+            {
+              "id": 35,
+              "source": "explicit"
+            }
+          ],
+          "exclude_genre_ids": [],
+          "exclude_keywords": [],
+          "keywords": [
+            {
+              "lookup_name": "office",
+              "display_label": "辦公室",
+              "source": "explicit"
+            }
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "adult": false,
+          "backdrop_path": "/mLyW3UTgi2lsMdtueYODcfAB9Ku.jpg",
+          "genre_ids": [35],
+          "id": 2316,
+          "original_language": "en",
+          "overview": "本劇改編自英國著名同名喜劇，故事圍繞在賓州斯克蘭頓的德米弗林紙業及其周遭發生的事物。這部劇採用與原著相同的偽紀錄片風格，成功捕捉到在妄想症的老闆麥克史考特的指揮下，可憐的人們在這個令人窒息的社會環境中絕望地工作著。喜劇演員史提夫卡爾演活了這個角色，他飾演一個渴望被喜愛的人，因為一次又一次的愚蠢行為，使得自己跟別人越來越疏遠。麥克盲目地認為自己隨和的個性受到員工們喜愛，但實際上，除了怪咖宅男杜懷特，所有人都討厭他。另一方面，吉姆正在追求已經訂婚的櫃台接待員潘，兩人共同應對辦公室政治和老闆史考特的「幽默」。",
+          "popularity": 396.8886,
+          "poster_path": "/8wbhmtJtCTLF5qm7dbztskQOfCk.jpg",
+          "vote_average": 8.583,
+          "vote_count": 5525,
+          "first_air_date": "2005-03-24",
+          "name": "我們的辦公室",
+          "origin_country": ["US"],
+          "original_name": "The Office",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/bs4dKirjLPX6EJgJcvqLVph7LDO.jpg",
+          "genre_ids": [35, 18],
+          "id": 61678,
+          "original_language": "ko",
+          "overview": "在這個叫做「世界」的棋盤上奮鬥的這一代，我們周圍到處都是張克萊們題目：打動這個時代所有職場人心靈的給人感動的電視劇年幼時完全投身于圍棋的張可萊落選後，成爲了綜合貿易商社的實習員工，爲了成爲正式職員而展開的孤軍奮鬥記。在以爲沒什麽特别的事的公司裏每天都像在戰鬥一樣...幾乎要放棄的時候，與看到自己價值的良師益友一起爲了真正的「事業」和成爲人生的勝者開始奮力奔跑前行。主題我們是在爲什麽而工作？我們真的活得很好嗎？對爲了達到目的而聚集在職場裏，把邏輯和名分都藏在内心的人們的洞察。把「這是交給我的事」這樣的意義和鼓勵傳遞給組成這個社會的千千萬萬小人物們！",
+          "popularity": 8.9295,
+          "poster_path": "/mJ8Poa51F3SjfZ6fJDpUGnFh4Ys.jpg",
+          "vote_average": 8.6,
+          "vote_count": 78,
+          "first_air_date": "2014-10-17",
+          "name": "未生",
+          "origin_country": ["KR"],
+          "original_name": "미생",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/9GWU1AyNqUYIUl1tU7CvXEHUVs9.jpg",
+          "genre_ids": [35],
+          "id": 2996,
+          "original_language": "en",
+          "overview": "影集的內容主要圍繞虛構的Wernham-Hogg紙業公司Berkshire（英國東南部溫莎公爵堡所在的鄉村），Slough分部的辦公室員工的日常生活展開。雖然是虛構的劇本，劇集的形式卻是紀錄片，劇中人物都明確地知道攝像機的位置。",
+          "popularity": 24.6262,
+          "poster_path": "/6er2R7kQB76LHSmzN6uS9upRZVN.jpg",
+          "vote_average": 7.832,
+          "vote_count": 1008,
+          "first_air_date": "2001-07-09",
+          "name": "辦公室風雲",
+          "origin_country": ["GB"],
+          "original_name": "The Office",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/erljE3cOZ4eyISQunUYmKZ0q7cu.jpg",
+          "genre_ids": [35],
+          "id": 2490,
+          "original_language": "en",
+          "overview": "兩個不擅社交的宅男將努力在地下室的 IT 部門求生存，而公司新來的笨拙老闆，給他們找來了一個對科技一竅不通的主管。",
+          "popularity": 23.8377,
+          "poster_path": "/99gzwMR3mTn8kAd0qKxy0PTzY8s.jpg",
+          "vote_average": 8.165,
+          "vote_count": 1702,
+          "first_air_date": "2006-02-03",
+          "name": "IT 狂人",
+          "origin_country": ["GB"],
+          "original_name": "The IT Crowd",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/xyS9R7Dno812rPLzpN4gJrDUUFd.jpg",
+          "genre_ids": [35],
+          "id": 247522,
+          "original_language": "en",
+          "overview": "倒楣經理想替老爸的車行提升服務品質、賺更多錢，同時還得管好不斷出包的表哥。",
+          "popularity": 20.0785,
+          "poster_path": "/30AOsGf6mPARnJqc0KkHflIsLyj.jpg",
+          "vote_average": 6.886,
+          "vote_count": 110,
+          "first_air_date": "2024-05-23",
+          "name": "輪家也瘋狂",
+          "origin_country": ["US"],
+          "original_name": "Tires",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/xrzle63zw2MduVGmTFeKNXKqUla.jpg",
+          "genre_ids": [35, 18],
+          "id": 297640,
+          "original_language": "ko",
+          "overview": "受命調查職場男女關係的兩人，意外與彼此墜入愛河。",
+          "popularity": 13.8882,
+          "poster_path": "/rF06QkyBEu7TbuJAKPVmg1vXcYC.jpg",
+          "vote_average": 8.1,
+          "vote_count": 35,
+          "first_air_date": "2026-04-25",
+          "name": "秘戀稽核中",
+          "origin_country": ["KR"],
+          "original_name": "은밀한 감사",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/4hmHHZnanKEb1fLTkmYePvENmuI.jpg",
+          "genre_ids": [35, 18],
+          "id": 64165,
+          "original_language": "fr",
+          "overview": "巴黎頂尖的星探公司意外遭逢危機後，經紀人得努力討好巨星客戶，並維持業務營運。",
+          "popularity": 16.204,
+          "poster_path": "/pJ1BQkS6g76npKIbR0uPLSdTWfV.jpg",
+          "vote_average": 7.692,
+          "vote_count": 213,
+          "first_air_date": "2015-10-14",
+          "name": "找我經紀人",
+          "origin_country": ["FR"],
+          "original_name": "Dix pour cent",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/zsZCGU4e9uqc5I0Y8uTm9fMVqRv.jpg",
+          "genre_ids": [35, 18],
+          "id": 68947,
+          "original_language": "ko",
+          "overview": "《金科長》是一部職場喜劇，描述信奉原則主義的會計師金成龍，在入職某公司擔任科長後，與公司內的惡勢力對抗，並且與同僚們一起守護公司的故事",
+          "popularity": 6.6157,
+          "poster_path": "/qKYzouKoWs4e7JjhD0ETMPt9T5P.jpg",
+          "vote_average": 7.984,
+          "vote_count": 61,
+          "first_air_date": "2017-01-25",
+          "name": "金科長",
+          "origin_country": ["KR"],
+          "original_name": "김과장",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/3v6YfgVKoBk0VrAEQ4Blq3KUly6.jpg",
+          "genre_ids": [16, 35, 18],
+          "id": 105511,
+          "original_language": "ja",
+          "overview": "大而化之但很會照顧別人的前輩・武田，在五十嵐雙葉第一天上班，誤以為她是中學生，使得五十嵐對她的第一印象很差，偏偏上司指派武田當五十嵐的教育人員。五十嵐雖然覺得武田很煩，但武田的體貼常令她覺得窩心，這兩個人對彼此都有好感，卻不知這就是「喜歡」，周遭的同事和好友，大力地撮合他們兩人，但時機似乎尚未成熟……",
+          "popularity": 14.8416,
+          "poster_path": "/quY7TFEf98DllWWyEBDAZUpvQi4.jpg",
+          "vote_average": 7.4,
+          "vote_count": 70,
+          "first_air_date": "2021-10-10",
+          "name": "前輩有夠煩",
+          "origin_country": ["JP"],
+          "original_name": "先輩がうざい後輩の話",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/xQAR02lSpL5dW0LXHLNrFM5b7Bq.jpg",
+          "genre_ids": [16, 35],
+          "id": 4956,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 14.6431,
+          "poster_path": "/oS6RTmGw0NueQbUiHGfIJ3QvbD0.jpg",
+          "vote_average": 6.8,
+          "vote_count": 82,
+          "first_air_date": "1999-01-25",
+          "name": "Dilbert",
+          "origin_country": ["US"],
+          "original_name": "Dilbert",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/tmvJMXPo7N8wJuk6bX6WsXtOU9g.jpg",
+          "genre_ids": [35],
+          "id": 6202,
+          "original_language": "de",
+          "overview": "",
+          "popularity": 6.9194,
+          "poster_path": "/2ThMER8tdMHzSq4GKx9PbRndGHk.jpg",
+          "vote_average": 7.7,
+          "vote_count": 139,
+          "first_air_date": "2004-10-11",
+          "name": "Stromberg",
+          "origin_country": ["DE"],
+          "original_name": "Stromberg",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/1CLVjeGaa0E54BKSZERDKifCd03.jpg",
+          "genre_ids": [35, 18],
+          "id": 254391,
+          "original_language": "ko",
+          "overview": "她熱愛研究，而他以主管之姿空降她的馬鈴薯實驗室，不只改變了她的人生，也證明愛總在最意想不到的地方萌芽。",
+          "popularity": 7.9741,
+          "poster_path": "/iGUdDKLdco5IhIIU3qlDhrKcav5.jpg",
+          "vote_average": 7.7,
+          "vote_count": 69,
+          "first_air_date": "2025-03-01",
+          "name": "愛情發芽中",
+          "origin_country": ["KR"],
+          "original_name": "감자연구소",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/1d8oJinxhms309K8NYKg6HIhj07.jpg",
+          "genre_ids": [35],
+          "id": 1320,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 13.2253,
+          "poster_path": "/wP6ZoZQ7d14vY50UqnV1VNhwF2I.jpg",
+          "vote_average": 7.3,
+          "vote_count": 30,
+          "first_air_date": "1999-03-24",
+          "name": "The Norm Show",
+          "origin_country": ["US"],
+          "original_name": "The Norm Show",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/g3Hs1yiMaVbiLqrpervhts9MJ68.jpg",
+          "genre_ids": [35],
+          "id": 32694,
+          "original_language": "en",
+          "overview": "一個孤獨的美國人在孟買管理一家美國新奇公司的服務外包，他必須在試圖了解印度文化時向他的員工解釋美國流行文化。",
+          "popularity": 11.5066,
+          "poster_path": "/tE9lH8OpF8qExJYmz28tMLUlhjD.jpg",
+          "vote_average": 6.8,
+          "vote_count": 118,
+          "first_air_date": "2010-09-23",
+          "name": "外包公司",
+          "origin_country": ["US"],
+          "original_name": "Outsourced",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/xL102ZnaQNHqHapGo4Wk7RFOTsa.jpg",
+          "genre_ids": [35],
+          "id": 88783,
+          "original_language": "ko",
+          "overview": "講述以目空一切的態度隨意待人的冷血老闆，開始正確看待人的自我探尋故事。",
+          "popularity": 8.4433,
+          "poster_path": "/6KxjeD7YO8P3vPtib3IxQJLA6hV.jpg",
+          "vote_average": 7.5,
+          "vote_count": 96,
+          "first_air_date": "2019-05-06",
+          "name": "初次見面我愛你",
+          "origin_country": ["KR"],
+          "original_name": "초면에 사랑합니다",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/uPaX3KczjZiXxLJiG91F8pZh88s.jpg",
+          "genre_ids": [16, 35],
+          "id": 78941,
+          "original_language": "ja",
+          "overview": "沒人感恩上班族紅貓熊烈子的付出，讓她十分沮喪。而她抒解天天忍受折磨的辦法，就是在下班後狂唱死亡金屬卡拉 OK。",
+          "popularity": 10.7782,
+          "poster_path": "/2xs8g0JhSfYaPSGVXcs84lMsHDz.jpg",
+          "vote_average": 7.436,
+          "vote_count": 172,
+          "first_air_date": "2018-04-20",
+          "name": "衝吧烈子",
+          "origin_country": ["JP"],
+          "original_name": "アグレッシブ烈子",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/bJfkWXQDKLEdEzwakrEArAqtISP.jpg",
+          "genre_ids": [35, 18],
+          "id": 155459,
+          "original_language": "ko",
+          "overview": "科技公司執行長驚覺自己的魂魄竟被囚禁在智慧型手機，隨後與一名年輕的陌生人並肩合作，一邊經營公司，一邊調查是誰殺了自己。",
+          "popularity": 5.443,
+          "poster_path": "/hoA3T9d1JQr8tkTa9TcU4unBbcn.jpg",
+          "vote_average": 7.5,
+          "vote_count": 40,
+          "first_air_date": "2022-12-07",
+          "name": "我把社長解鎖了",
+          "origin_country": ["KR"],
+          "original_name": "사장님을 잠금해제",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/vGheNkey14nwT8kGRTqsz8LyWk3.jpg",
+          "genre_ids": [35, 80],
+          "id": 72313,
+          "original_language": "en",
+          "overview": "懶散的丹尼爾·格拉斯被誤診為得了癌症之後，因為撒謊而使自己陷入詐欺、勒索、猜忌和災難交織的荒謬中。",
+          "popularity": 8.0793,
+          "poster_path": "/iB6X3QqgVnwFAJxujK5BnxUbjxx.jpg",
+          "vote_average": 6.631,
+          "vote_count": 118,
+          "first_air_date": "2017-11-07",
+          "name": "人生請病假",
+          "origin_country": ["GB"],
+          "original_name": "Sick Note",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/3jYPLnY9erzoDAeAyTJKjwahqkw.jpg",
+          "genre_ids": [35],
+          "id": 57815,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 6.6609,
+          "poster_path": "/uQ95bGk8da1xbD6f6p7AyBI9Rng.jpg",
+          "vote_average": 7.2,
+          "vote_count": 41,
+          "first_air_date": "2013-11-14",
+          "name": "Ground Floor",
+          "origin_country": ["US"],
+          "original_name": "Ground Floor",
+          "media_type": "tv"
+        },
+        {
+          "adult": false,
+          "backdrop_path": "/UCiSGTsuNCWbChQBonzoVNtBzk.jpg",
+          "genre_ids": [35],
+          "id": 785,
+          "original_language": "en",
+          "overview": "",
+          "popularity": 6.0505,
+          "poster_path": "/vsbN4lXO3t1yMFbDazvpKwhGPWI.jpg",
+          "vote_average": 7.2,
+          "vote_count": 82,
+          "first_air_date": "1992-02-18",
+          "name": "Men Behaving Badly",
+          "origin_country": ["GB"],
+          "original_name": "Men Behaving Badly",
+          "media_type": "tv"
+        }
+      ],
+      "resolvedKeywords": [
+        {
+          "lookup_name": "office",
+          "display_label": "辦公室",
+          "source": "explicit",
+          "id": 1438
+        }
+      ],
+      "baselineMs": 3492.947124999999,
+      "planMs": 2447.2834169999987,
+      "tmdbMs": 1045.663708,
+      "usage": {
+        "promptTokens": 1101,
+        "completionTokens": 178,
+        "totalTokens": 1279,
+        "cachedTokens": 0,
+        "reasoningTokens": 0
+      }
+    },
+    {
+      "id": 10,
+      "request": {
+        "request": "Recommend a thoughtful science fiction movie about human connection, not an action-heavy space battle.",
+        "locale": "en",
+        "media_type": "movie"
+      },
+      "plan": {
+        "intent_summary": "A thoughtful science fiction movie about human connection, without action-heavy space battles.",
+        "people": [],
+        "people_match": "any",
+        "display_labels": {
+          "hard": ["No action-heavy space battles"],
+          "soft": ["Science fiction", "Human connection", "Thoughtful"]
+        },
+        "hard_constraints": {
+          "exclude_keywords": [
+            {
+              "lookup_name": "space battle",
+              "display_label": "space battles"
+            }
+          ],
+          "exclude_genre_ids": []
+        },
+        "soft_preferences": {
+          "include_genres": [
+            {
+              "id": 878,
+              "source": "explicit"
+            }
+          ],
+          "keywords": [
+            {
+              "lookup_name": "human connection",
+              "display_label": "human connection",
+              "source": "explicit"
+            }
+          ],
+          "qualities": ["thoughtful"]
+        },
+        "discover_plan": {
+          "include_genres": [
+            {
+              "id": 878,
+              "source": "explicit"
+            }
+          ],
+          "exclude_genre_ids": [],
+          "exclude_keywords": [
+            {
+              "lookup_name": "space battle",
+              "display_label": "space battles"
+            }
+          ],
+          "keywords": [
+            {
+              "lookup_name": "human connection",
+              "display_label": "human connection",
+              "source": "explicit"
+            }
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "adult": false,
+          "backdrop_path": "/sb174oPl1eQqgiCFSDvINxd3fb7.jpg",
+          "genre_ids": [18, 10749, 878],
+          "id": 47060,
+          "original_language": "zh",
+          "overview": "In the final days of the year 1999, almost everyone in Taiwan has died from a strange plague that ravished the island. As rain pours down relentlessly, a single man is stuck with an unfinished plumbing job and a hole in his floor. This results in a very odd relationship with the woman who lives below him.",
+          "popularity": 1.846,
+          "poster_path": "/lsuvfxyCxlnkzc49hGMUmPDibCk.jpg",
+          "vote_average": 7,
+          "vote_count": 100,
+          "original_title": "洞",
+          "release_date": "1998-09-14",
+          "title": "The Hole",
+          "video": false,
+          "media_type": "movie"
+        }
+      ],
+      "resolvedKeywords": [
+        {
+          "lookup_name": "human connection",
+          "display_label": "human connection",
+          "source": "explicit",
+          "id": 326222
+        }
+      ],
+      "baselineMs": 3726.057332999997,
+      "planMs": 2738.300958,
+      "tmdbMs": 987.7563749999972,
+      "usage": {
+        "promptTokens": 1105,
+        "completionTokens": 166,
+        "totalTokens": 1271,
+        "cachedTokens": 0,
+        "reasoningTokens": 0
+      }
+    }
+  ],
+  "failures": [
+    {
+      "id": 3,
+      "error": "unresolved_keyword"
+    },
+    {
+      "id": 9,
+      "error": "unresolved_keyword"
+    }
+  ],
+  "baselineRevision": "7f3313d3dd1155aed9addf844a07f4414d66e3a6"
+}

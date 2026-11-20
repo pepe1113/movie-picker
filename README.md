@@ -89,6 +89,29 @@ OpenAI 透過 `plan_movie_search` tool calling 產生 query plan，由 Supabase 
 
 資料流與權限設計請見 [AI 選片架構](./docs/supabase-ai-rollout.md)；評分規則與備援機制請見 [Jev rerank 實作說明](./docs/changes/2026-09-24-openrouter-jev-rerank.md)（English）。
 
+## Evaluation / 評測
+
+以下數字皆為小樣本實測，條件逐項標註，完整資料見各來源報告。
+
+**模型選擇**（2026-08-25，4 個模型各跑 10 題、每題 1 次，僅測 OpenAI 查詢計畫層；[完整報告](./docs/evaluations/2026-08-25-model-selection.md)）
+
+| 模型                                   | 欄位正確率 | 平均延遲 | 10 次呼叫總成本 |
+| -------------------------------------- | ---------: | -------: | --------------: |
+| `gpt-4o-mini`                          |      80.0% | 2,938 ms |   US$0.00178395 |
+| `gpt-5.6-luna`                         |      84.4% | 2,497 ms |   US$0.00305140 |
+| `gpt-5.6-terra`                        |      88.6% | 2,336 ms |   US$0.03232600 |
+| `gpt-5.6-sol`                          |      93.3% | 2,719 ms |   US$0.05752400 |
+| `gpt-4o-mini`（2026-08-26 修正後重測） |       100% | 2,503 ms |   US$0.00239775 |
+
+**Jev rerank**（2026-10-03，9 題有效查詢、每題重排 3 次，與重排前同一候選池比較；[完整報告](./docs/evaluations/2026-10-03-rerank/report.md)）
+
+- Precision@5：33.3% → 53.3%；nDCG@5：0.566 → 0.919。
+- 額外延遲：p50 332 ms、p95 1462 ms（27 次樣本）。
+- 每次重排平均費用：US$0.00039661（OpenRouter 回報的 `usage.cost`）。
+- 注意：相關性標註由 AI 助理完成，不是獨立的人工盲評；9 題屬小樣本，不代表使用者滿意度。
+
+另有 [2026-09-24 單次實測](./docs/changes/2026-09-24-ai-live-model-evaluation.md)（1 題、每個模型 1 次請求）：僅供參考，不是延遲基準。
+
 ## Develop
 
 前端環境變數依照 `.env.example` 設定；`recommend-movies` 使用的 OpenAI／OpenRouter／TMDB 金鑰，以及 `media-detail` 使用的 TMDB／OMDb 金鑰，需另外放在 Supabase Edge Function Secrets。`media-detail` 可讓未登入使用者查看電影與影集詳情；OMDb 金鑰可選，缺少時不顯示外部評分。本機執行 Function 時，將 `TMDB_ACCESS_TOKEN`、`OMDB_API_KEY`（可選）放在未追蹤的 `supabase/functions/.env`。

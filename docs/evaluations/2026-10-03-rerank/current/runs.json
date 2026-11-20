@@ -1,0 +1,3393 @@
+{
+  "revision": "7f3313d3dd1155aed9addf844a07f4414d66e3a6",
+  "rerankSha256": "db651d839e6660002453077806b14619c029ed5aa4c4878c96f8f2e2bdb21206",
+  "labelsSha256": "c991fe2322e87ee5acf2da87482d21606fb2913e4317acb6ed312f91c6dbefa2",
+  "measuredAt": "2026-10-02T17:24:35.071Z",
+  "runs": [
+    {
+      "id": 1,
+      "repeat": 1,
+      "before": [10494, 9390, 3780, 4148, 63193],
+      "after": [63193, 295964, 10028, 9390, 3780],
+      "baseline": {
+        "precisionAt5": 0.6,
+        "ndcgAt5": 0.5147714448836773,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 1,
+        "ndcgAt5": 1,
+        "returned": 5
+      },
+      "rerankMs": 858.33975,
+      "pairedBackendMs": 4578.914666,
+      "requestCount": 20,
+      "knownCostUsd": 0.000580986,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 10494,
+          "status": 200,
+          "score": 0.07,
+          "cost": 0.00003066,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9390,
+          "status": 200,
+          "score": 0.75,
+          "cost": 0.00003885,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 3780,
+          "status": 200,
+          "score": 0.65,
+          "cost": 0.000031458,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 4148,
+          "status": 200,
+          "score": 0.15,
+          "cost": 0.000029946,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 63193,
+          "status": 200,
+          "score": 0.91,
+          "cost": 0.000039606,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10060,
+          "status": 200,
+          "score": 0.38,
+          "cost": 0.000022806,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 30416,
+          "status": 200,
+          "score": 0.23,
+          "cost": 0.000022638,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 295964,
+          "status": 200,
+          "score": 0.85,
+          "cost": 0.000033726,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 579741,
+          "status": 200,
+          "score": 0.14,
+          "cost": 0.000032676,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 11911,
+          "status": 200,
+          "score": 0.07,
+          "cost": 0.000029106,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 7972,
+          "status": 200,
+          "score": 0.05,
+          "cost": 0.000035028,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10476,
+          "status": 200,
+          "score": 0.61,
+          "cost": 0.000022722,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1375,
+          "status": 200,
+          "score": 0.65,
+          "cost": 0.000030114,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 3111,
+          "status": 200,
+          "score": 0.26,
+          "cost": 0.000028098,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 8976,
+          "status": 200,
+          "score": 0.11,
+          "cost": 0.000022764,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 25704,
+          "status": 200,
+          "score": 0.55,
+          "cost": 0.000030744,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10477,
+          "status": 200,
+          "score": 0.33,
+          "cost": 0.000022386,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10028,
+          "status": 200,
+          "score": 0.77,
+          "cost": 0.000028266,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 11475,
+          "status": 200,
+          "score": 0.22,
+          "cost": 0.000022596,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9910,
+          "status": 200,
+          "score": 0.35,
+          "cost": 0.000026796,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "repeat": 1,
+      "before": [969681, 987032, 1204680, 484133, 1368337],
+      "after": [1032863, 1007757, 1204680, 1084244, 1632181],
+      "baseline": {
+        "precisionAt5": 0,
+        "ndcgAt5": 0.08051116699631379,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.4,
+        "ndcgAt5": 0.937708058067494,
+        "returned": 5
+      },
+      "rerankMs": 1888.909208,
+      "pairedBackendMs": 4757.779374,
+      "requestCount": 20,
+      "knownCostUsd": 0.00050274,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 969681,
+          "status": 200,
+          "score": 0.29,
+          "cost": 0.000025872,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 987032,
+          "status": 200,
+          "score": 0.34,
+          "cost": 0.000021966,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1204680,
+          "status": 200,
+          "score": 0.63,
+          "cost": 0.000028938,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 484133,
+          "status": 200,
+          "score": 0.15,
+          "cost": 0.00002163,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1368337,
+          "status": 200,
+          "score": 0.15,
+          "cost": 0.00002457,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1560520,
+          "status": 200,
+          "score": 0.06,
+          "cost": 0.000026796,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1377237,
+          "status": 200,
+          "score": 0.24,
+          "cost": 0.00002562,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 980431,
+          "status": 200,
+          "score": 0.32,
+          "cost": 0.00002667,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1101383,
+          "status": 200,
+          "score": 0.1,
+          "cost": 0.000026376,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 730647,
+          "status": 200,
+          "score": 0.24,
+          "cost": 0.000022302,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1032863,
+          "status": 200,
+          "score": 0.81,
+          "cost": 0.000026586,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 373001,
+          "status": 200,
+          "score": 0.19,
+          "cost": 0.000021924,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1288445,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.000024654,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1144107,
+          "status": 200,
+          "score": 0.28,
+          "cost": 0.000028602,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1084244,
+          "status": 200,
+          "score": 0.58,
+          "cost": 0.000027762,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1007757,
+          "status": 200,
+          "score": 0.75,
+          "cost": 0.000026082,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1492640,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.00002478,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1632181,
+          "status": 200,
+          "score": 0.52,
+          "cost": 0.000021966,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1263337,
+          "status": 200,
+          "score": 0.07,
+          "cost": 0.00002499,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 753230,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.000024654,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "repeat": 1,
+      "before": [1204680, 987032, 1377237, 1632181, 1032863],
+      "after": [1032863],
+      "baseline": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 0.3196311965446524,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 0.8262346571285599,
+        "returned": 1
+      },
+      "rerankMs": 1454.695083,
+      "pairedBackendMs": 4629.89925,
+      "requestCount": 20,
+      "knownCostUsd": 0.0005417579999999999,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 1204680,
+          "status": 200,
+          "score": 0.19,
+          "cost": 0.000029526,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 987032,
+          "status": 200,
+          "score": 0.21,
+          "cost": 0.000022554,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1377237,
+          "status": 200,
+          "score": 0.13,
+          "cost": 0.000026208,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1632181,
+          "status": 200,
+          "score": 0.4,
+          "cost": 0.000022554,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1032863,
+          "status": 200,
+          "score": 0.88,
+          "cost": 0.000027174,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1465563,
+          "status": 200,
+          "score": 0.13,
+          "cost": 0.000030156,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1084244,
+          "status": 200,
+          "score": 0.18,
+          "cost": 0.00002835,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 529414,
+          "status": 200,
+          "score": 0.14,
+          "cost": 0.000022638,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1477712,
+          "status": 200,
+          "score": 0.09,
+          "cost": 0.00002478,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1601797,
+          "status": 200,
+          "score": 0.42,
+          "cost": 0.00002268,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1108427,
+          "status": 200,
+          "score": 0.23,
+          "cost": 0.000030534,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1232449,
+          "status": 200,
+          "score": 0.11,
+          "cost": 0.000030912,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1440098,
+          "status": 200,
+          "score": 0.23,
+          "cost": 0.000028434,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1302151,
+          "status": 200,
+          "score": 0.22,
+          "cost": 0.000022302,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1315772,
+          "status": 200,
+          "score": 0.21,
+          "cost": 0.000025956,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1630423,
+          "status": 200,
+          "score": 0.11,
+          "cost": 0.00003507,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1084242,
+          "status": 200,
+          "score": 0.24,
+          "cost": 0.000030072,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1218925,
+          "status": 200,
+          "score": 0.08,
+          "cost": 0.00003192,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1240889,
+          "status": 200,
+          "score": 0.21,
+          "cost": 0.000027594,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 40996,
+          "status": 200,
+          "score": 0.26,
+          "cost": 0.000022344,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "repeat": 1,
+      "before": [6947, 68727, 1052280, 26337],
+      "after": [68727],
+      "baseline": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 0.6309297535714574,
+        "returned": 4
+      },
+      "reranked": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 1,
+        "returned": 1
+      },
+      "rerankMs": 276.29699999999957,
+      "pairedBackendMs": 3352.069708,
+      "requestCount": 4,
+      "knownCostUsd": 0.00010609200000000001,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 6947,
+          "status": 200,
+          "score": 0.25,
+          "cost": 0.000025116,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 68727,
+          "status": 200,
+          "score": 0.77,
+          "cost": 0.000030744,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1052280,
+          "status": 200,
+          "score": 0.48,
+          "cost": 0.00002814,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 26337,
+          "status": 200,
+          "score": 0.28,
+          "cost": 0.000022092,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "repeat": 1,
+      "before": [150540, 476292, 9806, 829402, 772],
+      "after": [568124, 501929, 431580, 842859, 150540],
+      "baseline": {
+        "precisionAt5": 0.4,
+        "ndcgAt5": 0.6287585127695021,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.8,
+        "ndcgAt5": 0.9026211001048622,
+        "returned": 5
+      },
+      "rerankMs": 1408.9250419999998,
+      "pairedBackendMs": 4467.379624999999,
+      "requestCount": 20,
+      "knownCostUsd": 0.0005787600000000001,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 150540,
+          "status": 200,
+          "score": 0.68,
+          "cost": 0.00003024,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 476292,
+          "status": 200,
+          "score": 0.44,
+          "cost": 0.00003255,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9806,
+          "status": 200,
+          "score": 0.66,
+          "cost": 0.00002583,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 829402,
+          "status": 200,
+          "score": 0.54,
+          "cost": 0.000024402,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 772,
+          "status": 200,
+          "score": 0.13,
+          "cost": 0.000027552,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 28178,
+          "status": 200,
+          "score": 0.22,
+          "cost": 0.00003654,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 501929,
+          "status": 200,
+          "score": 0.8,
+          "cost": 0.00002898,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 378108,
+          "status": 200,
+          "score": 0.56,
+          "cost": 0.000032382,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 568124,
+          "status": 200,
+          "score": 0.88,
+          "cost": 0.000029694,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 2454,
+          "status": 200,
+          "score": 0.28,
+          "cost": 0.000026628,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 25050,
+          "status": 200,
+          "score": 0.18,
+          "cost": 0.000030072,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9714,
+          "status": 200,
+          "score": 0.15,
+          "cost": 0.000033852,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 842859,
+          "status": 200,
+          "score": 0.69,
+          "cost": 0.000029148,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 11283,
+          "status": 200,
+          "score": 0.44,
+          "cost": 0.000024066,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 431580,
+          "status": 200,
+          "score": 0.77,
+          "cost": 0.000028602,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 400650,
+          "status": 200,
+          "score": 0.41,
+          "cost": 0.000031878,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 804370,
+          "status": 200,
+          "score": 0.57,
+          "cost": 0.000030576,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 12536,
+          "status": 200,
+          "score": 0.11,
+          "cost": 0.000028392,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 48617,
+          "status": 200,
+          "score": 0.64,
+          "cost": 0.000021882,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 8204,
+          "status": 200,
+          "score": 0.5,
+          "cost": 0.000025494,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "repeat": 1,
+      "before": [49521, 152601, 329865, 141052],
+      "after": [329865, 49521, 141052],
+      "baseline": {
+        "precisionAt5": 0.8,
+        "ndcgAt5": 1,
+        "returned": 4
+      },
+      "reranked": {
+        "precisionAt5": 0.6,
+        "ndcgAt5": 0.8318724637288825,
+        "returned": 3
+      },
+      "rerankMs": 321.0645000000004,
+      "pairedBackendMs": 3100.052999999998,
+      "requestCount": 4,
+      "knownCostUsd": 0.000109326,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 49521,
+          "status": 200,
+          "score": 0.71,
+          "cost": 0.000026796,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 152601,
+          "status": 200,
+          "score": 0.27,
+          "cost": 0.00002709,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 329865,
+          "status": 200,
+          "score": 0.9,
+          "cost": 0.000028266,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 141052,
+          "status": 200,
+          "score": 0.57,
+          "cost": 0.000027174,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "repeat": 1,
+      "before": [1311031, 4935, 1333100, 129, 1338799],
+      "after": [976893, 8392, 938567, 4935, 1291559],
+      "baseline": {
+        "precisionAt5": 0,
+        "ndcgAt5": 0.14723431330946654,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.6,
+        "ndcgAt5": 0.946347335353756,
+        "returned": 5
+      },
+      "rerankMs": 332.251792,
+      "pairedBackendMs": 3464.800583999998,
+      "requestCount": 20,
+      "knownCostUsd": 0.0006280260000000001,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 1311031,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.000030408,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 4935,
+          "status": 200,
+          "score": 0.56,
+          "cost": 0.000028644,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1333100,
+          "status": 200,
+          "score": 0.02,
+          "cost": 0.000036582,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 129,
+          "status": 200,
+          "score": 0.47,
+          "cost": 0.000029442,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1338799,
+          "status": 200,
+          "score": 0.05,
+          "cost": 0.000030408,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1218925,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.000032298,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 372058,
+          "status": 200,
+          "score": 0.34,
+          "cost": 0.000028602,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 976893,
+          "status": 200,
+          "score": 0.92,
+          "cost": 0.00002919,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 128,
+          "status": 200,
+          "score": 0.15,
+          "cost": 0.000033684,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 14537,
+          "status": 200,
+          "score": 0.07,
+          "cost": 0.000035826,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1244492,
+          "status": 200,
+          "score": 0.36,
+          "cost": 0.000027594,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 12477,
+          "status": 200,
+          "score": 0.09,
+          "cost": 0.00003759,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 8392,
+          "status": 200,
+          "score": 0.84,
+          "cost": 0.00002877,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1291559,
+          "status": 200,
+          "score": 0.55,
+          "cost": 0.000026502,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9323,
+          "status": 200,
+          "score": 0.05,
+          "cost": 0.00004221,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 938567,
+          "status": 200,
+          "score": 0.58,
+          "cost": 0.000031206,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10494,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.000030954,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 34530,
+          "status": 200,
+          "score": 0.14,
+          "cost": 0.000023184,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 81,
+          "status": 200,
+          "score": 0.33,
+          "cost": 0.000030954,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 378064,
+          "status": 200,
+          "score": 0.51,
+          "cost": 0.000033978,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "repeat": 1,
+      "before": [2316, 61678, 2996, 2490, 247522],
+      "after": [2316, 2996, 2490, 4956, 32694],
+      "baseline": {
+        "precisionAt5": 0.6,
+        "ndcgAt5": 0.7698724385020871,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.8,
+        "ndcgAt5": 0.8539316501572934,
+        "returned": 5
+      },
+      "rerankMs": 391.3868339999999,
+      "pairedBackendMs": 2757.057584000001,
+      "requestCount": 20,
+      "knownCostUsd": 0.000497532,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 2316,
+          "status": 200,
+          "score": 0.92,
+          "cost": 0.000033642,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 61678,
+          "status": 200,
+          "score": 0.28,
+          "cost": 0.000034566,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 2996,
+          "status": 200,
+          "score": 0.92,
+          "cost": 0.000026208,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 2490,
+          "status": 200,
+          "score": 0.89,
+          "cost": 0.000024318,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 247522,
+          "status": 200,
+          "score": 0.16,
+          "cost": 0.000023604,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 297640,
+          "status": 200,
+          "score": 0.53,
+          "cost": 0.000023142,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 64165,
+          "status": 200,
+          "score": 0.34,
+          "cost": 0.000023646,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 68947,
+          "status": 200,
+          "score": 0.65,
+          "cost": 0.000024864,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 105511,
+          "status": 200,
+          "score": 0.66,
+          "cost": 0.000029358,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 4956,
+          "status": 200,
+          "score": 0.75,
+          "cost": 0.000021798,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 6202,
+          "status": 200,
+          "score": 0.5,
+          "cost": 0.000021672,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 254391,
+          "status": 200,
+          "score": 0.32,
+          "cost": 0.000024276,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1320,
+          "status": 200,
+          "score": 0.21,
+          "cost": 0.000021672,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 32694,
+          "status": 200,
+          "score": 0.69,
+          "cost": 0.000024108,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 88783,
+          "status": 200,
+          "score": 0.46,
+          "cost": 0.000023436,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 78941,
+          "status": 200,
+          "score": 0.69,
+          "cost": 0.000024402,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 155459,
+          "status": 200,
+          "score": 0.44,
+          "cost": 0.000025032,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 72313,
+          "status": 200,
+          "score": 0.19,
+          "cost": 0.000024402,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 57815,
+          "status": 200,
+          "score": 0.33,
+          "cost": 0.000021672,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 785,
+          "status": 200,
+          "score": 0.45,
+          "cost": 0.000021714,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "repeat": 1,
+      "before": [47060],
+      "after": [47060],
+      "baseline": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 1,
+        "returned": 1
+      },
+      "reranked": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 1,
+        "returned": 1
+      },
+      "rerankMs": 296.56008399999973,
+      "pairedBackendMs": 2799.779375000001,
+      "requestCount": 1,
+      "knownCostUsd": 0.000024234,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 47060,
+          "status": 200,
+          "score": 0.76,
+          "cost": 0.000024234,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "repeat": 2,
+      "before": [10494, 9390, 3780, 4148, 63193],
+      "after": [63193, 295964, 10028, 9390, 3780],
+      "baseline": {
+        "precisionAt5": 0.6,
+        "ndcgAt5": 0.5147714448836773,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 1,
+        "ndcgAt5": 1,
+        "returned": 5
+      },
+      "rerankMs": 309.166792,
+      "pairedBackendMs": 4029.741708,
+      "requestCount": 20,
+      "knownCostUsd": 0.000580986,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 10494,
+          "status": 200,
+          "score": 0.08,
+          "cost": 0.00003066,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9390,
+          "status": 200,
+          "score": 0.74,
+          "cost": 0.00003885,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 3780,
+          "status": 200,
+          "score": 0.65,
+          "cost": 0.000031458,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 4148,
+          "status": 200,
+          "score": 0.16,
+          "cost": 0.000029946,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 63193,
+          "status": 200,
+          "score": 0.92,
+          "cost": 0.000039606,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10060,
+          "status": 200,
+          "score": 0.36,
+          "cost": 0.000022806,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 30416,
+          "status": 200,
+          "score": 0.23,
+          "cost": 0.000022638,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 295964,
+          "status": 200,
+          "score": 0.85,
+          "cost": 0.000033726,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 579741,
+          "status": 200,
+          "score": 0.13,
+          "cost": 0.000032676,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 11911,
+          "status": 200,
+          "score": 0.07,
+          "cost": 0.000029106,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 7972,
+          "status": 200,
+          "score": 0.05,
+          "cost": 0.000035028,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10476,
+          "status": 200,
+          "score": 0.61,
+          "cost": 0.000022722,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1375,
+          "status": 200,
+          "score": 0.65,
+          "cost": 0.000030114,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 3111,
+          "status": 200,
+          "score": 0.24,
+          "cost": 0.000028098,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 8976,
+          "status": 200,
+          "score": 0.12,
+          "cost": 0.000022764,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 25704,
+          "status": 200,
+          "score": 0.54,
+          "cost": 0.000030744,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10477,
+          "status": 200,
+          "score": 0.33,
+          "cost": 0.000022386,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10028,
+          "status": 200,
+          "score": 0.77,
+          "cost": 0.000028266,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 11475,
+          "status": 200,
+          "score": 0.21,
+          "cost": 0.000022596,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9910,
+          "status": 200,
+          "score": 0.36,
+          "cost": 0.000026796,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "repeat": 2,
+      "before": [969681, 987032, 1204680, 484133, 1368337],
+      "after": [1032863, 1007757, 1204680, 1084244, 1632181],
+      "baseline": {
+        "precisionAt5": 0,
+        "ndcgAt5": 0.08051116699631379,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.4,
+        "ndcgAt5": 0.937708058067494,
+        "returned": 5
+      },
+      "rerankMs": 440.82070900000053,
+      "pairedBackendMs": 3309.6908750000002,
+      "requestCount": 20,
+      "knownCostUsd": 0.00050274,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 969681,
+          "status": 200,
+          "score": 0.29,
+          "cost": 0.000025872,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 987032,
+          "status": 200,
+          "score": 0.34,
+          "cost": 0.000021966,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1204680,
+          "status": 200,
+          "score": 0.63,
+          "cost": 0.000028938,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 484133,
+          "status": 200,
+          "score": 0.15,
+          "cost": 0.00002163,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1368337,
+          "status": 200,
+          "score": 0.15,
+          "cost": 0.00002457,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1560520,
+          "status": 200,
+          "score": 0.05,
+          "cost": 0.000026796,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1377237,
+          "status": 200,
+          "score": 0.24,
+          "cost": 0.00002562,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 980431,
+          "status": 200,
+          "score": 0.34,
+          "cost": 0.00002667,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1101383,
+          "status": 200,
+          "score": 0.1,
+          "cost": 0.000026376,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 730647,
+          "status": 200,
+          "score": 0.26,
+          "cost": 0.000022302,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1032863,
+          "status": 200,
+          "score": 0.81,
+          "cost": 0.000026586,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 373001,
+          "status": 200,
+          "score": 0.19,
+          "cost": 0.000021924,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1288445,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.000024654,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1144107,
+          "status": 200,
+          "score": 0.3,
+          "cost": 0.000028602,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1084244,
+          "status": 200,
+          "score": 0.59,
+          "cost": 0.000027762,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1007757,
+          "status": 200,
+          "score": 0.74,
+          "cost": 0.000026082,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1492640,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.00002478,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1632181,
+          "status": 200,
+          "score": 0.54,
+          "cost": 0.000021966,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1263337,
+          "status": 200,
+          "score": 0.07,
+          "cost": 0.00002499,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 753230,
+          "status": 200,
+          "score": 0.04,
+          "cost": 0.000024654,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "repeat": 2,
+      "before": [1204680, 987032, 1377237, 1632181, 1032863],
+      "after": [1032863],
+      "baseline": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 0.3196311965446524,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 0.8262346571285599,
+        "returned": 1
+      },
+      "rerankMs": 305.98183399999925,
+      "pairedBackendMs": 3481.186000999999,
+      "requestCount": 20,
+      "knownCostUsd": 0.0005417579999999999,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 1204680,
+          "status": 200,
+          "score": 0.2,
+          "cost": 0.000029526,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 987032,
+          "status": 200,
+          "score": 0.21,
+          "cost": 0.000022554,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1377237,
+          "status": 200,
+          "score": 0.12,
+          "cost": 0.000026208,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1632181,
+          "status": 200,
+          "score": 0.42,
+          "cost": 0.000022554,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1032863,
+          "status": 200,
+          "score": 0.88,
+          "cost": 0.000027174,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1465563,
+          "status": 200,
+          "score": 0.13,
+          "cost": 0.000030156,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1084244,
+          "status": 200,
+          "score": 0.18,
+          "cost": 0.00002835,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 529414,
+          "status": 200,
+          "score": 0.14,
+          "cost": 0.000022638,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1477712,
+          "status": 200,
+          "score": 0.09,
+          "cost": 0.00002478,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1601797,
+          "status": 200,
+          "score": 0.44,
+          "cost": 0.00002268,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1108427,
+          "status": 200,
+          "score": 0.23,
+          "cost": 0.000030534,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1232449,
+          "status": 200,
+          "score": 0.11,
+          "cost": 0.000030912,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1440098,
+          "status": 200,
+          "score": 0.24,
+          "cost": 0.000028434,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1302151,
+          "status": 200,
+          "score": 0.22,
+          "cost": 0.000022302,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1315772,
+          "status": 200,
+          "score": 0.2,
+          "cost": 0.000025956,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1630423,
+          "status": 200,
+          "score": 0.11,
+          "cost": 0.00003507,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1084242,
+          "status": 200,
+          "score": 0.23,
+          "cost": 0.000030072,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1218925,
+          "status": 200,
+          "score": 0.08,
+          "cost": 0.00003192,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1240889,
+          "status": 200,
+          "score": 0.22,
+          "cost": 0.000027594,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 40996,
+          "status": 200,
+          "score": 0.24,
+          "cost": 0.000022344,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "repeat": 2,
+      "before": [6947, 68727, 1052280, 26337],
+      "after": [68727, 1052280],
+      "baseline": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 0.6309297535714574,
+        "returned": 4
+      },
+      "reranked": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 1,
+        "returned": 2
+      },
+      "rerankMs": 274.328125,
+      "pairedBackendMs": 3350.1008330000004,
+      "requestCount": 4,
+      "knownCostUsd": 0.00010609200000000001,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 6947,
+          "status": 200,
+          "score": 0.25,
+          "cost": 0.000025116,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 68727,
+          "status": 200,
+          "score": 0.77,
+          "cost": 0.000030744,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1052280,
+          "status": 200,
+          "score": 0.5,
+          "cost": 0.00002814,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 26337,
+          "status": 200,
+          "score": 0.29,
+          "cost": 0.000022092,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "repeat": 2,
+      "before": [150540, 476292, 9806, 829402, 772],
+      "after": [568124, 501929, 431580, 842859, 9806],
+      "baseline": {
+        "precisionAt5": 0.4,
+        "ndcgAt5": 0.6287585127695021,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.8,
+        "ndcgAt5": 0.9026211001048622,
+        "returned": 5
+      },
+      "rerankMs": 310.28962499999943,
+      "pairedBackendMs": 3368.7442079999983,
+      "requestCount": 20,
+      "knownCostUsd": 0.0005787600000000001,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 150540,
+          "status": 200,
+          "score": 0.64,
+          "cost": 0.00003024,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 476292,
+          "status": 200,
+          "score": 0.43,
+          "cost": 0.00003255,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9806,
+          "status": 200,
+          "score": 0.66,
+          "cost": 0.00002583,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 829402,
+          "status": 200,
+          "score": 0.53,
+          "cost": 0.000024402,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 772,
+          "status": 200,
+          "score": 0.14,
+          "cost": 0.000027552,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 28178,
+          "status": 200,
+          "score": 0.23,
+          "cost": 0.00003654,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 501929,
+          "status": 200,
+          "score": 0.8,
+          "cost": 0.00002898,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 378108,
+          "status": 200,
+          "score": 0.56,
+          "cost": 0.000032382,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 568124,
+          "status": 200,
+          "score": 0.88,
+          "cost": 0.000029694,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 2454,
+          "status": 200,
+          "score": 0.28,
+          "cost": 0.000026628,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 25050,
+          "status": 200,
+          "score": 0.18,
+          "cost": 0.000030072,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9714,
+          "status": 200,
+          "score": 0.14,
+          "cost": 0.000033852,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 842859,
+          "status": 200,
+          "score": 0.7,
+          "cost": 0.000029148,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 11283,
+          "status": 200,
+          "score": 0.25,
+          "cost": 0.000024066,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 431580,
+          "status": 200,
+          "score": 0.78,
+          "cost": 0.000028602,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 400650,
+          "status": 200,
+          "score": 0.43,
+          "cost": 0.000031878,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 804370,
+          "status": 200,
+          "score": 0.56,
+          "cost": 0.000030576,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 12536,
+          "status": 200,
+          "score": 0.13,
+          "cost": 0.000028392,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 48617,
+          "status": 200,
+          "score": 0.63,
+          "cost": 0.000021882,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 8204,
+          "status": 200,
+          "score": 0.43,
+          "cost": 0.000025494,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "repeat": 2,
+      "before": [49521, 152601, 329865, 141052],
+      "after": [329865, 49521, 141052],
+      "baseline": {
+        "precisionAt5": 0.8,
+        "ndcgAt5": 1,
+        "returned": 4
+      },
+      "reranked": {
+        "precisionAt5": 0.6,
+        "ndcgAt5": 0.8318724637288825,
+        "returned": 3
+      },
+      "rerankMs": 325.3829999999998,
+      "pairedBackendMs": 3104.3714999999975,
+      "requestCount": 4,
+      "knownCostUsd": 0.000109326,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 49521,
+          "status": 200,
+          "score": 0.7,
+          "cost": 0.000026796,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 152601,
+          "status": 200,
+          "score": 0.24,
+          "cost": 0.00002709,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 329865,
+          "status": 200,
+          "score": 0.92,
+          "cost": 0.000028266,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 141052,
+          "status": 200,
+          "score": 0.55,
+          "cost": 0.000027174,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "repeat": 2,
+      "before": [1311031, 4935, 1333100, 129, 1338799],
+      "after": [976893, 8392, 4935, 938567, 1291559],
+      "baseline": {
+        "precisionAt5": 0,
+        "ndcgAt5": 0.14723431330946654,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.6,
+        "ndcgAt5": 0.9271183815384791,
+        "returned": 5
+      },
+      "rerankMs": 1462.1099170000016,
+      "pairedBackendMs": 4594.658708999999,
+      "requestCount": 20,
+      "knownCostUsd": 0.0006280260000000001,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 1311031,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.000030408,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 4935,
+          "status": 200,
+          "score": 0.57,
+          "cost": 0.000028644,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1333100,
+          "status": 200,
+          "score": 0.02,
+          "cost": 0.000036582,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 129,
+          "status": 200,
+          "score": 0.47,
+          "cost": 0.000029442,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1338799,
+          "status": 200,
+          "score": 0.04,
+          "cost": 0.000030408,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1218925,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.000032298,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 372058,
+          "status": 200,
+          "score": 0.33,
+          "cost": 0.000028602,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 976893,
+          "status": 200,
+          "score": 0.92,
+          "cost": 0.00002919,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 128,
+          "status": 200,
+          "score": 0.14,
+          "cost": 0.000033684,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 14537,
+          "status": 200,
+          "score": 0.07,
+          "cost": 0.000035826,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1244492,
+          "status": 200,
+          "score": 0.38,
+          "cost": 0.000027594,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 12477,
+          "status": 200,
+          "score": 0.08,
+          "cost": 0.00003759,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 8392,
+          "status": 200,
+          "score": 0.83,
+          "cost": 0.00002877,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1291559,
+          "status": 200,
+          "score": 0.56,
+          "cost": 0.000026502,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9323,
+          "status": 200,
+          "score": 0.05,
+          "cost": 0.00004221,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 938567,
+          "status": 200,
+          "score": 0.57,
+          "cost": 0.000031206,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10494,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.000030954,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 34530,
+          "status": 200,
+          "score": 0.15,
+          "cost": 0.000023184,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 81,
+          "status": 200,
+          "score": 0.36,
+          "cost": 0.000030954,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 378064,
+          "status": 200,
+          "score": 0.51,
+          "cost": 0.000033978,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "repeat": 2,
+      "before": [2316, 61678, 2996, 2490, 247522],
+      "after": [2316, 2996, 2490, 4956, 78941],
+      "baseline": {
+        "precisionAt5": 0.6,
+        "ndcgAt5": 0.7698724385020871,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.8,
+        "ndcgAt5": 0.8539316501572934,
+        "returned": 5
+      },
+      "rerankMs": 325.14158399999906,
+      "pairedBackendMs": 2690.812334,
+      "requestCount": 20,
+      "knownCostUsd": 0.000497532,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 2316,
+          "status": 200,
+          "score": 0.92,
+          "cost": 0.000033642,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 61678,
+          "status": 200,
+          "score": 0.28,
+          "cost": 0.000034566,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 2996,
+          "status": 200,
+          "score": 0.92,
+          "cost": 0.000026208,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 2490,
+          "status": 200,
+          "score": 0.9,
+          "cost": 0.000024318,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 247522,
+          "status": 200,
+          "score": 0.15,
+          "cost": 0.000023604,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 297640,
+          "status": 200,
+          "score": 0.5,
+          "cost": 0.000023142,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 64165,
+          "status": 200,
+          "score": 0.36,
+          "cost": 0.000023646,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 68947,
+          "status": 200,
+          "score": 0.67,
+          "cost": 0.000024864,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 105511,
+          "status": 200,
+          "score": 0.63,
+          "cost": 0.000029358,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 4956,
+          "status": 200,
+          "score": 0.74,
+          "cost": 0.000021798,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 6202,
+          "status": 200,
+          "score": 0.53,
+          "cost": 0.000021672,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 254391,
+          "status": 200,
+          "score": 0.31,
+          "cost": 0.000024276,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1320,
+          "status": 200,
+          "score": 0.21,
+          "cost": 0.000021672,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 32694,
+          "status": 200,
+          "score": 0.69,
+          "cost": 0.000024108,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 88783,
+          "status": 200,
+          "score": 0.44,
+          "cost": 0.000023436,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 78941,
+          "status": 200,
+          "score": 0.71,
+          "cost": 0.000024402,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 155459,
+          "status": 200,
+          "score": 0.41,
+          "cost": 0.000025032,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 72313,
+          "status": 200,
+          "score": 0.2,
+          "cost": 0.000024402,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 57815,
+          "status": 200,
+          "score": 0.35,
+          "cost": 0.000021672,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 785,
+          "status": 200,
+          "score": 0.44,
+          "cost": 0.000021714,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "repeat": 2,
+      "before": [47060],
+      "after": [47060],
+      "baseline": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 1,
+        "returned": 1
+      },
+      "reranked": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 1,
+        "returned": 1
+      },
+      "rerankMs": 322.99020799999926,
+      "pairedBackendMs": 2826.2094990000005,
+      "requestCount": 1,
+      "knownCostUsd": 0.000024234,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 47060,
+          "status": 200,
+          "score": 0.75,
+          "cost": 0.000024234,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "repeat": 3,
+      "before": [10494, 9390, 3780, 4148, 63193],
+      "after": [63193, 295964, 10028, 9390, 3780],
+      "baseline": {
+        "precisionAt5": 0.6,
+        "ndcgAt5": 0.5147714448836773,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 1,
+        "ndcgAt5": 1,
+        "returned": 5
+      },
+      "rerankMs": 465.91762500000004,
+      "pairedBackendMs": 4186.492541,
+      "requestCount": 20,
+      "knownCostUsd": 0.000580986,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 10494,
+          "status": 200,
+          "score": 0.08,
+          "cost": 0.00003066,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9390,
+          "status": 200,
+          "score": 0.76,
+          "cost": 0.00003885,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 3780,
+          "status": 200,
+          "score": 0.67,
+          "cost": 0.000031458,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 4148,
+          "status": 200,
+          "score": 0.15,
+          "cost": 0.000029946,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 63193,
+          "status": 200,
+          "score": 0.92,
+          "cost": 0.000039606,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10060,
+          "status": 200,
+          "score": 0.32,
+          "cost": 0.000022806,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 30416,
+          "status": 200,
+          "score": 0.23,
+          "cost": 0.000022638,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 295964,
+          "status": 200,
+          "score": 0.86,
+          "cost": 0.000033726,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 579741,
+          "status": 200,
+          "score": 0.12,
+          "cost": 0.000032676,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 11911,
+          "status": 200,
+          "score": 0.06,
+          "cost": 0.000029106,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 7972,
+          "status": 200,
+          "score": 0.05,
+          "cost": 0.000035028,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10476,
+          "status": 200,
+          "score": 0.61,
+          "cost": 0.000022722,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1375,
+          "status": 200,
+          "score": 0.65,
+          "cost": 0.000030114,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 3111,
+          "status": 200,
+          "score": 0.23,
+          "cost": 0.000028098,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 8976,
+          "status": 200,
+          "score": 0.12,
+          "cost": 0.000022764,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 25704,
+          "status": 200,
+          "score": 0.55,
+          "cost": 0.000030744,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10477,
+          "status": 200,
+          "score": 0.35,
+          "cost": 0.000022386,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10028,
+          "status": 200,
+          "score": 0.77,
+          "cost": 0.000028266,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 11475,
+          "status": 200,
+          "score": 0.22,
+          "cost": 0.000022596,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9910,
+          "status": 200,
+          "score": 0.36,
+          "cost": 0.000026796,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "repeat": 3,
+      "before": [969681, 987032, 1204680, 484133, 1368337],
+      "after": [1032863, 1007757, 1204680, 1084244, 1632181],
+      "baseline": {
+        "precisionAt5": 0,
+        "ndcgAt5": 0.08051116699631379,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.4,
+        "ndcgAt5": 0.937708058067494,
+        "returned": 5
+      },
+      "rerankMs": 395.69124999999985,
+      "pairedBackendMs": 3264.5614159999996,
+      "requestCount": 20,
+      "knownCostUsd": 0.00050274,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 969681,
+          "status": 200,
+          "score": 0.3,
+          "cost": 0.000025872,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 987032,
+          "status": 200,
+          "score": 0.34,
+          "cost": 0.000021966,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1204680,
+          "status": 200,
+          "score": 0.61,
+          "cost": 0.000028938,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 484133,
+          "status": 200,
+          "score": 0.15,
+          "cost": 0.00002163,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1368337,
+          "status": 200,
+          "score": 0.16,
+          "cost": 0.00002457,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1560520,
+          "status": 200,
+          "score": 0.06,
+          "cost": 0.000026796,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1377237,
+          "status": 200,
+          "score": 0.24,
+          "cost": 0.00002562,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 980431,
+          "status": 200,
+          "score": 0.33,
+          "cost": 0.00002667,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1101383,
+          "status": 200,
+          "score": 0.1,
+          "cost": 0.000026376,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 730647,
+          "status": 200,
+          "score": 0.25,
+          "cost": 0.000022302,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1032863,
+          "status": 200,
+          "score": 0.83,
+          "cost": 0.000026586,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 373001,
+          "status": 200,
+          "score": 0.18,
+          "cost": 0.000021924,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1288445,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.000024654,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1144107,
+          "status": 200,
+          "score": 0.28,
+          "cost": 0.000028602,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1084244,
+          "status": 200,
+          "score": 0.59,
+          "cost": 0.000027762,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1007757,
+          "status": 200,
+          "score": 0.73,
+          "cost": 0.000026082,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1492640,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.00002478,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1632181,
+          "status": 200,
+          "score": 0.53,
+          "cost": 0.000021966,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1263337,
+          "status": 200,
+          "score": 0.08,
+          "cost": 0.00002499,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 753230,
+          "status": 200,
+          "score": 0.04,
+          "cost": 0.000024654,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "repeat": 3,
+      "before": [1204680, 987032, 1377237, 1632181, 1032863],
+      "after": [1032863],
+      "baseline": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 0.3196311965446524,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 0.8262346571285599,
+        "returned": 1
+      },
+      "rerankMs": 311.31695899999977,
+      "pairedBackendMs": 3486.5211259999996,
+      "requestCount": 20,
+      "knownCostUsd": 0.0005417579999999999,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 1204680,
+          "status": 200,
+          "score": 0.19,
+          "cost": 0.000029526,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 987032,
+          "status": 200,
+          "score": 0.21,
+          "cost": 0.000022554,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1377237,
+          "status": 200,
+          "score": 0.14,
+          "cost": 0.000026208,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1632181,
+          "status": 200,
+          "score": 0.41,
+          "cost": 0.000022554,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1032863,
+          "status": 200,
+          "score": 0.88,
+          "cost": 0.000027174,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1465563,
+          "status": 200,
+          "score": 0.14,
+          "cost": 0.000030156,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1084244,
+          "status": 200,
+          "score": 0.18,
+          "cost": 0.00002835,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 529414,
+          "status": 200,
+          "score": 0.13,
+          "cost": 0.000022638,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1477712,
+          "status": 200,
+          "score": 0.09,
+          "cost": 0.00002478,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1601797,
+          "status": 200,
+          "score": 0.43,
+          "cost": 0.00002268,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1108427,
+          "status": 200,
+          "score": 0.24,
+          "cost": 0.000030534,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1232449,
+          "status": 200,
+          "score": 0.11,
+          "cost": 0.000030912,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1440098,
+          "status": 200,
+          "score": 0.24,
+          "cost": 0.000028434,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1302151,
+          "status": 200,
+          "score": 0.23,
+          "cost": 0.000022302,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1315772,
+          "status": 200,
+          "score": 0.22,
+          "cost": 0.000025956,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1630423,
+          "status": 200,
+          "score": 0.11,
+          "cost": 0.00003507,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1084242,
+          "status": 200,
+          "score": 0.24,
+          "cost": 0.000030072,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1218925,
+          "status": 200,
+          "score": 0.07,
+          "cost": 0.00003192,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1240889,
+          "status": 200,
+          "score": 0.22,
+          "cost": 0.000027594,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 40996,
+          "status": 200,
+          "score": 0.26,
+          "cost": 0.000022344,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "repeat": 3,
+      "before": [6947, 68727, 1052280, 26337],
+      "after": [68727],
+      "baseline": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 0.6309297535714574,
+        "returned": 4
+      },
+      "reranked": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 1,
+        "returned": 1
+      },
+      "rerankMs": 294.42312500000116,
+      "pairedBackendMs": 3370.1958330000016,
+      "requestCount": 4,
+      "knownCostUsd": 0.00010609200000000001,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 6947,
+          "status": 200,
+          "score": 0.24,
+          "cost": 0.000025116,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 68727,
+          "status": 200,
+          "score": 0.76,
+          "cost": 0.000030744,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1052280,
+          "status": 200,
+          "score": 0.49,
+          "cost": 0.00002814,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 26337,
+          "status": 200,
+          "score": 0.28,
+          "cost": 0.000022092,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "repeat": 3,
+      "before": [150540, 476292, 9806, 829402, 772],
+      "after": [568124, 501929, 431580, 842859, 150540],
+      "baseline": {
+        "precisionAt5": 0.4,
+        "ndcgAt5": 0.6287585127695021,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.8,
+        "ndcgAt5": 0.9026211001048622,
+        "returned": 5
+      },
+      "rerankMs": 440.6448330000003,
+      "pairedBackendMs": 3499.099415999999,
+      "requestCount": 20,
+      "knownCostUsd": 0.0005787600000000001,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 150540,
+          "status": 200,
+          "score": 0.66,
+          "cost": 0.00003024,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 476292,
+          "status": 200,
+          "score": 0.42,
+          "cost": 0.00003255,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9806,
+          "status": 200,
+          "score": 0.66,
+          "cost": 0.00002583,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 829402,
+          "status": 200,
+          "score": 0.54,
+          "cost": 0.000024402,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 772,
+          "status": 200,
+          "score": 0.13,
+          "cost": 0.000027552,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 28178,
+          "status": 200,
+          "score": 0.23,
+          "cost": 0.00003654,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 501929,
+          "status": 200,
+          "score": 0.8,
+          "cost": 0.00002898,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 378108,
+          "status": 200,
+          "score": 0.56,
+          "cost": 0.000032382,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 568124,
+          "status": 200,
+          "score": 0.88,
+          "cost": 0.000029694,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 2454,
+          "status": 200,
+          "score": 0.27,
+          "cost": 0.000026628,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 25050,
+          "status": 200,
+          "score": 0.18,
+          "cost": 0.000030072,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9714,
+          "status": 200,
+          "score": 0.15,
+          "cost": 0.000033852,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 842859,
+          "status": 200,
+          "score": 0.68,
+          "cost": 0.000029148,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 11283,
+          "status": 200,
+          "score": 0.24,
+          "cost": 0.000024066,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 431580,
+          "status": 200,
+          "score": 0.77,
+          "cost": 0.000028602,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 400650,
+          "status": 200,
+          "score": 0.42,
+          "cost": 0.000031878,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 804370,
+          "status": 200,
+          "score": 0.56,
+          "cost": 0.000030576,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 12536,
+          "status": 200,
+          "score": 0.13,
+          "cost": 0.000028392,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 48617,
+          "status": 200,
+          "score": 0.63,
+          "cost": 0.000021882,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 8204,
+          "status": 200,
+          "score": 0.4,
+          "cost": 0.000025494,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "repeat": 3,
+      "before": [49521, 152601, 329865, 141052],
+      "after": [329865, 49521, 141052],
+      "baseline": {
+        "precisionAt5": 0.8,
+        "ndcgAt5": 1,
+        "returned": 4
+      },
+      "reranked": {
+        "precisionAt5": 0.6,
+        "ndcgAt5": 0.8318724637288825,
+        "returned": 3
+      },
+      "rerankMs": 362.3879159999997,
+      "pairedBackendMs": 3141.3764159999973,
+      "requestCount": 4,
+      "knownCostUsd": 0.000109326,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 49521,
+          "status": 200,
+          "score": 0.7,
+          "cost": 0.000026796,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 152601,
+          "status": 200,
+          "score": 0.25,
+          "cost": 0.00002709,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 329865,
+          "status": 200,
+          "score": 0.91,
+          "cost": 0.000028266,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 141052,
+          "status": 200,
+          "score": 0.53,
+          "cost": 0.000027174,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "repeat": 3,
+      "before": [1311031, 4935, 1333100, 129, 1338799],
+      "after": [976893, 8392, 938567, 378064, 1291559],
+      "baseline": {
+        "precisionAt5": 0,
+        "ndcgAt5": 0.14723431330946654,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.6,
+        "ndcgAt5": 0.8866167491742403,
+        "returned": 5
+      },
+      "rerankMs": 417.2776250000006,
+      "pairedBackendMs": 3549.8264169999984,
+      "requestCount": 20,
+      "knownCostUsd": 0.0006280260000000001,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 1311031,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.000030408,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 4935,
+          "status": 200,
+          "score": 0.54,
+          "cost": 0.000028644,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1333100,
+          "status": 200,
+          "score": 0.02,
+          "cost": 0.000036582,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 129,
+          "status": 200,
+          "score": 0.46,
+          "cost": 0.000029442,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1338799,
+          "status": 200,
+          "score": 0.04,
+          "cost": 0.000030408,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1218925,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.000032298,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 372058,
+          "status": 200,
+          "score": 0.35,
+          "cost": 0.000028602,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 976893,
+          "status": 200,
+          "score": 0.92,
+          "cost": 0.00002919,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 128,
+          "status": 200,
+          "score": 0.14,
+          "cost": 0.000033684,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 14537,
+          "status": 200,
+          "score": 0.07,
+          "cost": 0.000035826,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1244492,
+          "status": 200,
+          "score": 0.36,
+          "cost": 0.000027594,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 12477,
+          "status": 200,
+          "score": 0.08,
+          "cost": 0.00003759,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 8392,
+          "status": 200,
+          "score": 0.84,
+          "cost": 0.00002877,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1291559,
+          "status": 200,
+          "score": 0.55,
+          "cost": 0.000026502,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 9323,
+          "status": 200,
+          "score": 0.05,
+          "cost": 0.00004221,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 938567,
+          "status": 200,
+          "score": 0.58,
+          "cost": 0.000031206,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 10494,
+          "status": 200,
+          "score": 0.03,
+          "cost": 0.000030954,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 34530,
+          "status": 200,
+          "score": 0.13,
+          "cost": 0.000023184,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 81,
+          "status": 200,
+          "score": 0.33,
+          "cost": 0.000030954,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 378064,
+          "status": 200,
+          "score": 0.56,
+          "cost": 0.000033978,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "repeat": 3,
+      "before": [2316, 61678, 2996, 2490, 247522],
+      "after": [2996, 2316, 2490, 4956, 78941],
+      "baseline": {
+        "precisionAt5": 0.6,
+        "ndcgAt5": 0.7698724385020871,
+        "returned": 5
+      },
+      "reranked": {
+        "precisionAt5": 0.8,
+        "ndcgAt5": 0.8539316501572934,
+        "returned": 5
+      },
+      "rerankMs": 362.4997920000005,
+      "pairedBackendMs": 2728.1705420000017,
+      "requestCount": 20,
+      "knownCostUsd": 0.000497532,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 2316,
+          "status": 200,
+          "score": 0.91,
+          "cost": 0.000033642,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 61678,
+          "status": 200,
+          "score": 0.28,
+          "cost": 0.000034566,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 2996,
+          "status": 200,
+          "score": 0.92,
+          "cost": 0.000026208,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 2490,
+          "status": 200,
+          "score": 0.9,
+          "cost": 0.000024318,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 247522,
+          "status": 200,
+          "score": 0.16,
+          "cost": 0.000023604,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 297640,
+          "status": 200,
+          "score": 0.51,
+          "cost": 0.000023142,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 64165,
+          "status": 200,
+          "score": 0.36,
+          "cost": 0.000023646,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 68947,
+          "status": 200,
+          "score": 0.68,
+          "cost": 0.000024864,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 105511,
+          "status": 200,
+          "score": 0.68,
+          "cost": 0.000029358,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 4956,
+          "status": 200,
+          "score": 0.75,
+          "cost": 0.000021798,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 6202,
+          "status": 200,
+          "score": 0.53,
+          "cost": 0.000021672,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 254391,
+          "status": 200,
+          "score": 0.36,
+          "cost": 0.000024276,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 1320,
+          "status": 200,
+          "score": 0.22,
+          "cost": 0.000021672,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 32694,
+          "status": 200,
+          "score": 0.67,
+          "cost": 0.000024108,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 88783,
+          "status": 200,
+          "score": 0.45,
+          "cost": 0.000023436,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 78941,
+          "status": 200,
+          "score": 0.71,
+          "cost": 0.000024402,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 155459,
+          "status": 200,
+          "score": 0.43,
+          "cost": 0.000025032,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 72313,
+          "status": 200,
+          "score": 0.19,
+          "cost": 0.000024402,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 57815,
+          "status": 200,
+          "score": 0.36,
+          "cost": 0.000021672,
+          "model": "typesafe/jev-1.13-20260917"
+        },
+        {
+          "id": 785,
+          "status": 200,
+          "score": 0.46,
+          "cost": 0.000021714,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "repeat": 3,
+      "before": [47060],
+      "after": [47060],
+      "baseline": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 1,
+        "returned": 1
+      },
+      "reranked": {
+        "precisionAt5": 0.2,
+        "ndcgAt5": 1,
+        "returned": 1
+      },
+      "rerankMs": 270.15129200000047,
+      "pairedBackendMs": 2773.3705830000017,
+      "requestCount": 1,
+      "knownCostUsd": 0.000024234,
+      "costComplete": true,
+      "fullFallback": false,
+      "model": "typesafe/jev-1.13-20260917",
+      "decisions": [
+        {
+          "id": 47060,
+          "status": 200,
+          "score": 0.77,
+          "cost": 0.000024234,
+          "model": "typesafe/jev-1.13-20260917"
+        }
+      ]
+    }
+  ],
+  "labelsHashBasis": "JSON.stringify(labels)"
+}

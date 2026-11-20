@@ -88,6 +88,29 @@ OpenAI produces a query plan through `plan_movie_search` tool calling. The Supab
 
 See [AI Picker Architecture](./docs/supabase-ai-rollout.en.md) for data flow and access control, and [Jev rerank Implementation](./docs/changes/2026-09-24-openrouter-jev-rerank.md) for scoring and fallback rules.
 
+## Evaluation
+
+All figures come from small-sample runs. Conditions are stated for each; see the source reports for full data.
+
+**Model selection** (2026-08-25; 4 models × 10 prompts, 1 run each; OpenAI query-plan stage only; [full report](./docs/evaluations/2026-08-25-model-selection.md), in Traditional Chinese)
+
+| Model                                         | Field accuracy | Avg latency | Total cost, 10 calls |
+| --------------------------------------------- | -------------: | ----------: | -------------------: |
+| `gpt-4o-mini`                                 |          80.0% |    2,938 ms |        US$0.00178395 |
+| `gpt-5.6-luna`                                |          84.4% |    2,497 ms |        US$0.00305140 |
+| `gpt-5.6-terra`                               |          88.6% |    2,336 ms |        US$0.03232600 |
+| `gpt-5.6-sol`                                 |          93.3% |    2,719 ms |        US$0.05752400 |
+| `gpt-4o-mini` (retest after 2026-08-26 fixes) |           100% |    2,503 ms |        US$0.00239775 |
+
+**Jev rerank** (2026-10-03; 9 valid queries, 3 reranks each, compared against the same candidate pool before reranking; [full report](./docs/evaluations/2026-10-03-rerank/report.md), in Traditional Chinese)
+
+- Precision@5: 33.3% → 53.3%; nDCG@5: 0.566 → 0.919.
+- Added latency: p50 332 ms, p95 1462 ms (27 samples).
+- Average cost per rerank: US$0.00039661 (`usage.cost` reported by OpenRouter).
+- Caveats: relevance labels were assigned by an AI assistant, not independent human raters; 9 queries is a small sample and does not show user satisfaction.
+
+There is also a [2026-09-24 single run](./docs/changes/2026-09-24-ai-live-model-evaluation.md) (1 prompt, 1 request per model). Treat it as an anecdote, not a latency benchmark.
+
 ## Develop
 
 Set frontend environment variables from `.env.example`. Store the OpenAI/OpenRouter/TMDB keys for `recommend-movies` and the TMDB/OMDb keys for `media-detail` in Supabase Edge Function Secrets. `media-detail` serves signed-out visitors too; the OMDb key is optional, and external ratings are hidden without it. For local Functions, put `TMDB_ACCESS_TOKEN` and optional `OMDB_API_KEY` in the untracked `supabase/functions/.env`.

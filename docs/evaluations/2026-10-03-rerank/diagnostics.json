@@ -1,0 +1,76 @@
+{
+  "case9": {
+    "plan": {
+      "intent_summary": "An inspiring movie about starting over after career failure, emphasizing perseverance rather than revenge.",
+      "people": [],
+      "people_match": "any",
+      "display_labels": {
+        "hard": ["No revenge"],
+        "soft": ["Career failure", "Starting over", "Inspiring", "Persevering"]
+      },
+      "hard_constraints": {
+        "exclude_keywords": [
+          {
+            "lookup_name": "revenge",
+            "display_label": "revenge"
+          }
+        ],
+        "exclude_genre_ids": []
+      },
+      "soft_preferences": {
+        "include_genres": [],
+        "keywords": [
+          {
+            "lookup_name": "career failure",
+            "display_label": "career failure",
+            "source": "explicit"
+          },
+          {
+            "lookup_name": "starting over",
+            "display_label": "starting over",
+            "source": "explicit"
+          }
+        ],
+        "qualities": ["inspiring", "persevering"]
+      },
+      "discover_plan": {
+        "include_genres": [],
+        "exclude_genre_ids": [],
+        "exclude_keywords": [
+          {
+            "lookup_name": "revenge",
+            "display_label": "revenge"
+          }
+        ],
+        "keywords": [
+          {
+            "lookup_name": "career failure",
+            "display_label": "career failure",
+            "source": "explicit"
+          },
+          {
+            "lookup_name": "starting over",
+            "display_label": "starting over",
+            "source": "explicit"
+          }
+        ]
+      }
+    },
+    "usage": {
+      "promptTokens": 1153,
+      "completionTokens": 179,
+      "totalTokens": 1332,
+      "cachedTokens": 0,
+      "reasoningTokens": 0
+    },
+    "discovery": {
+      "error": "unresolved_keyword",
+      "condition": "career failure"
+    }
+  },
+  "herCast": {
+    "id": 9273,
+    "name": "Amy Adams",
+    "character": "Amy"
+  }
+}

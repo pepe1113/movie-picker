@@ -20,9 +20,7 @@ export function WishlistButton({
   const mediaType = getMediaType(movie)
   const title = getMediaTitle(movie)
   const isWishlisted = useWishlistStore((state) =>
-    state.wishlist.some(
-      (item) => item.id === movie.id && getMediaType(item) === mediaType,
-    ),
+    state.isInWishlist(movie.id, mediaType),
   )
   const addToWishlist = useWishlistStore((state) => state.addToWishlist)
   const removeFromWishlist = useWishlistStore(

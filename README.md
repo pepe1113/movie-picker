@@ -41,7 +41,7 @@
 | Motion         | UI 動畫與降低動態效果支援               |
 | React Router   | SPA routing                             |
 | TanStack Query | API 資料取得、快取與伺服器狀態同步      |
-| Zustand        | 管理語言、主題、登入與收藏狀態          |
+| Zustand        | 管理語言、登入與收藏狀態                |
 | i18next        | localization                            |
 | Zod            | 驗證 AI API 資料與查詢計畫              |
 | Supabase       | 使用者資料、OAuth、RLS 與 Edge Function |

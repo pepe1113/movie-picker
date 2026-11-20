@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useReducedMotion } from 'motion/react'
 import { cn } from '@/lib/utils'
 
@@ -17,18 +17,29 @@ export function TypewriterHeroTitle({
   as: Heading = 'h2',
   className,
 }: TypewriterHeroTitleProps) {
+  return (
+    <TypewriterText
+      key={title}
+      title={title}
+      as={Heading}
+      className={className}
+    />
+  )
+}
+
+function TypewriterText({
+  title,
+  as: Heading,
+  className,
+}: Required<Pick<TypewriterHeroTitleProps, 'title' | 'as'>> &
+  Pick<TypewriterHeroTitleProps, 'className'>) {
   const shouldReduceMotion = useReducedMotion()
-  const [typedTitleState, setTypedTitleState] = useState({
-    title,
-    length: 0,
-  })
-  const titleCharacters = useMemo(() => Array.from(title), [title])
-  const typedTitleLength = shouldReduceMotion
+  const [typedLength, setTypedLength] = useState(0)
+  const titleCharacters = Array.from(title)
+  const visibleLength = shouldReduceMotion
     ? titleCharacters.length
-    : typedTitleState.title === title
-      ? typedTitleState.length
-      : 0
-  const typedTitle = titleCharacters.slice(0, typedTitleLength).join('')
+    : typedLength
+  const typedTitle = titleCharacters.slice(0, visibleLength).join('')
 
   useEffect(() => {
     if (shouldReduceMotion) {
@@ -36,20 +47,19 @@ export function TypewriterHeroTitle({
     }
 
     const titleTimer = window.setInterval(() => {
-      setTypedTitleState((current) => {
-        const currentLength = current.title === title ? current.length : 0
+      setTypedLength((currentLength) => {
         const next = Math.min(currentLength + 1, titleCharacters.length)
 
         if (next >= titleCharacters.length) {
           window.clearInterval(titleTimer)
         }
 
-        return { title, length: next }
+        return next
       })
     }, HERO_TITLE_TYPE_INTERVAL_MS)
 
     return () => window.clearInterval(titleTimer)
-  }, [shouldReduceMotion, title, titleCharacters.length])
+  }, [shouldReduceMotion, titleCharacters.length])
 
   return (
     <Heading

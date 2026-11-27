@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
   buildMovieDetailPresentation,
+  buildSearchLink,
   getExternalRatings,
+  getLocalizedGenreName,
 } from '@/utils/movieDetail'
+import type { Language } from '@/stores/languageStore'
 import type { OmdbMovieResponse } from '@/services/omdb/types'
 import type {
   CreditsResponse,
@@ -11,6 +14,32 @@ import type {
 } from '@/services/tmdb/types'
 
 describe('movie detail helpers', () => {
+  it('localizes genres and falls back to the API name', () => {
+    expect(
+      getLocalizedGenreName({ id: 18, name: '剧情' }, 'movie', 'zh-TW'),
+    ).toBe('劇情')
+    expect(
+      getLocalizedGenreName(
+        { id: 18, name: 'Drama' },
+        'movie',
+        'en-US' as Language,
+      ),
+    ).toBe('Drama')
+    expect(
+      getLocalizedGenreName({ id: 1, name: 'Unknown' }, 'tv', 'zh-TW'),
+    ).toBe('Unknown')
+  })
+
+  it('builds search links with an optional company filter', () => {
+    expect(buildSearchLink('Jane Doe')).toBe('/search?q=Jane+Doe')
+    expect(buildSearchLink('A24', { companyId: 41077 })).toBe(
+      '/search?q=A24&company=41077',
+    )
+    expect(buildSearchLink('Jane Doe', { personId: 11 })).toBe(
+      '/search?q=Jane+Doe&person=11',
+    )
+  })
+
   it('normalizes available OMDb external ratings', () => {
     const omdb: OmdbMovieResponse = {
       Response: 'True',

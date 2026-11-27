@@ -1,7 +1,11 @@
 import type { OmdbMovieResponse } from '@/services/omdb/types'
 import { findYouTubeTrailer } from '@/utils/trailerMedia'
+import { MOVIE_GENRES, ROUTES, TV_GENRES } from '@/utils/constants'
+import type { Language } from '@/stores/languageStore'
 import type {
   CastMember,
+  Genre,
+  MediaType,
   CreditsResponse,
   MediaItem,
   MovieDetail,
@@ -9,6 +13,7 @@ import type {
   TvDetail,
   VideosResponse,
 } from '@/services/tmdb/types'
+
 export interface ExternalRating {
   label: string
   value: string
@@ -55,6 +60,9 @@ export function buildMovieDetailPresentation({
 }: MovieDetailPresentationInput) {
   return {
     cast: credits?.cast.slice(0, 12) ?? [],
+    directors: uniqueByName(
+      credits?.crew.filter((member) => member.job === 'Director') ?? [],
+    ).map(({ id, name }) => ({ id, name })),
     trailer: findYouTubeTrailer(videos?.results),
     externalRatings: getExternalRatings(omdb),
     movieForWishlist: {
@@ -109,8 +117,44 @@ export function buildTvDetailPresentation({
 
   return {
     cast,
+    directors: uniqueByName(detail.created_by ?? []).map(({ id, name }) => ({
+      id,
+      name,
+    })),
     trailer: findYouTubeTrailer(videos?.results),
     externalRatings: [],
     movieForWishlist: mediaForWishlist,
   }
+}
+
+export function getLocalizedGenreName(
+  genre: Genre,
+  mediaType: MediaType,
+  language: Language,
+): string {
+  const primary = mediaType === 'tv' ? TV_GENRES : MOVIE_GENRES
+  const secondary = mediaType === 'tv' ? MOVIE_GENRES : TV_GENRES
+  const match =
+    primary.find(({ id }) => id === genre.id) ??
+    secondary.find(({ id }) => id === genre.id)
+  return match?.name[language] ?? genre.name
+}
+
+export function buildSearchLink(
+  query: string,
+  { companyId, personId }: { companyId?: number; personId?: number } = {},
+): string {
+  const params = new URLSearchParams({ q: query })
+  if (personId !== undefined) params.set('person', String(personId))
+  if (companyId !== undefined) params.set('company', String(companyId))
+  return `${ROUTES.SEARCH}?${params.toString()}`
+}
+
+export function uniqueByName<T extends { name: string }>(items: T[]): T[] {
+  const seen = new Set<string>()
+  return items.filter(({ name }) => {
+    if (seen.has(name)) return false
+    seen.add(name)
+    return true
+  })
 }

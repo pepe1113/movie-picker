@@ -151,13 +151,16 @@ button[role='tab'] {
   }
 }
 
-html:has(.home-scroll-page) {
-  scroll-snap-type: y proximity;
-  scroll-padding-top: 4rem;
-}
+/* Scroll snapping only on desktop: on mobile it fights touch momentum */
+@media (min-width: 768px) {
+  html:has(.home-scroll-page) {
+    scroll-snap-type: y proximity;
+    scroll-padding-top: 4rem;
+  }
 
-html:has(.home-scroll-page) footer {
-  scroll-snap-align: end;
+  html:has(.home-scroll-page) footer {
+    scroll-snap-align: end;
+  }
 }
 
 @keyframes hero-title-cursor-blink {

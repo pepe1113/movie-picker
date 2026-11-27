@@ -17,8 +17,12 @@ import { WishlistButton } from '@/components/features/wishlist/WishlistButton'
 import { useMovieDetail } from '@/hooks/useMovieDetail'
 import {
   buildMovieDetailPresentation,
+  buildSearchLink,
   buildTvDetailPresentation,
+  getLocalizedGenreName,
+  uniqueByName,
 } from '@/utils/movieDetail'
+import { useLanguageStore } from '@/stores/languageStore'
 import { buildTrailerEmbedUrl } from '@/utils/trailerMedia'
 import {
   getPosterUrl,
@@ -41,6 +45,7 @@ export function Component() {
   const { t } = useTranslation()
   const location = useLocation()
   const { id } = useParams()
+  const language = useLanguageStore((state) => state.language)
   const movieId = Number(id)
   const mediaType: MediaType = location.pathname.startsWith('/tv/')
     ? 'tv'
@@ -83,7 +88,9 @@ export function Component() {
         videos,
         omdb,
       })
-  const { trailer, cast, externalRatings, movieForWishlist } = presentation
+  const { trailer, cast, directors, externalRatings, movieForWishlist } =
+    presentation
+  const productionCompanies = uniqueByName(detail.production_companies ?? [])
   const title = isTv ? detail.name : (detail as MovieDetail).title
   const originalTitle = isTv
     ? detail.original_name
@@ -113,18 +120,6 @@ export function Component() {
         )}
 
         <div className="relative container mx-auto flex min-h-180 flex-col px-6 py-8 md:px-12 lg:px-16">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="md:text-md mb-8 self-start text-xl"
-            asChild
-          >
-            <Link to={ROUTES.HOME}>
-              <ArrowLeft className="size-6 md:size-4" />
-              {t('movieDetail.backButton')}
-            </Link>
-          </Button>
-
           <div
             className={clsx([
               'mt-auto flex flex-col gap-8 pb-12 lg:flex-row',
@@ -154,6 +149,12 @@ export function Component() {
                 <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl">
                   {title}
                 </h1>
+
+                {originalTitle && originalTitle !== title && (
+                  <p className="text-muted-foreground text-xl font-semibold md:text-2xl">
+                    {originalTitle}
+                  </p>
+                )}
 
                 {detail.tagline && (
                   <p className="text-muted-foreground text-lg italic md:text-xl">
@@ -221,7 +222,7 @@ export function Component() {
               <div className="flex flex-wrap gap-2">
                 {detail.genres.map((genre) => (
                   <Badge key={genre.id} variant="outline">
-                    {genre.name}
+                    {getLocalizedGenreName(genre, mediaType, language)}
                   </Badge>
                 ))}
               </div>
@@ -293,24 +294,28 @@ export function Component() {
 
             <div className="grid grid-cols-3 gap-6 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
               {cast.map((member) => (
-                <div key={member.id} className="space-y-3 text-center">
+                <Link
+                  key={member.id}
+                  to={buildSearchLink(member.name, { personId: member.id })}
+                  className="group focus-visible:ring-ring block space-y-3 rounded-md text-center outline-none focus-visible:ring-2"
+                >
                   <div className="bg-muted mx-auto aspect-square w-full overflow-hidden rounded-md">
                     <img
                       src={getProfileUrl(member.profile_path)}
-                      alt={member.name}
+                      alt=""
                       loading="lazy"
-                      className="size-full object-cover transition-transform duration-500 hover:scale-105"
+                      className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
                   <div className="space-y-1">
-                    <p className="truncate text-sm leading-tight font-semibold">
+                    <p className="group-hover:text-primary truncate text-sm leading-tight font-semibold transition-colors group-hover:underline">
                       {member.name}
                     </p>
                     <p className="text-muted-foreground truncate text-xs">
                       {member.character}
                     </p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </section>
@@ -325,12 +330,38 @@ export function Component() {
           </div>
 
           <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
-            <div className="space-y-2">
-              <p className="text-muted-foreground text-xs tracking-[1.4px] uppercase">
-                {t('movieDetail.info.originalTitle')}
-              </p>
-              <p className="font-semibold">{originalTitle}</p>
-            </div>
+            {directors.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs tracking-[1.4px] uppercase">
+                  {t(
+                    isTv
+                      ? 'movieDetail.info.creator'
+                      : 'movieDetail.info.director',
+                  )}
+                </p>
+                <SearchLinkList
+                  links={directors.map(({ id, name }) => ({
+                    key: String(id),
+                    name,
+                    to: buildSearchLink(name, { personId: id }),
+                  }))}
+                />
+              </div>
+            )}
+            {productionCompanies.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs tracking-[1.4px] uppercase">
+                  {t('movieDetail.info.productionCompanies')}
+                </p>
+                <SearchLinkList
+                  links={productionCompanies.map(({ id, name }) => ({
+                    key: String(id),
+                    name,
+                    to: buildSearchLink(name, { companyId: id }),
+                  }))}
+                />
+              </div>
+            )}
             <div className="space-y-2">
               <p className="text-muted-foreground text-xs tracking-[1.4px] uppercase">
                 {t('movieDetail.info.status')}
@@ -361,6 +392,30 @@ export function Component() {
         </section>
       </div>
     </div>
+  )
+}
+
+interface SearchLinkItem {
+  key: string
+  name: string
+  to: string
+}
+
+function SearchLinkList({ links }: { links: SearchLinkItem[] }) {
+  return (
+    <p className="font-semibold">
+      {links.map(({ key, name, to }, index) => (
+        <span key={key}>
+          {index > 0 && ', '}
+          <Link
+            to={to}
+            className="hover:text-primary transition-colors hover:underline"
+          >
+            {name}
+          </Link>
+        </span>
+      ))}
+    </p>
   )
 }
 

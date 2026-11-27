@@ -8,6 +8,11 @@ import type {
   VideosResponse,
 } from '@/services/tmdb/types'
 
+vi.mock('@/stores/languageStore', () => ({
+  useLanguageStore: (selector: (state: { language: string }) => unknown) =>
+    selector({ language: 'zh-TW' }),
+}))
+
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, options?: Record<string, string | number>) =>
@@ -68,6 +73,33 @@ describe('MovieDetailPage', () => {
     ).toBeInTheDocument()
   })
 
+  it('localizes genres, links people to search and drops the back button', () => {
+    render(
+      <MemoryRouter initialEntries={['/movie/1']}>
+        <Routes>
+          <Route path="/movie/:id" element={<MovieDetailPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByText('劇情')).toBeInTheDocument()
+    expect(screen.queryByText('剧情')).not.toBeInTheDocument()
+    expect(screen.getByText('Original Gradient')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Jane Doe/ })).toHaveAttribute(
+      'href',
+      '/search?q=Jane+Doe&person=11',
+    )
+    expect(screen.getByRole('link', { name: 'John Roe' })).toHaveAttribute(
+      'href',
+      '/search?q=John+Roe&person=12',
+    )
+    expect(screen.getByRole('link', { name: 'Acme Films' })).toHaveAttribute(
+      'href',
+      '/search?q=Acme+Films&company=9',
+    )
+    expect(screen.queryByText('movieDetail.backButton')).not.toBeInTheDocument()
+  })
+
   it('renders prominent branded rating pills', () => {
     render(
       <MemoryRouter initialEntries={['/movie/1']}>
@@ -92,16 +124,19 @@ const movieDetail: MovieDetail = {
   backdrop_path: null,
   belongs_to_collection: null,
   budget: 0,
-  genres: [{ id: 18, name: 'Drama' }],
+  genres: [{ id: 18, name: '剧情' }],
   homepage: '',
   id: 1,
   imdb_id: 'tt0000001',
   original_language: 'en',
-  original_title: 'Gradient Movie',
+  original_title: 'Original Gradient',
   overview: 'A movie page with a visible fallback gradient.',
   popularity: 10,
   poster_path: null,
-  production_companies: [],
+  production_companies: [
+    { id: 9, logo_path: null, name: 'Acme Films', origin_country: 'US' },
+    { id: 10, logo_path: null, name: 'Acme Films', origin_country: 'GB' },
+  ],
   production_countries: [],
   release_date: '2026-01-01',
   revenue: 0,
@@ -117,8 +152,37 @@ const movieDetail: MovieDetail = {
 
 const credits: CreditsResponse = {
   id: 1,
-  cast: [],
-  crew: [],
+  cast: [
+    {
+      adult: false,
+      cast_id: 1,
+      character: 'Lead',
+      credit_id: 'c1',
+      gender: 1,
+      id: 11,
+      known_for_department: 'Acting',
+      name: 'Jane Doe',
+      order: 0,
+      original_name: 'Jane Doe',
+      popularity: 1,
+      profile_path: null,
+    },
+  ],
+  crew: [
+    {
+      adult: false,
+      credit_id: 'd1',
+      department: 'Directing',
+      gender: 2,
+      id: 12,
+      job: 'Director',
+      known_for_department: 'Directing',
+      name: 'John Roe',
+      original_name: 'John Roe',
+      popularity: 1,
+      profile_path: null,
+    },
+  ],
 }
 
 const videos: VideosResponse = {

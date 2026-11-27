@@ -256,6 +256,7 @@ export interface DiscoverMovieParams {
   language?: string
   sort_by?: string
   with_genres?: string
+  with_companies?: string
   'primary_release_date.gte'?: string
   'primary_release_date.lte'?: string
   'vote_average.gte'?: number
@@ -268,6 +269,7 @@ export interface DiscoverTvParams {
   language?: string
   sort_by?: string
   with_genres?: string
+  with_companies?: string
   'first_air_date.gte'?: string
   'first_air_date.lte'?: string
   'vote_average.gte'?: number

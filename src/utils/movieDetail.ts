@@ -134,11 +134,25 @@ export function getLocalizedGenreName(
   const match =
     primary.find(({ id }) => id === genre.id) ??
     secondary.find(({ id }) => id === genre.id)
-  return match ? match.name[language] : genre.name
+  return match?.name[language] ?? genre.name
 }
 
-export function buildSearchLink(query: string): string {
-  return `${ROUTES.SEARCH}?q=${encodeURIComponent(query)}`
+export function buildSearchLink(
+  query: string,
+  { companyId }: { companyId?: number } = {},
+): string {
+  const params = new URLSearchParams({ q: query })
+  if (companyId !== undefined) params.set('company', String(companyId))
+  return `${ROUTES.SEARCH}?${params.toString()}`
+}
+
+export function uniqueByName<T extends { name: string }>(items: T[]): T[] {
+  const seen = new Set<string>()
+  return items.filter(({ name }) => {
+    if (seen.has(name)) return false
+    seen.add(name)
+    return true
+  })
 }
 
 function uniqueNames(people: { name: string }[]): string[] {

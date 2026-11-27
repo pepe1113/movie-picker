@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { I18nextProvider } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { MovieCard } from '@/components/features/movie/MovieCard'
 import type { Movie, TvShow } from '@/services/tmdb/types'
 import i18n from '@/i18n/config'
@@ -65,5 +65,21 @@ describe('MovieCard', () => {
 
     expect(container.querySelector('.poster-card-flip')).toBeInTheDocument()
     expect(container.querySelector('iframe')).not.toBeInTheDocument()
+  })
+})
+
+describe('MovieCard on mobile', () => {
+  it('renders visible without waiting for a scroll reveal', () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: true,
+      media: query,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    }))
+
+    renderCard(movie)
+    expect(screen.getByRole('article')).not.toHaveStyle({ opacity: '0' })
+
+    vi.unstubAllGlobals()
   })
 })

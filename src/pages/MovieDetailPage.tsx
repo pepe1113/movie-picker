@@ -20,6 +20,7 @@ import {
   buildSearchLink,
   buildTvDetailPresentation,
   getLocalizedGenreName,
+  uniqueByName,
 } from '@/utils/movieDetail'
 import { useLanguageStore } from '@/stores/languageStore'
 import { buildTrailerEmbedUrl } from '@/utils/trailerMedia'
@@ -89,7 +90,7 @@ export function Component() {
       })
   const { trailer, cast, directors, externalRatings, movieForWishlist } =
     presentation
-  const productionCompanies = detail.production_companies ?? []
+  const productionCompanies = uniqueByName(detail.production_companies ?? [])
   const title = isTv ? detail.name : (detail as MovieDetail).title
   const originalTitle = isTv
     ? detail.original_name
@@ -337,7 +338,13 @@ export function Component() {
                       : 'movieDetail.info.director',
                   )}
                 </p>
-                <SearchLinkList names={directors} />
+                <SearchLinkList
+                  links={directors.map((name) => ({
+                    key: name,
+                    name,
+                    to: buildSearchLink(name),
+                  }))}
+                />
               </div>
             )}
             {productionCompanies.length > 0 && (
@@ -346,7 +353,11 @@ export function Component() {
                   {t('movieDetail.info.productionCompanies')}
                 </p>
                 <SearchLinkList
-                  names={productionCompanies.map(({ name }) => name)}
+                  links={productionCompanies.map(({ id, name }) => ({
+                    key: String(id),
+                    name,
+                    to: buildSearchLink(name, { companyId: id }),
+                  }))}
                 />
               </div>
             )}
@@ -383,14 +394,20 @@ export function Component() {
   )
 }
 
-function SearchLinkList({ names }: { names: string[] }) {
+interface SearchLinkItem {
+  key: string
+  name: string
+  to: string
+}
+
+function SearchLinkList({ links }: { links: SearchLinkItem[] }) {
   return (
     <p className="font-semibold">
-      {names.map((name, index) => (
-        <span key={name}>
+      {links.map(({ key, name, to }, index) => (
+        <span key={key}>
           {index > 0 && ', '}
           <Link
-            to={buildSearchLink(name)}
+            to={to}
             className="hover:text-primary transition-colors hover:underline"
           >
             {name}

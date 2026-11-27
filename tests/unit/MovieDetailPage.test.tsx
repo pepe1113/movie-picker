@@ -87,15 +87,15 @@ describe('MovieDetailPage', () => {
     expect(screen.getByText('Original Gradient')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Jane Doe' })).toHaveAttribute(
       'href',
-      '/search?q=Jane%20Doe',
+      '/search?q=Jane+Doe',
     )
     expect(screen.getByRole('link', { name: 'John Roe' })).toHaveAttribute(
       'href',
-      '/search?q=John%20Roe',
+      '/search?q=John+Roe',
     )
     expect(screen.getByRole('link', { name: 'Acme Films' })).toHaveAttribute(
       'href',
-      '/search?q=Acme%20Films',
+      '/search?q=Acme+Films&company=9',
     )
     expect(screen.queryByText('movieDetail.backButton')).not.toBeInTheDocument()
   })
@@ -135,6 +135,7 @@ const movieDetail: MovieDetail = {
   poster_path: null,
   production_companies: [
     { id: 9, logo_path: null, name: 'Acme Films', origin_country: 'US' },
+    { id: 10, logo_path: null, name: 'Acme Films', origin_country: 'GB' },
   ],
   production_countries: [],
   release_date: '2026-01-01',

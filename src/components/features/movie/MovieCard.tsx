@@ -28,6 +28,7 @@ export function MovieCard({ movie, className }: MovieCardProps) {
   return (
     <motion.article
       initial={isMobile ? false : { opacity: 0, y: 20 }}
+      animate={isMobile ? { opacity: 1, y: 0 } : undefined}
       whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.3 }}

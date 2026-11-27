@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'motion/react'
+import { useIsMobile } from '@/hooks/useMediaQuery'
 import { Star } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { WishlistButton } from '@/components/features/wishlist/WishlistButton'
@@ -22,11 +23,12 @@ export function MovieCard({ movie, className }: MovieCardProps) {
   const { t } = useTranslation()
   const title = getMediaTitle(movie)
   const mediaType = getMediaType(movie)
+  const isMobile = useIsMobile()
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={isMobile ? false : { opacity: 0, y: 20 }}
+      whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.3 }}
       className={cn('group relative [perspective:1000px]', className)}

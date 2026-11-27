@@ -118,6 +118,19 @@ export function parsePersonCredits(value: unknown) {
   return result.data
 }
 
+/** Lowest vote floor TMDB Discover may use; tiers above it come first. */
+export const MIN_VOTE_COUNT: Record<MediaType, number> = { movie: 100, tv: 30 }
+
+/**
+ * Discover vote floors, strictest first. Low-vote titles crowd the
+ * vote_average pool with unfamiliar, often untranslated films, so wider
+ * floors are tried only when a stricter one returns too few candidates.
+ */
+export const VOTE_COUNT_TIERS: Record<MediaType, readonly number[]> = {
+  movie: [1000, 300, MIN_VOTE_COUNT.movie],
+  tv: [300, 100, MIN_VOTE_COUNT.tv],
+}
+
 export function buildDiscoverSearchParams(
   mediaType: MediaType,
   plan: DiscoverPlan,
@@ -125,12 +138,13 @@ export function buildDiscoverSearchParams(
   sortBy: 'popularity.desc' | 'vote_average.desc',
   includeInferred = true,
   excludedKeywordIds: number[] = [],
+  minVoteCount = MIN_VOTE_COUNT[mediaType],
 ) {
   const params = new URLSearchParams({
     include_adult: 'false',
     language: 'en-US',
     sort_by: sortBy,
-    'vote_count.gte': mediaType === 'movie' ? '100' : '30',
+    'vote_count.gte': String(minVoteCount),
   })
   if (mediaType === 'movie') params.set('include_video', 'false')
 

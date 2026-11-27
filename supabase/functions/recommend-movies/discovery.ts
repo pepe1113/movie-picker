@@ -15,6 +15,7 @@ import {
   parsePersonCredits,
   parsePersonResults,
   parseTmdbMedia,
+  VOTE_COUNT_TIERS,
   type CandidateMedia,
 } from './tmdb.ts'
 import { fetchJson } from './upstream.ts'
@@ -321,6 +322,7 @@ async function fetchDiscover(
   sortBy: 'popularity.desc' | 'vote_average.desc',
   includeInferred: boolean,
   castFilter: string | undefined,
+  minVoteCount: number,
   config: DiscoveryConfig,
   signal: AbortSignal,
   fetcher: typeof fetch,
@@ -335,6 +337,7 @@ async function fetchDiscover(
     sortBy,
     includeInferred,
     excludedKeywords.map((keyword) => keyword.id),
+    minVoteCount,
   )
   params.set('language', request.locale === 'zh-TW' ? 'zh-TW' : 'en-US')
   if (castFilter) params.set('with_cast', castFilter)
@@ -345,6 +348,68 @@ async function fetchDiscover(
     'TMDB Discover request failed',
   )
   return parseTmdbMedia(data, request.media_type)
+}
+
+const OBSCURE_TERMS =
+  /冷門|小眾|沒人看過|少人知道|\b(?:obscure|underrated|hidden gems?|lesser[- ]known|niche)\b/iu
+// A negation anywhere earlier in the same clause ("不想看冷門", "don't want
+// anything obscure") means the user wants familiar titles instead.
+const NEGATION =
+  /[不別沒勿]|避免|排除|\b(?:no|not|don'?t|do not|never|avoid|without|nothing|isn'?t)\b|-free/iu
+// "冷門但好看" / "obscure but good": a contrast word starts a new clause.
+const CLAUSE_BREAK = /[，,。.;；!！?？、\n]|但是?|可是|不過|\bbut\b/iu
+
+/** True when the user explicitly asks for little-known titles. */
+export function prefersObscure(text: string) {
+  return text.split(CLAUSE_BREAK).some((clause) => {
+    const match = OBSCURE_TERMS.exec(clause)
+    return match !== null && !NEGATION.test(clause.slice(0, match.index))
+  })
+}
+
+function voteCountTiers(request: RecommendationRequest) {
+  const tiers = VOTE_COUNT_TIERS[request.media_type]
+  // A hidden-gem request should not be limited to widely voted titles.
+  return prefersObscure(request.request) ? tiers.slice(-1) : tiers
+}
+
+/**
+ * TMDB returns an empty overview when a title has no zh-TW translation.
+ * Replace those with the en-US overview so rerank and the UI have text.
+ */
+async function fillMissingOverviews(
+  candidates: CandidateMedia[],
+  request: RecommendationRequest,
+  config: DiscoveryConfig,
+  signal: AbortSignal,
+  fetcher: typeof fetch,
+) {
+  if (request.locale !== 'zh-TW') return candidates
+  const missing = candidates.filter((media) => !media.overview.trim())
+  if (missing.length === 0) return candidates
+  const settled = await Promise.allSettled(
+    missing.map(async (media) => {
+      const data = await fetchJson(
+        fetcher,
+        `${TMDB_BASE_URL}/${media.media_type}/${media.id}?language=en-US`,
+        { signal, headers: tmdbHeaders(config) },
+        'TMDB overview request failed',
+      )
+      const overview = (data as { overview?: unknown } | null)?.overview
+      return typeof overview === 'string' ? overview.trim() : ''
+    }),
+  )
+  const overviews = new Map<number, string>()
+  settled.forEach((result, index) => {
+    if (result.status === 'fulfilled' && result.value) {
+      overviews.set(missing[index]!.id, result.value)
+    }
+  })
+  return candidates.map((media) =>
+    overviews.has(media.id)
+      ? { ...media, overview: overviews.get(media.id)! }
+      : media,
+  )
 }
 
 function filterAllowed(candidates: CandidateMedia[], allowed?: Set<number>) {
@@ -361,6 +426,7 @@ async function fetchPools(
   includeInferred: boolean,
   castFilter: string | undefined,
   allowedMediaIds: Promise<Set<number> | undefined>,
+  minVoteCount: number,
   config: DiscoveryConfig,
   signal: AbortSignal,
   fetcher: typeof fetch,
@@ -374,6 +440,7 @@ async function fetchPools(
       'popularity.desc',
       includeInferred,
       castFilter,
+      minVoteCount,
       config,
       signal,
       fetcher,
@@ -386,6 +453,7 @@ async function fetchPools(
       'vote_average.desc',
       includeInferred,
       castFilter,
+      minVoteCount,
       config,
       signal,
       fetcher,
@@ -418,18 +486,25 @@ export async function discoverCandidates(
     signal,
     fetcher,
   )
-  let candidates = await fetchPools(
-    request,
-    plan,
-    resolvedKeywords.included,
-    resolvedKeywords.excluded,
-    true,
-    castFilter,
-    allowedMediaIds,
-    config,
-    signal,
-    fetcher,
-  )
+  const tiers = voteCountTiers(request)
+  let candidates: CandidateMedia[] = []
+  for (const minVoteCount of tiers) {
+    const pool = await fetchPools(
+      request,
+      plan,
+      resolvedKeywords.included,
+      resolvedKeywords.excluded,
+      true,
+      castFilter,
+      allowedMediaIds,
+      minVoteCount,
+      config,
+      signal,
+      fetcher,
+    )
+    candidates = mergeCandidatePools(candidates, pool)
+    if (candidates.length >= RELAXATION_THRESHOLD) break
+  }
   let usedFallback = false
 
   if (
@@ -444,6 +519,7 @@ export async function discoverCandidates(
       false,
       castFilter,
       allowedMediaIds,
+      tiers[tiers.length - 1]!,
       config,
       signal,
       fetcher,
@@ -451,6 +527,14 @@ export async function discoverCandidates(
     candidates = mergeCandidatePools(candidates, relaxed)
     usedFallback = true
   }
+
+  candidates = await fillMissingOverviews(
+    candidates,
+    request,
+    config,
+    signal,
+    fetcher,
+  )
 
   return {
     candidates,

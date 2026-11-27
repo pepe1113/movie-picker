@@ -4,13 +4,51 @@ import {
   type ContextPlan,
   type ResolvedKeyword,
 } from './domain.ts'
+import {
+  acclaimScore,
+  blendedScore,
+  familiarityScore,
+  fetchExternalRatings,
+  type ExternalRatings,
+  type RatingsConfig,
+} from './ranking.ts'
 import type { CandidateMedia } from './tmdb.ts'
 
 const DECISIONS_URL = 'https://openrouter.ai/api/alpha/decisions'
 const JEV_MODEL = 'typesafe/jev-1.13'
 const QUESTION_ID = 'is_relevant'
-const RELEVANCE_THRESHOLD = 0.5
+export const RELEVANCE_THRESHOLD = 0.5
 const FINAL_RECOMMENDATION_LIMIT = 5
+// Passing candidates whose external ratings are looked up before the final
+// blend; bounded to keep OMDb usage low.
+export const RATINGS_LOOKUP_LIMIT = 8
+
+export interface RankedScore {
+  id: number
+  semantic?: number
+  acclaim: number
+  familiarity: number
+  final: number
+}
+
+function rankByBlend(
+  items: { candidate: CandidateMedia; semantic?: number; index: number }[],
+  ratings: Map<number, ExternalRatings>,
+) {
+  return items
+    .map((item) => {
+      const external = ratings.get(item.candidate.id)
+      const score: RankedScore = {
+        id: item.candidate.id,
+        ...(item.semantic !== undefined ? { semantic: item.semantic } : {}),
+        acclaim: acclaimScore(item.candidate, external),
+        familiarity: familiarityScore(item.candidate),
+        final: blendedScore(item.candidate, item.semantic, external),
+      }
+      return { ...item, score }
+    })
+    .sort((a, b) => b.score.final - a.score.final || a.index - b.index)
+}
 
 type JevAnswer = {
   model: string
@@ -132,6 +170,7 @@ export async function rerankCandidates(
   apiKey: string | undefined,
   signal: AbortSignal,
   fetcher: typeof fetch = fetch,
+  ratingsConfig?: RatingsConfig,
 ) {
   const startedAt = performance.now()
   const settled = apiKey
@@ -153,28 +192,46 @@ export async function rerankCandidates(
       ? [{ ...result.value, candidate: candidates[index]!, index }]
       : [],
   )
-  const passing = scored
+  const gated = scored
     .filter(({ score }) => score >= RELEVANCE_THRESHOLD)
     .sort((a, b) => b.score - a.score || a.index - b.index)
-    .slice(0, FINAL_RECOMMENDATION_LIMIT)
+    .slice(0, RATINGS_LOOKUP_LIMIT)
   const fullFallback = scored.length === 0
   const model = scored[0]?.model
-
+  const ratings =
+    ratingsConfig && !fullFallback
+      ? await fetchExternalRatings(
+          gated.map(({ candidate }) => candidate),
+          ratingsConfig,
+          signal,
+          fetcher,
+        )
+      : new Map<number, ExternalRatings>()
+  const ranked = rankByBlend(
+    fullFallback
+      ? candidates.map((candidate, index) => ({ candidate, index }))
+      : gated.map(({ candidate, score, index }) => ({
+          candidate,
+          semantic: score,
+          index,
+        })),
+    ratings,
+  ).slice(0, FINAL_RECOMMENDATION_LIMIT)
   console.info('openrouter rerank completed', {
     candidateCount: candidates.length,
     successCount: scored.length,
     failureCount: candidates.length - scored.length,
-    passingCount: passing.length,
+    passingCount: fullFallback ? 0 : ranked.length,
     latencyMs: Math.round(performance.now() - startedAt),
     model,
     cost: scored.reduce((total, item) => total + (item.cost ?? 0), 0),
+    ratingsCount: ratings.size,
     fullFallback,
   })
 
   return {
-    candidates: fullFallback
-      ? candidates.slice(0, FINAL_RECOMMENDATION_LIMIT)
-      : passing.map(({ candidate }) => candidate),
+    candidates: ranked.map(({ candidate }) => candidate),
+    scores: ranked.map(({ score }) => score),
     fullFallback,
     model,
   }

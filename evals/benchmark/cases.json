@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "description": "AI 選片固定題庫。前 10 題沿用 2026-10-03 rerank 評測；11–20 題針對知名度、口碑、冷門需求與影集。修改題目時請把 version 加一，不同版本的結果不能直接比較。",
+  "cases": [
+    {
+      "id": 1,
+      "tag": "mood",
+      "locale": "zh-TW",
+      "media_type": "movie",
+      "request": "最近工作很挫折，想看能讓我重新找回工作動力、靠努力突破困境的電影。"
+    },
+    {
+      "id": 2,
+      "tag": "mood",
+      "locale": "zh-TW",
+      "media_type": "movie",
+      "request": "下班很累，想看輕鬆溫暖、不要沉重也不要恐怖的電影。"
+    },
+    {
+      "id": 3,
+      "tag": "genre",
+      "locale": "zh-TW",
+      "media_type": "movie",
+      "request": "想看適合情侶約會的浪漫喜劇，甜蜜、有趣，不要悲傷的愛情故事。"
+    },
+    {
+      "id": 4,
+      "tag": "genre",
+      "locale": "zh-TW",
+      "media_type": "movie",
+      "request": "想看有巧妙反轉、需要動腦的懸疑電影，不要恐怖片。"
+    },
+    {
+      "id": 5,
+      "tag": "family",
+      "locale": "zh-TW",
+      "media_type": "movie",
+      "request": "週末想和家人一起看溫馨的動畫電影，重視親情和互相支持。"
+    },
+    {
+      "id": 6,
+      "tag": "person",
+      "locale": "zh-TW",
+      "media_type": "movie",
+      "request": "我想看 2010 年之後的科幻片，不要太冷門，最好有 Amy Adams。"
+    },
+    {
+      "id": 7,
+      "tag": "language",
+      "locale": "zh-TW",
+      "media_type": "movie",
+      "request": "想看節奏慢、讓人平靜療癒的日語電影，不要暴力和恐怖。"
+    },
+    {
+      "id": 8,
+      "tag": "tv",
+      "locale": "zh-TW",
+      "media_type": "tv",
+      "request": "想看辦公室背景、輕鬆搞笑的影集，適合下班放鬆。"
+    },
+    {
+      "id": 9,
+      "tag": "mood",
+      "locale": "en",
+      "media_type": "movie",
+      "request": "I want an inspiring movie about starting over after career failure, with perseverance rather than revenge."
+    },
+    {
+      "id": 10,
+      "tag": "theme",
+      "locale": "en",
+      "media_type": "movie",
+      "request": "Recommend a thoughtful science fiction movie about human connection, not an action-heavy space battle."
+    },
+    {
+      "id": 11,
+      "tag": "acclaim",
+      "locale": "zh-TW",
+      "media_type": "movie",
+      "request": "想看口碑很好的韓國犯罪驚悚片。"
+    },
+    {
+      "id": 12,
+      "tag": "acclaim",
+      "locale": "zh-TW",
+      "media_type": "movie",
+      "request": "推薦幾部影史經典的黑幫電影。"
+    },
+    {
+      "id": 13,
+      "tag": "acclaim",
+      "locale": "zh-TW",
+      "media_type": "movie",
+      "request": "想看近十年評價很高的劇情片，最好是那種影展常客。"
+    },
+    {
+      "id": 14,
+      "tag": "mood",
+      "locale": "zh-TW",
+      "media_type": "movie",
+      "request": "心情不好，想看一部看完會很療癒、會想哭但溫暖的電影。"
+    },
+    {
+      "id": 15,
+      "tag": "language",
+      "locale": "zh-TW",
+      "media_type": "movie",
+      "request": "想看台灣的青春成長電影。"
+    },
+    {
+      "id": 16,
+      "tag": "genre",
+      "locale": "zh-TW",
+      "media_type": "movie",
+      "request": "想看刺激的太空科幻冒險片，畫面要壯觀。"
+    },
+    {
+      "id": 17,
+      "tag": "tv",
+      "locale": "zh-TW",
+      "media_type": "tv",
+      "request": "想追一部劇情緊湊的美國犯罪影集。"
+    },
+    {
+      "id": 18,
+      "tag": "tv",
+      "locale": "zh-TW",
+      "media_type": "tv",
+      "request": "想看溫馨的日本料理美食劇。"
+    },
+    {
+      "id": 19,
+      "tag": "obscure",
+      "locale": "zh-TW",
+      "media_type": "movie",
+      "request": "想看冷門但好看的獨立電影，不要好萊塢大片。"
+    },
+    {
+      "id": 20,
+      "tag": "general",
+      "locale": "en",
+      "media_type": "movie",
+      "request": "Something fun to watch tonight."
+    }
+  ]
+}

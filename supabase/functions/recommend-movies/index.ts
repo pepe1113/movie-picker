@@ -53,6 +53,7 @@ function getCoordinatorConfig(): CoordinatorConfig {
     openaiBaseUrl: getRequiredEnv('OPENAI_BASE_URL'),
     openaiModel: getRequiredEnv('OPENAI_MODEL'),
     openrouterApiKey: Deno.env.get('OPENROUTER_API_KEY'),
+    omdbApiKey: Deno.env.get('OMDB_API_KEY'),
     tmdbAccessToken: getRequiredEnv('TMDB_ACCESS_TOKEN'),
   }
 }

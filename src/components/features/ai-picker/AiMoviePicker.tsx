@@ -181,8 +181,9 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
       <div className="border-primary/10 absolute top-1/2 left-1/2 size-[44rem] -translate-x-1/2 -translate-y-1/2 rounded-full border" />
       <div className="via-primary/70 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent" />
 
-      <div className="relative container mx-auto flex min-h-[calc(100svh-64px)] flex-1 flex-col justify-center px-6 py-10 md:px-12 md:py-12 lg:px-16">
-        <div className="bg-card/75 rounded-2xl border border-white/10 p-5 shadow-[0_24px_70px_rgba(108,18,35,0.22),0_12px_32px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-8">
+      <div className="relative container mx-auto flex min-h-[calc(100svh-64px)] flex-1 flex-col justify-center px-4 py-8 md:px-12 md:py-12 lg:px-16">
+        {/* Full-bleed on phones; framed card from md up. */}
+        <div className="md:bg-card/75 md:rounded-2xl md:border md:border-white/10 md:p-8 md:shadow-[0_24px_70px_rgba(108,18,35,0.22),0_12px_32px_rgba(0,0,0,0.45)] md:backdrop-blur-xl">
           {!result ? (
             <div className="mx-auto max-w-3xl space-y-7">
               <div className="space-y-3 text-center">
@@ -202,13 +203,17 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                 hidden={recommendationMutation.isPending}
                 className="space-y-5"
               >
-                <fieldset className="space-y-2">
-                  <legend className="text-muted-foreground text-xs font-bold tracking-[1.4px] uppercase">
-                    {t('aiPicker.mediaTypeLabel')}
-                  </legend>
+                <div className="flex items-center justify-between gap-3">
+                  <label
+                    htmlFor="movie-request"
+                    className="text-muted-foreground text-xs font-bold tracking-[1.4px] uppercase"
+                  >
+                    {t('aiPicker.requestLabel')}
+                  </label>
                   <div
-                    className="bg-background/70 grid grid-cols-2 gap-1 rounded-xl border border-white/8 p-1"
                     role="group"
+                    aria-label={t('aiPicker.mediaTypeLabel')}
+                    className="bg-background/70 flex shrink-0 gap-1 rounded-full border border-white/8 p-1"
                   >
                     {(['movie', 'tv'] as const).map((type) => (
                       <Button
@@ -219,25 +224,24 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                         disabled={recommendationMutation.isPending}
                         onClick={() => setMediaType(type)}
                         className={cn(
-                          'h-10 rounded-lg shadow-none',
-                          mediaType !== type && 'hover:bg-white/5',
+                          'h-8 gap-1.5 rounded-full px-3 text-sm shadow-none',
+                          mediaType !== type &&
+                            'text-muted-foreground hover:bg-white/5',
                         )}
                       >
+                        <span aria-hidden="true">
+                          {type === 'movie' ? '🎬' : '📺'}
+                        </span>
                         {t(`mediaType.${type}`)}
                       </Button>
                     ))}
                   </div>
-                </fieldset>
-                <label
-                  htmlFor="movie-request"
-                  className="text-muted-foreground text-xs font-bold tracking-[1.4px] uppercase"
-                >
-                  {t('aiPicker.requestLabel')}
-                </label>
+                </div>
+                {/* One swipeable row on phones; wraps from md up. */}
                 <div
                   role="group"
                   aria-label={t('aiPicker.templatesLabel')}
-                  className="my-2 flex flex-wrap gap-2"
+                  className="-mx-4 my-3 flex snap-x scroll-px-4 gap-2 overflow-x-auto px-4 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden"
                 >
                   {requestTemplates.map((template) => (
                     <Button
@@ -246,7 +250,7 @@ export function AiMoviePicker({ onBrowseMovies }: AiMoviePickerProps) {
                       variant="secondary"
                       disabled={recommendationMutation.isPending}
                       onClick={() => applyTemplate(template.prompt)}
-                      className="bg-background/55 hover:bg-primary/10 hover:border-primary/35 h-10 min-w-0 flex-none gap-2 rounded-full border border-white/10 px-4 text-center leading-tight whitespace-normal shadow-none hover:scale-[1.02]"
+                      className="bg-background/55 hover:bg-primary/10 hover:border-primary/35 h-9 flex-none snap-start gap-1.5 rounded-full border border-white/10 px-3 whitespace-nowrap shadow-none md:h-10 md:gap-2 md:px-4"
                     >
                       <span aria-hidden="true" className="text-base">
                         {template.emoji}

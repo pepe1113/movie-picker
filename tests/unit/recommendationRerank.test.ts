@@ -221,7 +221,7 @@ describe('OpenRouter Jev candidate reranking', () => {
     expect(result.fullFallback).toBe(true)
   })
 
-  it('falls back to the first five candidates when every decision fails', async () => {
+  it('falls back to five candidates in pool order when every decision fails and ratings tie', async () => {
     const controller = new AbortController()
     controller.abort(new Error('deadline exceeded'))
     const fetcher = vi.fn<typeof fetch>(async (_input, init) => {

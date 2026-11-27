@@ -24,6 +24,7 @@ export type { OpenAIUsage } from './planning.ts'
 
 export interface CoordinatorConfig extends PlanningConfig, DiscoveryConfig {
   openrouterApiKey?: string
+  omdbApiKey?: string
 }
 
 export class RecommendationStageError extends Error {
@@ -103,6 +104,7 @@ export async function coordinateRecommendations(
     config.openrouterApiKey,
     signal,
     fetcher,
+    { tmdbAccessToken: config.tmdbAccessToken, omdbApiKey: config.omdbApiKey },
   )
 
   return {
@@ -111,6 +113,7 @@ export async function coordinateRecommendations(
     resolvedPeople: discovered.resolvedPeople,
     resolvedKeywords: discovered.resolvedKeywords,
     recommendations: recommendationSnapshots(reranked.candidates),
+    scores: reranked.scores,
     provider: reranked.fullFallback
       ? ('openai' as const)
       : ('openrouter' as const),

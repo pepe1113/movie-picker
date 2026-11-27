@@ -229,7 +229,13 @@ describe('recommendation orchestrator', () => {
     )
 
     const discoverUrls = urls.filter((url) => url.includes('/discover/movie'))
-    expect(discoverUrls).toHaveLength(2)
+    // Two candidates are too few, so every vote tier is tried in turn.
+    expect(discoverUrls).toHaveLength(6)
+    expect(
+      discoverUrls.map((url) =>
+        new URL(url).searchParams.get('vote_count.gte'),
+      ),
+    ).toEqual(['1000', '1000', '300', '300', '100', '100'])
     expect(
       discoverUrls.every(
         (url) => new URL(url).searchParams.get('with_cast') === '287',
@@ -643,17 +649,21 @@ describe('recommendation orchestrator', () => {
 
     expect(result.usedFallback).toBe(true)
     expect(result.recommendations.map((item) => item.media_id)).toEqual([9])
-    expect(discoverUrls).toHaveLength(4)
+    expect(discoverUrls).toHaveLength(8)
     expect(
       discoverUrls.every(
         (url) => new URL(url).searchParams.get('with_keywords') === '9748',
       ),
     ).toBe(true)
+    const relaxedUrls = discoverUrls.filter(
+      (url) => !new URL(url).searchParams.has('with_genres'),
+    )
+    expect(relaxedUrls).toHaveLength(2)
     expect(
-      discoverUrls.filter((url) =>
-        new URL(url).searchParams.has('with_genres'),
+      relaxedUrls.every(
+        (url) => new URL(url).searchParams.get('vote_count.gte') === '100',
       ),
-    ).toHaveLength(2)
+    ).toBe(true)
   })
 
   it('uses TV credits and the light Japanese TV route', async () => {
@@ -706,11 +716,15 @@ describe('recommendation orchestrator', () => {
           params.get('with_origin_country') === 'JP' &&
           params.get('with_original_language') === 'ja' &&
           params.get('without_genres') === '16' &&
-          params.get('vote_count.gte') === '30' &&
           !params.has('with_cast')
         )
       }),
     ).toBe(true)
+    expect(
+      discoverUrls.map((url) =>
+        new URL(url).searchParams.get('vote_count.gte'),
+      ),
+    ).toEqual(['300', '300', '100', '100', '30', '30'])
     expect(urls.some((url) => url.includes('/movie_credits'))).toBe(false)
   })
 

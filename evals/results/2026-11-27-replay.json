@@ -1,0 +1,398 @@
+{
+  "source": "docs/evaluations/2026-10-03-rerank/current",
+  "results": [
+    {
+      "name": "main（只看語意）",
+      "summary": {
+        "precision": 0.5333333333333334,
+        "ndcg": 0.9191550464306576,
+        "returned": 3.481481481481482,
+        "emptyOverviewRate": 0.04444444444444445,
+        "familiarRate": 0.537037037037037,
+        "medianVotes": 3090.0370370370374,
+        "meanRating": 7.515622222222223
+      },
+      "perCase": [
+        {
+          "id": 1,
+          "request": "最近工作很挫折，想看能讓我重新找回工作動力、靠努力突破困境的電影。",
+          "metrics": {
+            "precision": 1,
+            "ndcg": 1,
+            "returned": 5,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0.6,
+            "medianVotes": 1264,
+            "meanRating": 7.236400000000001
+          }
+        },
+        {
+          "id": 2,
+          "request": "下班很累，想看輕鬆溫暖、不要沉重也不要恐怖的電影。",
+          "metrics": {
+            "precision": 0.4000000000000001,
+            "ndcg": 0.937708058067494,
+            "returned": 5,
+            "emptyOverviewRate": 0.20000000000000004,
+            "familiarRate": 0.4000000000000001,
+            "medianVotes": 611,
+            "meanRating": 8.3308
+          }
+        },
+        {
+          "id": 3,
+          "request": "想看適合情侶約會的浪漫喜劇，甜蜜、有趣，不要悲傷的愛情故事。",
+          "metrics": {
+            "precision": 0.20000000000000004,
+            "ndcg": 0.8262346571285599,
+            "returned": 1,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0,
+            "medianVotes": 411,
+            "meanRating": 8.074
+          }
+        },
+        {
+          "id": 4,
+          "request": "想看有巧妙反轉、需要動腦的懸疑電影，不要恐怖片。",
+          "metrics": {
+            "precision": 0.20000000000000004,
+            "ndcg": 1,
+            "returned": 1.3333333333333333,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0.8333333333333334,
+            "medianVotes": 2169.3333333333335,
+            "meanRating": 6.5906666666666665
+          }
+        },
+        {
+          "id": 5,
+          "request": "週末想和家人一起看溫馨的動畫電影，重視親情和互相支持。",
+          "metrics": {
+            "precision": 0.8000000000000002,
+            "ndcg": 0.9026211001048622,
+            "returned": 5,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0.8000000000000002,
+            "medianVotes": 3516,
+            "meanRating": 7.677866666666667
+          }
+        },
+        {
+          "id": 6,
+          "request": "我想看 2010 年之後的科幻片，不要太冷門，最好有 Amy Adams。",
+          "metrics": {
+            "precision": 0.6,
+            "ndcg": 0.8318724637288825,
+            "returned": 3,
+            "emptyOverviewRate": 0,
+            "familiarRate": 1,
+            "medianVotes": 16646,
+            "meanRating": 6.787
+          }
+        },
+        {
+          "id": 7,
+          "request": "想看節奏慢、讓人平靜療癒的日語電影，不要暴力和恐怖。",
+          "metrics": {
+            "precision": 0.6,
+            "ndcg": 0.9200274886888252,
+            "returned": 5,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0.6,
+            "medianVotes": 2085,
+            "meanRating": 8.223066666666666
+          }
+        },
+        {
+          "id": 8,
+          "request": "想看辦公室背景、輕鬆搞笑的影集，適合下班放鬆。",
+          "metrics": {
+            "precision": 0.8000000000000002,
+            "ndcg": 0.8539316501572934,
+            "returned": 5,
+            "emptyOverviewRate": 0.20000000000000004,
+            "familiarRate": 0.6,
+            "medianVotes": 1008,
+            "meanRating": 7.7208000000000006
+          }
+        },
+        {
+          "id": 10,
+          "request": "Recommend a thoughtful science fiction movie about human connection, not an action-heavy space battle.",
+          "metrics": {
+            "precision": 0.20000000000000004,
+            "ndcg": 1,
+            "returned": 1,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0,
+            "medianVotes": 100,
+            "meanRating": 7
+          }
+        }
+      ]
+    },
+    {
+      "name": "混合排序",
+      "summary": {
+        "precision": 0.5333333333333333,
+        "ndcg": 0.9119535889224895,
+        "returned": 3.481481481481482,
+        "emptyOverviewRate": 0.04444444444444445,
+        "familiarRate": 0.5814814814814815,
+        "medianVotes": 4148.925925925926,
+        "meanRating": 7.52214074074074
+      },
+      "perCase": [
+        {
+          "id": 1,
+          "request": "最近工作很挫折，想看能讓我重新找回工作動力、靠努力突破困境的電影。",
+          "metrics": {
+            "precision": 1,
+            "ndcg": 1,
+            "returned": 5,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0.6,
+            "medianVotes": 1264,
+            "meanRating": 7.236400000000001
+          }
+        },
+        {
+          "id": 2,
+          "request": "下班很累，想看輕鬆溫暖、不要沉重也不要恐怖的電影。",
+          "metrics": {
+            "precision": 0.4000000000000001,
+            "ndcg": 0.937708058067494,
+            "returned": 5,
+            "emptyOverviewRate": 0.20000000000000004,
+            "familiarRate": 0.4000000000000001,
+            "medianVotes": 611,
+            "meanRating": 8.3308
+          }
+        },
+        {
+          "id": 3,
+          "request": "想看適合情侶約會的浪漫喜劇，甜蜜、有趣，不要悲傷的愛情故事。",
+          "metrics": {
+            "precision": 0.20000000000000004,
+            "ndcg": 0.8262346571285599,
+            "returned": 1,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0,
+            "medianVotes": 411,
+            "meanRating": 8.074
+          }
+        },
+        {
+          "id": 4,
+          "request": "想看有巧妙反轉、需要動腦的懸疑電影，不要恐怖片。",
+          "metrics": {
+            "precision": 0.20000000000000004,
+            "ndcg": 1,
+            "returned": 1.3333333333333333,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0.8333333333333334,
+            "medianVotes": 2169.3333333333335,
+            "meanRating": 6.5906666666666665
+          }
+        },
+        {
+          "id": 5,
+          "request": "週末想和家人一起看溫馨的動畫電影，重視親情和互相支持。",
+          "metrics": {
+            "precision": 1,
+            "ndcg": 1,
+            "returned": 5,
+            "emptyOverviewRate": 0,
+            "familiarRate": 1,
+            "medianVotes": 10427,
+            "meanRating": 7.695400000000002
+          }
+        },
+        {
+          "id": 6,
+          "request": "我想看 2010 年之後的科幻片，不要太冷門，最好有 Amy Adams。",
+          "metrics": {
+            "precision": 0.6,
+            "ndcg": 0.8318724637288825,
+            "returned": 3,
+            "emptyOverviewRate": 0,
+            "familiarRate": 1,
+            "medianVotes": 16646,
+            "meanRating": 6.787
+          }
+        },
+        {
+          "id": 7,
+          "request": "想看節奏慢、讓人平靜療癒的日語電影，不要暴力和恐怖。",
+          "metrics": {
+            "precision": 0.4000000000000001,
+            "ndcg": 0.7479266229999318,
+            "returned": 5,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0.8000000000000002,
+            "medianVotes": 4704,
+            "meanRating": 8.2218
+          }
+        },
+        {
+          "id": 8,
+          "request": "想看辦公室背景、輕鬆搞笑的影集，適合下班放鬆。",
+          "metrics": {
+            "precision": 0.8000000000000002,
+            "ndcg": 0.8638404983775366,
+            "returned": 5,
+            "emptyOverviewRate": 0.20000000000000004,
+            "familiarRate": 0.6,
+            "medianVotes": 1008,
+            "meanRating": 7.7632
+          }
+        },
+        {
+          "id": 10,
+          "request": "Recommend a thoughtful science fiction movie about human connection, not an action-heavy space battle.",
+          "metrics": {
+            "precision": 0.20000000000000004,
+            "ndcg": 1,
+            "returned": 1,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0,
+            "medianVotes": 100,
+            "meanRating": 7
+          }
+        }
+      ]
+    },
+    {
+      "name": "票數分層＋混合排序",
+      "summary": {
+        "precision": 0.5333333333333333,
+        "ndcg": 0.9119535889224895,
+        "returned": 3.3703703703703707,
+        "emptyOverviewRate": 0.04444444444444445,
+        "familiarRate": 0.6037037037037037,
+        "medianVotes": 4394.537037037037,
+        "meanRating": 7.516274074074074
+      },
+      "perCase": [
+        {
+          "id": 1,
+          "request": "最近工作很挫折，想看能讓我重新找回工作動力、靠努力突破困境的電影。",
+          "metrics": {
+            "precision": 1,
+            "ndcg": 1,
+            "returned": 5,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0.6,
+            "medianVotes": 1264,
+            "meanRating": 7.236400000000001
+          }
+        },
+        {
+          "id": 2,
+          "request": "下班很累，想看輕鬆溫暖、不要沉重也不要恐怖的電影。",
+          "metrics": {
+            "precision": 0.4000000000000001,
+            "ndcg": 0.937708058067494,
+            "returned": 5,
+            "emptyOverviewRate": 0.20000000000000004,
+            "familiarRate": 0.4000000000000001,
+            "medianVotes": 611,
+            "meanRating": 8.3308
+          }
+        },
+        {
+          "id": 3,
+          "request": "想看適合情侶約會的浪漫喜劇，甜蜜、有趣，不要悲傷的愛情故事。",
+          "metrics": {
+            "precision": 0.20000000000000004,
+            "ndcg": 0.8262346571285599,
+            "returned": 1,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0,
+            "medianVotes": 411,
+            "meanRating": 8.074
+          }
+        },
+        {
+          "id": 4,
+          "request": "想看有巧妙反轉、需要動腦的懸疑電影，不要恐怖片。",
+          "metrics": {
+            "precision": 0.20000000000000004,
+            "ndcg": 1,
+            "returned": 1.3333333333333333,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0.8333333333333334,
+            "medianVotes": 2169.3333333333335,
+            "meanRating": 6.5906666666666665
+          }
+        },
+        {
+          "id": 5,
+          "request": "週末想和家人一起看溫馨的動畫電影，重視親情和互相支持。",
+          "metrics": {
+            "precision": 1,
+            "ndcg": 1,
+            "returned": 5,
+            "emptyOverviewRate": 0,
+            "familiarRate": 1,
+            "medianVotes": 10427,
+            "meanRating": 7.695400000000002
+          }
+        },
+        {
+          "id": 6,
+          "request": "我想看 2010 年之後的科幻片，不要太冷門，最好有 Amy Adams。",
+          "metrics": {
+            "precision": 0.6,
+            "ndcg": 0.8318724637288825,
+            "returned": 3,
+            "emptyOverviewRate": 0,
+            "familiarRate": 1,
+            "medianVotes": 16646,
+            "meanRating": 6.787
+          }
+        },
+        {
+          "id": 7,
+          "request": "想看節奏慢、讓人平靜療癒的日語電影，不要暴力和恐怖。",
+          "metrics": {
+            "precision": 0.4000000000000001,
+            "ndcg": 0.7479266229999318,
+            "returned": 4,
+            "emptyOverviewRate": 0,
+            "familiarRate": 1,
+            "medianVotes": 6914.5,
+            "meanRating": 8.169
+          }
+        },
+        {
+          "id": 8,
+          "request": "想看辦公室背景、輕鬆搞笑的影集，適合下班放鬆。",
+          "metrics": {
+            "precision": 0.8000000000000002,
+            "ndcg": 0.8638404983775366,
+            "returned": 5,
+            "emptyOverviewRate": 0.20000000000000004,
+            "familiarRate": 0.6,
+            "medianVotes": 1008,
+            "meanRating": 7.7632
+          }
+        },
+        {
+          "id": 10,
+          "request": "Recommend a thoughtful science fiction movie about human connection, not an action-heavy space battle.",
+          "metrics": {
+            "precision": 0.20000000000000004,
+            "ndcg": 1,
+            "returned": 1,
+            "emptyOverviewRate": 0,
+            "familiarRate": 0,
+            "medianVotes": 100,
+            "meanRating": 7
+          }
+        }
+      ]
+    }
+  ]
+}

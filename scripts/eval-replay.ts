@@ -4,7 +4,12 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { RELAXATION_THRESHOLD } from '../supabase/functions/recommend-movies/domain.ts'
+import { prefersObscure } from '../supabase/functions/recommend-movies/discovery.ts'
 import { blendedScore } from '../supabase/functions/recommend-movies/ranking.ts'
+import {
+  RATINGS_LOOKUP_LIMIT,
+  RELEVANCE_THRESHOLD,
+} from '../supabase/functions/recommend-movies/rerank.ts'
 import {
   VOTE_COUNT_TIERS,
   type CandidateMedia,
@@ -12,15 +17,13 @@ import {
 import {
   averageBy,
   checkGoals,
+  GOAL_ICON,
   listSignals,
   ndcgAtK,
   precisionAtK,
   TOP_K,
   type Grade,
 } from './eval/metrics.ts'
-
-const RELEVANCE_THRESHOLD = 0.5
-const RATINGS_LOOKUP_LIMIT = 8
 
 interface Pool {
   id: number
@@ -116,7 +119,9 @@ const results = Object.entries(variants).map(([name, pick]) => {
           metrics: {
             precision: precisionAtK(grades),
             ndcg: ndcgAtK(grades, poolGrades),
-            ...listSignals(picked),
+            ...listSignals(picked, {
+              exemptFamiliarity: prefersObscure(pool.request.request),
+            }),
           },
           picks: picked.map((media, index) => ({
             id: media.id,
@@ -142,7 +147,9 @@ const results = Object.entries(variants).map(([name, pick]) => {
 })
 
 const baseline = results[0]!.summary
-const pct = (v: number) => `${(v * 100).toFixed(1)}%`
+const fmt = (v: number, text: (v: number) => string) =>
+  Number.isFinite(v) ? text(v) : '—'
+const pct = (v: number) => fmt(v, (n) => `${(n * 100).toFixed(1)}%`)
 const lines = [
   `# Replay benchmark（${new Date().toISOString().slice(0, 10)}）`,
   '',
@@ -152,7 +159,7 @@ const lines = [
   `| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |`,
   ...results.map(
     ({ name, summary: s }) =>
-      `| ${name} | ${pct(s.precision)} | ${s.ndcg.toFixed(3)} | ${s.returned.toFixed(1)} | ${pct(s.emptyOverviewRate)} | ${pct(s.familiarRate)} | ${Math.round(s.medianVotes)} | ${s.meanRating.toFixed(2)} |`,
+      `| ${name} | ${pct(s.precision)} | ${fmt(s.ndcg, (n) => n.toFixed(3))} | ${s.returned.toFixed(1)} | ${pct(s.emptyOverviewRate)} | ${pct(s.familiarRate)} | ${fmt(s.medianVotes, (n) => String(Math.round(n)))} | ${fmt(s.meanRating, (n) => n.toFixed(2))} |`,
   ),
   '',
   '## 目標檢查（對照 main）',
@@ -163,7 +170,7 @@ const lines = [
       `**${name}**`,
       '',
       ...checkGoals(summary, baseline).map(
-        (c) => `- ${c.pass ? '✅' : '❌'} ${c.goal}`,
+        (c) => `- ${GOAL_ICON[c.status]} ${c.goal}`,
       ),
       '',
     ]),

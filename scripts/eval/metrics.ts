@@ -41,39 +41,68 @@ function median(values: number[]) {
     : (sorted[middle - 1]! + sorted[middle]!) / 2
 }
 
-/** Label-free quality signals for a returned list. */
-export function listSignals(items: CandidateMedia[]) {
-  const n = items.length || 1
+/**
+ * Label-free quality signals for a returned list. Rates are NaN ("no data")
+ * for an empty list, so returning nothing cannot improve them. Familiarity
+ * is NaN when the user asked for little-known titles.
+ */
+export function listSignals(
+  items: CandidateMedia[],
+  { exemptFamiliarity = false } = {},
+) {
+  const n = items.length
+  const rate = (count: number) => (n ? count / n : Number.NaN)
   return {
-    returned: items.length,
-    emptyOverviewRate: items.filter((m) => !m.overview.trim()).length / n,
-    familiarRate: items.filter(isFamiliar).length / n,
-    medianVotes: median(items.map((m) => m.vote_count)),
-    meanRating: items.reduce((t, m) => t + m.vote_average, 0) / n,
+    returned: n,
+    emptyOverviewRate: rate(items.filter((m) => !m.overview.trim()).length),
+    familiarRate: exemptFamiliarity
+      ? Number.NaN
+      : rate(items.filter(isFamiliar).length),
+    medianVotes: n ? median(items.map((m) => m.vote_count)) : Number.NaN,
+    meanRating: rate(items.reduce((t, m) => t + m.vote_average, 0)),
   }
 }
 
 export type ListSignals = ReturnType<typeof listSignals>
 
+/** Mean of the finite values; NaN when there are none. */
 export function mean(values: number[]) {
-  return values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0
+  const finite = values.filter(Number.isFinite)
+  return finite.length
+    ? finite.reduce((a, b) => a + b, 0) / finite.length
+    : Number.NaN
 }
 
-/** Averages each numeric field over cases. */
+/** Averages each numeric field over cases, skipping cases with no data. */
 export function averageBy<T extends Record<string, number>>(rows: T[]) {
-  const keys = Object.keys(rows[0] ?? {}) as (keyof T)[]
+  const keys = [
+    ...new Set(rows.flatMap((row) => Object.keys(row))),
+  ] as (keyof T)[]
   return Object.fromEntries(
-    keys.map((key) => [key, mean(rows.map((row) => row[key]))]),
+    keys.map((key) => [key, mean(rows.map((row) => row[key] ?? Number.NaN))]),
   ) as T
 }
 
-/** Benchmark goals; a run passes when every check holds. See evals/README.md. */
+/** Benchmark goals; a run passes when no check fails. See evals/README.md. */
 export const GOALS = {
   maxEmptyOverviewRate: 0.05,
   minFamiliarRate: 0.7,
   maxPrecisionDrop: 0.05,
   maxNdcgDrop: 0.03,
 } as const
+
+export type GoalStatus = 'pass' | 'fail' | 'n/a'
+export const GOAL_ICON: Record<GoalStatus, string> = {
+  pass: '✅',
+  fail: '❌',
+  'n/a': '➖',
+}
+
+/** 'n/a' when there is no data to judge, so it never fails a run. */
+function judge(value: number | undefined, ok: (value: number) => boolean) {
+  if (value === undefined || !Number.isFinite(value)) return 'n/a' as const
+  return ok(value) ? ('pass' as const) : ('fail' as const)
+}
 
 export function checkGoals(
   candidate: {
@@ -84,26 +113,34 @@ export function checkGoals(
   },
   baseline?: { precision?: number; ndcg?: number },
 ) {
-  const checks = [
+  const checks: { goal: string; status: GoalStatus }[] = [
     {
       goal: `top-${TOP_K} 空白簡介率 ≤ ${GOALS.maxEmptyOverviewRate * 100}%`,
-      pass: candidate.emptyOverviewRate <= GOALS.maxEmptyOverviewRate,
+      status: judge(
+        candidate.emptyOverviewRate,
+        (v) => v <= GOALS.maxEmptyOverviewRate,
+      ),
     },
     {
-      goal: `top-${TOP_K} 中知名作品（電影 ≥ ${FAMILIAR_VOTES.movie} 票、影集 ≥ ${FAMILIAR_VOTES.tv} 票）比例 ≥ ${GOALS.minFamiliarRate * 100}%`,
-      pass: candidate.familiarRate >= GOALS.minFamiliarRate,
+      goal: `top-${TOP_K} 中知名作品（電影 ≥ ${FAMILIAR_VOTES.movie} 票、影集 ≥ ${FAMILIAR_VOTES.tv} 票）比例 ≥ ${GOALS.minFamiliarRate * 100}%（不含要求冷門片的題目）`,
+      status: judge(candidate.familiarRate, (v) => v >= GOALS.minFamiliarRate),
     },
   ]
-  if (baseline?.precision !== undefined && candidate.precision !== undefined) {
+  if (
+    baseline?.precision !== undefined &&
+    Number.isFinite(baseline.precision)
+  ) {
+    const floor = baseline.precision - GOALS.maxPrecisionDrop
     checks.push({
       goal: `Precision@${TOP_K} 不低於基準 ${GOALS.maxPrecisionDrop * 100} 個百分點以上`,
-      pass: candidate.precision >= baseline.precision - GOALS.maxPrecisionDrop,
+      status: judge(candidate.precision, (v) => v >= floor),
     })
   }
-  if (baseline?.ndcg !== undefined && candidate.ndcg !== undefined) {
+  if (baseline?.ndcg !== undefined && Number.isFinite(baseline.ndcg)) {
+    const floor = baseline.ndcg - GOALS.maxNdcgDrop
     checks.push({
       goal: `nDCG@${TOP_K} 不低於基準 ${GOALS.maxNdcgDrop} 以上`,
-      pass: candidate.ndcg >= baseline.ndcg - GOALS.maxNdcgDrop,
+      status: judge(candidate.ndcg, (v) => v >= floor),
     })
   }
   return checks

@@ -153,6 +153,19 @@ describe('candidate quality tiers', () => {
     expect(prefersObscure('不要太冷門的科幻片')).toBe(false)
     expect(prefersObscure('別太冷門')).toBe(false)
     expect(prefersObscure('something not too obscure')).toBe(false)
+    // A negation earlier in the clause, not only right before the term.
+    expect(prefersObscure('我不想看冷門的，要大家都看過的經典')).toBe(false)
+    expect(prefersObscure('不喜歡小眾')).toBe(false)
+    expect(prefersObscure("I don't want anything obscure")).toBe(false)
+    expect(prefersObscure('no niche stuff')).toBe(false)
+    expect(prefersObscure('avoid hidden gems')).toBe(false)
+    // A contrast or a later clause does not cancel the request.
+    expect(prefersObscure('想看冷門但好看的獨立製作，不要好萊塢大製作。')).toBe(
+      true,
+    )
+    expect(prefersObscure('I want hidden gems, nothing scary')).toBe(true)
+    // English terms need word boundaries.
+    expect(prefersObscure('a renichement drama')).toBe(false)
   })
 
   it('fills an empty zh-TW overview with the en-US overview', async () => {
@@ -195,6 +208,32 @@ describe('blended ranking', () => {
     expect(acclaimScore(manyVotes)).toBeGreaterThan(acclaimScore(fewVotes))
     expect(familiarityScore(manyVotes)).toBeGreaterThan(
       familiarityScore(fewVotes),
+    )
+  })
+
+  it('ranks equally known titles the same whether or not OMDb resolved', () => {
+    const media = candidate(1, { vote_count: 20000 })
+    expect(familiarityScore(media)).toBe(
+      familiarityScore(candidate(2, { vote_count: 20000 })),
+    )
+    expect(
+      blendedScore(media, 0.8, { imdbVotes: 400000 }) -
+        blendedScore(media, 0.8),
+    ).toBe(0)
+  })
+
+  it('keeps a high IMDb rating meaningful when IMDb votes are missing', () => {
+    const media = candidate(1, { vote_average: 8.5, vote_count: 20000 })
+    expect(acclaimScore(media, { imdbRating: 0.89 })).toBeGreaterThan(
+      acclaimScore(media, { imdbRating: 0.89, imdbVotes: 0 }),
+    )
+    expect(acclaimScore(media, { imdbRating: 0.89 })).toBeGreaterThan(0.8)
+  })
+
+  it('gives external sources a fixed half weight however many there are', () => {
+    const media = candidate(1, { vote_average: 7, vote_count: 20000 })
+    expect(acclaimScore(media, { rottenTomatoes: 0.9 })).toBeCloseTo(
+      acclaimScore(media, { rottenTomatoes: 0.9, metacritic: 0.9 }),
     )
   })
 
@@ -283,6 +322,49 @@ describe('blended ranking', () => {
     expect(
       fetcher.mock.calls.filter(([url]) => String(url).includes('omdbapi.com')),
     ).toHaveLength(2)
+  })
+
+  it('caches failed lookups and stops calling OMDb after a quota error', async () => {
+    let omdbStatus = 500
+    const fetcher = vi.fn<typeof fetch>(async (input, init) => {
+      const url = String(input)
+      if (url.includes('/external_ids')) return json({ imdb_id: 'tt0000001' })
+      if (url.includes('omdbapi.com')) {
+        return new Response('{}', { status: omdbStatus })
+      }
+      const id = (
+        JSON.parse(String(init?.body)) as {
+          state: { candidate: { id: number } }
+        }
+      ).state.candidate.id
+      return json({
+        answers: { is_relevant: { type: 'noul', noul: 0.8 } },
+        model: 'typesafe/jev-1.13',
+        id,
+      })
+    })
+    const omdbCalls = () =>
+      fetcher.mock.calls.filter(([url]) => String(url).includes('omdbapi.com'))
+        .length
+    const run = (ids: number[]) =>
+      rerankCandidates(
+        ids.map((id) => candidate(id)),
+        plan,
+        [],
+        'or-key',
+        new AbortController().signal,
+        fetcher,
+        { tmdbAccessToken: 't', omdbApiKey: 'omdb' },
+      )
+
+    await run([1])
+    await run([1])
+    expect(omdbCalls()).toBe(1)
+
+    omdbStatus = 401
+    await run([2])
+    await run([3])
+    expect(omdbCalls()).toBe(2)
   })
 
   it('skips OMDb without a key and when every decision fails', async () => {

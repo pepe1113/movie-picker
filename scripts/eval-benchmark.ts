@@ -8,6 +8,7 @@
 //   bun run eval:benchmark -- --no-judge           # label-free signals only
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
+import { prefersObscure } from '../supabase/functions/recommend-movies/discovery.ts'
 import type { CandidateMedia } from '../supabase/functions/recommend-movies/tmdb.ts'
 import {
   averageBy,
@@ -155,7 +156,9 @@ for (const item of cases) {
       ok: true as const,
       ms,
       titles: picked.map((m) => `${title(m)} (${year(m)}, ${m.vote_count} 票)`),
-      ...listSignals(picked),
+      ...listSignals(picked, {
+        exemptFamiliarity: prefersObscure(item.request),
+      }),
       poolEmptyOverviewRate: listSignals(result.candidates).emptyOverviewRate,
       ...(judgeEnabled
         ? { precision: precisionAtK(grades), ndcg: ndcgAtK(grades, poolGrades) }
@@ -174,6 +177,7 @@ const ok = rows.filter((r): r is Row => r.ok)
 const metricKeys = (r: Row) => ({
   returned: r.returned,
   emptyOverviewRate: r.emptyOverviewRate,
+  familiarRate: r.familiarRate,
   poolEmptyOverviewRate: r.poolEmptyOverviewRate,
   meanRating: r.meanRating,
   medianVotes: r.medianVotes,
@@ -182,12 +186,14 @@ const metricKeys = (r: Row) => ({
     ? { precision: r.precision, ndcg: r.ndcg! }
     : {}),
 })
+const averages: Partial<ReturnType<typeof metricKeys>> = averageBy(
+  ok.map(metricKeys),
+)
+// Missing metrics are NaN ("no data"), which checkGoals reports as n/a.
 const summary = {
-  ...averageBy(ok.map(metricKeys)),
-  // Familiarity is not a goal when the user asked for little-known titles.
-  familiarRate: averageBy(
-    ok.filter((r) => r.tag !== 'obscure').map((r) => ({ v: r.familiarRate })),
-  ).v,
+  ...averages,
+  emptyOverviewRate: averages.emptyOverviewRate ?? Number.NaN,
+  familiarRate: averages.familiarRate ?? Number.NaN,
   failures: rows.length - ok.length,
 }
 
@@ -223,4 +229,4 @@ writeFileSync(
 )
 console.log(JSON.stringify({ summary, goals }, null, 2))
 console.error(`wrote ${outFile}`)
-if (goals.some((g) => !g.pass)) process.exitCode = 1
+if (goals.some((g) => g.status === 'fail')) process.exitCode = 1

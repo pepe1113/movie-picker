@@ -350,14 +350,21 @@ async function fetchDiscover(
   return parseTmdbMedia(data, request.media_type)
 }
 
-const OBSCURE_PATTERNS = [
-  /(?<!不要太|不要|別太|不太|不會太|不)(冷門|小眾|沒人看過|少人知道)/u,
-  /(?<!not too |not |non-)(obscure|underrated|hidden gems?|lesser[- ]known|niche)/i,
-]
+const OBSCURE_TERMS =
+  /冷門|小眾|沒人看過|少人知道|\b(?:obscure|underrated|hidden gems?|lesser[- ]known|niche)\b/iu
+// A negation anywhere earlier in the same clause ("不想看冷門", "don't want
+// anything obscure") means the user wants familiar titles instead.
+const NEGATION =
+  /[不別沒勿]|避免|排除|\b(?:no|not|don'?t|do not|never|avoid|without|nothing|isn'?t)\b|-free/iu
+// "冷門但好看" / "obscure but good": a contrast word starts a new clause.
+const CLAUSE_BREAK = /[，,。.;；!！?？、\n]|但是?|可是|不過|\bbut\b/iu
 
 /** True when the user explicitly asks for little-known titles. */
 export function prefersObscure(text: string) {
-  return OBSCURE_PATTERNS.some((pattern) => pattern.test(text))
+  return text.split(CLAUSE_BREAK).some((clause) => {
+    const match = OBSCURE_TERMS.exec(clause)
+    return match !== null && !NEGATION.test(clause.slice(0, match.index))
+  })
 }
 
 function voteCountTiers(request: RecommendationRequest) {

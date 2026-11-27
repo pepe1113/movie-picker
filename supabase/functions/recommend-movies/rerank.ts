@@ -17,11 +17,11 @@ import type { CandidateMedia } from './tmdb.ts'
 const DECISIONS_URL = 'https://openrouter.ai/api/alpha/decisions'
 const JEV_MODEL = 'typesafe/jev-1.13'
 const QUESTION_ID = 'is_relevant'
-const RELEVANCE_THRESHOLD = 0.5
+export const RELEVANCE_THRESHOLD = 0.5
 const FINAL_RECOMMENDATION_LIMIT = 5
 // Passing candidates whose external ratings are looked up before the final
 // blend; bounded to keep OMDb usage low.
-const RATINGS_LOOKUP_LIMIT = 8
+export const RATINGS_LOOKUP_LIMIT = 8
 
 export interface RankedScore {
   id: number
@@ -42,7 +42,7 @@ function rankByBlend(
         id: item.candidate.id,
         ...(item.semantic !== undefined ? { semantic: item.semantic } : {}),
         acclaim: acclaimScore(item.candidate, external),
-        familiarity: familiarityScore(item.candidate, external),
+        familiarity: familiarityScore(item.candidate),
         final: blendedScore(item.candidate, item.semantic, external),
       }
       return { ...item, score }

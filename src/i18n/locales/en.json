@@ -173,7 +173,6 @@
   "movieDetail": {
     "notFound": "Title Not Found",
     "backToHome": "Back to Home",
-    "backButton": "Back",
     "watchTrailer": "Watch Trailer",
     "trailerTooltip": "Play the YouTube trailer in a popup",
     "sections": {
@@ -182,10 +181,12 @@
       "info": "Title Info"
     },
     "info": {
-      "originalTitle": "Original Title",
       "status": "Status",
       "budget": "Budget",
-      "revenue": "Revenue"
+      "revenue": "Revenue",
+      "director": "Director",
+      "creator": "Created By",
+      "productionCompanies": "Production Companies"
     }
   },
   "tvDetail": {

@@ -173,7 +173,6 @@
   "movieDetail": {
     "notFound": "找不到這筆內容",
     "backToHome": "回到首頁",
-    "backButton": "返回",
     "watchTrailer": "觀看預告片",
     "trailerTooltip": "在彈窗播放 YouTube 預告片",
     "sections": {
@@ -182,10 +181,12 @@
       "info": "作品資訊"
     },
     "info": {
-      "originalTitle": "原始片名",
       "status": "狀態",
       "budget": "預算",
-      "revenue": "票房"
+      "revenue": "票房",
+      "director": "導演",
+      "creator": "創作者",
+      "productionCompanies": "製作公司"
     }
   },
   "tvDetail": {

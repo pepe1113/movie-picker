@@ -8,6 +8,11 @@ import type {
   VideosResponse,
 } from '@/services/tmdb/types'
 
+vi.mock('@/stores/languageStore', () => ({
+  useLanguageStore: (selector: (state: { language: string }) => unknown) =>
+    selector({ language: 'zh-TW' }),
+}))
+
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, options?: Record<string, string | number>) =>

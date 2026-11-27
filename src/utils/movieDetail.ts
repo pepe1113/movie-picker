@@ -1,7 +1,11 @@
 import type { OmdbMovieResponse } from '@/services/omdb/types'
 import { findYouTubeTrailer } from '@/utils/trailerMedia'
+import { MOVIE_GENRES, ROUTES, TV_GENRES } from '@/utils/constants'
+import type { Language } from '@/stores/languageStore'
 import type {
   CastMember,
+  Genre,
+  MediaType,
   CreditsResponse,
   MediaItem,
   MovieDetail,
@@ -9,6 +13,7 @@ import type {
   TvDetail,
   VideosResponse,
 } from '@/services/tmdb/types'
+
 export interface ExternalRating {
   label: string
   value: string
@@ -55,6 +60,9 @@ export function buildMovieDetailPresentation({
 }: MovieDetailPresentationInput) {
   return {
     cast: credits?.cast.slice(0, 12) ?? [],
+    directors: uniqueNames(
+      credits?.crew.filter((member) => member.job === 'Director') ?? [],
+    ),
     trailer: findYouTubeTrailer(videos?.results),
     externalRatings: getExternalRatings(omdb),
     movieForWishlist: {
@@ -109,8 +117,30 @@ export function buildTvDetailPresentation({
 
   return {
     cast,
+    directors: uniqueNames(detail.created_by ?? []),
     trailer: findYouTubeTrailer(videos?.results),
     externalRatings: [],
     movieForWishlist: mediaForWishlist,
   }
+}
+
+export function getLocalizedGenreName(
+  genre: Genre,
+  mediaType: MediaType,
+  language: Language,
+): string {
+  const primary = mediaType === 'tv' ? TV_GENRES : MOVIE_GENRES
+  const secondary = mediaType === 'tv' ? MOVIE_GENRES : TV_GENRES
+  const match =
+    primary.find(({ id }) => id === genre.id) ??
+    secondary.find(({ id }) => id === genre.id)
+  return match ? match.name[language] : genre.name
+}
+
+export function buildSearchLink(query: string): string {
+  return `${ROUTES.SEARCH}?q=${encodeURIComponent(query)}`
+}
+
+function uniqueNames(people: { name: string }[]): string[] {
+  return [...new Set(people.map(({ name }) => name))]
 }

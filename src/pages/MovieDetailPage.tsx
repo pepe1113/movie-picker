@@ -17,8 +17,11 @@ import { WishlistButton } from '@/components/features/wishlist/WishlistButton'
 import { useMovieDetail } from '@/hooks/useMovieDetail'
 import {
   buildMovieDetailPresentation,
+  buildSearchLink,
   buildTvDetailPresentation,
+  getLocalizedGenreName,
 } from '@/utils/movieDetail'
+import { useLanguageStore } from '@/stores/languageStore'
 import { buildTrailerEmbedUrl } from '@/utils/trailerMedia'
 import {
   getPosterUrl,
@@ -41,6 +44,7 @@ export function Component() {
   const { t } = useTranslation()
   const location = useLocation()
   const { id } = useParams()
+  const language = useLanguageStore((state) => state.language)
   const movieId = Number(id)
   const mediaType: MediaType = location.pathname.startsWith('/tv/')
     ? 'tv'
@@ -83,7 +87,9 @@ export function Component() {
         videos,
         omdb,
       })
-  const { trailer, cast, externalRatings, movieForWishlist } = presentation
+  const { trailer, cast, directors, externalRatings, movieForWishlist } =
+    presentation
+  const productionCompanies = detail.production_companies ?? []
   const title = isTv ? detail.name : (detail as MovieDetail).title
   const originalTitle = isTv
     ? detail.original_name
@@ -113,18 +119,6 @@ export function Component() {
         )}
 
         <div className="relative container mx-auto flex min-h-180 flex-col px-6 py-8 md:px-12 lg:px-16">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="md:text-md mb-8 self-start text-xl"
-            asChild
-          >
-            <Link to={ROUTES.HOME}>
-              <ArrowLeft className="size-6 md:size-4" />
-              {t('movieDetail.backButton')}
-            </Link>
-          </Button>
-
           <div
             className={clsx([
               'mt-auto flex flex-col gap-8 pb-12 lg:flex-row',
@@ -154,6 +148,12 @@ export function Component() {
                 <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl">
                   {title}
                 </h1>
+
+                {originalTitle && originalTitle !== title && (
+                  <p className="text-muted-foreground text-xl font-semibold md:text-2xl">
+                    {originalTitle}
+                  </p>
+                )}
 
                 {detail.tagline && (
                   <p className="text-muted-foreground text-lg italic md:text-xl">
@@ -221,7 +221,7 @@ export function Component() {
               <div className="flex flex-wrap gap-2">
                 {detail.genres.map((genre) => (
                   <Badge key={genre.id} variant="outline">
-                    {genre.name}
+                    {getLocalizedGenreName(genre, mediaType, language)}
                   </Badge>
                 ))}
               </div>
@@ -303,9 +303,12 @@ export function Component() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <p className="truncate text-sm leading-tight font-semibold">
+                    <Link
+                      to={buildSearchLink(member.name)}
+                      className="hover:text-primary block truncate text-sm leading-tight font-semibold transition-colors hover:underline"
+                    >
                       {member.name}
-                    </p>
+                    </Link>
                     <p className="text-muted-foreground truncate text-xs">
                       {member.character}
                     </p>
@@ -325,12 +328,28 @@ export function Component() {
           </div>
 
           <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
-            <div className="space-y-2">
-              <p className="text-muted-foreground text-xs tracking-[1.4px] uppercase">
-                {t('movieDetail.info.originalTitle')}
-              </p>
-              <p className="font-semibold">{originalTitle}</p>
-            </div>
+            {directors.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs tracking-[1.4px] uppercase">
+                  {t(
+                    isTv
+                      ? 'movieDetail.info.creator'
+                      : 'movieDetail.info.director',
+                  )}
+                </p>
+                <SearchLinkList names={directors} />
+              </div>
+            )}
+            {productionCompanies.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs tracking-[1.4px] uppercase">
+                  {t('movieDetail.info.productionCompanies')}
+                </p>
+                <SearchLinkList
+                  names={productionCompanies.map(({ name }) => name)}
+                />
+              </div>
+            )}
             <div className="space-y-2">
               <p className="text-muted-foreground text-xs tracking-[1.4px] uppercase">
                 {t('movieDetail.info.status')}
@@ -361,6 +380,24 @@ export function Component() {
         </section>
       </div>
     </div>
+  )
+}
+
+function SearchLinkList({ names }: { names: string[] }) {
+  return (
+    <p className="font-semibold">
+      {names.map((name, index) => (
+        <span key={name}>
+          {index > 0 && ', '}
+          <Link
+            to={buildSearchLink(name)}
+            className="hover:text-primary transition-colors hover:underline"
+          >
+            {name}
+          </Link>
+        </span>
+      ))}
+    </p>
   )
 }
 

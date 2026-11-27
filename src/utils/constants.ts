@@ -25,6 +25,8 @@ export const QUERY_KEYS = {
       [...QUERY_KEYS.media.all, mediaType, 'detail', id, language] as const,
     search: (query: string, language: string) =>
       [...QUERY_KEYS.media.all, 'search', query, language] as const,
+    person: (personId: number, language: string) =>
+      [...QUERY_KEYS.media.all, 'person', personId, language] as const,
     company: (companyId: number, language: string) =>
       [...QUERY_KEYS.media.all, 'company', companyId, language] as const,
     discover: (mediaType: string, params?: Record<string, unknown>) =>

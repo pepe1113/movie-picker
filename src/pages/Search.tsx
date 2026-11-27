@@ -7,9 +7,8 @@ export function Component() {
   const { t } = useTranslation()
   const [searchParams] = useSearchParams()
   const query = searchParams.get('q') ?? ''
-  const companyParam = Number(searchParams.get('company'))
-  const companyId =
-    Number.isInteger(companyParam) && companyParam > 0 ? companyParam : null
+  const companyId = parseIdParam(searchParams.get('company'))
+  const personId = parseIdParam(searchParams.get('person'))
 
   return (
     <div className="container mx-auto space-y-8 px-6 py-10 md:px-12 lg:px-16">
@@ -17,7 +16,12 @@ export function Component() {
         <h1 className="text-3xl font-bold md:text-4xl">{t('search.title')}</h1>
         <SearchBar key={query} defaultValue={query} autoFocus />
       </div>
-      <SearchResults query={query} companyId={companyId} />
+      <SearchResults query={query} companyId={companyId} personId={personId} />
     </div>
   )
+}
+
+function parseIdParam(value: string | null): number | null {
+  const id = Number(value)
+  return value && Number.isInteger(id) && id > 0 ? id : null
 }

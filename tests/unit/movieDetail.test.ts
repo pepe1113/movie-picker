@@ -35,6 +35,9 @@ describe('movie detail helpers', () => {
     expect(buildSearchLink('A24', { companyId: 41077 })).toBe(
       '/search?q=A24&company=41077',
     )
+    expect(buildSearchLink('Jane Doe', { personId: 11 })).toBe(
+      '/search?q=Jane+Doe&person=11',
+    )
   })
 
   it('normalizes available OMDb external ratings', () => {

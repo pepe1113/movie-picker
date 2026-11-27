@@ -60,9 +60,9 @@ export function buildMovieDetailPresentation({
 }: MovieDetailPresentationInput) {
   return {
     cast: credits?.cast.slice(0, 12) ?? [],
-    directors: uniqueNames(
+    directors: uniqueByName(
       credits?.crew.filter((member) => member.job === 'Director') ?? [],
-    ),
+    ).map(({ id, name }) => ({ id, name })),
     trailer: findYouTubeTrailer(videos?.results),
     externalRatings: getExternalRatings(omdb),
     movieForWishlist: {
@@ -117,7 +117,10 @@ export function buildTvDetailPresentation({
 
   return {
     cast,
-    directors: uniqueNames(detail.created_by ?? []),
+    directors: uniqueByName(detail.created_by ?? []).map(({ id, name }) => ({
+      id,
+      name,
+    })),
     trailer: findYouTubeTrailer(videos?.results),
     externalRatings: [],
     movieForWishlist: mediaForWishlist,
@@ -139,9 +142,10 @@ export function getLocalizedGenreName(
 
 export function buildSearchLink(
   query: string,
-  { companyId }: { companyId?: number } = {},
+  { companyId, personId }: { companyId?: number; personId?: number } = {},
 ): string {
   const params = new URLSearchParams({ q: query })
+  if (personId !== undefined) params.set('person', String(personId))
   if (companyId !== undefined) params.set('company', String(companyId))
   return `${ROUTES.SEARCH}?${params.toString()}`
 }
@@ -153,8 +157,4 @@ export function uniqueByName<T extends { name: string }>(items: T[]): T[] {
     seen.add(name)
     return true
   })
-}
-
-function uniqueNames(people: { name: string }[]): string[] {
-  return [...new Set(people.map(({ name }) => name))]
 }

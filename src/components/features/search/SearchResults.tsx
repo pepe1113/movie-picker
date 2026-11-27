@@ -2,23 +2,33 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MovieGrid } from '@/components/features/movie/MovieGrid'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useCompanyMedia, useSearch } from '@/hooks/useSearch'
+import { useCompanyMedia, usePersonMedia, useSearch } from '@/hooks/useSearch'
 import type { MediaType } from '@/services/tmdb/types'
 import { getMediaType } from '@/utils/media'
 
 interface SearchResultsProps {
   query: string
   companyId?: number | null
+  personId?: number | null
 }
 
-export function SearchResults({ query, companyId = null }: SearchResultsProps) {
+export function SearchResults({
+  query,
+  companyId = null,
+  personId = null,
+}: SearchResultsProps) {
   const { t } = useTranslation()
   const [filter, setFilter] = useState<'all' | MediaType>('all')
-  const search = useSearch(query, { enabled: companyId === null })
-  const company = useCompanyMedia(companyId)
+  const search = useSearch(query, {
+    enabled: companyId === null && personId === null,
+  })
+  const company = useCompanyMedia(personId === null ? companyId : null)
+  const person = usePersonMedia(personId)
   const { debouncedQuery } = search
+  const source =
+    personId !== null ? person : companyId !== null ? company : search
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    companyId === null ? search : company
+    source
 
   if (!debouncedQuery) return null
 

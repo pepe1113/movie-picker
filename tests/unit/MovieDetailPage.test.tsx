@@ -87,11 +87,11 @@ describe('MovieDetailPage', () => {
     expect(screen.getByText('Original Gradient')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Jane Doe/ })).toHaveAttribute(
       'href',
-      '/search?q=Jane+Doe',
+      '/search?q=Jane+Doe&person=11',
     )
     expect(screen.getByRole('link', { name: 'John Roe' })).toHaveAttribute(
       'href',
-      '/search?q=John+Roe',
+      '/search?q=John+Roe&person=12',
     )
     expect(screen.getByRole('link', { name: 'Acme Films' })).toHaveAttribute(
       'href',

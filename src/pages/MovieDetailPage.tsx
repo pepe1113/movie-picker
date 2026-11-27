@@ -296,7 +296,7 @@ export function Component() {
               {cast.map((member) => (
                 <Link
                   key={member.id}
-                  to={buildSearchLink(member.name)}
+                  to={buildSearchLink(member.name, { personId: member.id })}
                   className="group focus-visible:ring-ring block space-y-3 rounded-md text-center outline-none focus-visible:ring-2"
                 >
                   <div className="bg-muted mx-auto aspect-square w-full overflow-hidden rounded-md">
@@ -340,10 +340,10 @@ export function Component() {
                   )}
                 </p>
                 <SearchLinkList
-                  links={directors.map((name) => ({
-                    key: name,
+                  links={directors.map(({ id, name }) => ({
+                    key: String(id),
                     name,
-                    to: buildSearchLink(name),
+                    to: buildSearchLink(name, { personId: id }),
                   }))}
                 />
               </div>

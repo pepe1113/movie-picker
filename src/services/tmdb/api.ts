@@ -113,21 +113,25 @@ function isMediaItem(result: { media_type?: string }): result is MediaItem {
 export function flattenMultiSearchResults(
   results: (MediaItem | PersonSearchResult)[],
 ): MediaItem[] {
-  const seen = new Set<string>()
-  return results
-    .flatMap((result) =>
+  return dedupeMedia(
+    results.flatMap((result) =>
       result.media_type === 'person'
         ? (result.known_for ?? []).filter(isMediaItem)
         : isMediaItem(result)
           ? [result]
           : [],
-    )
-    .filter((item) => {
-      const key = `${item.media_type}-${item.id}`
-      if (seen.has(key)) return false
-      seen.add(key)
-      return true
-    })
+    ),
+  )
+}
+
+function dedupeMedia(items: MediaItem[]): MediaItem[] {
+  const seen = new Set<string>()
+  return items.filter((item) => {
+    const key = `${item.media_type}-${item.id}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
 }
 
 export async function searchMedia(query: string, page = 1, language = 'zh-TW') {
@@ -156,6 +160,28 @@ export async function discoverTv(params: DiscoverTvParams) {
     PaginatedResponse<Omit<TvShow, 'media_type'>>
   >(ENDPOINTS.DISCOVER_TV, { params })
   return addTvMediaType(data)
+}
+
+interface PersonCombinedCreditsResponse {
+  id: number
+  cast: (MediaItem | { media_type?: string })[]
+  crew: (MediaItem | { media_type?: string })[]
+}
+
+/** 人物完整作品（演出＋幕後），去重後依熱門度排序 */
+export async function getPersonCredits(
+  personId: number,
+  language = 'zh-TW',
+): Promise<MediaListResponse> {
+  const { data } = await tmdbClient.get<PersonCombinedCreditsResponse>(
+    ENDPOINTS.PERSON_COMBINED_CREDITS(personId),
+    { params: { language } },
+  )
+  const results = dedupeMedia(
+    [...data.cast, ...data.crew].filter(isMediaItem),
+  ).sort((a, b) => b.popularity - a.popularity)
+
+  return { page: 1, results, total_pages: 1, total_results: results.length }
 }
 
 /** 依製作公司取得電影與影集（同頁數合併） */

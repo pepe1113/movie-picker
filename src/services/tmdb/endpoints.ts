@@ -17,6 +17,10 @@ export const ENDPOINTS = {
   DISCOVER_MOVIE: '/discover/movie',
   DISCOVER_TV: '/discover/tv',
 
+  // 人物
+  PERSON_COMBINED_CREDITS: (personId: number) =>
+    `/person/${personId}/combined_credits`,
+
   // 分類
   GENRE_LIST: '/genre/movie/list',
   TV_GENRE_LIST: '/genre/tv/list',

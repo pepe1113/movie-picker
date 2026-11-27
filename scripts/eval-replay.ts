@@ -89,6 +89,14 @@ const labels: Record<string, Record<string, { grade: Grade }>> = read(
   'labels.json',
 )
 
+const titleOf = (media: CandidateMedia) =>
+  media.media_type === 'movie' ? media.title : media.name
+const yearOf = (media: CandidateMedia) =>
+  (media.media_type === 'movie'
+    ? media.release_date
+    : media.first_air_date
+  ).slice(0, 4)
+
 const results = Object.entries(variants).map(([name, pick]) => {
   const perCase = pools.map((pool) => {
     const grade = (media: CandidateMedia) =>
@@ -105,15 +113,28 @@ const results = Object.entries(variants).map(([name, pick]) => {
         const picked = pick(pool, scores)
         const grades = picked.map(grade)
         return {
-          precision: precisionAtK(grades),
-          ndcg: ndcgAtK(grades, poolGrades),
-          ...listSignals(picked),
+          metrics: {
+            precision: precisionAtK(grades),
+            ndcg: ndcgAtK(grades, poolGrades),
+            ...listSignals(picked),
+          },
+          picks: picked.map((media, index) => ({
+            id: media.id,
+            title: titleOf(media),
+            year: yearOf(media),
+            votes: media.vote_count,
+            rating: media.vote_average,
+            grade: grades[index]!,
+            semantic: scores.get(media.id),
+          })),
         }
       })
     return {
       id: pool.id,
       request: pool.request.request,
-      metrics: averageBy(repeats),
+      metrics: averageBy(repeats.map((repeat) => repeat.metrics)),
+      // One list per Jev repeat; the report shows the first.
+      picks: repeats.map((repeat) => repeat.picks),
     }
   })
   const summary = averageBy(perCase.map((row) => row.metrics))
@@ -146,11 +167,34 @@ const lines = [
       ),
       '',
     ]),
+  '## 每題片單（第 1 次 Jev 重複）',
+  '',
+  '格式：片名（年份，TMDB 票數，標註分數）。標註 2 = 明確符合、1 = 部分符合、0 = 不符或無證據。',
+  '',
+  ...pools.flatMap((pool, caseIndex) => [
+    `### ${pool.id}. ${pool.request.request}`,
+    '',
+    ...results.map(({ name, perCase }) => {
+      const picks = perCase[caseIndex]!.picks[0] ?? []
+      const list = picks.length
+        ? picks
+            .map((p) => `${p.title}（${p.year}，${p.votes} 票，${p.grade}）`)
+            .join(' → ')
+        : '（無結果）'
+      return `- **${name}**：${list}`
+    }),
+    '',
+  ]),
 ]
-console.log(lines.join('\n'))
+const report = lines.join('\n')
+console.log(report)
 
 const outDir = 'evals/results'
 mkdirSync(outDir, { recursive: true })
+writeFileSync(
+  join(outDir, `${new Date().toISOString().slice(0, 10)}-replay.md`),
+  report + '\n',
+)
 const outFile = join(
   outDir,
   `${new Date().toISOString().slice(0, 10)}-replay.json`,

@@ -24,7 +24,150 @@
             "familiarRate": 0.6,
             "medianVotes": 1264,
             "meanRating": 7.236400000000001
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 63193,
+                "title": "叫我第一名",
+                "year": "2008",
+                "votes": 337,
+                "rating": 8.053,
+                "grade": 2,
+                "semantic": 0.91
+              },
+              {
+                "id": 295964,
+                "title": "天菜大廚",
+                "year": "2015",
+                "votes": 3645,
+                "rating": 6.527,
+                "grade": 2,
+                "semantic": 0.85
+              },
+              {
+                "id": 10028,
+                "title": "蜜糖第一名",
+                "year": "2003",
+                "votes": 1264,
+                "rating": 6.4,
+                "grade": 2,
+                "semantic": 0.77
+              },
+              {
+                "id": 9390,
+                "title": "征服情海",
+                "year": "1996",
+                "votes": 3900,
+                "rating": 7.002,
+                "grade": 2,
+                "semantic": 0.75
+              },
+              {
+                "id": 3780,
+                "title": "紅鬍子",
+                "year": "1965",
+                "votes": 429,
+                "rating": 8.2,
+                "grade": 2,
+                "semantic": 0.65
+              }
+            ],
+            [
+              {
+                "id": 63193,
+                "title": "叫我第一名",
+                "year": "2008",
+                "votes": 337,
+                "rating": 8.053,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 295964,
+                "title": "天菜大廚",
+                "year": "2015",
+                "votes": 3645,
+                "rating": 6.527,
+                "grade": 2,
+                "semantic": 0.85
+              },
+              {
+                "id": 10028,
+                "title": "蜜糖第一名",
+                "year": "2003",
+                "votes": 1264,
+                "rating": 6.4,
+                "grade": 2,
+                "semantic": 0.77
+              },
+              {
+                "id": 9390,
+                "title": "征服情海",
+                "year": "1996",
+                "votes": 3900,
+                "rating": 7.002,
+                "grade": 2,
+                "semantic": 0.74
+              },
+              {
+                "id": 3780,
+                "title": "紅鬍子",
+                "year": "1965",
+                "votes": 429,
+                "rating": 8.2,
+                "grade": 2,
+                "semantic": 0.65
+              }
+            ],
+            [
+              {
+                "id": 63193,
+                "title": "叫我第一名",
+                "year": "2008",
+                "votes": 337,
+                "rating": 8.053,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 295964,
+                "title": "天菜大廚",
+                "year": "2015",
+                "votes": 3645,
+                "rating": 6.527,
+                "grade": 2,
+                "semantic": 0.86
+              },
+              {
+                "id": 10028,
+                "title": "蜜糖第一名",
+                "year": "2003",
+                "votes": 1264,
+                "rating": 6.4,
+                "grade": 2,
+                "semantic": 0.77
+              },
+              {
+                "id": 9390,
+                "title": "征服情海",
+                "year": "1996",
+                "votes": 3900,
+                "rating": 7.002,
+                "grade": 2,
+                "semantic": 0.76
+              },
+              {
+                "id": 3780,
+                "title": "紅鬍子",
+                "year": "1965",
+                "votes": 429,
+                "rating": 8.2,
+                "grade": 2,
+                "semantic": 0.67
+              }
+            ]
+          ]
         },
         {
           "id": 2,
@@ -37,7 +180,150 @@
             "familiarRate": 0.4000000000000001,
             "medianVotes": 611,
             "meanRating": 8.3308
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.81
+              },
+              {
+                "id": 1007757,
+                "title": "奇幻變身大冒險",
+                "year": "2026",
+                "votes": 2219,
+                "rating": 8.866,
+                "grade": 2,
+                "semantic": 0.75
+              },
+              {
+                "id": 1204680,
+                "title": "威利狼大戰阿卡米公司",
+                "year": "2026",
+                "votes": 611,
+                "rating": 7.556,
+                "grade": 1,
+                "semantic": 0.63
+              },
+              {
+                "id": 1084244,
+                "title": "玩具總動員5",
+                "year": "2026",
+                "votes": 2448,
+                "rating": 8.314,
+                "grade": 1,
+                "semantic": 0.58
+              },
+              {
+                "id": 1632181,
+                "title": "Socias por accidente",
+                "year": "2026",
+                "votes": 392,
+                "rating": 8.844,
+                "grade": 0,
+                "semantic": 0.52
+              }
+            ],
+            [
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.81
+              },
+              {
+                "id": 1007757,
+                "title": "奇幻變身大冒險",
+                "year": "2026",
+                "votes": 2219,
+                "rating": 8.866,
+                "grade": 2,
+                "semantic": 0.74
+              },
+              {
+                "id": 1204680,
+                "title": "威利狼大戰阿卡米公司",
+                "year": "2026",
+                "votes": 611,
+                "rating": 7.556,
+                "grade": 1,
+                "semantic": 0.63
+              },
+              {
+                "id": 1084244,
+                "title": "玩具總動員5",
+                "year": "2026",
+                "votes": 2448,
+                "rating": 8.314,
+                "grade": 1,
+                "semantic": 0.59
+              },
+              {
+                "id": 1632181,
+                "title": "Socias por accidente",
+                "year": "2026",
+                "votes": 392,
+                "rating": 8.844,
+                "grade": 0,
+                "semantic": 0.54
+              }
+            ],
+            [
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.83
+              },
+              {
+                "id": 1007757,
+                "title": "奇幻變身大冒險",
+                "year": "2026",
+                "votes": 2219,
+                "rating": 8.866,
+                "grade": 2,
+                "semantic": 0.73
+              },
+              {
+                "id": 1204680,
+                "title": "威利狼大戰阿卡米公司",
+                "year": "2026",
+                "votes": 611,
+                "rating": 7.556,
+                "grade": 1,
+                "semantic": 0.61
+              },
+              {
+                "id": 1084244,
+                "title": "玩具總動員5",
+                "year": "2026",
+                "votes": 2448,
+                "rating": 8.314,
+                "grade": 1,
+                "semantic": 0.59
+              },
+              {
+                "id": 1632181,
+                "title": "Socias por accidente",
+                "year": "2026",
+                "votes": 392,
+                "rating": 8.844,
+                "grade": 0,
+                "semantic": 0.53
+              }
+            ]
+          ]
         },
         {
           "id": 3,
@@ -50,7 +336,42 @@
             "familiarRate": 0,
             "medianVotes": 411,
             "meanRating": 8.074
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.88
+              }
+            ],
+            [
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.88
+              }
+            ],
+            [
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.88
+              }
+            ]
+          ]
         },
         {
           "id": 4,
@@ -63,7 +384,51 @@
             "familiarRate": 0.8333333333333334,
             "medianVotes": 2169.3333333333335,
             "meanRating": 6.5906666666666665
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 68727,
+                "title": "索命記憶",
+                "year": "2013",
+                "votes": 2427,
+                "rating": 6.616,
+                "grade": 2,
+                "semantic": 0.77
+              }
+            ],
+            [
+              {
+                "id": 68727,
+                "title": "索命記憶",
+                "year": "2013",
+                "votes": 2427,
+                "rating": 6.616,
+                "grade": 2,
+                "semantic": 0.77
+              },
+              {
+                "id": 1052280,
+                "title": "開箱靈魂",
+                "year": "2024",
+                "votes": 881,
+                "rating": 6.464,
+                "grade": 0,
+                "semantic": 0.5
+              }
+            ],
+            [
+              {
+                "id": 68727,
+                "title": "索命記憶",
+                "year": "2013",
+                "votes": 2427,
+                "rating": 6.616,
+                "grade": 2,
+                "semantic": 0.76
+              }
+            ]
+          ]
         },
         {
           "id": 5,
@@ -76,7 +441,150 @@
             "familiarRate": 0.8000000000000002,
             "medianVotes": 3516,
             "meanRating": 7.677866666666667
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 568124,
+                "title": "魔法滿屋",
+                "year": "2021",
+                "votes": 10427,
+                "rating": 7.565,
+                "grade": 2,
+                "semantic": 0.88
+              },
+              {
+                "id": 501929,
+                "title": "米家大戰機器人",
+                "year": "2021",
+                "votes": 3516,
+                "rating": 7.823,
+                "grade": 2,
+                "semantic": 0.8
+              },
+              {
+                "id": 431580,
+                "title": "壞壞萌雪怪",
+                "year": "2019",
+                "votes": 2239,
+                "rating": 7.455,
+                "grade": 2,
+                "semantic": 0.77
+              },
+              {
+                "id": 842859,
+                "title": "列車捎來的幸福",
+                "year": "2024",
+                "votes": 206,
+                "rating": 7.7,
+                "grade": 1,
+                "semantic": 0.69
+              },
+              {
+                "id": 150540,
+                "title": "腦筋急轉彎",
+                "year": "2015",
+                "votes": 23948,
+                "rating": 7.905,
+                "grade": 2,
+                "semantic": 0.68
+              }
+            ],
+            [
+              {
+                "id": 568124,
+                "title": "魔法滿屋",
+                "year": "2021",
+                "votes": 10427,
+                "rating": 7.565,
+                "grade": 2,
+                "semantic": 0.88
+              },
+              {
+                "id": 501929,
+                "title": "米家大戰機器人",
+                "year": "2021",
+                "votes": 3516,
+                "rating": 7.823,
+                "grade": 2,
+                "semantic": 0.8
+              },
+              {
+                "id": 431580,
+                "title": "壞壞萌雪怪",
+                "year": "2019",
+                "votes": 2239,
+                "rating": 7.455,
+                "grade": 2,
+                "semantic": 0.78
+              },
+              {
+                "id": 842859,
+                "title": "列車捎來的幸福",
+                "year": "2024",
+                "votes": 206,
+                "rating": 7.7,
+                "grade": 1,
+                "semantic": 0.7
+              },
+              {
+                "id": 9806,
+                "title": "超人特攻隊",
+                "year": "2004",
+                "votes": 19354,
+                "rating": 7.729,
+                "grade": 2,
+                "semantic": 0.66
+              }
+            ],
+            [
+              {
+                "id": 568124,
+                "title": "魔法滿屋",
+                "year": "2021",
+                "votes": 10427,
+                "rating": 7.565,
+                "grade": 2,
+                "semantic": 0.88
+              },
+              {
+                "id": 501929,
+                "title": "米家大戰機器人",
+                "year": "2021",
+                "votes": 3516,
+                "rating": 7.823,
+                "grade": 2,
+                "semantic": 0.8
+              },
+              {
+                "id": 431580,
+                "title": "壞壞萌雪怪",
+                "year": "2019",
+                "votes": 2239,
+                "rating": 7.455,
+                "grade": 2,
+                "semantic": 0.77
+              },
+              {
+                "id": 842859,
+                "title": "列車捎來的幸福",
+                "year": "2024",
+                "votes": 206,
+                "rating": 7.7,
+                "grade": 1,
+                "semantic": 0.68
+              },
+              {
+                "id": 150540,
+                "title": "腦筋急轉彎",
+                "year": "2015",
+                "votes": 23948,
+                "rating": 7.905,
+                "grade": 2,
+                "semantic": 0.66
+              }
+            ]
+          ]
         },
         {
           "id": 6,
@@ -89,7 +597,96 @@
             "familiarRate": 1,
             "medianVotes": 16646,
             "meanRating": 6.787
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 329865,
+                "title": "異星入境",
+                "year": "2016",
+                "votes": 19946,
+                "rating": 7.635,
+                "grade": 2,
+                "semantic": 0.9
+              },
+              {
+                "id": 49521,
+                "title": "超人：鋼鐵英雄",
+                "year": "2013",
+                "votes": 16646,
+                "rating": 6.661,
+                "grade": 2,
+                "semantic": 0.71
+              },
+              {
+                "id": 141052,
+                "title": "正義聯盟",
+                "year": "2017",
+                "votes": 13983,
+                "rating": 6.065,
+                "grade": 2,
+                "semantic": 0.57
+              }
+            ],
+            [
+              {
+                "id": 329865,
+                "title": "異星入境",
+                "year": "2016",
+                "votes": 19946,
+                "rating": 7.635,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 49521,
+                "title": "超人：鋼鐵英雄",
+                "year": "2013",
+                "votes": 16646,
+                "rating": 6.661,
+                "grade": 2,
+                "semantic": 0.7
+              },
+              {
+                "id": 141052,
+                "title": "正義聯盟",
+                "year": "2017",
+                "votes": 13983,
+                "rating": 6.065,
+                "grade": 2,
+                "semantic": 0.55
+              }
+            ],
+            [
+              {
+                "id": 329865,
+                "title": "異星入境",
+                "year": "2016",
+                "votes": 19946,
+                "rating": 7.635,
+                "grade": 2,
+                "semantic": 0.91
+              },
+              {
+                "id": 49521,
+                "title": "超人：鋼鐵英雄",
+                "year": "2013",
+                "votes": 16646,
+                "rating": 6.661,
+                "grade": 2,
+                "semantic": 0.7
+              },
+              {
+                "id": 141052,
+                "title": "正義聯盟",
+                "year": "2017",
+                "votes": 13983,
+                "rating": 6.065,
+                "grade": 2,
+                "semantic": 0.53
+              }
+            ]
+          ]
         },
         {
           "id": 7,
@@ -102,7 +699,150 @@
             "familiarRate": 0.6,
             "medianVotes": 2085,
             "meanRating": 8.223066666666666
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 976893,
+                "title": "我的完美日常",
+                "year": "2023",
+                "votes": 2085,
+                "rating": 7.824,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 8392,
+                "title": "龍貓",
+                "year": "1988",
+                "votes": 9125,
+                "rating": 8.068,
+                "grade": 2,
+                "semantic": 0.84
+              },
+              {
+                "id": 938567,
+                "title": "劇場版 擅長捉弄人的高木同學",
+                "year": "2022",
+                "votes": 147,
+                "rating": 8.4,
+                "grade": 2,
+                "semantic": 0.58
+              },
+              {
+                "id": 4935,
+                "title": "霍爾的移動城堡",
+                "year": "2004",
+                "votes": 11503,
+                "rating": 8.387,
+                "grade": 1,
+                "semantic": 0.56
+              },
+              {
+                "id": 1291559,
+                "title": "餘生一年的我，與可活半年的妳相遇",
+                "year": "2024",
+                "votes": 232,
+                "rating": 8.433,
+                "grade": 0,
+                "semantic": 0.55
+              }
+            ],
+            [
+              {
+                "id": 976893,
+                "title": "我的完美日常",
+                "year": "2023",
+                "votes": 2085,
+                "rating": 7.824,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 8392,
+                "title": "龍貓",
+                "year": "1988",
+                "votes": 9125,
+                "rating": 8.068,
+                "grade": 2,
+                "semantic": 0.83
+              },
+              {
+                "id": 4935,
+                "title": "霍爾的移動城堡",
+                "year": "2004",
+                "votes": 11503,
+                "rating": 8.387,
+                "grade": 1,
+                "semantic": 0.57
+              },
+              {
+                "id": 938567,
+                "title": "劇場版 擅長捉弄人的高木同學",
+                "year": "2022",
+                "votes": 147,
+                "rating": 8.4,
+                "grade": 2,
+                "semantic": 0.57
+              },
+              {
+                "id": 1291559,
+                "title": "餘生一年的我，與可活半年的妳相遇",
+                "year": "2024",
+                "votes": 232,
+                "rating": 8.433,
+                "grade": 0,
+                "semantic": 0.56
+              }
+            ],
+            [
+              {
+                "id": 976893,
+                "title": "我的完美日常",
+                "year": "2023",
+                "votes": 2085,
+                "rating": 7.824,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 8392,
+                "title": "龍貓",
+                "year": "1988",
+                "votes": 9125,
+                "rating": 8.068,
+                "grade": 2,
+                "semantic": 0.84
+              },
+              {
+                "id": 938567,
+                "title": "劇場版 擅長捉弄人的高木同學",
+                "year": "2022",
+                "votes": 147,
+                "rating": 8.4,
+                "grade": 2,
+                "semantic": 0.58
+              },
+              {
+                "id": 378064,
+                "title": "電影版 聲之形",
+                "year": "2016",
+                "votes": 4704,
+                "rating": 8.397,
+                "grade": 0,
+                "semantic": 0.56
+              },
+              {
+                "id": 1291559,
+                "title": "餘生一年的我，與可活半年的妳相遇",
+                "year": "2024",
+                "votes": 232,
+                "rating": 8.433,
+                "grade": 0,
+                "semantic": 0.55
+              }
+            ]
+          ]
         },
         {
           "id": 8,
@@ -115,7 +855,150 @@
             "familiarRate": 0.6,
             "medianVotes": 1008,
             "meanRating": 7.7208000000000006
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 2316,
+                "title": "我們的辦公室",
+                "year": "2005",
+                "votes": 5525,
+                "rating": 8.583,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 2996,
+                "title": "辦公室風雲",
+                "year": "2001",
+                "votes": 1008,
+                "rating": 7.832,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 2490,
+                "title": "IT 狂人",
+                "year": "2006",
+                "votes": 1702,
+                "rating": 8.165,
+                "grade": 2,
+                "semantic": 0.89
+              },
+              {
+                "id": 4956,
+                "title": "Dilbert",
+                "year": "1999",
+                "votes": 82,
+                "rating": 6.8,
+                "grade": 0,
+                "semantic": 0.75
+              },
+              {
+                "id": 32694,
+                "title": "外包公司",
+                "year": "2010",
+                "votes": 118,
+                "rating": 6.8,
+                "grade": 2,
+                "semantic": 0.69
+              }
+            ],
+            [
+              {
+                "id": 2316,
+                "title": "我們的辦公室",
+                "year": "2005",
+                "votes": 5525,
+                "rating": 8.583,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 2996,
+                "title": "辦公室風雲",
+                "year": "2001",
+                "votes": 1008,
+                "rating": 7.832,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 2490,
+                "title": "IT 狂人",
+                "year": "2006",
+                "votes": 1702,
+                "rating": 8.165,
+                "grade": 2,
+                "semantic": 0.9
+              },
+              {
+                "id": 4956,
+                "title": "Dilbert",
+                "year": "1999",
+                "votes": 82,
+                "rating": 6.8,
+                "grade": 0,
+                "semantic": 0.74
+              },
+              {
+                "id": 78941,
+                "title": "衝吧烈子",
+                "year": "2018",
+                "votes": 172,
+                "rating": 7.436,
+                "grade": 2,
+                "semantic": 0.71
+              }
+            ],
+            [
+              {
+                "id": 2996,
+                "title": "辦公室風雲",
+                "year": "2001",
+                "votes": 1008,
+                "rating": 7.832,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 2316,
+                "title": "我們的辦公室",
+                "year": "2005",
+                "votes": 5525,
+                "rating": 8.583,
+                "grade": 2,
+                "semantic": 0.91
+              },
+              {
+                "id": 2490,
+                "title": "IT 狂人",
+                "year": "2006",
+                "votes": 1702,
+                "rating": 8.165,
+                "grade": 2,
+                "semantic": 0.9
+              },
+              {
+                "id": 4956,
+                "title": "Dilbert",
+                "year": "1999",
+                "votes": 82,
+                "rating": 6.8,
+                "grade": 0,
+                "semantic": 0.75
+              },
+              {
+                "id": 78941,
+                "title": "衝吧烈子",
+                "year": "2018",
+                "votes": 172,
+                "rating": 7.436,
+                "grade": 2,
+                "semantic": 0.71
+              }
+            ]
+          ]
         },
         {
           "id": 10,
@@ -128,7 +1011,42 @@
             "familiarRate": 0,
             "medianVotes": 100,
             "meanRating": 7
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 47060,
+                "title": "The Hole",
+                "year": "1998",
+                "votes": 100,
+                "rating": 7,
+                "grade": 2,
+                "semantic": 0.76
+              }
+            ],
+            [
+              {
+                "id": 47060,
+                "title": "The Hole",
+                "year": "1998",
+                "votes": 100,
+                "rating": 7,
+                "grade": 2,
+                "semantic": 0.75
+              }
+            ],
+            [
+              {
+                "id": 47060,
+                "title": "The Hole",
+                "year": "1998",
+                "votes": 100,
+                "rating": 7,
+                "grade": 2,
+                "semantic": 0.77
+              }
+            ]
+          ]
         }
       ]
     },
@@ -155,7 +1073,150 @@
             "familiarRate": 0.6,
             "medianVotes": 1264,
             "meanRating": 7.236400000000001
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 63193,
+                "title": "叫我第一名",
+                "year": "2008",
+                "votes": 337,
+                "rating": 8.053,
+                "grade": 2,
+                "semantic": 0.91
+              },
+              {
+                "id": 295964,
+                "title": "天菜大廚",
+                "year": "2015",
+                "votes": 3645,
+                "rating": 6.527,
+                "grade": 2,
+                "semantic": 0.85
+              },
+              {
+                "id": 9390,
+                "title": "征服情海",
+                "year": "1996",
+                "votes": 3900,
+                "rating": 7.002,
+                "grade": 2,
+                "semantic": 0.75
+              },
+              {
+                "id": 10028,
+                "title": "蜜糖第一名",
+                "year": "2003",
+                "votes": 1264,
+                "rating": 6.4,
+                "grade": 2,
+                "semantic": 0.77
+              },
+              {
+                "id": 3780,
+                "title": "紅鬍子",
+                "year": "1965",
+                "votes": 429,
+                "rating": 8.2,
+                "grade": 2,
+                "semantic": 0.65
+              }
+            ],
+            [
+              {
+                "id": 63193,
+                "title": "叫我第一名",
+                "year": "2008",
+                "votes": 337,
+                "rating": 8.053,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 295964,
+                "title": "天菜大廚",
+                "year": "2015",
+                "votes": 3645,
+                "rating": 6.527,
+                "grade": 2,
+                "semantic": 0.85
+              },
+              {
+                "id": 9390,
+                "title": "征服情海",
+                "year": "1996",
+                "votes": 3900,
+                "rating": 7.002,
+                "grade": 2,
+                "semantic": 0.74
+              },
+              {
+                "id": 10028,
+                "title": "蜜糖第一名",
+                "year": "2003",
+                "votes": 1264,
+                "rating": 6.4,
+                "grade": 2,
+                "semantic": 0.77
+              },
+              {
+                "id": 3780,
+                "title": "紅鬍子",
+                "year": "1965",
+                "votes": 429,
+                "rating": 8.2,
+                "grade": 2,
+                "semantic": 0.65
+              }
+            ],
+            [
+              {
+                "id": 63193,
+                "title": "叫我第一名",
+                "year": "2008",
+                "votes": 337,
+                "rating": 8.053,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 295964,
+                "title": "天菜大廚",
+                "year": "2015",
+                "votes": 3645,
+                "rating": 6.527,
+                "grade": 2,
+                "semantic": 0.86
+              },
+              {
+                "id": 9390,
+                "title": "征服情海",
+                "year": "1996",
+                "votes": 3900,
+                "rating": 7.002,
+                "grade": 2,
+                "semantic": 0.76
+              },
+              {
+                "id": 10028,
+                "title": "蜜糖第一名",
+                "year": "2003",
+                "votes": 1264,
+                "rating": 6.4,
+                "grade": 2,
+                "semantic": 0.77
+              },
+              {
+                "id": 3780,
+                "title": "紅鬍子",
+                "year": "1965",
+                "votes": 429,
+                "rating": 8.2,
+                "grade": 2,
+                "semantic": 0.67
+              }
+            ]
+          ]
         },
         {
           "id": 2,
@@ -168,7 +1229,150 @@
             "familiarRate": 0.4000000000000001,
             "medianVotes": 611,
             "meanRating": 8.3308
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 1007757,
+                "title": "奇幻變身大冒險",
+                "year": "2026",
+                "votes": 2219,
+                "rating": 8.866,
+                "grade": 2,
+                "semantic": 0.75
+              },
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.81
+              },
+              {
+                "id": 1084244,
+                "title": "玩具總動員5",
+                "year": "2026",
+                "votes": 2448,
+                "rating": 8.314,
+                "grade": 1,
+                "semantic": 0.58
+              },
+              {
+                "id": 1204680,
+                "title": "威利狼大戰阿卡米公司",
+                "year": "2026",
+                "votes": 611,
+                "rating": 7.556,
+                "grade": 1,
+                "semantic": 0.63
+              },
+              {
+                "id": 1632181,
+                "title": "Socias por accidente",
+                "year": "2026",
+                "votes": 392,
+                "rating": 8.844,
+                "grade": 0,
+                "semantic": 0.52
+              }
+            ],
+            [
+              {
+                "id": 1007757,
+                "title": "奇幻變身大冒險",
+                "year": "2026",
+                "votes": 2219,
+                "rating": 8.866,
+                "grade": 2,
+                "semantic": 0.74
+              },
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.81
+              },
+              {
+                "id": 1084244,
+                "title": "玩具總動員5",
+                "year": "2026",
+                "votes": 2448,
+                "rating": 8.314,
+                "grade": 1,
+                "semantic": 0.59
+              },
+              {
+                "id": 1204680,
+                "title": "威利狼大戰阿卡米公司",
+                "year": "2026",
+                "votes": 611,
+                "rating": 7.556,
+                "grade": 1,
+                "semantic": 0.63
+              },
+              {
+                "id": 1632181,
+                "title": "Socias por accidente",
+                "year": "2026",
+                "votes": 392,
+                "rating": 8.844,
+                "grade": 0,
+                "semantic": 0.54
+              }
+            ],
+            [
+              {
+                "id": 1007757,
+                "title": "奇幻變身大冒險",
+                "year": "2026",
+                "votes": 2219,
+                "rating": 8.866,
+                "grade": 2,
+                "semantic": 0.73
+              },
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.83
+              },
+              {
+                "id": 1084244,
+                "title": "玩具總動員5",
+                "year": "2026",
+                "votes": 2448,
+                "rating": 8.314,
+                "grade": 1,
+                "semantic": 0.59
+              },
+              {
+                "id": 1204680,
+                "title": "威利狼大戰阿卡米公司",
+                "year": "2026",
+                "votes": 611,
+                "rating": 7.556,
+                "grade": 1,
+                "semantic": 0.61
+              },
+              {
+                "id": 1632181,
+                "title": "Socias por accidente",
+                "year": "2026",
+                "votes": 392,
+                "rating": 8.844,
+                "grade": 0,
+                "semantic": 0.53
+              }
+            ]
+          ]
         },
         {
           "id": 3,
@@ -181,7 +1385,42 @@
             "familiarRate": 0,
             "medianVotes": 411,
             "meanRating": 8.074
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.88
+              }
+            ],
+            [
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.88
+              }
+            ],
+            [
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.88
+              }
+            ]
+          ]
         },
         {
           "id": 4,
@@ -194,7 +1433,51 @@
             "familiarRate": 0.8333333333333334,
             "medianVotes": 2169.3333333333335,
             "meanRating": 6.5906666666666665
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 68727,
+                "title": "索命記憶",
+                "year": "2013",
+                "votes": 2427,
+                "rating": 6.616,
+                "grade": 2,
+                "semantic": 0.77
+              }
+            ],
+            [
+              {
+                "id": 68727,
+                "title": "索命記憶",
+                "year": "2013",
+                "votes": 2427,
+                "rating": 6.616,
+                "grade": 2,
+                "semantic": 0.77
+              },
+              {
+                "id": 1052280,
+                "title": "開箱靈魂",
+                "year": "2024",
+                "votes": 881,
+                "rating": 6.464,
+                "grade": 0,
+                "semantic": 0.5
+              }
+            ],
+            [
+              {
+                "id": 68727,
+                "title": "索命記憶",
+                "year": "2013",
+                "votes": 2427,
+                "rating": 6.616,
+                "grade": 2,
+                "semantic": 0.76
+              }
+            ]
+          ]
         },
         {
           "id": 5,
@@ -207,7 +1490,150 @@
             "familiarRate": 1,
             "medianVotes": 10427,
             "meanRating": 7.695400000000002
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 568124,
+                "title": "魔法滿屋",
+                "year": "2021",
+                "votes": 10427,
+                "rating": 7.565,
+                "grade": 2,
+                "semantic": 0.88
+              },
+              {
+                "id": 501929,
+                "title": "米家大戰機器人",
+                "year": "2021",
+                "votes": 3516,
+                "rating": 7.823,
+                "grade": 2,
+                "semantic": 0.8
+              },
+              {
+                "id": 150540,
+                "title": "腦筋急轉彎",
+                "year": "2015",
+                "votes": 23948,
+                "rating": 7.905,
+                "grade": 2,
+                "semantic": 0.68
+              },
+              {
+                "id": 9806,
+                "title": "超人特攻隊",
+                "year": "2004",
+                "votes": 19354,
+                "rating": 7.729,
+                "grade": 2,
+                "semantic": 0.66
+              },
+              {
+                "id": 431580,
+                "title": "壞壞萌雪怪",
+                "year": "2019",
+                "votes": 2239,
+                "rating": 7.455,
+                "grade": 2,
+                "semantic": 0.77
+              }
+            ],
+            [
+              {
+                "id": 568124,
+                "title": "魔法滿屋",
+                "year": "2021",
+                "votes": 10427,
+                "rating": 7.565,
+                "grade": 2,
+                "semantic": 0.88
+              },
+              {
+                "id": 501929,
+                "title": "米家大戰機器人",
+                "year": "2021",
+                "votes": 3516,
+                "rating": 7.823,
+                "grade": 2,
+                "semantic": 0.8
+              },
+              {
+                "id": 150540,
+                "title": "腦筋急轉彎",
+                "year": "2015",
+                "votes": 23948,
+                "rating": 7.905,
+                "grade": 2,
+                "semantic": 0.64
+              },
+              {
+                "id": 9806,
+                "title": "超人特攻隊",
+                "year": "2004",
+                "votes": 19354,
+                "rating": 7.729,
+                "grade": 2,
+                "semantic": 0.66
+              },
+              {
+                "id": 431580,
+                "title": "壞壞萌雪怪",
+                "year": "2019",
+                "votes": 2239,
+                "rating": 7.455,
+                "grade": 2,
+                "semantic": 0.78
+              }
+            ],
+            [
+              {
+                "id": 568124,
+                "title": "魔法滿屋",
+                "year": "2021",
+                "votes": 10427,
+                "rating": 7.565,
+                "grade": 2,
+                "semantic": 0.88
+              },
+              {
+                "id": 501929,
+                "title": "米家大戰機器人",
+                "year": "2021",
+                "votes": 3516,
+                "rating": 7.823,
+                "grade": 2,
+                "semantic": 0.8
+              },
+              {
+                "id": 150540,
+                "title": "腦筋急轉彎",
+                "year": "2015",
+                "votes": 23948,
+                "rating": 7.905,
+                "grade": 2,
+                "semantic": 0.66
+              },
+              {
+                "id": 9806,
+                "title": "超人特攻隊",
+                "year": "2004",
+                "votes": 19354,
+                "rating": 7.729,
+                "grade": 2,
+                "semantic": 0.66
+              },
+              {
+                "id": 431580,
+                "title": "壞壞萌雪怪",
+                "year": "2019",
+                "votes": 2239,
+                "rating": 7.455,
+                "grade": 2,
+                "semantic": 0.77
+              }
+            ]
+          ]
         },
         {
           "id": 6,
@@ -220,7 +1646,96 @@
             "familiarRate": 1,
             "medianVotes": 16646,
             "meanRating": 6.787
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 329865,
+                "title": "異星入境",
+                "year": "2016",
+                "votes": 19946,
+                "rating": 7.635,
+                "grade": 2,
+                "semantic": 0.9
+              },
+              {
+                "id": 49521,
+                "title": "超人：鋼鐵英雄",
+                "year": "2013",
+                "votes": 16646,
+                "rating": 6.661,
+                "grade": 2,
+                "semantic": 0.71
+              },
+              {
+                "id": 141052,
+                "title": "正義聯盟",
+                "year": "2017",
+                "votes": 13983,
+                "rating": 6.065,
+                "grade": 2,
+                "semantic": 0.57
+              }
+            ],
+            [
+              {
+                "id": 329865,
+                "title": "異星入境",
+                "year": "2016",
+                "votes": 19946,
+                "rating": 7.635,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 49521,
+                "title": "超人：鋼鐵英雄",
+                "year": "2013",
+                "votes": 16646,
+                "rating": 6.661,
+                "grade": 2,
+                "semantic": 0.7
+              },
+              {
+                "id": 141052,
+                "title": "正義聯盟",
+                "year": "2017",
+                "votes": 13983,
+                "rating": 6.065,
+                "grade": 2,
+                "semantic": 0.55
+              }
+            ],
+            [
+              {
+                "id": 329865,
+                "title": "異星入境",
+                "year": "2016",
+                "votes": 19946,
+                "rating": 7.635,
+                "grade": 2,
+                "semantic": 0.91
+              },
+              {
+                "id": 49521,
+                "title": "超人：鋼鐵英雄",
+                "year": "2013",
+                "votes": 16646,
+                "rating": 6.661,
+                "grade": 2,
+                "semantic": 0.7
+              },
+              {
+                "id": 141052,
+                "title": "正義聯盟",
+                "year": "2017",
+                "votes": 13983,
+                "rating": 6.065,
+                "grade": 2,
+                "semantic": 0.53
+              }
+            ]
+          ]
         },
         {
           "id": 7,
@@ -233,7 +1748,150 @@
             "familiarRate": 0.8000000000000002,
             "medianVotes": 4704,
             "meanRating": 8.2218
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 8392,
+                "title": "龍貓",
+                "year": "1988",
+                "votes": 9125,
+                "rating": 8.068,
+                "grade": 2,
+                "semantic": 0.84
+              },
+              {
+                "id": 976893,
+                "title": "我的完美日常",
+                "year": "2023",
+                "votes": 2085,
+                "rating": 7.824,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 4935,
+                "title": "霍爾的移動城堡",
+                "year": "2004",
+                "votes": 11503,
+                "rating": 8.387,
+                "grade": 1,
+                "semantic": 0.56
+              },
+              {
+                "id": 378064,
+                "title": "電影版 聲之形",
+                "year": "2016",
+                "votes": 4704,
+                "rating": 8.397,
+                "grade": 0,
+                "semantic": 0.51
+              },
+              {
+                "id": 1291559,
+                "title": "餘生一年的我，與可活半年的妳相遇",
+                "year": "2024",
+                "votes": 232,
+                "rating": 8.433,
+                "grade": 0,
+                "semantic": 0.55
+              }
+            ],
+            [
+              {
+                "id": 8392,
+                "title": "龍貓",
+                "year": "1988",
+                "votes": 9125,
+                "rating": 8.068,
+                "grade": 2,
+                "semantic": 0.83
+              },
+              {
+                "id": 976893,
+                "title": "我的完美日常",
+                "year": "2023",
+                "votes": 2085,
+                "rating": 7.824,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 4935,
+                "title": "霍爾的移動城堡",
+                "year": "2004",
+                "votes": 11503,
+                "rating": 8.387,
+                "grade": 1,
+                "semantic": 0.57
+              },
+              {
+                "id": 378064,
+                "title": "電影版 聲之形",
+                "year": "2016",
+                "votes": 4704,
+                "rating": 8.397,
+                "grade": 0,
+                "semantic": 0.51
+              },
+              {
+                "id": 1291559,
+                "title": "餘生一年的我，與可活半年的妳相遇",
+                "year": "2024",
+                "votes": 232,
+                "rating": 8.433,
+                "grade": 0,
+                "semantic": 0.56
+              }
+            ],
+            [
+              {
+                "id": 8392,
+                "title": "龍貓",
+                "year": "1988",
+                "votes": 9125,
+                "rating": 8.068,
+                "grade": 2,
+                "semantic": 0.84
+              },
+              {
+                "id": 976893,
+                "title": "我的完美日常",
+                "year": "2023",
+                "votes": 2085,
+                "rating": 7.824,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 4935,
+                "title": "霍爾的移動城堡",
+                "year": "2004",
+                "votes": 11503,
+                "rating": 8.387,
+                "grade": 1,
+                "semantic": 0.54
+              },
+              {
+                "id": 378064,
+                "title": "電影版 聲之形",
+                "year": "2016",
+                "votes": 4704,
+                "rating": 8.397,
+                "grade": 0,
+                "semantic": 0.56
+              },
+              {
+                "id": 1291559,
+                "title": "餘生一年的我，與可活半年的妳相遇",
+                "year": "2024",
+                "votes": 232,
+                "rating": 8.433,
+                "grade": 0,
+                "semantic": 0.55
+              }
+            ]
+          ]
         },
         {
           "id": 8,
@@ -246,7 +1904,150 @@
             "familiarRate": 0.6,
             "medianVotes": 1008,
             "meanRating": 7.7632
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 2316,
+                "title": "我們的辦公室",
+                "year": "2005",
+                "votes": 5525,
+                "rating": 8.583,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 2490,
+                "title": "IT 狂人",
+                "year": "2006",
+                "votes": 1702,
+                "rating": 8.165,
+                "grade": 2,
+                "semantic": 0.89
+              },
+              {
+                "id": 2996,
+                "title": "辦公室風雲",
+                "year": "2001",
+                "votes": 1008,
+                "rating": 7.832,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 4956,
+                "title": "Dilbert",
+                "year": "1999",
+                "votes": 82,
+                "rating": 6.8,
+                "grade": 0,
+                "semantic": 0.75
+              },
+              {
+                "id": 78941,
+                "title": "衝吧烈子",
+                "year": "2018",
+                "votes": 172,
+                "rating": 7.436,
+                "grade": 2,
+                "semantic": 0.69
+              }
+            ],
+            [
+              {
+                "id": 2316,
+                "title": "我們的辦公室",
+                "year": "2005",
+                "votes": 5525,
+                "rating": 8.583,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 2490,
+                "title": "IT 狂人",
+                "year": "2006",
+                "votes": 1702,
+                "rating": 8.165,
+                "grade": 2,
+                "semantic": 0.9
+              },
+              {
+                "id": 2996,
+                "title": "辦公室風雲",
+                "year": "2001",
+                "votes": 1008,
+                "rating": 7.832,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 78941,
+                "title": "衝吧烈子",
+                "year": "2018",
+                "votes": 172,
+                "rating": 7.436,
+                "grade": 2,
+                "semantic": 0.71
+              },
+              {
+                "id": 4956,
+                "title": "Dilbert",
+                "year": "1999",
+                "votes": 82,
+                "rating": 6.8,
+                "grade": 0,
+                "semantic": 0.74
+              }
+            ],
+            [
+              {
+                "id": 2316,
+                "title": "我們的辦公室",
+                "year": "2005",
+                "votes": 5525,
+                "rating": 8.583,
+                "grade": 2,
+                "semantic": 0.91
+              },
+              {
+                "id": 2490,
+                "title": "IT 狂人",
+                "year": "2006",
+                "votes": 1702,
+                "rating": 8.165,
+                "grade": 2,
+                "semantic": 0.9
+              },
+              {
+                "id": 2996,
+                "title": "辦公室風雲",
+                "year": "2001",
+                "votes": 1008,
+                "rating": 7.832,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 78941,
+                "title": "衝吧烈子",
+                "year": "2018",
+                "votes": 172,
+                "rating": 7.436,
+                "grade": 2,
+                "semantic": 0.71
+              },
+              {
+                "id": 4956,
+                "title": "Dilbert",
+                "year": "1999",
+                "votes": 82,
+                "rating": 6.8,
+                "grade": 0,
+                "semantic": 0.75
+              }
+            ]
+          ]
         },
         {
           "id": 10,
@@ -259,7 +2060,42 @@
             "familiarRate": 0,
             "medianVotes": 100,
             "meanRating": 7
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 47060,
+                "title": "The Hole",
+                "year": "1998",
+                "votes": 100,
+                "rating": 7,
+                "grade": 2,
+                "semantic": 0.76
+              }
+            ],
+            [
+              {
+                "id": 47060,
+                "title": "The Hole",
+                "year": "1998",
+                "votes": 100,
+                "rating": 7,
+                "grade": 2,
+                "semantic": 0.75
+              }
+            ],
+            [
+              {
+                "id": 47060,
+                "title": "The Hole",
+                "year": "1998",
+                "votes": 100,
+                "rating": 7,
+                "grade": 2,
+                "semantic": 0.77
+              }
+            ]
+          ]
         }
       ]
     },
@@ -286,7 +2122,150 @@
             "familiarRate": 0.6,
             "medianVotes": 1264,
             "meanRating": 7.236400000000001
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 63193,
+                "title": "叫我第一名",
+                "year": "2008",
+                "votes": 337,
+                "rating": 8.053,
+                "grade": 2,
+                "semantic": 0.91
+              },
+              {
+                "id": 295964,
+                "title": "天菜大廚",
+                "year": "2015",
+                "votes": 3645,
+                "rating": 6.527,
+                "grade": 2,
+                "semantic": 0.85
+              },
+              {
+                "id": 9390,
+                "title": "征服情海",
+                "year": "1996",
+                "votes": 3900,
+                "rating": 7.002,
+                "grade": 2,
+                "semantic": 0.75
+              },
+              {
+                "id": 10028,
+                "title": "蜜糖第一名",
+                "year": "2003",
+                "votes": 1264,
+                "rating": 6.4,
+                "grade": 2,
+                "semantic": 0.77
+              },
+              {
+                "id": 3780,
+                "title": "紅鬍子",
+                "year": "1965",
+                "votes": 429,
+                "rating": 8.2,
+                "grade": 2,
+                "semantic": 0.65
+              }
+            ],
+            [
+              {
+                "id": 63193,
+                "title": "叫我第一名",
+                "year": "2008",
+                "votes": 337,
+                "rating": 8.053,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 295964,
+                "title": "天菜大廚",
+                "year": "2015",
+                "votes": 3645,
+                "rating": 6.527,
+                "grade": 2,
+                "semantic": 0.85
+              },
+              {
+                "id": 9390,
+                "title": "征服情海",
+                "year": "1996",
+                "votes": 3900,
+                "rating": 7.002,
+                "grade": 2,
+                "semantic": 0.74
+              },
+              {
+                "id": 10028,
+                "title": "蜜糖第一名",
+                "year": "2003",
+                "votes": 1264,
+                "rating": 6.4,
+                "grade": 2,
+                "semantic": 0.77
+              },
+              {
+                "id": 3780,
+                "title": "紅鬍子",
+                "year": "1965",
+                "votes": 429,
+                "rating": 8.2,
+                "grade": 2,
+                "semantic": 0.65
+              }
+            ],
+            [
+              {
+                "id": 63193,
+                "title": "叫我第一名",
+                "year": "2008",
+                "votes": 337,
+                "rating": 8.053,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 295964,
+                "title": "天菜大廚",
+                "year": "2015",
+                "votes": 3645,
+                "rating": 6.527,
+                "grade": 2,
+                "semantic": 0.86
+              },
+              {
+                "id": 9390,
+                "title": "征服情海",
+                "year": "1996",
+                "votes": 3900,
+                "rating": 7.002,
+                "grade": 2,
+                "semantic": 0.76
+              },
+              {
+                "id": 10028,
+                "title": "蜜糖第一名",
+                "year": "2003",
+                "votes": 1264,
+                "rating": 6.4,
+                "grade": 2,
+                "semantic": 0.77
+              },
+              {
+                "id": 3780,
+                "title": "紅鬍子",
+                "year": "1965",
+                "votes": 429,
+                "rating": 8.2,
+                "grade": 2,
+                "semantic": 0.67
+              }
+            ]
+          ]
         },
         {
           "id": 2,
@@ -299,7 +2278,150 @@
             "familiarRate": 0.4000000000000001,
             "medianVotes": 611,
             "meanRating": 8.3308
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 1007757,
+                "title": "奇幻變身大冒險",
+                "year": "2026",
+                "votes": 2219,
+                "rating": 8.866,
+                "grade": 2,
+                "semantic": 0.75
+              },
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.81
+              },
+              {
+                "id": 1084244,
+                "title": "玩具總動員5",
+                "year": "2026",
+                "votes": 2448,
+                "rating": 8.314,
+                "grade": 1,
+                "semantic": 0.58
+              },
+              {
+                "id": 1204680,
+                "title": "威利狼大戰阿卡米公司",
+                "year": "2026",
+                "votes": 611,
+                "rating": 7.556,
+                "grade": 1,
+                "semantic": 0.63
+              },
+              {
+                "id": 1632181,
+                "title": "Socias por accidente",
+                "year": "2026",
+                "votes": 392,
+                "rating": 8.844,
+                "grade": 0,
+                "semantic": 0.52
+              }
+            ],
+            [
+              {
+                "id": 1007757,
+                "title": "奇幻變身大冒險",
+                "year": "2026",
+                "votes": 2219,
+                "rating": 8.866,
+                "grade": 2,
+                "semantic": 0.74
+              },
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.81
+              },
+              {
+                "id": 1084244,
+                "title": "玩具總動員5",
+                "year": "2026",
+                "votes": 2448,
+                "rating": 8.314,
+                "grade": 1,
+                "semantic": 0.59
+              },
+              {
+                "id": 1204680,
+                "title": "威利狼大戰阿卡米公司",
+                "year": "2026",
+                "votes": 611,
+                "rating": 7.556,
+                "grade": 1,
+                "semantic": 0.63
+              },
+              {
+                "id": 1632181,
+                "title": "Socias por accidente",
+                "year": "2026",
+                "votes": 392,
+                "rating": 8.844,
+                "grade": 0,
+                "semantic": 0.54
+              }
+            ],
+            [
+              {
+                "id": 1007757,
+                "title": "奇幻變身大冒險",
+                "year": "2026",
+                "votes": 2219,
+                "rating": 8.866,
+                "grade": 2,
+                "semantic": 0.73
+              },
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.83
+              },
+              {
+                "id": 1084244,
+                "title": "玩具總動員5",
+                "year": "2026",
+                "votes": 2448,
+                "rating": 8.314,
+                "grade": 1,
+                "semantic": 0.59
+              },
+              {
+                "id": 1204680,
+                "title": "威利狼大戰阿卡米公司",
+                "year": "2026",
+                "votes": 611,
+                "rating": 7.556,
+                "grade": 1,
+                "semantic": 0.61
+              },
+              {
+                "id": 1632181,
+                "title": "Socias por accidente",
+                "year": "2026",
+                "votes": 392,
+                "rating": 8.844,
+                "grade": 0,
+                "semantic": 0.53
+              }
+            ]
+          ]
         },
         {
           "id": 3,
@@ -312,7 +2434,42 @@
             "familiarRate": 0,
             "medianVotes": 411,
             "meanRating": 8.074
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.88
+              }
+            ],
+            [
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.88
+              }
+            ],
+            [
+              {
+                "id": 1032863,
+                "title": "假戀愛真心動",
+                "year": "2026",
+                "votes": 411,
+                "rating": 8.074,
+                "grade": 2,
+                "semantic": 0.88
+              }
+            ]
+          ]
         },
         {
           "id": 4,
@@ -325,7 +2482,51 @@
             "familiarRate": 0.8333333333333334,
             "medianVotes": 2169.3333333333335,
             "meanRating": 6.5906666666666665
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 68727,
+                "title": "索命記憶",
+                "year": "2013",
+                "votes": 2427,
+                "rating": 6.616,
+                "grade": 2,
+                "semantic": 0.77
+              }
+            ],
+            [
+              {
+                "id": 68727,
+                "title": "索命記憶",
+                "year": "2013",
+                "votes": 2427,
+                "rating": 6.616,
+                "grade": 2,
+                "semantic": 0.77
+              },
+              {
+                "id": 1052280,
+                "title": "開箱靈魂",
+                "year": "2024",
+                "votes": 881,
+                "rating": 6.464,
+                "grade": 0,
+                "semantic": 0.5
+              }
+            ],
+            [
+              {
+                "id": 68727,
+                "title": "索命記憶",
+                "year": "2013",
+                "votes": 2427,
+                "rating": 6.616,
+                "grade": 2,
+                "semantic": 0.76
+              }
+            ]
+          ]
         },
         {
           "id": 5,
@@ -338,7 +2539,150 @@
             "familiarRate": 1,
             "medianVotes": 10427,
             "meanRating": 7.695400000000002
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 568124,
+                "title": "魔法滿屋",
+                "year": "2021",
+                "votes": 10427,
+                "rating": 7.565,
+                "grade": 2,
+                "semantic": 0.88
+              },
+              {
+                "id": 501929,
+                "title": "米家大戰機器人",
+                "year": "2021",
+                "votes": 3516,
+                "rating": 7.823,
+                "grade": 2,
+                "semantic": 0.8
+              },
+              {
+                "id": 150540,
+                "title": "腦筋急轉彎",
+                "year": "2015",
+                "votes": 23948,
+                "rating": 7.905,
+                "grade": 2,
+                "semantic": 0.68
+              },
+              {
+                "id": 9806,
+                "title": "超人特攻隊",
+                "year": "2004",
+                "votes": 19354,
+                "rating": 7.729,
+                "grade": 2,
+                "semantic": 0.66
+              },
+              {
+                "id": 431580,
+                "title": "壞壞萌雪怪",
+                "year": "2019",
+                "votes": 2239,
+                "rating": 7.455,
+                "grade": 2,
+                "semantic": 0.77
+              }
+            ],
+            [
+              {
+                "id": 568124,
+                "title": "魔法滿屋",
+                "year": "2021",
+                "votes": 10427,
+                "rating": 7.565,
+                "grade": 2,
+                "semantic": 0.88
+              },
+              {
+                "id": 501929,
+                "title": "米家大戰機器人",
+                "year": "2021",
+                "votes": 3516,
+                "rating": 7.823,
+                "grade": 2,
+                "semantic": 0.8
+              },
+              {
+                "id": 150540,
+                "title": "腦筋急轉彎",
+                "year": "2015",
+                "votes": 23948,
+                "rating": 7.905,
+                "grade": 2,
+                "semantic": 0.64
+              },
+              {
+                "id": 9806,
+                "title": "超人特攻隊",
+                "year": "2004",
+                "votes": 19354,
+                "rating": 7.729,
+                "grade": 2,
+                "semantic": 0.66
+              },
+              {
+                "id": 431580,
+                "title": "壞壞萌雪怪",
+                "year": "2019",
+                "votes": 2239,
+                "rating": 7.455,
+                "grade": 2,
+                "semantic": 0.78
+              }
+            ],
+            [
+              {
+                "id": 568124,
+                "title": "魔法滿屋",
+                "year": "2021",
+                "votes": 10427,
+                "rating": 7.565,
+                "grade": 2,
+                "semantic": 0.88
+              },
+              {
+                "id": 501929,
+                "title": "米家大戰機器人",
+                "year": "2021",
+                "votes": 3516,
+                "rating": 7.823,
+                "grade": 2,
+                "semantic": 0.8
+              },
+              {
+                "id": 150540,
+                "title": "腦筋急轉彎",
+                "year": "2015",
+                "votes": 23948,
+                "rating": 7.905,
+                "grade": 2,
+                "semantic": 0.66
+              },
+              {
+                "id": 9806,
+                "title": "超人特攻隊",
+                "year": "2004",
+                "votes": 19354,
+                "rating": 7.729,
+                "grade": 2,
+                "semantic": 0.66
+              },
+              {
+                "id": 431580,
+                "title": "壞壞萌雪怪",
+                "year": "2019",
+                "votes": 2239,
+                "rating": 7.455,
+                "grade": 2,
+                "semantic": 0.77
+              }
+            ]
+          ]
         },
         {
           "id": 6,
@@ -351,7 +2695,96 @@
             "familiarRate": 1,
             "medianVotes": 16646,
             "meanRating": 6.787
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 329865,
+                "title": "異星入境",
+                "year": "2016",
+                "votes": 19946,
+                "rating": 7.635,
+                "grade": 2,
+                "semantic": 0.9
+              },
+              {
+                "id": 49521,
+                "title": "超人：鋼鐵英雄",
+                "year": "2013",
+                "votes": 16646,
+                "rating": 6.661,
+                "grade": 2,
+                "semantic": 0.71
+              },
+              {
+                "id": 141052,
+                "title": "正義聯盟",
+                "year": "2017",
+                "votes": 13983,
+                "rating": 6.065,
+                "grade": 2,
+                "semantic": 0.57
+              }
+            ],
+            [
+              {
+                "id": 329865,
+                "title": "異星入境",
+                "year": "2016",
+                "votes": 19946,
+                "rating": 7.635,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 49521,
+                "title": "超人：鋼鐵英雄",
+                "year": "2013",
+                "votes": 16646,
+                "rating": 6.661,
+                "grade": 2,
+                "semantic": 0.7
+              },
+              {
+                "id": 141052,
+                "title": "正義聯盟",
+                "year": "2017",
+                "votes": 13983,
+                "rating": 6.065,
+                "grade": 2,
+                "semantic": 0.55
+              }
+            ],
+            [
+              {
+                "id": 329865,
+                "title": "異星入境",
+                "year": "2016",
+                "votes": 19946,
+                "rating": 7.635,
+                "grade": 2,
+                "semantic": 0.91
+              },
+              {
+                "id": 49521,
+                "title": "超人：鋼鐵英雄",
+                "year": "2013",
+                "votes": 16646,
+                "rating": 6.661,
+                "grade": 2,
+                "semantic": 0.7
+              },
+              {
+                "id": 141052,
+                "title": "正義聯盟",
+                "year": "2017",
+                "votes": 13983,
+                "rating": 6.065,
+                "grade": 2,
+                "semantic": 0.53
+              }
+            ]
+          ]
         },
         {
           "id": 7,
@@ -364,7 +2797,123 @@
             "familiarRate": 1,
             "medianVotes": 6914.5,
             "meanRating": 8.169
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 8392,
+                "title": "龍貓",
+                "year": "1988",
+                "votes": 9125,
+                "rating": 8.068,
+                "grade": 2,
+                "semantic": 0.84
+              },
+              {
+                "id": 976893,
+                "title": "我的完美日常",
+                "year": "2023",
+                "votes": 2085,
+                "rating": 7.824,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 4935,
+                "title": "霍爾的移動城堡",
+                "year": "2004",
+                "votes": 11503,
+                "rating": 8.387,
+                "grade": 1,
+                "semantic": 0.56
+              },
+              {
+                "id": 378064,
+                "title": "電影版 聲之形",
+                "year": "2016",
+                "votes": 4704,
+                "rating": 8.397,
+                "grade": 0,
+                "semantic": 0.51
+              }
+            ],
+            [
+              {
+                "id": 8392,
+                "title": "龍貓",
+                "year": "1988",
+                "votes": 9125,
+                "rating": 8.068,
+                "grade": 2,
+                "semantic": 0.83
+              },
+              {
+                "id": 976893,
+                "title": "我的完美日常",
+                "year": "2023",
+                "votes": 2085,
+                "rating": 7.824,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 4935,
+                "title": "霍爾的移動城堡",
+                "year": "2004",
+                "votes": 11503,
+                "rating": 8.387,
+                "grade": 1,
+                "semantic": 0.57
+              },
+              {
+                "id": 378064,
+                "title": "電影版 聲之形",
+                "year": "2016",
+                "votes": 4704,
+                "rating": 8.397,
+                "grade": 0,
+                "semantic": 0.51
+              }
+            ],
+            [
+              {
+                "id": 8392,
+                "title": "龍貓",
+                "year": "1988",
+                "votes": 9125,
+                "rating": 8.068,
+                "grade": 2,
+                "semantic": 0.84
+              },
+              {
+                "id": 976893,
+                "title": "我的完美日常",
+                "year": "2023",
+                "votes": 2085,
+                "rating": 7.824,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 4935,
+                "title": "霍爾的移動城堡",
+                "year": "2004",
+                "votes": 11503,
+                "rating": 8.387,
+                "grade": 1,
+                "semantic": 0.54
+              },
+              {
+                "id": 378064,
+                "title": "電影版 聲之形",
+                "year": "2016",
+                "votes": 4704,
+                "rating": 8.397,
+                "grade": 0,
+                "semantic": 0.56
+              }
+            ]
+          ]
         },
         {
           "id": 8,
@@ -377,7 +2926,150 @@
             "familiarRate": 0.6,
             "medianVotes": 1008,
             "meanRating": 7.7632
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 2316,
+                "title": "我們的辦公室",
+                "year": "2005",
+                "votes": 5525,
+                "rating": 8.583,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 2490,
+                "title": "IT 狂人",
+                "year": "2006",
+                "votes": 1702,
+                "rating": 8.165,
+                "grade": 2,
+                "semantic": 0.89
+              },
+              {
+                "id": 2996,
+                "title": "辦公室風雲",
+                "year": "2001",
+                "votes": 1008,
+                "rating": 7.832,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 4956,
+                "title": "Dilbert",
+                "year": "1999",
+                "votes": 82,
+                "rating": 6.8,
+                "grade": 0,
+                "semantic": 0.75
+              },
+              {
+                "id": 78941,
+                "title": "衝吧烈子",
+                "year": "2018",
+                "votes": 172,
+                "rating": 7.436,
+                "grade": 2,
+                "semantic": 0.69
+              }
+            ],
+            [
+              {
+                "id": 2316,
+                "title": "我們的辦公室",
+                "year": "2005",
+                "votes": 5525,
+                "rating": 8.583,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 2490,
+                "title": "IT 狂人",
+                "year": "2006",
+                "votes": 1702,
+                "rating": 8.165,
+                "grade": 2,
+                "semantic": 0.9
+              },
+              {
+                "id": 2996,
+                "title": "辦公室風雲",
+                "year": "2001",
+                "votes": 1008,
+                "rating": 7.832,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 78941,
+                "title": "衝吧烈子",
+                "year": "2018",
+                "votes": 172,
+                "rating": 7.436,
+                "grade": 2,
+                "semantic": 0.71
+              },
+              {
+                "id": 4956,
+                "title": "Dilbert",
+                "year": "1999",
+                "votes": 82,
+                "rating": 6.8,
+                "grade": 0,
+                "semantic": 0.74
+              }
+            ],
+            [
+              {
+                "id": 2316,
+                "title": "我們的辦公室",
+                "year": "2005",
+                "votes": 5525,
+                "rating": 8.583,
+                "grade": 2,
+                "semantic": 0.91
+              },
+              {
+                "id": 2490,
+                "title": "IT 狂人",
+                "year": "2006",
+                "votes": 1702,
+                "rating": 8.165,
+                "grade": 2,
+                "semantic": 0.9
+              },
+              {
+                "id": 2996,
+                "title": "辦公室風雲",
+                "year": "2001",
+                "votes": 1008,
+                "rating": 7.832,
+                "grade": 2,
+                "semantic": 0.92
+              },
+              {
+                "id": 78941,
+                "title": "衝吧烈子",
+                "year": "2018",
+                "votes": 172,
+                "rating": 7.436,
+                "grade": 2,
+                "semantic": 0.71
+              },
+              {
+                "id": 4956,
+                "title": "Dilbert",
+                "year": "1999",
+                "votes": 82,
+                "rating": 6.8,
+                "grade": 0,
+                "semantic": 0.75
+              }
+            ]
+          ]
         },
         {
           "id": 10,
@@ -390,7 +3082,42 @@
             "familiarRate": 0,
             "medianVotes": 100,
             "meanRating": 7
-          }
+          },
+          "picks": [
+            [
+              {
+                "id": 47060,
+                "title": "The Hole",
+                "year": "1998",
+                "votes": 100,
+                "rating": 7,
+                "grade": 2,
+                "semantic": 0.76
+              }
+            ],
+            [
+              {
+                "id": 47060,
+                "title": "The Hole",
+                "year": "1998",
+                "votes": 100,
+                "rating": 7,
+                "grade": 2,
+                "semantic": 0.75
+              }
+            ],
+            [
+              {
+                "id": 47060,
+                "title": "The Hole",
+                "year": "1998",
+                "votes": 100,
+                "rating": 7,
+                "grade": 2,
+                "semantic": 0.77
+              }
+            ]
+          ]
         }
       ]
     }

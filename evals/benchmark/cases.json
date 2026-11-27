@@ -63,14 +63,14 @@
       "tag": "mood",
       "locale": "en",
       "media_type": "movie",
-      "request": "I want a movie about restarting your career after a big failure."
+      "request": "I want an inspiring movie about starting over after career failure, with perseverance rather than revenge."
     },
     {
       "id": 10,
       "tag": "theme",
       "locale": "en",
       "media_type": "movie",
-      "request": "Sci-fi movies about human connection."
+      "request": "Recommend a thoughtful science fiction movie about human connection, not an action-heavy space battle."
     },
     {
       "id": 11,

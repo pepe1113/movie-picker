@@ -85,7 +85,7 @@ describe('MovieDetailPage', () => {
     expect(screen.getByText('劇情')).toBeInTheDocument()
     expect(screen.queryByText('剧情')).not.toBeInTheDocument()
     expect(screen.getByText('Original Gradient')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Jane Doe' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /Jane Doe/ })).toHaveAttribute(
       'href',
       '/search?q=Jane+Doe',
     )

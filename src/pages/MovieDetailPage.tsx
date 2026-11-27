@@ -294,27 +294,28 @@ export function Component() {
 
             <div className="grid grid-cols-3 gap-6 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
               {cast.map((member) => (
-                <div key={member.id} className="space-y-3 text-center">
+                <Link
+                  key={member.id}
+                  to={buildSearchLink(member.name)}
+                  className="group focus-visible:ring-ring block space-y-3 rounded-md text-center outline-none focus-visible:ring-2"
+                >
                   <div className="bg-muted mx-auto aspect-square w-full overflow-hidden rounded-md">
                     <img
                       src={getProfileUrl(member.profile_path)}
-                      alt={member.name}
+                      alt=""
                       loading="lazy"
-                      className="size-full object-cover transition-transform duration-500 hover:scale-105"
+                      className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
                   <div className="space-y-1">
-                    <Link
-                      to={buildSearchLink(member.name)}
-                      className="hover:text-primary block truncate text-sm leading-tight font-semibold transition-colors hover:underline"
-                    >
+                    <p className="group-hover:text-primary truncate text-sm leading-tight font-semibold transition-colors group-hover:underline">
                       {member.name}
-                    </Link>
+                    </p>
                     <p className="text-muted-foreground truncate text-xs">
                       {member.character}
                     </p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </section>
